@@ -1,0 +1,12 @@
+<LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent" android:minWidth="25px" android:minHeight="25px" xmlns:android="http://schemas.android.com/apk/res/android"><TextView android:text="Create a Username:" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/CreateAUsernameText" android:textColor="@android:color/background_dark" android:textSize="100px" android:textAlignment="center" android:textAllCaps="false" android:elegantTextHeight="false" android:layout_marginTop="50px" /><EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/UsernameText" android:text="e.g. risidian" android:textAlignment="center" android:textSize="60px" android:textColor="@android:color/background_dark" android:layout_marginTop="20px" /><ImageButton android:src="@drawable/createuserbutton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/CreateUsernameButton" android:layout_marginLeft="770px" android:background="@null" /><!--
+	<Button
+		android:text="Create"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/CreateUsernameButton"
+		android:textSize="80px"
+		android:textAlignment="center"
+		android:layout_marginLeft="850px"
+		android:layout_marginTop="150px"
+		android:padding="5px" />
+--><TextView android:text="@string/userName" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/DisplayUsername" android:textColor="@android:color/background_dark" android:textSize="100px" android:textAlignment="center" android:textAllCaps="false" android:elegantTextHeight="false" android:layout_marginTop="50px" /><TextView android:text="Version" android:hint="Enter Number" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/DisplayVersion" android:textColor="@android:color/background_dark" android:textSize="50px" android:textAlignment="center" android:textAllCaps="false" android:elegantTextHeight="false" /></LinearLayout>

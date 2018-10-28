@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/Mayce/Programming/Games/darkness/Darkness.Android/Content/title.mp3</SourceFile>
+  <SourceTime>2018-10-24T10:07:33.6786229+08:00</SourceTime>
+  <DestFile>C:/Users/Mayce/Programming/Games/darkness/Darkness.Android/Content/bin/Android/Content/title.xnb</DestFile>
+  <DestTime>2018-10-24T17:07:58.069721+08:00</DestTime>
+  <Importer>Mp3Importer</Importer>
+  <ImporterTime>2018-09-24T05:55:52+08:00</ImporterTime>
+  <Processor>SongProcessor</Processor>
+  <ProcessorTime>2018-09-24T05:55:52+08:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput>
+    <string>C:/Users/Mayce/Programming/Games/darkness/Darkness.Android/Content/bin/Android/Content/title.m4a</string>
+  </BuildOutput>
+</PipelineBuildEvent>

@@ -1,0 +1,15 @@
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\Darkness.Android.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\Java.Interop.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\Mono.Android.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\mscorlib.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\OpenTK-1.0.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.Core.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.Xml.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.Xml.Linq.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\MonoGame.Framework.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.ComponentModel.Composition.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.Net.Http.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.Runtime.Serialization.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\System.ServiceModel.Internals.dll
+C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\android\assets\Mono.Security.dll
