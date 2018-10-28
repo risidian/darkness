@@ -1,0 +1,14 @@
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\bin\Debug\netcoreapp2.1\Darkness.WebAPI.deps.json
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\bin\Debug\netcoreapp2.1\Darkness.WebAPI.runtimeconfig.json
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\bin\Debug\netcoreapp2.1\Darkness.WebAPI.runtimeconfig.dev.json
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\bin\Debug\netcoreapp2.1\Darkness.WebAPI.dll
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\bin\Debug\netcoreapp2.1\Darkness.WebAPI.pdb
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.csprojAssemblyReference.cache
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.csproj.CoreCompileInputs.cache
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.RazorAssemblyInfo.cache
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.RazorAssemblyInfo.cs
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.AssemblyInfoInputs.cache
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.AssemblyInfo.cs
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.RazorTargetAssemblyInfo.cache
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.dll
+C:\Users\Mayce\Programming\Games\Darkness Alpha\Darkness.WebAPI\obj\Debug\netcoreapp2.1\Darkness.WebAPI.pdb

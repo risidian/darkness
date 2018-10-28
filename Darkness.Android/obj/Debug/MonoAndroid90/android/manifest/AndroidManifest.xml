@@ -24,5 +24,4 @@
     </receiver>
   </application>
   <activity android:name=".start" android:screenOrientation="landscape" />
-  <!--<activity android:name=".ActivtyName" android:screenOrientation="landscape" />-->
 </manifest>

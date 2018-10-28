@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darkness.Android", "Darkness.Android\Darkness.Android.csproj", "{A0872B35-F702-49BD-A3F7-C0D35EC96556}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darkness.WebAPI", "Darkness.WebAPI\Darkness.WebAPI.csproj", "{2172D846-FDB1-4478-AE7C-482EB83CED28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Darkness.WebAPI", "Darkness.WebAPI\Darkness.WebAPI.csproj", "{2172D846-FDB1-4478-AE7C-482EB83CED28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darkness.Query", "Darkness.Query\Darkness.Query.csproj", "{5010C4F7-9239-409D-9CC7-3136B4F60665}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{2172D846-FDB1-4478-AE7C-482EB83CED28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2172D846-FDB1-4478-AE7C-482EB83CED28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2172D846-FDB1-4478-AE7C-482EB83CED28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5010C4F7-9239-409D-9CC7-3136B4F60665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5010C4F7-9239-409D-9CC7-3136B4F60665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5010C4F7-9239-409D-9CC7-3136B4F60665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5010C4F7-9239-409D-9CC7-3136B4F60665}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
