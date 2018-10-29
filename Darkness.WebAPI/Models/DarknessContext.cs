@@ -15,6 +15,7 @@ namespace Darkness.WebAPI.Models
         {
         }
 
+        public virtual DbSet<Characters> Characters { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,6 +29,36 @@ namespace Darkness.WebAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Characters>(entity =>
+            {
+                entity.HasKey(e => e.CharacterId);
+
+                entity.HasIndex(e => e.CharacterName)
+                    .HasName("CharName")
+                    .IsUnique();
+
+                entity.Property(e => e.CharacterName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CharacterXp).HasColumnName("CharacterXP");
+
+                entity.Property(e => e.Class)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Creation).HasColumnType("datetime");
+
+                entity.Property(e => e.PlayerGuid)
+                    .IsRequired()
+                    .HasColumnName("PlayerGUID")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PremierClass)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.Property(e => e.Creation).HasColumnType("datetime");
