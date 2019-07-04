@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
+using Android.Service.Autofill;
+using Darkness.Android.Data;
+using Darkness.Android.Models;
 using SQLite;
 
 namespace Darkness.Android
@@ -19,12 +22,12 @@ namespace Darkness.Android
 
     public class CreateUsername : Activity
     {
-        TextView DisplayVersion;
-        TextView Version;
-        EditText txtUsername;
-        EditText txtPassword;
-        ImageButton btnCreateUsername;
-        readonly private String Ver = ("Version:", typeof(CreateUsername).Assembly.GetName().Version).ToString();
+        TextView _version;
+        EditText _txtUsername;
+        EditText _txtPassword;
+        private EditText _txtEmail;
+        ImageButton _btnCreateUsername;
+        private readonly string _ver = ("Version:", typeof(CreateUsername).Assembly.GetName().Version).ToString();
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -32,29 +35,27 @@ namespace Darkness.Android
             // Set our view from the "CreateUsername" layout resource  
             SetContentView(Resource.Layout.CreateUserName);
             // Create your application here  
-            btnCreateUsername = (ImageButton)FindViewById(Resource.Id.CreateUserButton);
-            txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
-            txtPassword = FindViewById<EditText>(Resource.Id.PasswordText);
-            btnCreateUsername.Click += Btncreate_Click;
-            CreateDB();
-            DisplayVersion = (TextView)FindViewById(Resource.Id.DisplayVersion);
-            Version = (TextView)FindViewById(Resource.Id.DisplayVersion);
-            Version.Text = Ver;
-
+            _btnCreateUsername = (ImageButton)FindViewById(Resource.Id.CreateUserButton);
+            _txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
+            _txtPassword = FindViewById<EditText>(Resource.Id.PasswordText);
+            _txtEmail = FindViewById<EditText>(Resource.Id.UserEmail);
+            _btnCreateUsername.Click += CreateUser;
+            _version = (TextView)FindViewById(Resource.Id.DisplayVersion);
+            _version.Text = _ver;
         }
-        private void Btncreate_Click(object sender, EventArgs e)
+        private void CreateUser(object sender, EventArgs e)
         {
             try
             {
-                string dpPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "user.db3");
-                var db = new SQLiteConnection(dpPath);
-                db.CreateTable<UserTable>();
-                UserTable tbl = new UserTable
+                Users _database = new Users
                 {
-                    Username = txtUsername.Text,
-                    Password = txtPassword.Text
+                    Username = _txtUsername.Text,
+                    Password = _txtPassword.Text,
+                    Age = 18,
+                    EmailAddress = _txtEmail.Text
+
                 };
-                db.Insert(tbl);
+                Database.SaveUsersAsync(_database);
                 Toast.MakeText(this, "Username Created Successfully...,", ToastLength.Short).Show();
             }
             catch (Exception ex)
@@ -64,14 +65,19 @@ namespace Darkness.Android
             Intent loadMain = new Intent(this, typeof(Main));
             StartActivity(loadMain);
         }
-        public string CreateDB()
+
+        static UserDatabase _database;
+
+        public static UserDatabase Database
         {
-            var output = "";
-            output += "Creating Databse if it doesnt exists";
-            string dpPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "user.db3"); //Create New Database  
-            var db = new SQLiteConnection(dpPath);
-            output += "\n Database Created....";
-            return output;
+            get
+            {
+                if (_database == null)
+                {
+                    _database = new UserDatabase(Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "Users.db3"));
+                }
+                return _database;
+            }
         }
     }
 }

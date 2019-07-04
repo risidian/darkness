@@ -42,14 +42,14 @@ namespace Darkness.Android
             ImageButton CreateUserButton = (ImageButton)FindViewById(Resource.Id.CreateUserButton);
             CreateUserButton.Click += (sender, e) =>
             {
-                Intent loadCreateUser = new Intent(this, typeof(CreateUsername));
-                StartActivity(loadCreateUser);
+                Intent openCreateUser = new Intent(this, typeof(CreateUsername));
+                StartActivity(openCreateUser);
             };
             ImageButton LoadUserButton = (ImageButton)FindViewById(Resource.Id.LoadUserButton);
             LoadUserButton.Click += (sender, e) =>
             {
-                Intent LoadUsername = new Intent(this, typeof(LoadUsername));
-                StartActivity(LoadUsername);
+                Intent openLoadUserName = new Intent(this, typeof(LoadUsername));
+                StartActivity(openLoadUserName);
             };
         }
     }

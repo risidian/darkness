@@ -11,6 +11,7 @@ using Android.Widget;
 using Android.Text;
 using Android.Content.PM;
 using SQLite;
+using Darkness.Android.Models;
 
 namespace Darkness.Android
 {
@@ -23,11 +24,19 @@ namespace Darkness.Android
         , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
     public class StoryMode : Microsoft.Xna.Framework.AndroidGameActivity
     {
-        ImageButton HomeButton;
-        protected override void OnCreate(Bundle SavedInstance)
+        ImageButton _homeButton;
+        protected override void OnCreate(Bundle savedInstance)
         {
-            HomeButton = (ImageButton)FindViewById(Resource.Id.LoadMainButton);
-            HomeButton.Click += LoadMain_Click;
+            try
+            {
+                _homeButton = (ImageButton)FindViewById(Resource.Id.LoadMainButton);
+                _homeButton.Click += LoadMain_Click;
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ex.ToString(), ToastLength.Short).Show();
+                throw;
+            }
         }
         protected void LoadMain_Click(object sender, EventArgs e)
         {

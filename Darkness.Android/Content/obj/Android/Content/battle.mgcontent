@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Mayce/Programming/Games/Darkness Alpha/Darkness.Android/Content/battle.png</SourceFile>
-  <SourceTime>2018-10-24T10:07:33.4447923+08:00</SourceTime>
-  <DestFile>C:/Users/Mayce/Programming/Games/Darkness Alpha/Darkness.Android/Content/bin/Android/Content/battle.xnb</DestFile>
-  <DestTime>2018-10-28T10:17:40.8605047+08:00</DestTime>
+  <SourceFile>E:/Downloads/darkness.alpha-master/darkness.alpha-master/Darkness.Android/Content/battle.png</SourceFile>
+  <SourceTime>2019-07-03T11:47:03.3121075+08:00</SourceTime>
+  <DestFile>E:/Downloads/darkness.alpha-master/darkness.alpha-master/Darkness.Android/Content/bin/Android/Content/battle.xnb</DestFile>
+  <DestTime>2019-07-03T12:07:13.40327+08:00</DestTime>
   <Importer>TextureImporter</Importer>
-  <ImporterTime>2018-09-24T05:55:52+08:00</ImporterTime>
+  <ImporterTime>2019-06-25T21:58:02+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2018-09-24T05:55:52+08:00</ProcessorTime>
+  <ProcessorTime>2019-06-25T21:58:02+08:00</ProcessorTime>
   <Parameters>
     <Key>ColorKeyColor</Key>
     <Value>255,0,255,255</Value>

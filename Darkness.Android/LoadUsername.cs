@@ -10,55 +10,77 @@ using Android.Widget;
 using Android.Text;
 using Android.Content.PM;
 using Android.Provider;
+using Darkness.Android.Data;
 using SQLite;
+using Darkness.Android.Models;
 
 namespace Darkness.Android
 {
-    class LoadUsername : Activity
+    [Activity(Theme = "@style/Theme.Base"
+        , ScreenOrientation = ScreenOrientation.Landscape
+    )]
+    public class LoadUsername : Activity
     {
-        EditText txtUsername;
-        EditText txtPassword;
-        ImageButton btnLoadUsername;
-        TextView DisplayVersion;
-        TextView Version;
+        //TextView _displayVersion;
+        TextView _version;
+        EditText _txtUsername;
+        EditText _txtPassword;
+        ImageButton _btnLoadUsername;
 
-        readonly private String Ver = ("Version:", typeof(CreateUsername).Assembly.GetName().Version).ToString();
-        protected override void OnCreate(Bundle bundle)
+        private readonly string _ver = ("Version:", typeof(CreateUsername).Assembly.GetName().Version).ToString();
+        protected override void OnCreate(Bundle savedBundle)
         {
-            base.OnCreate(bundle);
-            // Set our view from the "CreateUsername" layout resource  
-            SetContentView(Resource.Layout.LoadUsername);
+            base.OnCreate(savedBundle);
+            // Set our view from the "LoadUsername" layout resource  
+            SetContentView(Resource.Layout.LoadUserName);
             // Create your application here  
-            btnLoadUsername = (ImageButton)FindViewById(Resource.Id.LoadUserButton);
-            txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
-            txtPassword = FindViewById<EditText>(Resource.Id.PasswordText);
-            btnLoadUsername.Click += LoadUser_click;
+            _btnLoadUsername = (ImageButton)FindViewById(Resource.Id.LoadUserButton);
+            _txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
+            _txtPassword = FindViewById<EditText>(Resource.Id.PasswordText);
 
-            DisplayVersion = (TextView)FindViewById(Resource.Id.DisplayVersion);
-            Version = (TextView)FindViewById(Resource.Id.DisplayVersion);
-            Version.Text = Ver;
-
-        }
-        private void LoadUser_click(object sender, EventArgs e)
-        {
             try
             {
-                string dpPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "user.db3"); //Call Database  
-                var db = new SQLiteConnection(dpPath);
-                var data = db.Table<UserTable>(); //Call Table  
-                var data1 = data.Where(x => x.Username == txtUsername.Text && x.Password == txtPassword.Text).FirstOrDefault(); //Linq Query  
-                if (data1 != null)
-                {
-                    Toast.MakeText(this, "Login Success", ToastLength.Short).Show();
-                }
-                else
-                {
-                    Toast.MakeText(this, "Username or Password invalid", ToastLength.Short).Show();
-                }
+                _btnLoadUsername.Click += LoadUser;
+            }
+            catch (Exception e)
+            {
+                Toast.MakeText(this, $"This button is broken!: {e}", ToastLength.Long).Show();
+            }
+
+            //_displayVersion = (TextView)FindViewById(Resource.Id.DisplayVersion);
+            _version = (TextView)FindViewById(Resource.Id.DisplayVersion);
+            _version.Text = _ver;
+
+        }
+
+        private void LoadUser(object sender, EventArgs e)
+        {
+            //TODO: rewrite this code to retrieve from UserDatabase
+            try
+            {
+                Database.GetUsersAsync(_txtUsername.Text);
+                Toast.MakeText(this, "Login Success", ToastLength.Short).Show();
+                
+                Intent loadMain = new Intent(this, typeof(Main));
+                StartActivity(loadMain);
             }
             catch (Exception ex)
             {
-                Toast.MakeText(this, ex.ToString(), ToastLength.Short).Show();
+                Toast.MakeText(this, ex.ToString(), ToastLength.Long).Show();
+            }
+        }
+        
+        static UserDatabase _database;
+
+        public static UserDatabase Database
+        {
+            get
+            {
+                if (_database == null)
+                {
+                    _database = new UserDatabase(Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "Users.db3"));
+                }
+                return _database;
             }
         }
     }
