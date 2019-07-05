@@ -149,7 +149,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\storyMode.png">
+    <AndroidResource Include="Resources\Drawable\PlayerVsPlayer.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AndroidResource>
   </ItemGroup>

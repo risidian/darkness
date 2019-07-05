@@ -37,6 +37,15 @@
 		android:scaleType="fitCenter"
 		android:adjustViewBounds="true"/>
 	<ImageButton
+		android:src="@drawable/PlayerVsPlayer"
+		android:layout_width="300px"
+		android:layout_height="wrap_content"
+		android:id="@+id/LoadSmithMode"
+        android:layout_row="3"
+        android:layout_column="3"
+		android:scaleType="fitCenter"
+		android:adjustViewBounds="true"/>
+	<ImageButton
 		android:src="@drawable/settingmode"
 		android:layout_width="200px"
 		android:layout_height="wrap_content"
