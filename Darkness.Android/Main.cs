@@ -20,18 +20,25 @@ namespace Darkness.Android
     {
         TextView _displayUsername;
         private ImageButton _storyModeButton;
+        private ImageButton _smithModeButton;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             //Create your application here
             SetContentView(Resource.Layout.Main);
-
             _displayUsername = (TextView)FindViewById(Resource.Id.DisplayUsername);
+            _displayUsername.Text = LoadUsername.LoadedUsername;
             _storyModeButton = (ImageButton)FindViewById(Resource.Id.StoryModeButton);
+            _smithModeButton = (ImageButton)FindViewById(Resource.Id.LoadSmithMode);
             _storyModeButton.Click += (sender, e) =>
             {
                 Intent loadStoryMode = new Intent(this, typeof(StoryMode));
                 StartActivity(loadStoryMode);
+            };
+            _smithModeButton.Click += (sender, e) =>
+            {
+                Intent loadSmithMode = new Intent(this, typeof(SmithMode));
+                StartActivity(loadSmithMode);
             };
         }
     }

@@ -7,6 +7,7 @@
   <application android:label="Darkness RPG" android:icon="@drawable/icon" android:theme="@style/Theme.Base" android:name="android.app.Application" android:allowBackup="true" android:debuggable="true">
     <activity android:screenOrientation="landscape" android:theme="@style/Theme.Base" android:name="md548397ecb25fb49bdc9242ceeeea3ad20.LoadUsername" />
     <activity android:screenOrientation="landscape" android:theme="@style/Theme.Base" android:name="md548397ecb25fb49bdc9242ceeeea3ad20.Main" />
+    <activity android:alwaysRetainTaskState="true" android:configChanges="keyboard|keyboardHidden|orientation|screenSize" android:label="Darkness.Android" android:launchMode="singleInstance" android:screenOrientation="landscape" android:theme="@style/Theme.Base" android:name="md548397ecb25fb49bdc9242ceeeea3ad20.SmithMode" />
     <activity android:icon="@drawable/icon" android:label="Darkness.Android" android:screenOrientation="landscape" android:theme="@style/Theme.Base" android:name="md548397ecb25fb49bdc9242ceeeea3ad20.Start">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

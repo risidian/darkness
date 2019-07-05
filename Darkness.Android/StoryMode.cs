@@ -19,29 +19,32 @@ namespace Darkness.Android
         , Theme = "@style/Theme.StoryMode"
         , AlwaysRetainTaskState = true
         , LaunchMode = LaunchMode.SingleInstance
-        //, ScreenOrientation = ScreenOrientation.FullUser
         , ScreenOrientation = ScreenOrientation.Landscape
         , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
     public class StoryMode : Microsoft.Xna.Framework.AndroidGameActivity
     {
+        TextView _displayUsername;
         ImageButton _homeButton;
-        protected override void OnCreate(Bundle savedInstance)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
+            base.OnCreate(savedInstanceState);
             try
             {
+                SetContentView(Resource.Layout.StoryMode);
+                _displayUsername = (TextView)FindViewById(Resource.Id.DisplayUsername);
+                _displayUsername.Text = LoadUsername.LoadedUsername;
                 _homeButton = (ImageButton)FindViewById(Resource.Id.LoadMainButton);
-                _homeButton.Click += LoadMain_Click;
+                _homeButton.Click += (sender, e) =>
+                {
+                    Intent loadMainMode = new Intent(this, typeof(Main));
+                    StartActivity(loadMainMode);
+                };
             }
             catch (Exception ex)
             {
                 Toast.MakeText(this, ex.ToString(), ToastLength.Short).Show();
                 throw;
             }
-        }
-        protected void LoadMain_Click(object sender, EventArgs e)
-        {
-            Intent loadMainMode = new Intent(this, typeof(Main));
-            StartActivity(loadMainMode);
         }
     }
 }

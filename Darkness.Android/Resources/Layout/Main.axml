@@ -17,5 +17,16 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/StoryModeButton"
         android:layout_row="3"
-        android:layout_column="0"/>
+        android:layout_column="0"
+		android:scaleType="fitCenter"
+		android:adjustViewBounds="true"/>
+	<ImageButton
+		android:src="@drawable/smithmode"
+		android:layout_width="300px"
+		android:layout_height="wrap_content"
+		android:id="@+id/LoadSmithMode"
+        android:layout_row="3"
+        android:layout_column="3"
+		android:scaleType="fitCenter"
+		android:adjustViewBounds="true"/>
 </GridLayout>

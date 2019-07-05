@@ -25,7 +25,7 @@
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	<AndroidUseManagedDesignTimeResourceGenerator>False</AndroidUseManagedDesignTimeResourceGenerator>
+    <AndroidUseManagedDesignTimeResourceGenerator>False</AndroidUseManagedDesignTimeResourceGenerator>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -94,6 +94,7 @@
     <Compile Include="LoadUsername.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="SharedButtons.cs" />
+    <Compile Include="SmithMode.cs" />
     <Compile Include="Start.cs" />
     <Compile Include="Models\Users.cs" />
     <Compile Include="CreateUsername.cs" />

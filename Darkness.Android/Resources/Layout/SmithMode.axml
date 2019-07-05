@@ -3,5 +3,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <TextView
+        android:text="Username"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/DisplayUsername"
+        android:textSize="100px"  />
+	<ImageButton
+		android:src="@drawable/LoadMainButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/LoadMainButton"
+		android:background="@null"/>
 </LinearLayout>

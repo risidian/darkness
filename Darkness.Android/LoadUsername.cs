@@ -21,7 +21,7 @@ namespace Darkness.Android
     )]
     public class LoadUsername : Activity
     {
-        public string LoadedUsername { get; set; }
+        public static string LoadedUsername { get; set; }
         //TextView _displayVersion;
         TextView _version;
         EditText _txtUsername;

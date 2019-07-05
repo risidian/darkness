@@ -118,11 +118,14 @@ namespace Darkness.Android
 			// aapt resource value: 0x7f070005
 			public const int DisplayVersion = 2131165189;
 			
-			// aapt resource value: 0x7f07000e
-			public const int LoadMainButton = 2131165198;
-			
 			// aapt resource value: 0x7f07000d
-			public const int LoadUserButton = 2131165197;
+			public const int LoadMainButton = 2131165197;
+			
+			// aapt resource value: 0x7f07000c
+			public const int LoadSmithMode = 2131165196;
+			
+			// aapt resource value: 0x7f07000f
+			public const int LoadUserButton = 2131165199;
 			
 			// aapt resource value: 0x7f070009
 			public const int LoadUsernameButton = 2131165193;
@@ -136,8 +139,8 @@ namespace Darkness.Android
 			// aapt resource value: 0x7f07000b
 			public const int StoryModeButton = 2131165195;
 			
-			// aapt resource value: 0x7f07000c
-			public const int Title = 2131165196;
+			// aapt resource value: 0x7f07000e
+			public const int Title = 2131165198;
 			
 			// aapt resource value: 0x7f070003
 			public const int UserEmail = 2131165187;
