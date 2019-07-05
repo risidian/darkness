@@ -10,6 +10,7 @@ using Android.Widget;
 using Android.Text;
 using Android.Content.PM;
 using Android.Provider;
+using Android.Runtime;
 using Darkness.Android.Data;
 using SQLite;
 using Darkness.Android.Models;
@@ -32,16 +33,14 @@ namespace Darkness.Android
         protected override void OnCreate(Bundle savedBundle)
         {
             base.OnCreate(savedBundle);
-            // Set our view from the "LoadUsername" layout resource  
             SetContentView(Resource.Layout.LoadUserName);
-            // Create your application here  
+
             _btnLoadUsername = (ImageButton)FindViewById(Resource.Id.LoadUsernameButton);
             _txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
             _txtPassword = FindViewById<EditText>(Resource.Id.PasswordText);
 
             _btnLoadUsername.Click += LoadUser;
-
-            //_displayVersion = (TextView)FindViewById(Resource.Id.DisplayVersion);
+            
             _version = (TextView)FindViewById(Resource.Id.DisplayVersion);
             _version.Text = _ver;
 
@@ -56,51 +55,38 @@ namespace Darkness.Android
                     System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
                     "Darkness.db3");
                 var db = new SQLiteConnection(dbPath);
-                /*var userResult = from user in db.Table<Users>()
-                    where user.Username.Equals(_txtUsername.Text)
-                    select user;*/
 
                var loadUser = db.Query<Users>("SELECT * FROM Users WHERE Username = ?", _txtUsername.Text);
                foreach (var users in loadUser) {
                    Console.WriteLine ("a " + users.Username);
                    if (users.Username == _txtUsername.Text)
                    {
+                       if (users.Password != _txtPassword.Text)
+                       {
+                           AndroidEnvironment.UnhandledExceptionRaiser += IncorrectPassword;
+                           Toast.MakeText(this, $"Password not matched: {_txtUsername}", ToastLength.Long).Show();
+                           break;
+                       }
                        LoadedUsername = users.Username;
+                       Intent loadMain = new Intent(this, typeof(Main));
+                       Toast.MakeText(this, $"Loading User: {LoadedUsername}", ToastLength.Long).Show();
+                       StartActivity(loadMain);
+                       continue;
                    }
+                   Toast.MakeText(this, $"User not matched: {_txtUsername}", ToastLength.Long).Show();
                }
-
-               Toast.MakeText(this, $"Loading User: {LoadedUsername}", ToastLength.Long).Show();
-
-                /*
-                Database.GetUsersAsync(_txtUsername.Text);
-                Toast.MakeText(this, "Login Success", ToastLength.Short).Show();
-                
-                Intent loadMain = new Intent(this, typeof(Main));
-                StartActivity(loadMain);
-                */
             }
             catch (Exception ex)
             {
                 Toast.MakeText(this, ex.ToString(), ToastLength.Long).Show();
             }
-            Intent loadMain = new Intent(this, typeof(Main));
-            StartActivity(loadMain);
 
         }
-        /*
-        private static UserDatabase _database;
 
-        public static UserDatabase Database
+        private void IncorrectPassword(object sender, RaiseThrowableEventArgs e)
         {
-            get
-            {
-                if (_database == null)
-                {
-                    _database = new UserDatabase(Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "Users.db3"));
-                }
-                return _database;
-            }
+            Toast.MakeText(this,$"Password for {_txtPassword} is incorrect", ToastLength.Long).Show();
+            throw new Exception("Password incorrect");
         }
-        */
     }
 }
