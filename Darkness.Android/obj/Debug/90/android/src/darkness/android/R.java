@@ -29,20 +29,19 @@ public final class R {
     public static final class id {
         public static final int CreateAUsernameText=0x7f070000;
         public static final int CreateUserButton=0x7f070004;
-        public static final int DisplayUsername=0x7f070005;
-        public static final int DisplayVersion=0x7f070006;
-        public static final int LoadMainButton=0x7f07000f;
-        public static final int LoadUserButton=0x7f07000e;
-        public static final int LoadUsernameButton=0x7f07000a;
-        public static final int LoadUsernameText=0x7f070007;
-        public static final int PasswordText=0x7f070009;
-        public static final int ShowUsername=0x7f07000b;
-        public static final int StoryModeButton=0x7f07000c;
-        public static final int Title=0x7f07000d;
+        public static final int DisplayUsername=0x7f07000a;
+        public static final int DisplayVersion=0x7f070005;
+        public static final int LoadMainButton=0x7f07000e;
+        public static final int LoadUserButton=0x7f07000d;
+        public static final int LoadUsernameButton=0x7f070009;
+        public static final int LoadUsernameText=0x7f070006;
+        public static final int PasswordText=0x7f070008;
+        public static final int StoryModeButton=0x7f07000b;
+        public static final int Title=0x7f07000c;
         public static final int UserEmail=0x7f070003;
         public static final int UserPassword=0x7f070002;
         public static final int UserUsername=0x7f070001;
-        public static final int UsernameText=0x7f070008;
+        public static final int UsernameText=0x7f070007;
     }
     public static final class layout {
         public static final int charactermode=0x7f030000;

@@ -4,16 +4,16 @@
   <Platform>Android</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/battle.png</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/characterMode.png</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/font.spritefont</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/logo.png</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/mapMode.png</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/settingMode.jpg</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/smithMode.png</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/splash.png</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/storyMode.png</File>
-    <File>C:/Users/graym/Programming/Darkness.Alpha/Darkness.Android/Content/title.mp3</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/battle.png</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/characterMode.png</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/font.spritefont</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/logo.png</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/mapMode.png</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/settingMode.jpg</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/smithMode.png</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/splash.png</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/storyMode.png</File>
+    <File>C:/Users/graym/source/repos/darkness.alpha-master/Darkness.Android/Content/title.mp3</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

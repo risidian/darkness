@@ -121,41 +121,38 @@ namespace Darkness.Android
 			// aapt resource value: 0x7F040006
 			public const int CreateUserButton = 2130968582;
 			
+			// aapt resource value: 0x7F040012
+			public const int DisplayUsername = 2130968594;
+			
 			// aapt resource value: 0x7F040007
-			public const int DisplayUsername = 2130968583;
-			
-			// aapt resource value: 0x7F040008
-			public const int DisplayVersion = 2130968584;
-			
-			// aapt resource value: 0x7F040017
-			public const int LoadMainButton = 2130968599;
+			public const int DisplayVersion = 2130968583;
 			
 			// aapt resource value: 0x7F040016
-			public const int LoadUserButton = 2130968598;
-			
-			// aapt resource value: 0x7F040012
-			public const int LoadUsernameButton = 2130968594;
-			
-			// aapt resource value: 0x7F040009
-			public const int LoadUsernameText = 2130968585;
-			
-			// aapt resource value: 0x7F040011
-			public const int PasswordText = 2130968593;
-			
-			// aapt resource value: 0x7F040013
-			public const int ShowUsername = 2130968595;
-			
-			// aapt resource value: 0x7F040014
-			public const int StoryModeButton = 2130968596;
+			public const int LoadMainButton = 2130968598;
 			
 			// aapt resource value: 0x7F040015
-			public const int Title = 2130968597;
+			public const int LoadUserButton = 2130968597;
+			
+			// aapt resource value: 0x7F040011
+			public const int LoadUsernameButton = 2130968593;
+			
+			// aapt resource value: 0x7F040008
+			public const int LoadUsernameText = 2130968584;
+			
+			// aapt resource value: 0x7F040010
+			public const int PasswordText = 2130968592;
+			
+			// aapt resource value: 0x7F040013
+			public const int StoryModeButton = 2130968595;
+			
+			// aapt resource value: 0x7F040014
+			public const int Title = 2130968596;
 			
 			// aapt resource value: 0x7F040005
 			public const int UserEmail = 2130968581;
 			
-			// aapt resource value: 0x7F040010
-			public const int UsernameText = 2130968592;
+			// aapt resource value: 0x7F040009
+			public const int UsernameText = 2130968585;
 			
 			// aapt resource value: 0x7F040004
 			public const int UserPassword = 2130968580;
@@ -180,10 +177,10 @@ namespace Darkness.Android
 			public const int CharacterMode = 2130903042;
 			
 			// aapt resource value: 0x7F030003
-			public const int CreateUserName = 2130903043;
+			public const int CreateUsername = 2130903043;
 			
 			// aapt resource value: 0x7F030004
-			public const int LoadUserName = 2130903044;
+			public const int LoadUserNam = 2130903044;
 			
 			// aapt resource value: 0x7F030005
 			public const int Main = 2130903045;

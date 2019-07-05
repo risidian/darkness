@@ -16,6 +16,14 @@ public class OrientationListener
 	}
 
 
+	public OrientationListener (android.content.Context p0)
+	{
+		super (p0);
+		if (getClass () == OrientationListener.class)
+			mono.android.TypeManager.Activate ("Microsoft.Xna.Framework.OrientationListener, MonoGame.Framework", "Android.Content.Context, Mono.Android", this, new java.lang.Object[] { p0 });
+	}
+
+
 	public OrientationListener (android.content.Context p0, int p1)
 	{
 		super (p0, p1);

@@ -21,6 +21,7 @@ namespace Darkness.Android
     )]
     public class LoadUsername : Activity
     {
+        public string LoadedUsername { get; set; }
         //TextView _displayVersion;
         TextView _version;
         EditText _txtUsername;
@@ -32,20 +33,13 @@ namespace Darkness.Android
         {
             base.OnCreate(savedBundle);
             // Set our view from the "LoadUsername" layout resource  
-            SetContentView(layoutResID: Resource.Layout.LoadUserName);
+            SetContentView(Resource.Layout.LoadUserName);
             // Create your application here  
-            _btnLoadUsername = (ImageButton)FindViewById(Resource.Id.LoadUserButton);
+            _btnLoadUsername = (ImageButton)FindViewById(Resource.Id.LoadUsernameButton);
             _txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
             _txtPassword = FindViewById<EditText>(Resource.Id.PasswordText);
 
-            try
-            {
-                _btnLoadUsername.Click += LoadUser;
-            }
-            catch (Exception e)
-            {
-                Toast.MakeText(this, $"This button is broken!: {e}", ToastLength.Long).Show();
-            }
+            _btnLoadUsername.Click += LoadUser;
 
             //_displayVersion = (TextView)FindViewById(Resource.Id.DisplayVersion);
             _version = (TextView)FindViewById(Resource.Id.DisplayVersion);
@@ -58,14 +52,24 @@ namespace Darkness.Android
             //TODO: rewrite this code to retrieve from UserDatabase
             try
             {
-                string dbPath = Path.Combine(
+                var dbPath = Path.Combine(
                     System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
                     "Darkness.db3");
                 var db = new SQLiteConnection(dbPath);
-               var Username = from user in db.Table<Users>()
-                    where user.Username.Equals(_txtUsername)
-                    select user;
-               Toast.MakeText(this, $"Loading User: {Username}", ToastLength.Long).Show();
+                /*var userResult = from user in db.Table<Users>()
+                    where user.Username.Equals(_txtUsername.Text)
+                    select user;*/
+
+               var loadUser = db.Query<Users>("SELECT * FROM Users WHERE Username = ?", _txtUsername.Text);
+               foreach (var users in loadUser) {
+                   Console.WriteLine ("a " + users.Username);
+                   if (users.Username == _txtUsername.Text)
+                   {
+                       LoadedUsername = users.Username;
+                   }
+               }
+
+               Toast.MakeText(this, $"Loading User: {LoadedUsername}", ToastLength.Long).Show();
 
                 /*
                 Database.GetUsersAsync(_txtUsername.Text);
