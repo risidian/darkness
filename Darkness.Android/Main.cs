@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Android.App;
@@ -10,6 +11,7 @@ using Android.OS;
 using Android.Widget;
 using Android.Text;
 using Android.Content.PM;
+using Android.Views;
 using SQLite;
 
 namespace Darkness.Android
@@ -21,6 +23,7 @@ namespace Darkness.Android
         TextView _displayUsername;
         private ImageButton _storyModeButton;
         private ImageButton _smithModeButton;
+        private ImageButton _settingsModeButton;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -30,6 +33,7 @@ namespace Darkness.Android
             _displayUsername.Text = LoadUsername.LoadedUsername;
             _storyModeButton = (ImageButton)FindViewById(Resource.Id.StoryModeButton);
             _smithModeButton = (ImageButton)FindViewById(Resource.Id.LoadSmithMode);
+            _settingsModeButton = (ImageButton) FindViewById(Resource.Id.LoadSettingsOverlay);
             _storyModeButton.Click += (sender, e) =>
             {
                 Intent loadStoryMode = new Intent(this, typeof(StoryMode));
@@ -40,6 +44,14 @@ namespace Darkness.Android
                 Intent loadSmithMode = new Intent(this, typeof(SmithMode));
                 StartActivity(loadSmithMode);
             };
+            _settingsModeButton.Click += (sender, e) =>
+            {
+                Intent loadSmithMode = new Intent(this, typeof(SmithMode));
+                SetContentView(Resource.Layout.SettingsMode);
+            };
+
+
+            _settingsModeButton.Click += (sender, e) => { };
         }
     }
 }

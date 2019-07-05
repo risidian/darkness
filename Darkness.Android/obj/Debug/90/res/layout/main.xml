@@ -1,1 +1,62 @@
-<GridLayout android:layout_width="match_parent" android:layout_height="match_parent" android:rowCount="5" android:columnCount="10" android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"><TextView android:text="Username" android:id="@+id/DisplayUsername" android:textSize="100px" android:layout_row="0" android:layout_column="0" /><ImageButton android:src="@drawable/storymodebutton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/StoryModeButton" android:layout_row="3" android:layout_column="0" android:scaleType="fitCenter" android:adjustViewBounds="true" /><ImageButton android:src="@drawable/smithmode" android:layout_width="300px" android:layout_height="wrap_content" android:id="@+id/LoadSmithMode" android:layout_row="3" android:layout_column="3" android:scaleType="fitCenter" android:adjustViewBounds="true" /></GridLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    android:rowCount="5"
+    android:columnCount="10"
+	android:orientation="vertical">
+	<ImageView
+		android:id="@+id/DisplayPortrait"
+		android:src="@drawable/CharacterPortrait"
+		android:layout_width="150px"
+		android:layout_height="150px"
+        android:layout_row="0"
+        android:layout_column="0"/>
+    <TextView
+        android:text="Username"
+		android:id="@+id/DisplayUsername"
+        android:textSize="100px" 
+        android:layout_row="0"
+        android:layout_column="1" />
+	<ImageButton
+		android:src="@drawable/StoryModeButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/StoryModeButton"
+        android:layout_row="3"
+        android:layout_column="1"
+		android:scaleType="fitCenter"
+		android:adjustViewBounds="true"/>
+	<ImageButton
+		android:src="@drawable/smithmode"
+		android:layout_width="300px"
+		android:layout_height="wrap_content"
+		android:id="@+id/LoadSmithMode"
+        android:layout_row="3"
+        android:layout_column="3"
+		android:scaleType="fitCenter"
+		android:adjustViewBounds="true"/>
+	<ImageButton
+		android:src="@drawable/settingmode"
+		android:layout_width="200px"
+		android:layout_height="wrap_content"
+		android:id="@+id/LoadSettingsOverlay"
+        android:layout_row="3"
+        android:layout_column="5"
+		android:scaleType="fitCenter"
+		android:adjustViewBounds="true"/>
+</GridLayout>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="1500px"
+    android:layout_height="800px"
+	android:paddingLeft="400px"
+	android:paddingTop="150px"
+    android:id="@+id/settingsMode">
+<ImageButton
+	android:src="@drawable/Mute"
+	android:layout_width="200px"
+	android:layout_height="200px"
+	android:scaleType="fitCenter"
+	android:id="@+id/Mute"/>
+</FrameLayout>

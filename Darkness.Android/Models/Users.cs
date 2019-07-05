@@ -5,7 +5,7 @@ namespace Darkness.Android.Models
     public class Users
     {
         [PrimaryKey,AutoIncrement]
-        public int ID { get; set; }  
+        public int Id { get; set; }  
         [Unique]
         public string Username { get; set; }
         public string Password { get; set; }
@@ -15,5 +15,7 @@ namespace Darkness.Android.Models
         public int Age { get; set; }
         public string TimeZone { get; set; }
         public string Guid { get; set; }
+        public int Level { get; set; }
+        public int Experience { get; set; }
     }
 }

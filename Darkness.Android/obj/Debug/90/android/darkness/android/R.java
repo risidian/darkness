@@ -20,29 +20,34 @@ public final class R {
         public static final int loadmainbutton=0x7f020003;
         public static final int loaduserbutton=0x7f020004;
         public static final int mapmode=0x7f020005;
-        public static final int settingmode=0x7f020006;
-        public static final int smithmode=0x7f020007;
-        public static final int splash=0x7f020008;
-        public static final int storymode=0x7f020009;
-        public static final int storymodebutton=0x7f02000a;
+        public static final int mute=0x7f020006;
+        public static final int settingmode=0x7f020007;
+        public static final int smithmode=0x7f020008;
+        public static final int splash=0x7f020009;
+        public static final int storymode=0x7f02000a;
+        public static final int storymodebutton=0x7f02000b;
     }
     public static final class id {
         public static final int CreateAUsernameText=0x7f070000;
         public static final int CreateUserButton=0x7f070004;
+        public static final int DisplayPortrait=0x7f07000b;
         public static final int DisplayUsername=0x7f07000a;
         public static final int DisplayVersion=0x7f070005;
-        public static final int LoadMainButton=0x7f07000d;
-        public static final int LoadSmithMode=0x7f07000c;
-        public static final int LoadUserButton=0x7f07000f;
+        public static final int LoadMainButton=0x7f070011;
+        public static final int LoadSettingsOverlay=0x7f07000e;
+        public static final int LoadSmithMode=0x7f07000d;
+        public static final int LoadUserButton=0x7f070013;
         public static final int LoadUsernameButton=0x7f070009;
         public static final int LoadUsernameText=0x7f070006;
+        public static final int Mute=0x7f070010;
         public static final int PasswordText=0x7f070008;
-        public static final int StoryModeButton=0x7f07000b;
-        public static final int Title=0x7f07000e;
+        public static final int StoryModeButton=0x7f07000c;
+        public static final int Title=0x7f070012;
         public static final int UserEmail=0x7f070003;
         public static final int UserPassword=0x7f070002;
         public static final int UserUsername=0x7f070001;
         public static final int UsernameText=0x7f070007;
+        public static final int root_view=0x7f07000f;
     }
     public static final class layout {
         public static final int charactermode=0x7f030000;

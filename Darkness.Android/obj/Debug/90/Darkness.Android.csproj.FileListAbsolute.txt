@@ -209,5 +209,6 @@ C:\Users\graym\source\repos\darkness.alpha-master\Darkness.Android\obj\Debug\90\
 C:\Users\graym\source\repos\darkness.alpha-master\Darkness.Android\obj\Debug\90\android\assets\System.Web.Services.pdb
 C:\Users\graym\source\repos\darkness.alpha-master\Darkness.Android\obj\Debug\90\android\assets\System.Xml.Linq.pdb
 C:\Users\graym\source\repos\darkness.alpha-master\Darkness.Android\obj\Debug\90\android\assets\System.Xml.pdb
+C:\Users\graym\source\repos\darkness.alpha-master\Darkness.Android\obj\Debug\90\Darkness.Android.csprojAssemblyReference.cache
 C:\Users\graym\source\repos\darkness.alpha-master\Darkness.Android\bin\Debug\Darkness.Android.dll
 C:\Users\graym\source\repos\darkness.alpha-master\Darkness.Android\obj\Debug\90\linksrc\Darkness.Android.dll.mdb
