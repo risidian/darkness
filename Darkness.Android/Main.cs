@@ -18,18 +18,17 @@ namespace Darkness.Android
     , Theme = "@style/Theme.Base")]
     public class Main : Activity
     {
-        private TextView DisplayUsername;
-        private ImageButton StoryModeButton;
+        TextView _displayUsername;
+        private ImageButton _storyModeButton;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             //Create your application here
             SetContentView(Resource.Layout.Main);
 
-            DisplayUsername = (TextView)FindViewById(Resource.Id.ShowUsername);
-            DisplayUsername = (EditText)FindViewById(Resource.Id.UsernameText);
-            StoryModeButton = (ImageButton)FindViewById(Resource.Id.StoryModeButton);
-            StoryModeButton.Click += (sender, e) =>
+            _displayUsername = (TextView)FindViewById(Resource.Id.DisplayUsername);
+            _storyModeButton = (ImageButton)FindViewById(Resource.Id.StoryModeButton);
+            _storyModeButton.Click += (sender, e) =>
             {
                 Intent loadStoryMode = new Intent(this, typeof(StoryMode));
                 StartActivity(loadStoryMode);

@@ -32,7 +32,7 @@ namespace Darkness.Android
         {
             base.OnCreate(savedBundle);
             // Set our view from the "LoadUsername" layout resource  
-            SetContentView(Resource.Layout.LoadUserName);
+            SetContentView(layoutResID: Resource.Layout.LoadUserName);
             // Create your application here  
             _btnLoadUsername = (ImageButton)FindViewById(Resource.Id.LoadUserButton);
             _txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
@@ -58,19 +58,33 @@ namespace Darkness.Android
             //TODO: rewrite this code to retrieve from UserDatabase
             try
             {
+                string dbPath = Path.Combine(
+                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+                    "Darkness.db3");
+                var db = new SQLiteConnection(dbPath);
+               var Username = from user in db.Table<Users>()
+                    where user.Username.Equals(_txtUsername)
+                    select user;
+               Toast.MakeText(this, $"Loading User: {Username}", ToastLength.Long).Show();
+
+                /*
                 Database.GetUsersAsync(_txtUsername.Text);
                 Toast.MakeText(this, "Login Success", ToastLength.Short).Show();
                 
                 Intent loadMain = new Intent(this, typeof(Main));
                 StartActivity(loadMain);
+                */
             }
             catch (Exception ex)
             {
                 Toast.MakeText(this, ex.ToString(), ToastLength.Long).Show();
             }
+            Intent loadMain = new Intent(this, typeof(Main));
+            StartActivity(loadMain);
+
         }
-        
-        static UserDatabase _database;
+        /*
+        private static UserDatabase _database;
 
         public static UserDatabase Database
         {
@@ -83,5 +97,6 @@ namespace Darkness.Android
                 return _database;
             }
         }
+        */
     }
 }

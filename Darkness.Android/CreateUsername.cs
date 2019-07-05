@@ -36,48 +36,77 @@ namespace Darkness.Android
             SetContentView(Resource.Layout.CreateUserName);
             // Create your application here  
             _btnCreateUsername = (ImageButton)FindViewById(Resource.Id.CreateUserButton);
-            _txtUsername = FindViewById<EditText>(Resource.Id.UsernameText);
-            _txtPassword = FindViewById<EditText>(Resource.Id.PasswordText);
+            _txtUsername = FindViewById<EditText>(Resource.Id.UserUsername);
+            _txtPassword = FindViewById<EditText>(Resource.Id.UserPassword);
             _txtEmail = FindViewById<EditText>(Resource.Id.UserEmail);
-            _btnCreateUsername.Click += CreateUser;
             _version = (TextView)FindViewById(Resource.Id.DisplayVersion);
             _version.Text = _ver;
+            _btnCreateUsername.Click += CreateUser;
+
         }
         private void CreateUser(object sender, EventArgs e)
         {
             try
             {
-                Users _database = new Users
+                var user = _txtUsername.Text;
+                var pass = _txtPassword.Text;
+                Toast.MakeText(this, $"Created user:{_txtUsername}", ToastLength.Short).Show();
+                Console.WriteLine("Creating database, if it doesn't already exist");
+                string dbPath = Path.Combine(
+                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+                    "Darkness.db3");
+                var db = new SQLiteConnection(dbPath);
+                db.CreateTable<Users>();
+                
+                // only insert the data if it doesn't already exist
+                Users newUser = new Users
                 {
                     Username = _txtUsername.Text,
                     Password = _txtPassword.Text,
                     Age = 18,
                     EmailAddress = _txtEmail.Text
-
                 };
-                Database.SaveUsersAsync(_database);
-                Toast.MakeText(this, "Username Created Successfully...,", ToastLength.Short).Show();
+                db.Insert(newUser);
+                Toast.MakeText(this, $"Created user:{newUser.Username}", ToastLength.Short).Show();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Toast.MakeText(this, ex.ToString(), ToastLength.Short).Show();
+                Toast.MakeText(this, $"Failed to create:{exception.Message}", ToastLength.Short).Show();
             }
             Intent loadMain = new Intent(this, typeof(Main));
             StartActivity(loadMain);
+
+            /*
+            var userDatabase =  new Users
+            {
+                ID = 0,
+                Username = _txtUsername.Text,
+                Password = _txtPassword.Text,
+                Age = 18,
+                EmailAddress = _txtEmail.Text
+
+            };
+            Toast.MakeText(this, "Username Created Successfully...,", ToastLength.Short).Show();
         }
-
-        static UserDatabase _database;
-
+        catch (Exception ex)
+        {
+            Toast.MakeText(this, ex.ToString(), ToastLength.Short).Show();
+        }
+        */
+        }
+        /*
+        public static UserDatabase _database;
         public static UserDatabase Database
         {
             get
             {
                 if (_database == null)
                 {
-                    _database = new UserDatabase(Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "Users.db3"));
+                    string _database = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "Users.db3");
                 }
                 return _database;
             }
         }
+        */
     }
 }
