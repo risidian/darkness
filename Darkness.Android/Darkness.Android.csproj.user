@@ -4,6 +4,6 @@
     <SelectedDevice>nexus_5x</SelectedDevice>
     <DefaultDevice>nexus_5x</DefaultDevice>
     <AndroidDesignerPreferredDevice>Nexus 5X</AndroidDesignerPreferredDevice>
-    <AndroidDesignerPreferredTheme>Theme.Base</AndroidDesignerPreferredTheme>
+    <AndroidDesignerPreferredTheme>Theme.StoryMode</AndroidDesignerPreferredTheme>
   </PropertyGroup>
 </Project>
