@@ -98,6 +98,7 @@
     <Compile Include="Start.cs" />
     <Compile Include="Models\Users.cs" />
     <Compile Include="CreateUsername.cs" />
+    <Compile Include="StoryBattle.cs" />
     <Compile Include="StoryMode.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,6 +108,10 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\Drawable\Mute.png" />
+    <AndroidResource Include="Resources\Layout\StoryBattle.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\Drawable\StoryBattle.png" />
     <None Include="app.config" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.ttf" />

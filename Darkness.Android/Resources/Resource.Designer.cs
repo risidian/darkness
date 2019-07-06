@@ -94,7 +94,10 @@ namespace Darkness.Android
 			public const int Splash = 2130837514;
 			
 			// aapt resource value: 0x7f02000b
-			public const int StoryModeButton = 2130837515;
+			public const int StoryBattle = 2130837515;
+			
+			// aapt resource value: 0x7f02000c
+			public const int StoryModeButton = 2130837516;
 			
 			static Drawable()
 			{
@@ -108,6 +111,18 @@ namespace Darkness.Android
 		
 		public partial class Id
 		{
+			
+			// aapt resource value: 0x7f070015
+			public const int Ability1 = 2131165205;
+			
+			// aapt resource value: 0x7f070016
+			public const int Ability2 = 2131165206;
+			
+			// aapt resource value: 0x7f070017
+			public const int Ability3 = 2131165207;
+			
+			// aapt resource value: 0x7f070018
+			public const int Ability4 = 2131165208;
 			
 			// aapt resource value: 0x7f070000
 			public const int CreateAUsernameText = 2131165184;
@@ -123,6 +138,9 @@ namespace Darkness.Android
 			
 			// aapt resource value: 0x7f070005
 			public const int DisplayVersion = 2131165189;
+			
+			// aapt resource value: 0x7f070014
+			public const int ExperienceBar = 2131165204;
 			
 			// aapt resource value: 0x7f070011
 			public const int LoadMainButton = 2131165201;
@@ -147,6 +165,9 @@ namespace Darkness.Android
 			
 			// aapt resource value: 0x7f070008
 			public const int PasswordText = 2131165192;
+			
+			// aapt resource value: 0x7f070019
+			public const int StoryBattleButton = 2131165209;
 			
 			// aapt resource value: 0x7f07000c
 			public const int StoryModeButton = 2131165196;
@@ -207,7 +228,10 @@ namespace Darkness.Android
 			public const int Start = 2130903047;
 			
 			// aapt resource value: 0x7f030008
-			public const int StoryMode = 2130903048;
+			public const int StoryBattle = 2130903048;
+			
+			// aapt resource value: 0x7f030009
+			public const int StoryMode = 2130903049;
 			
 			static Layout()
 			{
