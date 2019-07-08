@@ -1,9 +1,0 @@
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\Darkness.Android.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\Java.Interop.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\Mono.Android.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\MonoGame.Framework.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\mscorlib.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\OpenTK-1.0.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\System.Core.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\System.dll
-C:\Users\graym\Programming\Games\Darkness.Android\Darkness.Android\obj\Debug\MonoAndroid71\android\assets\System.Runtime.Serialization.dll
