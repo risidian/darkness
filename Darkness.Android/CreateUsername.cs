@@ -48,8 +48,6 @@ namespace Darkness.Android
         {
             try
             {
-                var user = _txtUsername.Text;
-                var pass = _txtPassword.Text;
                 Toast.MakeText(this, $"Created user:{_txtUsername}", ToastLength.Short).Show();
                 Console.WriteLine("Creating database, if it doesn't already exist");
                 string dbPath = Path.Combine(

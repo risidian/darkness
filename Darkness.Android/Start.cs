@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Android.Content;
 using Android.Text;
+using Darkness.Android.Data;
 using SQLite;
 
 
@@ -37,6 +38,8 @@ namespace Darkness.Android
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Start);
+
+            string dbPath = DatabaseHelper.GetLocalFilePath("people.db3");
 
             // New code will go here
             ImageButton CreateUserButton = (ImageButton)FindViewById(Resource.Id.CreateUserButton);

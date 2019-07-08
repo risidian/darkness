@@ -11549,11 +11549,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\graym\\Programming\\Darkness.Alpha\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
+      "projectUniqueName": "C:\\Users\\graym\\Programming\\Alpha\\darkness.alpha\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
       "projectName": "Darkness.WebAPI",
-      "projectPath": "C:\\Users\\graym\\Programming\\Darkness.Alpha\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
+      "projectPath": "C:\\Users\\graym\\Programming\\Alpha\\darkness.alpha\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
       "packagesPath": "C:\\Users\\graym\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\graym\\Programming\\Darkness.Alpha\\Darkness.WebAPI\\obj\\",
+      "outputPath": "C:\\Users\\graym\\Programming\\Alpha\\darkness.alpha\\Darkness.WebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
