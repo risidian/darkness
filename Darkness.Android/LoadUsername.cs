@@ -22,7 +22,8 @@ namespace Darkness.Android
     )]
     public class LoadUsername : Activity
     {
-        public static string LoadedUsername { get; set; }
+        public string DbPath { get; set; }
+        public static string Username { get; set; }
         //TextView _displayVersion;
         TextView _version;
         EditText _txtUsername;
@@ -51,14 +52,17 @@ namespace Darkness.Android
             //TODO: rewrite this code to retrieve from UserDatabase
             try
             {
-                var dbPath = Path.Combine(
-                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
-                    "Darkness.db3");
-                var db = new SQLiteConnection(dbPath);
+                //var dbPath = Path.Combine(
+                //    System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+                //    "Darkness.db3");
+                //var db = new SQLiteConnection(dbPath);
+                DbPath = DatabaseHelper.GetLocalFilePath("Darkness.db3");
+                var db = new SQLiteConnection(DbPath);
 
-               var loadUser = db.Query<Users>("SELECT * FROM Users WHERE Username = ?", _txtUsername.Text);
-               foreach (var users in loadUser) {
-                   Console.WriteLine ("a " + users.Username);
+                var loadUser = db.Query<Users>("SELECT * FROM Users WHERE Username = ?", _txtUsername.Text);
+               foreach (var users in loadUser)
+               {
+                   Console.WriteLine (users.Username);
                    if (users.Username == _txtUsername.Text)
                    {
                        if (users.Password != _txtPassword.Text)
@@ -67,13 +71,13 @@ namespace Darkness.Android
                            Toast.MakeText(this, $"Password not matched: {_txtUsername}", ToastLength.Long).Show();
                            break;
                        }
-                       LoadedUsername = users.Username;
+                       Username = users.Username;
                        Intent loadMain = new Intent(this, typeof(Main));
-                       Toast.MakeText(this, $"Loading User: {LoadedUsername}", ToastLength.Long).Show();
+                       Toast.MakeText(this, $"Loading User: {Username}", ToastLength.Long).Show();
                        StartActivity(loadMain);
                        continue;
                    }
-                   Toast.MakeText(this, $"User not matched: {_txtUsername}", ToastLength.Long).Show();
+                   Toast.MakeText(this, $"User not found: {_txtUsername}", ToastLength.Long).Show();
                }
             }
             catch (Exception ex)

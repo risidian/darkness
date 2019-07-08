@@ -40,7 +40,7 @@ namespace Darkness.Android
             //Create your application here
             SetContentView(Resource.Layout.StoryBattle);
             _displayUsername = (TextView) FindViewById(Resource.Id.DisplayUsername);
-            _displayUsername.Text = LoadUsername.LoadedUsername;
+            _displayUsername.Text = LoadUsername.Username;
             /*_settingsModeButton = (ImageButton) FindViewById(Resource.Id.LoadSettingsOverlay);
             _settingsModeButton.Click += (sender, e) => { SetContentView(Resource.Layout.SettingsMode); };
 

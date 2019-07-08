@@ -22,6 +22,7 @@ namespace Darkness.Android
 
     public class CreateUsername : Activity
     {
+        public string DbPath { get; set; }
         TextView _version;
         EditText _txtUsername;
         EditText _txtPassword;
@@ -48,12 +49,13 @@ namespace Darkness.Android
         {
             try
             {
-                Toast.MakeText(this, $"Created user:{_txtUsername}", ToastLength.Short).Show();
-                Console.WriteLine("Creating database, if it doesn't already exist");
-                string dbPath = Path.Combine(
-                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
-                    "Darkness.db3");
-                var db = new SQLiteConnection(dbPath);
+                Toast.MakeText(this, "Creating database, if it doesn't already exist", ToastLength.Short).Show();
+                //string dbPath = Path.Combine(
+                //    System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+                //    "Darkness.db3");
+
+                DbPath = DatabaseHelper.GetLocalFilePath("Darkness.db3");
+                var db = new SQLiteConnection(DbPath);
                 db.CreateTable<Users>();
                 
                 // only insert the data if it doesn't already exist

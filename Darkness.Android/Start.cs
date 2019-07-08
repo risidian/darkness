@@ -32,6 +32,7 @@ namespace Darkness.Android
     , Theme = "@style/Theme.Base")]
     public class Start : Activity
     {
+        public string DbPath { get; set; }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -39,7 +40,7 @@ namespace Darkness.Android
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Start);
 
-            string dbPath = DatabaseHelper.GetLocalFilePath("people.db3");
+            DbPath = DatabaseHelper.GetLocalFilePath("Darkness.db3");
 
             // New code will go here
             ImageButton CreateUserButton = (ImageButton)FindViewById(Resource.Id.CreateUserButton);

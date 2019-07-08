@@ -38,7 +38,7 @@ namespace Darkness.Android
 
 
                 _displayUsername = (TextView)FindViewById(Resource.Id.DisplayUsername);
-                _displayUsername.Text = LoadUsername.LoadedUsername;
+                _displayUsername.Text = LoadUsername.Username;
                 _homeButton = (ImageButton)FindViewById(Resource.Id.LoadMainButton);
                 _homeButton.Click += (sender, e) =>
                 {
