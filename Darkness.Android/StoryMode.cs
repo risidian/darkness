@@ -36,12 +36,6 @@ namespace Darkness.Android
                 SetContentView(Resource.Layout.StoryMode);
 
 
-                _storyBattleButton = (ImageButton)FindViewById(Resource.Id.StoryBattleButton);
-                _storyBattleButton.Click += (sender, e) =>
-                {
-                    Intent loadStoryBattleMode = new Intent(this, typeof(StoryMode));
-                    StartActivity(loadStoryBattleMode);
-                };
 
                 _displayUsername = (TextView)FindViewById(Resource.Id.DisplayUsername);
                 _displayUsername.Text = LoadUsername.LoadedUsername;
@@ -50,6 +44,12 @@ namespace Darkness.Android
                 {
                     Intent loadMainMode = new Intent(this, typeof(Main));
                     StartActivity(loadMainMode);
+                };
+                _storyBattleButton = (ImageButton)FindViewById(Resource.Id.StoryBattleButton);
+                _storyBattleButton.Click += (sender, e) =>
+                {
+                    Intent loadStoryBattleMode = new Intent(this, typeof(StoryBattle));
+                    StartActivity(loadStoryBattleMode);
                 };
             }
             catch (Exception ex)

@@ -41,11 +41,11 @@ namespace Darkness.Android
             SetContentView(Resource.Layout.StoryBattle);
             _displayUsername = (TextView) FindViewById(Resource.Id.DisplayUsername);
             _displayUsername.Text = LoadUsername.LoadedUsername;
-            _settingsModeButton = (ImageButton) FindViewById(Resource.Id.LoadSettingsOverlay);
+            /*_settingsModeButton = (ImageButton) FindViewById(Resource.Id.LoadSettingsOverlay);
             _settingsModeButton.Click += (sender, e) => { SetContentView(Resource.Layout.SettingsMode); };
 
 
-            _settingsModeButton.Click += (sender, e) => { };
+            _settingsModeButton.Click += (sender, e) => { };*/
             _experienceBar = FindViewById<ProgressBar>(Resource.Id.ExperienceBar);
 
             UpdatePB updateTask = new UpdatePB(this, _experienceBar, tv);
@@ -55,14 +55,14 @@ namespace Darkness.Android
         public class UpdatePB : AsyncTask<int, int, string>
         {
             Activity mcontext;
-            ProgressBar mpb;
-            TextView mtv;
+            ProgressBar _experienceBar;
+            TextView ExperienceBarText;
 
             public UpdatePB(Activity context, ProgressBar pb, TextView tv)
             {
                 this.mcontext = context;
-                this.mpb = pb;
-                this.mtv = tv;
+                this._experienceBar = pb;
+                this.ExperienceBarText = tv;
             }
 
             protected override string RunInBackground(params int[] @params)
@@ -81,7 +81,7 @@ namespace Darkness.Android
                         Log.Error($"lv==", $"" + "");
                     }
 
-                    mpb.IncrementProgressBy(25);
+                    _experienceBar.IncrementProgressBy(25);
                     PublishProgress(i * 25);
 
                 }
@@ -91,7 +91,7 @@ namespace Darkness.Android
 
             protected override void OnProgressUpdate(params int[] values)
             {
-                mtv.Text = (values[0]).ToString();
+                //ExperienceBarText.Text = (values[0]).ToString();
                 Log.Error("lv==", values[0] + "");
             }
 
