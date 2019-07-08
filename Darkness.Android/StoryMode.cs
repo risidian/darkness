@@ -25,12 +25,24 @@ namespace Darkness.Android
     {
         TextView _displayUsername;
         ImageButton _homeButton;
+        private ImageButton _storyBattleButton;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             try
             {
+
+
                 SetContentView(Resource.Layout.StoryMode);
+
+
+                _storyBattleButton = (ImageButton)FindViewById(Resource.Id.StoryBattleButton);
+                _storyBattleButton.Click += (sender, e) =>
+                {
+                    Intent loadStoryBattleMode = new Intent(this, typeof(StoryMode));
+                    StartActivity(loadStoryBattleMode);
+                };
+
                 _displayUsername = (TextView)FindViewById(Resource.Id.DisplayUsername);
                 _displayUsername.Text = LoadUsername.LoadedUsername;
                 _homeButton = (ImageButton)FindViewById(Resource.Id.LoadMainButton);

@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:text="Username"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<TextView
+		android:text="Username"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/DisplayUsername"
-        android:textSize="100px"  />
+		android:textSize="100px"  />
 	<ImageButton
 		android:src="@drawable/LoadMainButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:id="@+id/LoadMainButton"
+		android:background="@null"/>
+	<ImageButton
+		android:src="@drawable/StoryBattle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/StoryBattleButton"
+		android:layout_marginTop="-230px"
+		android:layout_marginLeft="1450px"
+		android:layout_width="150px"
+		android:layout_height="150px"
+		android:scaleType="fitCenter"
 		android:background="@null"/>
 </LinearLayout>
