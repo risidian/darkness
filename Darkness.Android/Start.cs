@@ -52,8 +52,8 @@ namespace Darkness.Android
             ImageButton LoadUserButton = (ImageButton)FindViewById(Resource.Id.LoadUserButton);
             LoadUserButton.Click += (sender, e) =>
             {
-                Intent openLoadUserName = new Intent(this, typeof(LoadUsername));
-                StartActivity(openLoadUserName);
+                Intent openLoadUser = new Intent(this, typeof(LoadUsername));
+                StartActivity(openLoadUser);
             };
         }
     }

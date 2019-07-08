@@ -46,12 +46,9 @@ namespace Darkness.Android
             };
             _settingsModeButton.Click += (sender, e) =>
             {
-                Intent loadSmithMode = new Intent(this, typeof(SmithMode));
+                Intent loadSettingsMode = new Intent(this, typeof(SmithMode));
                 SetContentView(Resource.Layout.SettingsMode);
             };
-
-
-            _settingsModeButton.Click += (sender, e) => { };
         }
     }
 }

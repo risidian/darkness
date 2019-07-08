@@ -31,11 +31,7 @@ namespace Darkness.Android
             base.OnCreate(savedInstanceState);
             try
             {
-
-
                 SetContentView(Resource.Layout.StoryMode);
-
-
 
                 _displayUsername = (TextView)FindViewById(Resource.Id.DisplayUsername);
                 _displayUsername.Text = LoadUsername.Username;

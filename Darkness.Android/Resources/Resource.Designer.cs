@@ -112,17 +112,29 @@ namespace Darkness.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f070016
-			public const int Ability1 = 2131165206;
+			// aapt resource value: 0x7f07001a
+			public const int Ability1 = 2131165210;
+			
+			// aapt resource value: 0x7f07001b
+			public const int Ability2 = 2131165211;
+			
+			// aapt resource value: 0x7f07001c
+			public const int Ability3 = 2131165212;
+			
+			// aapt resource value: 0x7f07001d
+			public const int Ability4 = 2131165213;
 			
 			// aapt resource value: 0x7f070017
-			public const int Ability2 = 2131165207;
+			public const int Ally1Armour = 2131165207;
 			
 			// aapt resource value: 0x7f070018
-			public const int Ability3 = 2131165208;
+			public const int Ally1Attack = 2131165208;
+			
+			// aapt resource value: 0x7f070016
+			public const int Ally1Health = 2131165206;
 			
 			// aapt resource value: 0x7f070019
-			public const int Ability4 = 2131165209;
+			public const int Ally1Speed = 2131165209;
 			
 			// aapt resource value: 0x7f070000
 			public const int CreateAUsernameText = 2131165184;
@@ -169,8 +181,8 @@ namespace Darkness.Android
 			// aapt resource value: 0x7f070008
 			public const int PasswordText = 2131165192;
 			
-			// aapt resource value: 0x7f07001a
-			public const int StoryBattleButton = 2131165210;
+			// aapt resource value: 0x7f07001e
+			public const int StoryBattleButton = 2131165214;
 			
 			// aapt resource value: 0x7f07000d
 			public const int StoryModeButton = 2131165197;
@@ -207,34 +219,40 @@ namespace Darkness.Android
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int CharacterMode = 2130903040;
+			public const int CharacterLibrary = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int CreateUserName = 2130903041;
+			public const int CharacterMode = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int LoadUserName = 2130903042;
+			public const int CharacterView = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int Main = 2130903043;
+			public const int CreateUserName = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int PlayerVersusPlayer = 2130903044;
+			public const int LoadUserName = 2130903044;
 			
 			// aapt resource value: 0x7f030005
-			public const int SettingsMode = 2130903045;
+			public const int Main = 2130903045;
 			
 			// aapt resource value: 0x7f030006
-			public const int SmithMode = 2130903046;
+			public const int PlayerVersusPlayer = 2130903046;
 			
 			// aapt resource value: 0x7f030007
-			public const int Start = 2130903047;
+			public const int SettingsMode = 2130903047;
 			
 			// aapt resource value: 0x7f030008
-			public const int StoryBattle = 2130903048;
+			public const int SmithMode = 2130903048;
 			
 			// aapt resource value: 0x7f030009
-			public const int StoryMode = 2130903049;
+			public const int Start = 2130903049;
+			
+			// aapt resource value: 0x7f03000a
+			public const int StoryBattle = 2130903050;
+			
+			// aapt resource value: 0x7f03000b
+			public const int StoryMode = 2130903051;
 			
 			static Layout()
 			{

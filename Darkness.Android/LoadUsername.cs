@@ -24,6 +24,8 @@ namespace Darkness.Android
     {
         public string DbPath { get; set; }
         public static string Username { get; set; }
+        public static int Level { get; set; }
+        public static int Experience { get; set; }
         //TextView _displayVersion;
         TextView _version;
         EditText _txtUsername;
@@ -49,7 +51,6 @@ namespace Darkness.Android
 
         private void LoadUser(object sender, EventArgs e)
         {
-            //TODO: rewrite this code to retrieve from UserDatabase
             try
             {
                 //var dbPath = Path.Combine(
@@ -59,9 +60,9 @@ namespace Darkness.Android
                 DbPath = DatabaseHelper.GetLocalFilePath("Darkness.db3");
                 var db = new SQLiteConnection(DbPath);
 
-                var loadUser = db.Query<Users>("SELECT * FROM Users WHERE Username = ?", _txtUsername.Text);
-               foreach (var users in loadUser)
-               {
+                var loadUser = db.Query<Users>("SELECT * FROM Users");
+                foreach (var users in loadUser)
+                {
                    Console.WriteLine (users.Username);
                    if (users.Username == _txtUsername.Text)
                    {
@@ -72,13 +73,15 @@ namespace Darkness.Android
                            break;
                        }
                        Username = users.Username;
+                       Level = users.Level;
+                       Experience = users.Experience;
                        Intent loadMain = new Intent(this, typeof(Main));
                        Toast.MakeText(this, $"Loading User: {Username}", ToastLength.Long).Show();
                        StartActivity(loadMain);
                        continue;
                    }
                    Toast.MakeText(this, $"User not found: {_txtUsername}", ToastLength.Long).Show();
-               }
+                }
             }
             catch (Exception ex)
             {

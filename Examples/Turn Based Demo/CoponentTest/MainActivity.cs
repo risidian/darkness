@@ -15,7 +15,7 @@ using Android.Gms.Games.MultiPlayer.RealTime;
 using Android.Gms.Games.MultiPlayer.TurnBased;
 using System.Collections.Generic;
 
-namespace CoponentTest
+namespace ComponentTest
 {
     [Activity(Label = "CoponentTest", MainLauncher = true)]
     public class MainActivity : Activity
