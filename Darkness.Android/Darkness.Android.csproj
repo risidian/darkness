@@ -90,14 +90,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animations\Animation.cs" />
+    <Compile Include="Animations\AnimationFrame.cs" />
     <Compile Include="CharacterLibrary.cs" />
     <Compile Include="CharacterView.cs" />
+    <Compile Include="Character\CharacterEntity.cs" />
     <Compile Include="Data\DatabaseHelper.cs" />
     <Compile Include="Data\UserDatabase.cs" />
     <Compile Include="LoadUsername.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Models\Characters.cs" />
     <Compile Include="Models\Levels.cs" />
+    <Compile Include="Game\BattleMode.cs" />
     <Compile Include="SharedButtons.cs" />
     <Compile Include="SmithMode.cs" />
     <Compile Include="Start.cs" />
