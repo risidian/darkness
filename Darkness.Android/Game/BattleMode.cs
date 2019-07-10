@@ -13,7 +13,7 @@ using Darkness.Android.Character;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Darkness.Android.Resources.Game
+namespace Darkness.Android.Game
 {
     class BattleMode : Microsoft.Xna.Framework.Game
     {
