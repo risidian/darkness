@@ -112,98 +112,107 @@ namespace Darkness.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f07001a
-			public const int Ability1 = 2131165210;
-			
-			// aapt resource value: 0x7f07001b
-			public const int Ability2 = 2131165211;
-			
-			// aapt resource value: 0x7f07001c
-			public const int Ability3 = 2131165212;
-			
 			// aapt resource value: 0x7f07001d
-			public const int Ability4 = 2131165213;
-			
-			// aapt resource value: 0x7f070017
-			public const int Ally1Armour = 2131165207;
-			
-			// aapt resource value: 0x7f070018
-			public const int Ally1Attack = 2131165208;
-			
-			// aapt resource value: 0x7f070016
-			public const int Ally1Health = 2131165206;
-			
-			// aapt resource value: 0x7f070019
-			public const int Ally1Speed = 2131165209;
-			
-			// aapt resource value: 0x7f070000
-			public const int CreateAUsernameText = 2131165184;
-			
-			// aapt resource value: 0x7f070004
-			public const int CreateUserButton = 2131165188;
-			
-			// aapt resource value: 0x7f07000b
-			public const int DisplayPortrait = 2131165195;
-			
-			// aapt resource value: 0x7f07000a
-			public const int DisplayUsername = 2131165194;
-			
-			// aapt resource value: 0x7f070005
-			public const int DisplayVersion = 2131165189;
-			
-			// aapt resource value: 0x7f07000c
-			public const int ExperienceBar = 2131165196;
-			
-			// aapt resource value: 0x7f070015
-			public const int ExperienceBarText = 2131165205;
-			
-			// aapt resource value: 0x7f070012
-			public const int LoadMainButton = 2131165202;
-			
-			// aapt resource value: 0x7f07000f
-			public const int LoadSettingsOverlay = 2131165199;
-			
-			// aapt resource value: 0x7f07000e
-			public const int LoadSmithMode = 2131165198;
-			
-			// aapt resource value: 0x7f070014
-			public const int LoadUserButton = 2131165204;
-			
-			// aapt resource value: 0x7f070009
-			public const int LoadUsernameButton = 2131165193;
-			
-			// aapt resource value: 0x7f070006
-			public const int LoadUsernameText = 2131165190;
-			
-			// aapt resource value: 0x7f070011
-			public const int Mute = 2131165201;
-			
-			// aapt resource value: 0x7f070008
-			public const int PasswordText = 2131165192;
+			public const int Ability1 = 2131165213;
 			
 			// aapt resource value: 0x7f07001e
-			public const int StoryBattleButton = 2131165214;
+			public const int Ability2 = 2131165214;
 			
-			// aapt resource value: 0x7f07000d
-			public const int StoryModeButton = 2131165197;
+			// aapt resource value: 0x7f07001f
+			public const int Ability3 = 2131165215;
 			
-			// aapt resource value: 0x7f070013
-			public const int Title = 2131165203;
+			// aapt resource value: 0x7f070020
+			public const int Ability4 = 2131165216;
 			
-			// aapt resource value: 0x7f070003
-			public const int UserEmail = 2131165187;
+			// aapt resource value: 0x7f070018
+			public const int Ally1Health = 2131165208;
 			
-			// aapt resource value: 0x7f070002
-			public const int UserPassword = 2131165186;
+			// aapt resource value: 0x7f070019
+			public const int Ally1HealthBar = 2131165209;
+			
+			// aapt resource value: 0x7f070017
+			public const int Ally1Name = 2131165207;
 			
 			// aapt resource value: 0x7f070001
-			public const int UserUsername = 2131165185;
+			public const int CreateAUsernameText = 2131165185;
 			
-			// aapt resource value: 0x7f070007
-			public const int UsernameText = 2131165191;
+			// aapt resource value: 0x7f070005
+			public const int CreateUserButton = 2131165189;
+			
+			// aapt resource value: 0x7f07000c
+			public const int DisplayPortrait = 2131165196;
+			
+			// aapt resource value: 0x7f07000b
+			public const int DisplayUsername = 2131165195;
+			
+			// aapt resource value: 0x7f070006
+			public const int DisplayVersion = 2131165190;
+			
+			// aapt resource value: 0x7f07000d
+			public const int ExperienceBar = 2131165197;
+			
+			// aapt resource value: 0x7f070016
+			public const int ExperienceBarText = 2131165206;
+			
+			// aapt resource value: 0x7f07001b
+			public const int Foe1Health = 2131165211;
+			
+			// aapt resource value: 0x7f07001c
+			public const int Foe1HealthBar = 2131165212;
+			
+			// aapt resource value: 0x7f07001a
+			public const int Foe1Name = 2131165210;
+			
+			// aapt resource value: 0x7f070013
+			public const int LoadMainButton = 2131165203;
 			
 			// aapt resource value: 0x7f070010
-			public const int root_view = 2131165200;
+			public const int LoadSettingsOverlay = 2131165200;
+			
+			// aapt resource value: 0x7f07000f
+			public const int LoadSmithMode = 2131165199;
+			
+			// aapt resource value: 0x7f070015
+			public const int LoadUserButton = 2131165205;
+			
+			// aapt resource value: 0x7f07000a
+			public const int LoadUsernameButton = 2131165194;
+			
+			// aapt resource value: 0x7f070007
+			public const int LoadUsernameText = 2131165191;
+			
+			// aapt resource value: 0x7f070012
+			public const int Mute = 2131165202;
+			
+			// aapt resource value: 0x7f070009
+			public const int PasswordText = 2131165193;
+			
+			// aapt resource value: 0x7f070021
+			public const int StoryBattleButton = 2131165217;
+			
+			// aapt resource value: 0x7f07000e
+			public const int StoryModeButton = 2131165198;
+			
+			// aapt resource value: 0x7f070014
+			public const int Title = 2131165204;
+			
+			// aapt resource value: 0x7f070004
+			public const int UserEmail = 2131165188;
+			
+			// aapt resource value: 0x7f070003
+			public const int UserPassword = 2131165187;
+			
+			// aapt resource value: 0x7f070002
+			public const int UserUsername = 2131165186;
+			
+			// aapt resource value: 0x7f070008
+			public const int UsernameText = 2131165192;
+			
+			// aapt resource value: 0x7f070000
+			public const int recyclerView = 2131165184;
+			
+			// aapt resource value: 0x7f070011
+			public const int root_view = 2131165201;
 			
 			static Id()
 			{

@@ -32,29 +32,45 @@
         android:layout_row="0"
         android:layout_column="1" />
     <TextView
-        android:text="Ally1Health"
-		android:id="@+id/Ally1Health"
+        android:text="Ally1Name"
+		android:id="@+id/Ally1Name"
         android:textSize="100px" 
         android:layout_row="2"
         android:layout_column="1" />
     <TextView
-        android:text="Ally1Armour"
-		android:id="@+id/Ally1Armour"
+        android:text="Ally1Health"
+		android:id="@+id/Ally1Health"
         android:textSize="100px" 
         android:layout_row="3"
         android:layout_column="1" />
-    <TextView
-        android:text="Ally1Attack"
-		android:id="@+id/Ally1Attack"
-        android:textSize="100px" 
+	<ProgressBar
+		android:id="@+id/Ally1HealthBar"
         android:layout_row="4"
-        android:layout_column="1" />
+        android:layout_column="1"
+        android:layout_width="500px"
+        android:startColor="#00FF00"
+        android:endColor="#FF0000"
+        style="?android:attr/progressBarStyleHorizontal"/>
     <TextView
-        android:text="Ally1Speed"
-		android:id="@+id/Ally1Speed"
+        android:text="Foe1Name"
+		android:id="@+id/Foe1Name"
         android:textSize="100px" 
-        android:layout_row="5"
-        android:layout_column="1" />
+        android:layout_row="2"
+        android:layout_column="5" />
+    <TextView
+        android:text="Foe1Health"
+		android:id="@+id/Foe1Health"
+        android:textSize="100px" 
+        android:layout_row="3"
+        android:layout_column="5" />
+	<ProgressBar
+		android:id="@+id/Foe1HealthBar"
+        android:layout_row="4"
+        android:layout_column="5"
+        android:layout_width="500px"
+        android:startColor="#00FF00"
+        android:endColor="#FF0000"
+        style="?android:attr/progressBarStyleHorizontal"/>
 
 	<Button
 		android.text="Ability1"

@@ -20,14 +20,16 @@ namespace Darkness.Android
     [Activity(Label = "StoryBattle")]
     public class StoryBattle : Activity
     {
-        private TextView _displayUsername;
-        ProgressBar _experienceBar;
+        private TextView displayUsername;
+        ProgressBar experienceBar;
+        ProgressBar ally1HealthBar;
+        ProgressBar foe1HealthBar;
         TextView tv;
         private TextView ally1HealthView;
-        private TextView ally1ArmourhView;
-        private TextView ally1AttackView;
-        private TextView ally1SpeedView;
-        private ImageButton _settingsModeButton;
+        private TextView ally1NameView;
+        private TextView foe1HealthView;
+        private TextView foe1NameView;
+        private ImageButton settingsModeButton;
         private Button Ability1;
         private Button Ability2;
         private Button Ability3;
@@ -35,21 +37,25 @@ namespace Darkness.Android
         public string DbPath { get; set; }
         private int UserExperienceBar { get; set; }
         public int DamageDealt { get; set; }
+        private int RatioOfDamageDealt { get; set; }
         private string Ally1Name { get; set; }
-        private int Ally1Health { get; set; }
+        private static int Ally1Health { get; set; }
         private int Ally1Armour { get; set; }
         private int Ally1Attack { get; set; }
         private int Ally1Speed { get; set; }
+        private int Ally1Ratio { get; set; }
         private int Ally2Health { get; set; }
         private int Ally3Health { get; set; }
         private int Ally4Health { get; set; }
         private int Ally5Health { get; set; }
+
 
         private string Foe1Name { get; set; }
         private int Foe1Health { get; set; }
         private int Foe1Armour { get; set; }
         private int Foe1Attack { get; set; }
         private int Foe1Speed { get; set; }
+        private int Foe1Ratio { get; set; }
         private int Foe2Health { get; set; }
         private int Foe3Health { get; set; }
         private int Foe4Health { get; set; }
@@ -64,10 +70,20 @@ namespace Darkness.Android
             base.OnCreate(savedInstanceState);
             //Create your application here
             SetContentView(Resource.Layout.StoryBattle);
-            _displayUsername = (TextView) FindViewById(Resource.Id.DisplayUsername);
-            _displayUsername.Text = LoadUsername.Username;
-            _experienceBar = FindViewById<ProgressBar>(Resource.Id.ExperienceBar);
-            _experienceBar.Progress = LoadUsername.Experience;
+            displayUsername = (TextView) FindViewById(Resource.Id.DisplayUsername);
+            displayUsername.Text = LoadUsername.Username;
+            experienceBar = FindViewById<ProgressBar>(Resource.Id.ExperienceBar);
+            experienceBar.Progress = LoadUsername.Experience;
+            
+
+            ally1HealthBar = FindViewById<ProgressBar>(Resource.Id.Ally1HealthBar);
+            Ally1Ratio = 20;
+            ally1HealthBar.Progress = 100;
+
+            foe1HealthBar = FindViewById<ProgressBar>(Resource.Id.Foe1HealthBar);
+            Foe1Ratio = 13;
+            foe1HealthBar.Progress = 100;
+
 
             Ability1 = (Button)FindViewById(Resource.Id.Ability1);
             Ability2 = (Button)FindViewById(Resource.Id.Ability2);
@@ -75,9 +91,10 @@ namespace Darkness.Android
             Ability4 = (Button)FindViewById(Resource.Id.Ability4);
 
             ally1HealthView = (TextView)FindViewById(Resource.Id.Ally1Health);
-            ally1ArmourhView = (TextView)FindViewById(Resource.Id.Ally1Armour);
-            ally1AttackView = (TextView)FindViewById(Resource.Id.Ally1Attack);
-            ally1SpeedView = (TextView)FindViewById(Resource.Id.Ally1Speed);
+            ally1NameView = (TextView)FindViewById(Resource.Id.Ally1Name);
+
+            foe1NameView = (TextView)FindViewById(Resource.Id.Foe1Name);
+            foe1HealthView = (TextView)FindViewById(Resource.Id.Foe1Health);
             /*_settingsModeButton = (ImageButton) FindViewById(Resource.Id.LoadSettingsOverlay);
             _settingsModeButton.Click += (sender, e) => { SetContentView(Resource.Layout.SettingsMode); };
             _settingsModeButton.Click += (sender, e) => { };*/
@@ -92,10 +109,8 @@ namespace Darkness.Android
                     Ally1Attack = character.Attack;
                     Ally1Speed = character.Speed;
 
+                    ally1NameView.Text = Ally1Name;
                     ally1HealthView.Text = Ally1Health.ToString();
-                    ally1ArmourhView.Text = Ally1Armour.ToString();
-                    ally1AttackView.Text = Ally1Attack.ToString();
-                    ally1SpeedView.Text = Ally1Speed.ToString();
 
                     Console.Write(Ally1Health.ToString());
                     Console.Write(Ally1Armour.ToString());
@@ -110,6 +125,9 @@ namespace Darkness.Android
                     Foe1Attack = character.Attack;
                     Foe1Speed = character.Speed;
 
+                    foe1NameView.Text = Foe1Name;
+                    foe1HealthView.Text = Foe1Health.ToString();
+
                     Console.Write(Foe1Health.ToString());
                     Console.Write(Foe1Armour.ToString());
                     Console.Write(Foe1Attack.ToString());
@@ -122,15 +140,17 @@ namespace Darkness.Android
             {
                 DamageDealt = 0;
                 DamageDealt = Ally1Attack - Foe1Armour;
+                RatioOfDamageDealt = DamageDealt * Foe1Ratio;
                 if (DamageDealt <= 0)
                 {
                     DamageDealt = 0;
                 }
                 Foe1Health = Foe1Health - DamageDealt;
+                foe1HealthBar.Progress = Foe1Health * Foe1Ratio;
                 if (Foe1Health <= 0)
                 {
                     Toast.MakeText(ApplicationContext, $"{Foe1Name} is Dead", ToastLength.Long).Show();
-
+                    LoadUsername.Experience = LoadUsername.Experience++;
                     Intent loadStoryMode = new Intent(this, typeof(StoryMode));
                     StartActivity(loadStoryMode);
 
@@ -141,11 +161,13 @@ namespace Darkness.Android
             {
                 DamageDealt = 0;
                 DamageDealt = Foe1Attack - Ally1Armour;
+                RatioOfDamageDealt = DamageDealt * Ally1Ratio;
                 if (DamageDealt <= 0)
                 {
                     DamageDealt = 0;
                 }
                 Ally1Health = Ally1Health - DamageDealt;
+                ally1HealthBar.Progress = Ally1Health * Ally1Ratio;
                 if (Ally1Health <= 0)
                 {
                     Toast.MakeText(ApplicationContext, $"{Ally1Name} is Dead", ToastLength.Long).Show();
