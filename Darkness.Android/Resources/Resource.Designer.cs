@@ -209,7 +209,7 @@ namespace Darkness.Android
 			public const int UsernameText = 2131165192;
 			
 			// aapt resource value: 0x7f070000
-			public const int recyclerView = 2131165184;
+			public const int characterRecyclerView = 2131165184;
 			
 			// aapt resource value: 0x7f070011
 			public const int root_view = 2131165201;
