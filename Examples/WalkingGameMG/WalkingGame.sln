@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "WalkingGame", "WalkingGame\WalkingGame.shproj", "{DC1CF201-F64E-420F-BEEA-849CFF7F9122}"
 EndProject
@@ -53,6 +53,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5BEFD637-2FDE-4F96-9851-5000EF3AEA31}
+		SolutionGuid = {39F158AC-2D25-4F53-AF9F-BC4BCC1D8705}
 	EndGlobalSection
 EndGlobal

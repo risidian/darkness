@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/graym/Programming/Alpha/darkness.alpha/Darkness.Android/Content/splash.png</SourceFile>
-  <SourceTime>2019-07-05T18:35:39.4519179+08:00</SourceTime>
-  <DestFile>C:/Users/graym/Programming/Alpha/darkness.alpha/Darkness.Android/Content/bin/Android/Content/splash.xnb</DestFile>
-  <DestTime>2019-07-08T22:27:19.4423163+08:00</DestTime>
+  <SourceFile>D:/Alpha/darkness.alpha/Darkness.Android/Content/splash.png</SourceFile>
+  <SourceTime>2019-07-05T17:18:38.5533313+08:00</SourceTime>
+  <DestFile>D:/Alpha/darkness.alpha/Darkness.Android/Content/bin/Android/Content/splash.xnb</DestFile>
+  <DestTime>2019-07-13T09:34:00.3836283+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2018-12-09T00:35:54+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
