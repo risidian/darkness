@@ -15,6 +15,15 @@
 		android:textAlignment="center"
 		android:textSize="100px" />
 	<ImageButton
+		android:src="@drawable/LoadUserButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/Title"
+		android:id="@+id/LoadWalkingGameButton"
+		android:layout_marginLeft="1000px"
+		android:layout_marginTop="50px"
+		android:background="@null"/>
+	<ImageButton
 		android:src="@drawable/CreateUserButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

@@ -12,6 +12,8 @@ using Android.Text;
 using Android.Content.PM;
 using SQLite;
 using Darkness.Android.Models;
+using Android.Views;
+using Darkness.Android.Game;
 
 namespace Darkness.Android
 {
@@ -20,8 +22,12 @@ namespace Darkness.Android
         , AlwaysRetainTaskState = true
         , LaunchMode = LaunchMode.SingleInstance
         , ScreenOrientation = ScreenOrientation.Landscape
-        , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
-    public class StoryMode : Microsoft.Xna.Framework.AndroidGameActivity
+        , ConfigurationChanges = ConfigChanges.Orientation | 
+                                 ConfigChanges.Keyboard | 
+                                 ConfigChanges.KeyboardHidden | 
+                                 ConfigChanges.ScreenSize)]
+
+    public class StoryMode : Activity
     {
         TextView _displayUsername;
         ImageButton _homeButton;
@@ -44,8 +50,23 @@ namespace Darkness.Android
                 _storyBattleButton = (ImageButton)FindViewById(Resource.Id.StoryBattleButton);
                 _storyBattleButton.Click += (sender, e) =>
                 {
-                    Intent loadStoryBattleMode = new Intent(this, typeof(StoryBattle));
-                    StartActivity(loadStoryBattleMode);
+                    try
+                    {
+                        /*
+                        Intent loadStoryBattleMode = new Intent(this, typeof(StoryBattle));
+                        StartActivity(loadStoryBattleMode);
+                        */
+                        var walkingBattleMode = new BattleMode();
+                        SetContentView(Resource.Layout.BattleMode);
+                        //SetContentView((View)walkingBattleMode.Services.GetService(typeof(View)));
+                        walkingBattleMode.Run();
+
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                        throw;
+                    }
                 };
             }
             catch (Exception ex)

@@ -12,6 +12,7 @@ using System.IO;
 using Android.Service.Autofill;
 using Darkness.Android.Data;
 using Darkness.Android.Models;
+using Microsoft.Xna.Framework;
 using SQLite;
 
 namespace Darkness.Android
@@ -20,7 +21,7 @@ namespace Darkness.Android
     , ScreenOrientation = ScreenOrientation.Landscape
        )]
 
-    public class CreateUsername : Activity
+    public class CreateUsername : AndroidGameActivity
     {
         public string DbPath { get; set; }
         TextView _version;

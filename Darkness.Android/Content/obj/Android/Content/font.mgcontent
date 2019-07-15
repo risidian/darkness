@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>D:/Alpha/darkness.alpha/Darkness.Android/Content/font.spritefont</SourceFile>
-  <SourceTime>2019-07-05T17:18:38.5117619+08:00</SourceTime>
-  <DestFile>D:/Alpha/darkness.alpha/Darkness.Android/Content/bin/Android/Content/font.xnb</DestFile>
-  <DestTime>2019-07-13T09:33:59.9115376+08:00</DestTime>
+  <SourceFile>C:/Users/graym/Programming/Alpha/darkness.alpha/Darkness.Android/Content/font.spritefont</SourceFile>
+  <SourceTime>2019-07-05T18:35:39.4077992+08:00</SourceTime>
+  <DestFile>C:/Users/graym/Programming/Alpha/darkness.alpha/Darkness.Android/Content/bin/Android/Content/font.xnb</DestFile>
+  <DestTime>2019-07-15T08:31:51.1913861+08:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2018-12-09T00:35:54+08:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

@@ -12,13 +12,14 @@ using Android.Widget;
 using Android.Text;
 using Android.Content.PM;
 using Android.Views;
+using Microsoft.Xna.Framework;
 using SQLite;
 
 namespace Darkness.Android
 { 
     [Activity(ScreenOrientation = ScreenOrientation.Landscape
     , Theme = "@style/Theme.Base")]
-    public class Main : Activity
+    public class Main : AndroidGameActivity
     {
         TextView _displayUsername;
         private ImageButton _storyModeButton;

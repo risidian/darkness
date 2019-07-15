@@ -1,22 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
-using Darkness.Android.Animations;
 
-namespace Darkness.Android.Character
+namespace Darkness.Android.Animations
 {
-    class CharacterEntity
+    public class CharacterEntity
     {
         static Texture2D characterSheetTexture;
 
@@ -48,7 +37,7 @@ namespace Darkness.Android.Character
         {
             if (characterSheetTexture == null)
             {
-                using (var stream = TitleContainer.OpenStream("Resources/Drawable/Atriartous.png"))
+                using (var stream = TitleContainer.OpenStream("C:/Users/graym/Programming/Alpha/darkness.alpha/Darkness.Android/Resources/Drawable/Atriartous.png"))
                 {
                     characterSheetTexture = Texture2D.FromStream(graphicsDevice, stream);
                 }

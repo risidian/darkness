@@ -19,6 +19,7 @@ using System.Runtime.Serialization;
 using Android.Content;
 using Android.Text;
 using Darkness.Android.Data;
+using Darkness.Android.Game;
 using SQLite;
 
 
@@ -30,7 +31,7 @@ namespace Darkness.Android
     , Icon = "@drawable/icon"
     , ScreenOrientation = ScreenOrientation.Landscape
     , Theme = "@style/Theme.Base")]
-    public class Start : Activity
+    public class Start : AndroidGameActivity
     {
         public string DbPath { get; set; }
         protected override void OnCreate(Bundle savedInstanceState)
@@ -54,6 +55,14 @@ namespace Darkness.Android
             {
                 Intent openLoadUser = new Intent(this, typeof(LoadUsername));
                 StartActivity(openLoadUser);
+            };
+            ImageButton LoadWalkingGame = (ImageButton) FindViewById(Resource.Id.LoadWalkingGameButton);
+            LoadWalkingGame.Click += (sender, e) =>
+            {
+                var walkingBattleMode = new BattleMode();
+                //SetContentView(Resource.Layout.BattleMode);
+                SetContentView((View)walkingBattleMode.Services.GetService(typeof(View)));
+                walkingBattleMode.Run();
             };
         }
     }

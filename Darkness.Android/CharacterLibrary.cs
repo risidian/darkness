@@ -24,7 +24,7 @@ using SQLite;
 namespace Darkness.Android
 {
     [Activity(Label = "CharacterLibrary")]
-    public class CharacterLibrary : Activity
+    public class CharacterLibrary : AndroidGameActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {

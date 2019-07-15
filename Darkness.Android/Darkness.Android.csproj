@@ -132,6 +132,9 @@
     <AndroidResource Include="Resources\Drawable\GarthOrig.png" />
     <AndroidResource Include="Resources\Drawable\Risidian.png" />
     <AndroidResource Include="Resources\Drawable\Raknith.png" />
+    <AndroidResource Include="Resources\Layout\BattleMode.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
     <None Include="app.config" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.ttf" />

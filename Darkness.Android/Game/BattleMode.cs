@@ -9,7 +9,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Darkness.Android.Character;
 using Darkness.Android.Animations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,9 +24,18 @@ namespace Darkness.Android.Game
 
         public BattleMode()
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            graphics.IsFullScreen = true;
+            try
+            {
+                graphics = new GraphicsDeviceManager(this);
+                Content.RootDirectory = "Content";
+                graphics.IsFullScreen = true;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -38,10 +46,15 @@ namespace Darkness.Android.Game
         /// </summary>
         protected override void Initialize()
         {
-            character = new CharacterEntity(this.GraphicsDevice);
+            try
+            {
+                character = new CharacterEntity(this.GraphicsDevice);
+            }
+            catch (Exception e)
+            {
+                base.Initialize();
 
-            base.Initialize();
-
+            }
         }
 
         /// <summary>
@@ -50,9 +63,18 @@ namespace Darkness.Android.Game
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            try
+            {
+                // Create a new SpriteBatch, which can be used to draw textures.
+                spriteBatch = new SpriteBatch(GraphicsDevice);
 
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -62,8 +84,17 @@ namespace Darkness.Android.Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            character.Update(gameTime);
-            base.Update(gameTime);
+            try
+            {
+                character.Update(gameTime);
+                base.Update(gameTime);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -72,17 +103,26 @@ namespace Darkness.Android.Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            try
+            {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // We'll start all of our drawing here:
-            spriteBatch.Begin();
+                // We'll start all of our drawing here:
+                spriteBatch.Begin();
 
-            // Now we can do any entity rendering:
-            character.Draw(spriteBatch);
-            // End renders all sprites to the screen:
-            spriteBatch.End();
+                // Now we can do any entity rendering:
+                character.Draw(spriteBatch);
+                // End renders all sprites to the screen:
+                spriteBatch.End();
 
-            base.Draw(gameTime);
+                base.Draw(gameTime);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

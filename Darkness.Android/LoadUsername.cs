@@ -14,13 +14,14 @@ using Android.Runtime;
 using Darkness.Android.Data;
 using SQLite;
 using Darkness.Android.Models;
+using Microsoft.Xna.Framework;
 
 namespace Darkness.Android
 {
     [Activity(Theme = "@style/Theme.Base"
         , ScreenOrientation = ScreenOrientation.Landscape
     )]
-    public class LoadUsername : Activity
+    public class LoadUsername : AndroidGameActivity
     {
         public string DbPath { get; set; }
         public static string Username { get; set; }

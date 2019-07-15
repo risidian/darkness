@@ -24,7 +24,7 @@ using SQLite;
 namespace Darkness.Android
 {
     [Activity(Label = "CharacterView")]
-    public class CharacterView : Activity
+    public class CharacterView : AndroidGameActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {

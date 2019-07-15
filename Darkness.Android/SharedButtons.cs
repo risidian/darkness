@@ -9,10 +9,11 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Microsoft.Xna.Framework;
 
 namespace Darkness.Android
 {
-    public class SharedButtons : Activity
+    public class SharedButtons : AndroidGameActivity
     {
 
     }

@@ -78,6 +78,9 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\Content\BalgathorWalk.png" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Content\Atriartous.png" />
+  </ItemGroup>
   <Import Project="..\WalkingGame\WalkingGame.projitems" Label="Shared" Condition="Exists('..\WalkingGame\WalkingGame.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
