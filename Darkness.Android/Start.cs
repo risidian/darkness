@@ -19,7 +19,6 @@ using System.Runtime.Serialization;
 using Android.Content;
 using Android.Text;
 using Darkness.Android.Data;
-using Darkness.Android.Game;
 using SQLite;
 
 
@@ -55,14 +54,6 @@ namespace Darkness.Android
             {
                 Intent openLoadUser = new Intent(this, typeof(LoadUsername));
                 StartActivity(openLoadUser);
-            };
-            ImageButton LoadWalkingGame = (ImageButton) FindViewById(Resource.Id.LoadWalkingGameButton);
-            LoadWalkingGame.Click += (sender, e) =>
-            {
-                var walkingBattleMode = new BattleMode();
-                //SetContentView(Resource.Layout.BattleMode);
-                SetContentView((View)walkingBattleMode.Services.GetService(typeof(View)));
-                walkingBattleMode.Run();
             };
         }
     }

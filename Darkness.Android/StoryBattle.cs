@@ -13,7 +13,6 @@ using Android.Views;
 using Android.Widget;
 using Android.Util;
 using Darkness.Android.Data;
-using Darkness.Android.Game;
 using Darkness.Android.Models;
 using Microsoft.Xna.Framework;
 using SQLite;

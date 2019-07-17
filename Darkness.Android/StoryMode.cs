@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Android;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -13,7 +14,6 @@ using Android.Content.PM;
 using SQLite;
 using Darkness.Android.Models;
 using Android.Views;
-using Darkness.Android.Game;
 
 namespace Darkness.Android
 {
@@ -52,14 +52,9 @@ namespace Darkness.Android
                 {
                     try
                     {
-                        /*
                         Intent loadStoryBattleMode = new Intent(this, typeof(StoryBattle));
                         StartActivity(loadStoryBattleMode);
-                        */
-                        var walkingBattleMode = new BattleMode();
-                        SetContentView(Resource.Layout.BattleMode);
                         //SetContentView((View)walkingBattleMode.Services.GetService(typeof(View)));
-                        walkingBattleMode.Run();
 
                     }
                     catch (Exception exception)

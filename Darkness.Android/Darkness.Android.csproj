@@ -90,18 +90,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animations\Animation.cs" />
-    <Compile Include="Animations\AnimationFrame.cs" />
     <Compile Include="CharacterLibrary.cs" />
     <Compile Include="CharacterView.cs" />
-    <Compile Include="Animations\CharacterEntity.cs" />
     <Compile Include="Data\DatabaseHelper.cs" />
     <Compile Include="Data\UserDatabase.cs" />
     <Compile Include="LoadUsername.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Models\Characters.cs" />
     <Compile Include="Models\Levels.cs" />
-    <Compile Include="Game\BattleMode.cs" />
     <Compile Include="SharedButtons.cs" />
     <Compile Include="SmithMode.cs" />
     <Compile Include="Start.cs" />
@@ -131,7 +127,6 @@
     <AndroidResource Include="Resources\Drawable\Balgathor.png" />
     <AndroidResource Include="Resources\Drawable\GarthOrig.png" />
     <AndroidResource Include="Resources\Drawable\Risidian.png" />
-    <AndroidResource Include="Resources\Drawable\Raknith.png" />
     <AndroidResource Include="Resources\Layout\BattleMode.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
@@ -263,9 +258,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Character\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
