@@ -27,5 +27,7 @@ namespace Darkness.Core.Models
         public int Level { get; set; }
         
         public int Experience { get; set; }
+        
+        public System.DateTime LastLogin { get; set; }
     }
 }

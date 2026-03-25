@@ -1,0 +1,57 @@
+⚔️ Core Character Stats (the essentials)
+
+These define how a character performs in combat:
+
+Strength (STR)
+Affects melee damage, carrying capacity, breaking objects.
+Dexterity (DEX)
+Determines speed, evasion, accuracy, turn order.
+Constitution (CON)
+Governs health, stamina, resistance to poison/disease.
+Intelligence (INT)
+Boosts magic damage, learning ability, spell efficiency.
+Wisdom (WIS)
+Affects mana pool, healing power, perception.
+Charisma (CHA) (optional but useful)
+Influences dialogue, trading, leadership buffs.
+❤️ Combat-Specific Stats
+
+These are derived or secondary stats used during battle:
+
+HP (Health Points) – how much damage you can take
+MP (Mana Points) – resource for spells
+Stamina / Energy – used for physical abilities
+Attack Power – damage output (often based on STR or DEX)
+Defense – reduces incoming physical damage
+Magic Attack / Magic Defense – for spell interactions
+Speed / Initiative – determines turn order
+Accuracy – chance to hit
+Evasion – chance to dodge
+Critical Chance / Damage – chance for bonus damage
+🛡️ Advanced / Flavor Stats (optional but adds depth)
+
+Use these if you want more complexity or unique builds:
+
+Luck
+Affects crits, loot drops, random events
+Faith
+Enhances holy magic or resistance to dark magic
+Endurance
+Impacts stamina regen, armor effectiveness
+Perception
+Detect traps, hidden enemies, ambush avoidance
+⚙️ Status & Resistance System
+
+Important for a medieval RPG feel:
+
+Resistances
+Fire, Ice, Lightning
+Poison, Bleed, Disease
+Holy / Dark
+Status Effects
+Poisoned
+Bleeding
+Stunned
+Burning
+Frozen
+Fear / Panic

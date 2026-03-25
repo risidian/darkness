@@ -28,6 +28,16 @@ public static class MauiProgram
 		// Register Core Services
 		builder.Services.AddSingleton<LocalDatabaseService>();
 		builder.Services.AddSingleton<IUserService, UserService>();
+		builder.Services.AddSingleton<ICharacterService, CharacterService>();
+		builder.Services.AddSingleton<IRewardService, RewardService>();
+
+		// Register Pages
+		builder.Services.AddTransient<Pages.CreateUserPage>();
+		builder.Services.AddTransient<Pages.LoadUserPage>();
+		builder.Services.AddTransient<Pages.CharacterGenPage>();
+		builder.Services.AddTransient<Pages.GamePage>();
+		builder.Services.AddTransient<Pages.BattlePage>();
+		builder.Services.AddTransient<MainPage>();
 
 		return builder.Build();
 	}

@@ -29,6 +29,10 @@ namespace Darkness.Core.Services
             await _database.CreateTableAsync<User>();
             await _database.CreateTableAsync<Character>();
             await _database.CreateTableAsync<Level>();
+            await _database.CreateTableAsync<Item>();
+            await _database.CreateTableAsync<Skill>();
+            await _database.CreateTableAsync<Enemy>();
+            await _database.CreateTableAsync<StatusEffect>();
         }
 
         public async Task<bool> CreateUserAsync(User user)

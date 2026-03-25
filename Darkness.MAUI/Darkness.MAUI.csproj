@@ -28,7 +28,9 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
+	<ItemGroup>
 		<!-- App Icon -->
 		<!-- <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" /> -->
 
@@ -44,10 +46,11 @@
 
 		<!-- Raw Assets (also used for webview) -->
 		<MauiAsset Include="Resources\Raw\*" />
-	</PropertyGroup>
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Darkness.Core\Darkness.Core.csproj" />
+		<ProjectReference Include="..\Darkness.Game\Darkness.Game.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

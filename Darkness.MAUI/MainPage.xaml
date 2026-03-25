@@ -30,6 +30,19 @@
                 SemanticProperties.Hint="Counts the number of times you click"
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Fill" />
+
+            <VerticalStackLayout x:Name="DailyRewardSection" IsVisible="False" Spacing="10" Padding="10">
+                <Label Text="Daily Reward Claimed!" FontAttributes="Bold" HorizontalOptions="Center" />
+                <Label x:Name="RewardLabel" TextColor="#FFD700" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <Button
+                Text="Logout"
+                Clicked="OnLogoutClicked"
+                BackgroundColor="#BB86FC"
+                TextColor="Black"
+                FontAttributes="Bold"
+                HorizontalOptions="Fill" />
         </VerticalStackLayout>
     </ScrollView>
 

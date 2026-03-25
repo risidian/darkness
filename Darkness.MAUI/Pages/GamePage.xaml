@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Darkness.MAUI.Pages.GamePage"
+             Title="Darkness World"
+             BackgroundColor="Black">
+
+    <Grid>
+        <!-- In a real implementation, a MonoGame View control would go here -->
+        <Label Text="MonoGame Viewport" 
+               TextColor="Gray" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Center" />
+        
+        <VerticalStackLayout VerticalOptions="End" Padding="20">
+            <Button Text="Open Combat (Test)" 
+                    BackgroundColor="#444" 
+                    TextColor="White"
+                    Clicked="OnCombatTestClicked" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Darkness.MAUI.Pages.LoadUserPage"
+             Title="Login"
+             BackgroundColor="#121212">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
+            <Label Text="DARKNESS"
+                   FontSize="48"
+                   HorizontalOptions="Center"
+                   TextColor="#E0E0E0"
+                   FontAttributes="Bold" />
+
+            <Label Text="Sign In"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   TextColor="#BB86FC" />
+
+            <VerticalStackLayout Spacing="15">
+                <Entry x:Name="UsernameEntry"
+                       Placeholder="Username"
+                       PlaceholderColor="#888888"
+                       TextColor="White"
+                       BackgroundColor="#1E1E1E" />
+
+                <Entry x:Name="PasswordEntry"
+                       Placeholder="Password"
+                       IsPassword="True"
+                       PlaceholderColor="#888888"
+                       TextColor="White"
+                       BackgroundColor="#1E1E1E" />
+            </VerticalStackLayout>
+
+            <Button Text="Login"
+                    Clicked="OnLoginClicked"
+                    BackgroundColor="#BB86FC"
+                    TextColor="Black"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    HeightRequest="50" />
+
+            <Button Text="Create New Account"
+                    Clicked="OnCreateClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="#BB86FC"
+                    BorderColor="#BB86FC"
+                    BorderWidth="1"
+                    CornerRadius="10"
+                    HeightRequest="50" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
