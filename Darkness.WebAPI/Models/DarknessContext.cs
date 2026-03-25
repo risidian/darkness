@@ -6,10 +6,6 @@ namespace Darkness.WebAPI.Models
 {
     public partial class DarknessContext : DbContext
     {
-        public DarknessContext()
-        {
-        }
-
         public DarknessContext(DbContextOptions<DarknessContext> options)
             : base(options)
         {
@@ -20,11 +16,6 @@ namespace Darkness.WebAPI.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=COMPUTER\\DARKNESS;Database=Darkness;Trusted_Connection=True;");
-            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,7 +25,7 @@ namespace Darkness.WebAPI.Models
                 entity.HasKey(e => e.CharacterId);
 
                 entity.HasIndex(e => e.CharacterName)
-                    .HasName("CharName")
+                    .HasDatabaseName("CharName")
                     .IsUnique();
 
                 entity.Property(e => e.CharacterName)
