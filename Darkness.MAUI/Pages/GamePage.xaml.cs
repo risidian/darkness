@@ -1,17 +1,13 @@
-using Microsoft.Maui.Controls;
+using Darkness.Core.ViewModels;
 
 namespace Darkness.MAUI.Pages
 {
     public partial class GamePage : ContentPage
     {
-        public GamePage()
+        public GamePage(GamePageViewModel viewModel)
         {
             InitializeComponent();
-        }
-
-        private async void OnCombatTestClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("///BattlePage");
+            BindingContext = viewModel;
         }
     }
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="using:Darkness.Core.ViewModels"
              x:Class="Darkness.MAUI.Pages.CreateUserPage"
+             x:DataType="vm:CreateUserViewModel"
              Title="Create Account"
              BackgroundColor="#121212">
 
@@ -19,21 +21,21 @@
                    TextColor="#BB86FC" />
 
             <VerticalStackLayout Spacing="15">
-                <Entry x:Name="UsernameEntry"
-                       Placeholder="Username"
+                <Entry Placeholder="Username"
+                       Text="{Binding Username}"
                        PlaceholderColor="#888888"
                        TextColor="White"
                        BackgroundColor="#1E1E1E" />
 
-                <Entry x:Name="PasswordEntry"
-                       Placeholder="Password"
+                <Entry Placeholder="Password"
+                       Text="{Binding Password}"
                        IsPassword="True"
                        PlaceholderColor="#888888"
                        TextColor="White"
                        BackgroundColor="#1E1E1E" />
 
-                <Entry x:Name="EmailEntry"
-                       Placeholder="Email Address"
+                <Entry Placeholder="Email Address"
+                       Text="{Binding Email}"
                        Keyboard="Email"
                        PlaceholderColor="#888888"
                        TextColor="White"
@@ -41,7 +43,7 @@
             </VerticalStackLayout>
 
             <Button Text="Create Account"
-                    Clicked="OnCreateClicked"
+                    Command="{Binding CreateAccountCommand}"
                     BackgroundColor="#BB86FC"
                     TextColor="Black"
                     FontAttributes="Bold"
@@ -49,7 +51,7 @@
                     HeightRequest="50" />
 
             <Button Text="Back to Login"
-                    Clicked="OnBackClicked"
+                    Command="{Binding GoBackCommand}"
                     BackgroundColor="Transparent"
                     TextColor="#BB86FC"
                     BorderColor="#BB86FC"

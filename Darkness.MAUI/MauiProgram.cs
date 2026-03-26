@@ -1,5 +1,6 @@
 using Darkness.Core.Data;
 using Darkness.Core.Interfaces;
+using Darkness.Core.Logic;
 using Darkness.Core.Services;
 using Darkness.Core.ViewModels;
 using Darkness.MAUI.Services;
@@ -35,11 +36,15 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ISessionService, SessionService>();
 		builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
 		builder.Services.AddSingleton<IDialogService, MauiDialogService>();
+		builder.Services.AddTransient<StoryController>();
 
 		// Register ViewModels
 		builder.Services.AddTransient<LoadUserViewModel>();
 		builder.Services.AddTransient<CharacterGenViewModel>();
 		builder.Services.AddTransient<MainViewModel>();
+		builder.Services.AddTransient<CreateUserViewModel>();
+		builder.Services.AddTransient<BattlePageViewModel>();
+		builder.Services.AddTransient<GamePageViewModel>();
 
 		// Register Pages
 		builder.Services.AddTransient<Pages.CreateUserPage>();

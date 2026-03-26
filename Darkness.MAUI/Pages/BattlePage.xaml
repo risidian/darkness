@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="using:Darkness.Core.ViewModels"
              x:Class="Darkness.MAUI.Pages.BattlePage"
+             x:DataType="vm:BattlePageViewModel"
              Title="The Forest Path - Ambush"
              BackgroundColor="Black">
 
     <Grid RowDefinitions="*, Auto">
         <!-- MonoGame Battle Viewport Placeholder -->
-        <Border Grid.Row="0" 
-                Margin="20" 
-                StrokeThickness="2" 
-                Stroke="#333" 
+        <Border Grid.Row="0"
+                Margin="20"
+                StrokeThickness="2"
+                Stroke="#333"
                 BackgroundColor="#111">
             <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                <Label Text="[ BATTLE VIEWPORT ]" 
-                       TextColor="DarkRed" 
+                <Label Text="[ BATTLE VIEWPORT ]"
+                       TextColor="DarkRed"
                        FontSize="24"
                        HorizontalOptions="Center" />
-                <Label Text="Undead Dogs approach from the shadows..." 
-                       TextColor="Gray" 
+                <Label Text="Undead Dogs approach from the shadows..."
+                       TextColor="Gray"
                        HorizontalOptions="Center" />
             </VerticalStackLayout>
         </Border>
 
-        <!-- UI Overlay for controls or status (if not handled entirely in MonoGame) -->
+        <!-- UI Overlay for controls or status -->
         <VerticalStackLayout Grid.Row="1" Padding="20" Spacing="10">
-            <Label x:Name="StatusLabel" 
-                   Text="Battle in progress..." 
-                   TextColor="White" 
+            <Label Text="{Binding StatusText}"
+                   TextColor="{Binding StatusColor}"
                    HorizontalOptions="Center" />
-            
+
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
-                <Button Text="Flee" 
+                <Button Text="Flee"
                         WidthRequest="120"
                         BackgroundColor="#222"
                         TextColor="White"
-                        Clicked="OnFleeClicked" />
-                <Button x:Name="ContinueButton"
-                        Text="Continue" 
+                        Command="{Binding FleeCommand}" />
+                <Button Text="Continue"
                         WidthRequest="120"
                         BackgroundColor="#442222"
                         TextColor="White"
-                        IsVisible="False"
-                        Clicked="OnContinueClicked" />
+                        IsVisible="{Binding IsContinueVisible}"
+                        Command="{Binding ContinueCommand}" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </Grid>
