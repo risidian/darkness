@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="Darkness.Android" android:versionName="1.0" android:installLocation="auto" android:versionCode="1">
-	<uses-sdk android:minSdkVersion="25" android:targetSdkVersion="28" />
-	<application android:label="Darkness RPG" android:icon="@drawable/Icon" android:theme="@style/Theme.Base"></application>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<activity android:name=".start" android:screenOrientation="landscape" />
-</manifest>
