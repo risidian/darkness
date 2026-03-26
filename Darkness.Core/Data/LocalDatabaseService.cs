@@ -1,4 +1,5 @@
 using Darkness.Core.Interfaces;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -24,9 +25,21 @@ namespace Darkness.Core.Data
 
             if (!File.Exists(targetPath))
             {
-                using Stream inputStream = await _fileSystem.OpenAppPackageFileAsync(filename);
-                using FileStream outputStream = File.Create(targetPath);
-                await inputStream.CopyToAsync(outputStream);
+                try
+                {
+                    using Stream inputStream = await _fileSystem.OpenAppPackageFileAsync(filename);
+                    using FileStream outputStream = File.Create(targetPath);
+                    await inputStream.CopyToAsync(outputStream);
+                }
+                catch (FileNotFoundException)
+                {
+                    // If the seed database is not in the app package, we just skip copying.
+                    // The database will be created by SQLite when it's first accessed.
+                }
+                catch (Exception)
+                {
+                    // Other potential exceptions (e.g. platform specific ones)
+                }
             }
         }
     }

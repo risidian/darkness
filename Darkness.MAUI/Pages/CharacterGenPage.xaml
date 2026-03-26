@@ -13,57 +13,38 @@
                    HorizontalOptions="Center"
                    FontAttributes="Bold" />
 
-            <Entry x:Name="CharacterNameEntry"
+            <Entry Text="{Binding CharacterName}"
                    Placeholder="Character Name"
                    PlaceholderColor="Gray"
                    TextColor="White"
                    BackgroundColor="#1E1E1E" />
 
             <Label Text="Class" TextColor="White" />
-            <Picker x:Name="ClassPicker"
+            <Picker SelectedItem="{Binding SelectedClass}"
+                    ItemsSource="{Binding Classes}"
                     Title="Select Class"
                     TextColor="White"
                     BackgroundColor="#1E1E1E">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Warrior</x:String>
-                        <x:String>Mage</x:String>
-                        <x:String>Rogue</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
             </Picker>
 
             <Label Text="Hair Color" TextColor="White" />
-            <Picker x:Name="HairColorPicker"
+            <Picker SelectedItem="{Binding SelectedHairColor}"
+                    ItemsSource="{Binding HairColors}"
                     Title="Select Hair Color"
                     TextColor="White"
                     BackgroundColor="#1E1E1E">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Black</x:String>
-                        <x:String>Blonde</x:String>
-                        <x:String>Brown</x:String>
-                        <x:String>Red</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
             </Picker>
 
             <Label Text="Skin Color" TextColor="White" />
-            <Picker x:Name="SkinColorPicker"
+            <Picker SelectedItem="{Binding SelectedSkinColor}"
+                    ItemsSource="{Binding SkinColors}"
                     Title="Select Skin Color"
                     TextColor="White"
                     BackgroundColor="#1E1E1E">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Light</x:String>
-                        <x:String>Medium</x:String>
-                        <x:String>Dark</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
             </Picker>
 
             <Button Text="Create Character"
-                    Clicked="OnCreateCharacterClicked"
+                    Command="{Binding CreateCharacterCommand}"
                     BackgroundColor="#B71C1C"
                     TextColor="White"
                     CornerRadius="10"

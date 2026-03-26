@@ -1,49 +1,43 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Darkness.MAUI.MainPage">
+             x:Class="Darkness.MAUI.MainPage"
+             Title="Main Menu">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="Dotnet bot in a space suit!" />
+    <Grid RowDefinitions="Auto, *, Auto, Auto" ColumnDefinitions="*, *" Padding="10" Gap="10">
 
-            <Label
-                Text="Welcome to Darkness"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+        <Label Grid.Row="0" Grid.ColumnSpan="2"
+               Text="Select a Mode"
+               Style="{StaticResource Headline}"
+               HorizontalOptions="Center" />
 
-            <Label
-                Text="A Cross-Platform RPG Adventure"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to Darkness" />
+        <ScrollView Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid ColumnDefinitions="*, *" Padding="10" Gap="10">
+                <Button Grid.Row="0" Grid.Column="0" Text="Storyline" Command="{Binding StorylineCommand}" />
+                <Button Grid.Row="0" Grid.Column="1" Text="Characters" Command="{Binding CharactersCommand}" />
+                <Button Grid.Row="1" Grid.Column="0" Text="Deathmatch" Command="{Binding DeathmatchCommand}" />
+                <Button Grid.Row="1" Grid.Column="1" Text="Training Mode" Command="{Binding TrainingModeCommand}" />
+                <Button Grid.Row="2" Grid.Column="0" Text="Pvp" Command="{Binding PvpCommand}" />
+                <Button Grid.Row="2" Grid.Column="1" Text="Siege" Command="{Binding SiegeCommand}" />
+                <Button Grid.Row="3" Grid.Column="0" Text="Allies" Command="{Binding AlliesCommand}" />
+                <Button Grid.Row="3" Grid.Column="1" Text="Forge" Command="{Binding ForgeCommand}" />
+                <Button Grid.Row="4" Grid.Column="0" Text="Study" Command="{Binding StudyCommand}" />
+                <Button Grid.Row="4" Grid.Column="1" Text="Settings" Command="{Binding SettingsCommand}" />
+            </Grid>
+        </ScrollView>
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Fill" />
+        <VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" x:Name="DailyRewardSection" IsVisible="{Binding IsDailyRewardVisible}" Spacing="10" Padding="10">
+            <Label Text="Daily Reward Claimed!" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="{Binding RewardText}" TextColor="#FFD700" HorizontalOptions="Center" />
+        </VerticalStackLayout>
 
-            <VerticalStackLayout x:Name="DailyRewardSection" IsVisible="False" Spacing="10" Padding="10">
-                <Label Text="Daily Reward Claimed!" FontAttributes="Bold" HorizontalOptions="Center" />
-                <Label x:Name="RewardLabel" TextColor="#FFD700" HorizontalOptions="Center" />
-            </VerticalStackLayout>
-
-            <Button
+        <Button Grid.Row="3" Grid.ColumnSpan="2"
                 Text="Logout"
-                Clicked="OnLogoutClicked"
+                Command="{Binding LogoutCommand}"
                 BackgroundColor="#BB86FC"
                 TextColor="Black"
                 FontAttributes="Bold"
                 HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </ScrollView>
+    </Grid>
 
 </ContentPage>

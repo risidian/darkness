@@ -165,3 +165,24 @@ Add a popup or section on the MainPage to show the reward received.
 
 - [ ] **Step 3: Commit**
 `git add Darkness.Core/ Darkness.MAUI/; git commit -m "feat: daily login bonus system"`
+
+---
+
+### Task 9: Implement Main Menu UI
+
+**Files:**
+- Modify: `Darkness.MAUI/MainPage.xaml`
+- Modify: `Darkness.MAUI/MainPage.xaml.cs`
+- Modify: `Darkness.MAUI/Pages/CharacterGenPage.xaml.cs`
+
+- [ ] **Step 1: Transform MainPage into a Menu**
+Replace the existing content of `MainPage.xaml` with a menu layout. Add buttons for all requested game modes: "Pvp", "Storyline", "Characters", "Forge", "Settings", "Siege", "Allies", "Study", "Deathmatch", "Training mode".
+
+- [ ] **Step 2: Add Placeholder Handlers**
+Create empty `Clicked` event handlers in `MainPage.xaml.cs` for each new menu button.
+
+- [ ] **Step 3: Update Character Generation Navigation**
+Modify the logic in `CharacterGenPage.xaml.cs` to navigate to the `MainPage` after a character has been successfully created, clearing the navigation stack.
+
+- [ ] **Step 4: Commit**
+`git add Darkness.MAUI/; git commit -m "feat: implement main menu UI and navigation"`
