@@ -50,10 +50,6 @@
 		<MauiAsset Include="Resources\Raw\*" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-		<AppxManifest Include="Platforms\Windows\Package.appxmanifest" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Darkness.Core\Darkness.Core.csproj" />
 		<ProjectReference Include="..\Darkness.Game\Darkness.Game.csproj" />
