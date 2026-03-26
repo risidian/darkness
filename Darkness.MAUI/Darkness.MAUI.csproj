@@ -23,6 +23,8 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
+		<ApplicationIdGuid>A0872B35-F702-49BD-A3F7-C0D35EC96556</ApplicationIdGuid>
+
 		<OutputType>Exe</OutputType>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
@@ -46,6 +48,10 @@
 
 		<!-- Raw Assets (also used for webview) -->
 		<MauiAsset Include="Resources\Raw\*" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<AppxManifest Include="Platforms\Windows\Package.appxmanifest" />
 	</ItemGroup>
 
 	<ItemGroup>
