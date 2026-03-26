@@ -13,7 +13,7 @@
   <Properties>
     <DisplayName>Darkness</DisplayName>
     <PublisherDisplayName>Mayce</PublisherDisplayName>
-    <Logo>Resources\Images\dotnet_bot.png</Logo>
+    <Logo>dotnet_bot.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -33,10 +33,10 @@
         DisplayName="Darkness"
         Description="Darkness RPG"
         BackgroundColor="transparent"
-        Square150x150Logo="Resources\Images\dotnet_bot.png"
-        Square44x44Logo="Resources\Images\dotnet_bot.png">
-        <uap:DefaultTile Wide310x150Logo="Resources\Images\dotnet_bot.png" />
-        <uap:SplashScreen Image="Resources\Images\dotnet_bot.png" />
+        Square150x150Logo="dotnet_bot.png"
+        Square44x44Logo="dotnet_bot.png">
+        <uap:DefaultTile Wide310x150Logo="dotnet_bot.png" />
+        <uap:SplashScreen Image="dotnet_bot.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
