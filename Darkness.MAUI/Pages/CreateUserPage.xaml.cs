@@ -19,7 +19,7 @@ public partial class CreateUserPage : ContentPage
             string.IsNullOrWhiteSpace(PasswordEntry.Text) || 
             string.IsNullOrWhiteSpace(EmailEntry.Text))
         {
-            await DisplayAlert("Error", "All fields are required.", "OK");
+            await DisplayAlertAsync("Error", "All fields are required.", "OK");
             return;
         }
 
@@ -36,17 +36,17 @@ public partial class CreateUserPage : ContentPage
             bool success = await _userService.CreateUserAsync(newUser);
             if (success)
             {
-                await DisplayAlert("Success", $"Created user: {newUser.Username}", "OK");
+                await DisplayAlertAsync("Success", $"Created user: {newUser.Username}", "OK");
                 await Shell.Current.GoToAsync("///LoadUserPage");
             }
             else
             {
-                await DisplayAlert("Error", "Failed to create user.", "OK");
+                await DisplayAlertAsync("Error", "Failed to create user.", "OK");
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Failed to create: {ex.Message}", "OK");
+            await DisplayAlertAsync("Error", $"Failed to create: {ex.Message}", "OK");
         }
     }
 

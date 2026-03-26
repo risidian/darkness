@@ -34,5 +34,8 @@ namespace Darkness.Core.Models
         public int Evasion { get; set; }
         public int Defense { get; set; }
         public int MagicDefense { get; set; }
+
+        public int Level { get; set; }
+        public int Experience { get; set; }
     }
 }

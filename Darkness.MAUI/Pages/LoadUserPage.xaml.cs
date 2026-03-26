@@ -17,7 +17,7 @@ public partial class LoadUserPage : ContentPage
         if (string.IsNullOrWhiteSpace(UsernameEntry.Text) || 
             string.IsNullOrWhiteSpace(PasswordEntry.Text))
         {
-            await DisplayAlert("Error", "Username and password are required.", "OK");
+            await DisplayAlertAsync("Error", "Username and password are required.", "OK");
             return;
         }
 
@@ -26,17 +26,17 @@ public partial class LoadUserPage : ContentPage
             var user = await _userService.GetUserAsync(UsernameEntry.Text, PasswordEntry.Text);
             if (user != null)
             {
-                await DisplayAlert("Success", $"Welcome back, {user.Username}!", "OK");
+                await DisplayAlertAsync("Success", $"Welcome back, {user.Username}!", "OK");
                 await Shell.Current.GoToAsync("///MainPage");
             }
             else
             {
-                await DisplayAlert("Error", "Invalid username or password.", "OK");
+                await DisplayAlertAsync("Error", "Invalid username or password.", "OK");
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Login failed: {ex.Message}", "OK");
+            await DisplayAlertAsync("Error", $"Login failed: {ex.Message}", "OK");
         }
     }
 

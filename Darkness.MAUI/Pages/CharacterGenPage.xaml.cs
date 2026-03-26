@@ -20,7 +20,7 @@ namespace Darkness.MAUI.Pages
         {
             if (string.IsNullOrWhiteSpace(CharacterNameEntry.Text) || ClassPicker.SelectedIndex == -1)
             {
-                await DisplayAlert("Error", "Please enter a name and select a class.", "OK");
+                await DisplayAlertAsync("Error", "Please enter a name and select a class.", "OK");
                 return;
             }
 
@@ -28,7 +28,7 @@ namespace Darkness.MAUI.Pages
             var users = await _userService.GetAllUsersAsync();
             if (users.Count == 0)
             {
-                await DisplayAlert("Error", "No user found. Please create an account first.", "OK");
+                await DisplayAlertAsync("Error", "No user found. Please create an account first.", "OK");
                 await Shell.Current.GoToAsync("//CreateUserPage");
                 return;
             }
@@ -54,12 +54,12 @@ namespace Darkness.MAUI.Pages
 
             if (success)
             {
-                await DisplayAlert("Success", "Character Created!", "OK");
+                await DisplayAlertAsync("Success", "Character Created!", "OK");
                 await Shell.Current.GoToAsync("//MainPage");
             }
             else
             {
-                await DisplayAlert("Error", "Failed to save character.", "OK");
+                await DisplayAlertAsync("Error", "Failed to save character.", "OK");
             }
         }
 

@@ -75,7 +75,7 @@ namespace Darkness.MAUI.Pages
 
         private async void OnFleeClicked(object sender, EventArgs e)
         {
-            bool result = await DisplayAlert("Flee", "Are you sure you want to attempt to flee?", "Yes", "No");
+            bool result = await DisplayAlertAsync("Flee", "Are you sure you want to attempt to flee?", "Yes", "No");
             if (result)
             {
                 await Shell.Current.GoToAsync("///GamePage");

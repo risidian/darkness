@@ -38,7 +38,7 @@ public partial class MainPage : ContentPage
 					DailyRewardSection.IsVisible = true;
 					RewardLabel.Text = $"You received: {reward.Name} - {reward.Description}";
 					
-					await DisplayAlert("Daily Bonus!", $"You received a {reward.Name}!", "Excellent");
+					await DisplayAlertAsync("Daily Bonus!", $"You received a {reward.Name}!", "Excellent");
 				}
 			}
 		}
