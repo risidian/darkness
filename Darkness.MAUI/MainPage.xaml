@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Darkness.Core.ViewModels;assembly=Darkness.Core"
              x:Class="Darkness.MAUI.MainPage"
+             x:DataType="vm:MainViewModel"
              Title="Main Menu">
 
-    <Grid RowDefinitions="Auto, *, Auto, Auto" ColumnDefinitions="*, *" Padding="10" Gap="10">
+    <Grid RowDefinitions="Auto, *, Auto, Auto" ColumnDefinitions="*, *" Padding="10" RowSpacing="10" ColumnSpacing="10">
 
         <Label Grid.Row="0" Grid.ColumnSpan="2"
                Text="Select a Mode"
@@ -12,7 +14,7 @@
                HorizontalOptions="Center" />
 
         <ScrollView Grid.Row="1" Grid.ColumnSpan="2">
-            <Grid ColumnDefinitions="*, *" Padding="10" Gap="10">
+            <Grid ColumnDefinitions="*, *" Padding="10" RowSpacing="10" ColumnSpacing="10">
                 <Button Grid.Row="0" Grid.Column="0" Text="Storyline" Command="{Binding StorylineCommand}" />
                 <Button Grid.Row="0" Grid.Column="1" Text="Characters" Command="{Binding CharactersCommand}" />
                 <Button Grid.Row="1" Grid.Column="0" Text="Deathmatch" Command="{Binding DeathmatchCommand}" />

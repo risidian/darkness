@@ -97,28 +97,45 @@ namespace Darkness.Core.ViewModels
                 {
                     try
                     {
+                        // MAUI raw assets on Windows are at Resources/Raw/{path} in the package
                         var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
                         streams.Add(stream);
+                        System.Diagnostics.Debug.WriteLine($"[SpritePreview] Loaded: {layer.ResourcePath} ({stream.Length} bytes)");
                     }
                     catch
                     {
-                        // Skip missing layer files gracefully
+                        try
+                        {
+                            // Fallback: try with Resources/Raw/ prefix (Windows MSIX)
+                            var altPath = "Resources/Raw/" + layer.ResourcePath;
+                            var stream = await _fileSystem.OpenAppPackageFileAsync(altPath);
+                            streams.Add(stream);
+                            System.Diagnostics.Debug.WriteLine($"[SpritePreview] Loaded (alt): {altPath} ({stream.Length} bytes)");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[SpritePreview] FAILED: {layer.ResourcePath} - {ex.Message}");
+                        }
                     }
                 }
+
+                System.Diagnostics.Debug.WriteLine($"[SpritePreview] Loaded {streams.Count}/{layerDefs.Count} layers");
 
                 if (streams.Count > 0)
                 {
                     // Walk animation sheets are 576x256 (9 frames x 4 directions of 64x64)
                     // South-facing idle = row 2 (Up=0, Left=1, Down=2, Right=3), col 0
                     var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
+                    System.Diagnostics.Debug.WriteLine($"[SpritePreview] Composite sheet: {sheetBytes.Length} bytes");
                     PreviewImageBytes = _compositor.ExtractFrame(sheetBytes, 0, 2 * 64, 64, 64, 4);
+                    System.Diagnostics.Debug.WriteLine($"[SpritePreview] Preview frame: {PreviewImageBytes?.Length ?? 0} bytes");
                 }
 
                 foreach (var s in streams) s.Dispose();
             }
-            catch
+            catch (Exception ex)
             {
-                // Preview failure is non-critical
+                System.Diagnostics.Debug.WriteLine($"[SpritePreview] OUTER ERROR: {ex}");
             }
         }
 
