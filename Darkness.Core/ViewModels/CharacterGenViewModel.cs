@@ -11,6 +11,9 @@ namespace Darkness.Core.ViewModels
         private readonly ISessionService _sessionService;
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
+        private readonly ISpriteLayerCatalog _catalog;
+        private readonly ISpriteCompositor _compositor;
+        private readonly IFileSystemService _fileSystem;
 
         [ObservableProperty]
         private string _characterName = string.Empty;
@@ -24,20 +27,95 @@ namespace Darkness.Core.ViewModels
         [ObservableProperty]
         private string _selectedSkinColor = "Light";
 
+        [ObservableProperty]
+        private string _selectedHairStyle = "Long";
+
+        [ObservableProperty]
+        private string _selectedArmor = "Plate";
+
+        [ObservableProperty]
+        private string _selectedWeapon = "Longsword";
+
+        [ObservableProperty]
+        private byte[]? _previewImageBytes;
+
         public List<string> Classes { get; } = new() { "Warrior", "Mage", "Rogue" };
         public List<string> HairColors { get; } = new() { "Black", "Blonde", "Brown", "Red", "White" };
         public List<string> SkinColors { get; } = new() { "Light", "Tan", "Dark" };
+        public List<string> HairStyles => _catalog.HairStyles;
 
         public CharacterGenViewModel(
             ICharacterService characterService,
             ISessionService sessionService,
             INavigationService navigationService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            ISpriteLayerCatalog catalog,
+            ISpriteCompositor compositor,
+            IFileSystemService fileSystem)
         {
             _characterService = characterService;
             _sessionService = sessionService;
             _navigationService = navigationService;
             _dialogService = dialogService;
+            _catalog = catalog;
+            _compositor = compositor;
+            _fileSystem = fileSystem;
+        }
+
+        partial void OnSelectedClassChanged(string value)
+        {
+            var defaults = _catalog.GetDefaultAppearanceForClass(value);
+            SelectedArmor = defaults.ArmorType;
+            SelectedWeapon = defaults.WeaponType;
+        }
+
+        partial void OnSelectedHairColorChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedSkinColorChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedHairStyleChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedArmorChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedWeaponChanged(string value) => UpdatePreviewAsync().FireAndForget();
+
+        public async Task UpdatePreviewAsync()
+        {
+            try
+            {
+                var appearance = new CharacterAppearance
+                {
+                    SkinColor = SelectedSkinColor,
+                    HairStyle = SelectedHairStyle,
+                    HairColor = SelectedHairColor,
+                    ArmorType = SelectedArmor,
+                    WeaponType = SelectedWeapon,
+                };
+
+                var layerDefs = _catalog.GetLayersForAppearance(appearance);
+                var streams = new List<Stream>();
+
+                foreach (var layer in layerDefs)
+                {
+                    try
+                    {
+                        var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
+                        streams.Add(stream);
+                    }
+                    catch
+                    {
+                        // Skip missing layer files gracefully
+                    }
+                }
+
+                if (streams.Count > 0)
+                {
+                    var sheetBytes = _compositor.CompositeLayers(streams, 832, 1344);
+                    PreviewImageBytes = _compositor.ExtractFrame(sheetBytes, 0, 10 * 64, 64, 64, 4);
+                }
+
+                foreach (var s in streams) s.Dispose();
+            }
+            catch
+            {
+                // Preview failure is non-critical
+            }
         }
 
         [RelayCommand]
@@ -62,6 +140,7 @@ namespace Darkness.Core.ViewModels
                 Name = CharacterName,
                 Class = SelectedClass,
                 HairColor = SelectedHairColor,
+                HairStyle = SelectedHairStyle,
                 SkinColor = SelectedSkinColor,
                 Level = 1,
                 Experience = 0
@@ -113,6 +192,14 @@ namespace Darkness.Core.ViewModels
             character.Evasion = character.DEX / 2;
             character.Defense = character.CON / 2;
             character.MagicDefense = character.WIS / 2;
+        }
+    }
+
+    internal static class TaskExtensions
+    {
+        public static async void FireAndForget(this Task task)
+        {
+            try { await task; } catch { }
         }
     }
 }

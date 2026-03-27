@@ -1,5 +1,6 @@
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
+using Darkness.Core.Services;
 using Darkness.Core.ViewModels;
 using Moq;
 
@@ -11,6 +12,9 @@ namespace Darkness.Tests.ViewModels
         private readonly Mock<ISessionService> _sessionServiceMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IDialogService> _dialogServiceMock;
+        private readonly Mock<ISpriteLayerCatalog> _catalogMock;
+        private readonly Mock<ISpriteCompositor> _compositorMock;
+        private readonly Mock<IFileSystemService> _fileSystemMock;
         private readonly CharacterGenViewModel _viewModel;
 
         public CharacterGenViewModelTests()
@@ -19,12 +23,29 @@ namespace Darkness.Tests.ViewModels
             _sessionServiceMock = new Mock<ISessionService>();
             _navigationServiceMock = new Mock<INavigationService>();
             _dialogServiceMock = new Mock<IDialogService>();
+            _catalogMock = new Mock<ISpriteLayerCatalog>();
+            _compositorMock = new Mock<ISpriteCompositor>();
+            _fileSystemMock = new Mock<IFileSystemService>();
+
+            _catalogMock.Setup(x => x.HairStyles).Returns(new List<string> { "Long", "Short", "Mohawk", "Messy" });
+            _catalogMock.Setup(x => x.GetDefaultAppearanceForClass(It.IsAny<string>()))
+                .Returns<string>(cls => cls switch
+                {
+                    "Mage" => new CharacterAppearance { ArmorType = "Robe", WeaponType = "Staff" },
+                    "Rogue" => new CharacterAppearance { ArmorType = "Leather", WeaponType = "Daggers" },
+                    _ => new CharacterAppearance { ArmorType = "Plate", WeaponType = "Longsword" },
+                });
+            _catalogMock.Setup(x => x.GetLayersForAppearance(It.IsAny<CharacterAppearance>()))
+                .Returns(new List<SpriteLayerDefinition>());
 
             _viewModel = new CharacterGenViewModel(
                 _characterServiceMock.Object,
                 _sessionServiceMock.Object,
                 _navigationServiceMock.Object,
-                _dialogServiceMock.Object);
+                _dialogServiceMock.Object,
+                _catalogMock.Object,
+                _compositorMock.Object,
+                _fileSystemMock.Object);
         }
 
         [Fact]
@@ -189,6 +210,52 @@ namespace Darkness.Tests.ViewModels
             Assert.Equal(5, savedCharacter.Evasion);     // DEX / 2
             Assert.Equal(7, savedCharacter.Defense);     // CON / 2
             Assert.Equal(4, savedCharacter.MagicDefense); // WIS / 2
+        }
+
+        [Fact]
+        public void HairStyles_ContainsExpectedOptions()
+        {
+            Assert.Contains("Long", _viewModel.HairStyles);
+            Assert.Contains("Short", _viewModel.HairStyles);
+            Assert.Contains("Mohawk", _viewModel.HairStyles);
+            Assert.Contains("Messy", _viewModel.HairStyles);
+        }
+
+        [Fact]
+        public void DefaultValues_HairStyleIsLong()
+        {
+            Assert.Equal("Long", _viewModel.SelectedHairStyle);
+        }
+
+        [Fact]
+        public async Task CreateCharacterAsync_SavesHairStyle()
+        {
+            var user = new User { Id = 1 };
+            _sessionServiceMock.Setup(x => x.CurrentUser).Returns(user);
+            Character? savedCharacter = null;
+            _characterServiceMock.Setup(x => x.SaveCharacterAsync(It.IsAny<Character>()))
+                .Callback<Character>(c => savedCharacter = c)
+                .ReturnsAsync(true);
+
+            _viewModel.CharacterName = "Test";
+            _viewModel.SelectedHairStyle = "Mohawk";
+
+            await _viewModel.CreateCharacterCommand.ExecuteAsync(null);
+
+            Assert.NotNull(savedCharacter);
+            Assert.Equal("Mohawk", savedCharacter!.HairStyle);
+        }
+
+        [Fact]
+        public void ChangingClass_UpdatesArmorAndWeapon()
+        {
+            _viewModel.SelectedClass = "Mage";
+            Assert.Equal("Robe", _viewModel.SelectedArmor);
+            Assert.Equal("Staff", _viewModel.SelectedWeapon);
+
+            _viewModel.SelectedClass = "Rogue";
+            Assert.Equal("Leather", _viewModel.SelectedArmor);
+            Assert.Equal("Daggers", _viewModel.SelectedWeapon);
         }
     }
 }
