@@ -14,12 +14,18 @@ namespace Darkness.Core.Services
 
         public List<SpriteLayerDefinition> GetLayersForAppearance(CharacterAppearance appearance)
         {
+            var skin = (appearance.SkinColor ?? "Light").ToLower();
+            var hairStyle = (appearance.HairStyle ?? "Long").ToLower();
+            var hairColor = (appearance.HairColor ?? "Black").ToLower();
+            var armor = (appearance.ArmorType ?? "Leather").ToLower();
+            var weapon = (appearance.WeaponType ?? "Longsword").ToLower();
+
             var layers = new List<SpriteLayerDefinition>
             {
-                new($"sprites/body/{appearance.SkinColor.ToLower()}.png", ZBody),
-                new($"sprites/hair/{appearance.HairStyle.ToLower()}_{appearance.HairColor.ToLower()}.png", ZHair),
-                new($"sprites/armor/{appearance.ArmorType.ToLower()}.png", ZArmor),
-                new($"sprites/weapons/{appearance.WeaponType.ToLower()}.png", ZWeapon),
+                new($"sprites/body/{skin}.png", ZBody),
+                new($"sprites/hair/{hairStyle}_{hairColor}.png", ZHair),
+                new($"sprites/armor/{armor}.png", ZArmor),
+                new($"sprites/weapons/{weapon}.png", ZWeapon),
             };
 
             layers.Sort((a, b) => a.ZOrder.CompareTo(b.ZOrder));
