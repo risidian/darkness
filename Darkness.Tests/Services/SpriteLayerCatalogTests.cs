@@ -15,8 +15,8 @@ namespace Darkness.Tests.Services
                 SkinColor = "Light",
                 HairStyle = "Long",
                 HairColor = "Black",
-                ArmorType = "Plate",
-                WeaponType = "Longsword"
+                ArmorType = "Plate (Steel)",
+                WeaponType = "Arming Sword (Steel)"
             };
 
             var layers = _catalog.GetLayersForAppearance(appearance);
@@ -26,6 +26,15 @@ namespace Darkness.Tests.Services
             Assert.Contains(layers, l => l.ResourcePath.Contains("hair/"));
             Assert.Contains(layers, l => l.ResourcePath.Contains("armor/"));
             Assert.Contains(layers, l => l.ResourcePath.Contains("weapons/"));
+        }
+
+        [Fact]
+        public void GetLayersForAppearance_NoneWeapon_ExcludesWeaponLayer()
+        {
+            var appearance = new CharacterAppearance { WeaponType = "None" };
+            var layers = _catalog.GetLayersForAppearance(appearance);
+
+            Assert.DoesNotContain(layers, l => l.ResourcePath.Contains("weapons/"));
         }
 
         [Fact]
@@ -44,7 +53,7 @@ namespace Darkness.Tests.Services
         [Fact]
         public void GetLayersForAppearance_BodyLayerIsLowestZOrder()
         {
-            var appearance = new CharacterAppearance { SkinColor = "Tan" };
+            var appearance = new CharacterAppearance { SkinColor = "Amber" };
             var layers = _catalog.GetLayersForAppearance(appearance);
 
             var bodyLayer = layers.First(l => l.ResourcePath.Contains("body/"));
@@ -54,28 +63,28 @@ namespace Darkness.Tests.Services
         [Fact]
         public void GetLayersForAppearance_SkinColorMapsToCorrectFile()
         {
-            var appearance = new CharacterAppearance { SkinColor = "Tan" };
+            var appearance = new CharacterAppearance { SkinColor = "Bronze" };
             var layers = _catalog.GetLayersForAppearance(appearance);
 
             var bodyLayer = layers.First(l => l.ResourcePath.Contains("body/"));
-            Assert.Contains("tan", bodyLayer.ResourcePath.ToLower());
+            Assert.Contains("bronze", bodyLayer.ResourcePath);
         }
 
         [Fact]
         public void GetLayersForAppearance_HairMapsToStyleAndColor()
         {
-            var appearance = new CharacterAppearance { HairStyle = "Short", HairColor = "Blonde" };
+            var appearance = new CharacterAppearance { HairStyle = "Spiked", HairColor = "Blonde" };
             var layers = _catalog.GetLayersForAppearance(appearance);
 
             var hairLayer = layers.First(l => l.ResourcePath.Contains("hair/"));
-            Assert.Contains("short", hairLayer.ResourcePath.ToLower());
-            Assert.Contains("blonde", hairLayer.ResourcePath.ToLower());
+            Assert.Contains("spiked", hairLayer.ResourcePath);
+            Assert.Contains("blonde", hairLayer.ResourcePath);
         }
 
         [Theory]
-        [InlineData("Warrior", "Plate", "Longsword")]
-        [InlineData("Mage", "Robe", "Staff")]
-        [InlineData("Rogue", "Leather", "Daggers")]
+        [InlineData("Warrior", "Plate (Steel)", "Arming Sword (Steel)")]
+        [InlineData("Mage", "Longsleeve (Blue)", "None")]
+        [InlineData("Rogue", "Leather (Black)", "Arming Sword (Iron)")]
         public void GetDefaultAppearanceForClass_ReturnsCorrectEquipment(string className, string expectedArmor, string expectedWeapon)
         {
             var appearance = _catalog.GetDefaultAppearanceForClass(className);
@@ -88,9 +97,27 @@ namespace Darkness.Tests.Services
         public void HairStyles_ContainsExpectedOptions()
         {
             Assert.Contains("Long", _catalog.HairStyles);
-            Assert.Contains("Short", _catalog.HairStyles);
-            Assert.Contains("Mohawk", _catalog.HairStyles);
-            Assert.Contains("Messy", _catalog.HairStyles);
+            Assert.Contains("Plain", _catalog.HairStyles);
+            Assert.Contains("Spiked", _catalog.HairStyles);
+            Assert.Contains("Bob", _catalog.HairStyles);
+        }
+
+        [Fact]
+        public void SkinColors_ContainsRealisticTones()
+        {
+            Assert.Contains("Light", _catalog.SkinColors);
+            Assert.Contains("Amber", _catalog.SkinColors);
+            Assert.Contains("Bronze", _catalog.SkinColors);
+            Assert.Equal(7, _catalog.SkinColors.Count);
+        }
+
+        [Fact]
+        public void HairColors_ContainsExpectedOptions()
+        {
+            Assert.Contains("Blonde", _catalog.HairColors);
+            Assert.Contains("Dark Brown", _catalog.HairColors);
+            Assert.Contains("Redhead", _catalog.HairColors);
+            Assert.Equal(8, _catalog.HairColors.Count);
         }
     }
 }

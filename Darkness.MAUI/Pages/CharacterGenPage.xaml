@@ -70,6 +70,20 @@
                     TextColor="White"
                     BackgroundColor="#1E1E1E" />
 
+            <Label Text="Armor" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedArmor}"
+                    ItemsSource="{Binding ArmorTypes}"
+                    Title="Select Armor"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
+            <Label Text="Weapon" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedWeapon}"
+                    ItemsSource="{Binding WeaponTypes}"
+                    Title="Select Weapon"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
             <Button Text="Create Character"
                     Command="{Binding CreateCharacterCommand}"
                     BackgroundColor="#B71C1C"

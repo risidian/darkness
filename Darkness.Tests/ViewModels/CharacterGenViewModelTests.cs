@@ -27,13 +27,17 @@ namespace Darkness.Tests.ViewModels
             _compositorMock = new Mock<ISpriteCompositor>();
             _fileSystemMock = new Mock<IFileSystemService>();
 
-            _catalogMock.Setup(x => x.HairStyles).Returns(new List<string> { "Long", "Short", "Mohawk", "Messy" });
+            _catalogMock.Setup(x => x.HairStyles).Returns(new List<string> { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob" });
+            _catalogMock.Setup(x => x.HairColors).Returns(new List<string> { "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut" });
+            _catalogMock.Setup(x => x.SkinColors).Returns(new List<string> { "Light", "Amber", "Olive", "Taupe", "Bronze", "Brown", "Black" });
+            _catalogMock.Setup(x => x.ArmorTypes).Returns(new List<string> { "Plate (Steel)", "Leather", "Longsleeve (Blue)" });
+            _catalogMock.Setup(x => x.WeaponTypes).Returns(new List<string> { "Arming Sword (Steel)", "None" });
             _catalogMock.Setup(x => x.GetDefaultAppearanceForClass(It.IsAny<string>()))
                 .Returns<string>(cls => cls switch
                 {
-                    "Mage" => new CharacterAppearance { ArmorType = "Robe", WeaponType = "Staff" },
-                    "Rogue" => new CharacterAppearance { ArmorType = "Leather", WeaponType = "Daggers" },
-                    _ => new CharacterAppearance { ArmorType = "Plate", WeaponType = "Longsword" },
+                    "Mage" => new CharacterAppearance { ArmorType = "Longsleeve (Blue)", WeaponType = "None" },
+                    "Rogue" => new CharacterAppearance { ArmorType = "Leather (Black)", WeaponType = "Arming Sword (Iron)" },
+                    _ => new CharacterAppearance { ArmorType = "Plate (Steel)", WeaponType = "Arming Sword (Steel)" },
                 });
             _catalogMock.Setup(x => x.GetLayersForAppearance(It.IsAny<CharacterAppearance>()))
                 .Returns(new List<SpriteLayerDefinition>());
@@ -216,9 +220,9 @@ namespace Darkness.Tests.ViewModels
         public void HairStyles_ContainsExpectedOptions()
         {
             Assert.Contains("Long", _viewModel.HairStyles);
-            Assert.Contains("Short", _viewModel.HairStyles);
-            Assert.Contains("Mohawk", _viewModel.HairStyles);
-            Assert.Contains("Messy", _viewModel.HairStyles);
+            Assert.Contains("Plain", _viewModel.HairStyles);
+            Assert.Contains("Spiked", _viewModel.HairStyles);
+            Assert.Contains("Bob", _viewModel.HairStyles);
         }
 
         [Fact]
@@ -238,24 +242,24 @@ namespace Darkness.Tests.ViewModels
                 .ReturnsAsync(true);
 
             _viewModel.CharacterName = "Test";
-            _viewModel.SelectedHairStyle = "Mohawk";
+            _viewModel.SelectedHairStyle = "Shorthawk";
 
             await _viewModel.CreateCharacterCommand.ExecuteAsync(null);
 
             Assert.NotNull(savedCharacter);
-            Assert.Equal("Mohawk", savedCharacter!.HairStyle);
+            Assert.Equal("Shorthawk", savedCharacter!.HairStyle);
         }
 
         [Fact]
         public void ChangingClass_UpdatesArmorAndWeapon()
         {
             _viewModel.SelectedClass = "Mage";
-            Assert.Equal("Robe", _viewModel.SelectedArmor);
-            Assert.Equal("Staff", _viewModel.SelectedWeapon);
+            Assert.Equal("Longsleeve (Blue)", _viewModel.SelectedArmor);
+            Assert.Equal("None", _viewModel.SelectedWeapon);
 
             _viewModel.SelectedClass = "Rogue";
-            Assert.Equal("Leather", _viewModel.SelectedArmor);
-            Assert.Equal("Daggers", _viewModel.SelectedWeapon);
+            Assert.Equal("Leather (Black)", _viewModel.SelectedArmor);
+            Assert.Equal("Arming Sword (Iron)", _viewModel.SelectedWeapon);
         }
     }
 }

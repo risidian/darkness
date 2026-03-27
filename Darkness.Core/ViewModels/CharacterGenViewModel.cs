@@ -31,18 +31,20 @@ namespace Darkness.Core.ViewModels
         private string _selectedHairStyle = "Long";
 
         [ObservableProperty]
-        private string _selectedArmor = "Plate";
+        private string _selectedArmor = "Plate (Steel)";
 
         [ObservableProperty]
-        private string _selectedWeapon = "Longsword";
+        private string _selectedWeapon = "Arming Sword (Steel)";
 
         [ObservableProperty]
         private byte[]? _previewImageBytes;
 
         public List<string> Classes { get; } = new() { "Warrior", "Mage", "Rogue" };
-        public List<string> HairColors { get; } = new() { "Black", "Blonde", "Brown", "Red", "White" };
-        public List<string> SkinColors { get; } = new() { "Light", "Tan", "Dark" };
+        public List<string> HairColors => _catalog.HairColors;
+        public List<string> SkinColors => _catalog.SkinColors;
         public List<string> HairStyles => _catalog.HairStyles;
+        public List<string> ArmorTypes => _catalog.ArmorTypes;
+        public List<string> WeaponTypes => _catalog.WeaponTypes;
 
         public CharacterGenViewModel(
             ICharacterService characterService,
@@ -106,8 +108,10 @@ namespace Darkness.Core.ViewModels
 
                 if (streams.Count > 0)
                 {
-                    var sheetBytes = _compositor.CompositeLayers(streams, 832, 1344);
-                    PreviewImageBytes = _compositor.ExtractFrame(sheetBytes, 0, 10 * 64, 64, 64, 4);
+                    // Walk animation sheets are 576x256 (9 frames x 4 directions of 64x64)
+                    // South-facing idle = row 2 (Up=0, Left=1, Down=2, Right=3), col 0
+                    var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
+                    PreviewImageBytes = _compositor.ExtractFrame(sheetBytes, 0, 2 * 64, 64, 64, 4);
                 }
 
                 foreach (var s in streams) s.Dispose();
