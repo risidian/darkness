@@ -48,7 +48,7 @@
 		<MauiFont Include="Resources\Fonts\*" />
 
 		<!-- Raw Assets (also used for webview) -->
-		<MauiAsset Include="Resources\Raw\*" />
+		<MauiAsset Include="Resources\Raw\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -61,6 +61,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.0-*" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.0-*" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0-*" />
+		<PackageReference Include="SkiaSharp" Version="3.116.1" />
 	</ItemGroup>
 
 	<ItemGroup>
