@@ -13,6 +13,7 @@ namespace Darkness.Core.Models
         public string Name { get; set; } = string.Empty;
         public string Class { get; set; } = string.Empty;
         public string HairColor { get; set; } = string.Empty;
+        public string HairStyle { get; set; } = string.Empty;
         public string SkinColor { get; set; } = string.Empty;
         
         // Base Stats
