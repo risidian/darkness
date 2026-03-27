@@ -16,7 +16,7 @@ namespace Darkness.Core.Logic
 
             foreach (var character in party)
             {
-                int initiative = character.DEX + character.Speed + _random.Next(1, 11);
+                int initiative = character.Dexterity + character.Speed + _random.Next(1, 11);
                 participants.Add((character, initiative));
             }
 
@@ -41,7 +41,7 @@ namespace Darkness.Core.Logic
                 attacker.Stamina -= skill.StaminaCost;
             }
 
-            int baseAttack = attacker.STR; // Using STR as base attack for Character
+            int baseAttack = attacker.Strength; // Using Strength as base attack for Character
             int power = skill?.BasePower ?? 0;
             int totalAttack = baseAttack + power;
 
@@ -90,10 +90,10 @@ namespace Darkness.Core.Logic
 
         public bool CheckStatusEffect(Character target, StatusEffect effect)
         {
-            // Resistance logic: Base chance could be influenced by WIS or something similar.
+            // Resistance logic: Base chance could be influenced by Wisdom or something similar.
             // For now, let's use a simple base chance modified by Magnitude or similar.
-            // Using a simple logic: if random (0-100) > target.WIS (resistance factor), effect is applied.
-            int resistance = target.WIS;
+            // Using a simple logic: if random (0-100) > target.Wisdom (resistance factor), effect is applied.
+            int resistance = target.Wisdom;
             int roll = _random.Next(1, 101);
             
             return roll > resistance;

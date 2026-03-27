@@ -70,6 +70,48 @@
                     TextColor="White"
                     BackgroundColor="#1E1E1E" />
 
+            <Label Text="Head" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedHead}"
+                    ItemsSource="{Binding HeadTypes}"
+                    Title="Select Head"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
+            <Label Text="Face" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedFace}"
+                    ItemsSource="{Binding FaceTypes}"
+                    Title="Select Face"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
+            <Label Text="Eyes" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedEyes}"
+                    ItemsSource="{Binding EyeTypes}"
+                    Title="Select Eyes"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
+            <Label Text="Feet" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedFeet}"
+                    ItemsSource="{Binding FeetTypes}"
+                    Title="Select Footwear"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
+            <Label Text="Arms" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedArms}"
+                    ItemsSource="{Binding ArmsTypes}"
+                    Title="Select Arms"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
+            <Label Text="Pants" TextColor="White" />
+            <Picker SelectedItem="{Binding SelectedLegs}"
+                    ItemsSource="{Binding LegsTypes}"
+                    Title="Select Pants"
+                    TextColor="White"
+                    BackgroundColor="#1E1E1E" />
+
             <Label Text="Armor" TextColor="White" />
             <Picker SelectedItem="{Binding SelectedArmor}"
                     ItemsSource="{Binding ArmorTypes}"

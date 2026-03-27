@@ -9,6 +9,12 @@ namespace Darkness.Core.Interfaces
         List<string> HairStyles { get; }
         List<string> HairColors { get; }
         List<string> SkinColors { get; }
+        List<string> FaceTypes { get; }
+        List<string> EyeTypes { get; }
+        List<string> HeadTypes { get; }
+        List<string> FeetTypes { get; }
+        List<string> ArmsTypes { get; }
+        List<string> LegsTypes { get; }
         List<string> ArmorTypes { get; }
         List<string> WeaponTypes { get; }
     }

@@ -17,12 +17,12 @@ namespace Darkness.Core.Models
         public string SkinColor { get; set; } = string.Empty;
         
         // Base Stats
-        public int STR { get; set; }
-        public int DEX { get; set; }
-        public int CON { get; set; }
-        public int INT { get; set; }
-        public int WIS { get; set; }
-        public int CHA { get; set; }
+        public int Strength { get; set; }
+        public int Dexterity { get; set; }
+        public int Constitution { get; set; }
+        public int Intelligence { get; set; }
+        public int Wisdom { get; set; }
+        public int Charisma { get; set; }
         
         // Derived Stats
         public int CurrentHP { get; set; }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Darkness.Core.Interfaces;
@@ -15,33 +16,42 @@ namespace Darkness.Core.ViewModels
         private readonly ISpriteCompositor _compositor;
         private readonly IFileSystemService _fileSystem;
 
-        [ObservableProperty]
-        private string _characterName = string.Empty;
+        [ObservableProperty] private string _characterName = string.Empty;
 
-        [ObservableProperty]
-        private string _selectedClass = "Warrior";
+        [ObservableProperty] private string _selectedClass = "Warrior";
 
-        [ObservableProperty]
-        private string _selectedHairColor = "Black";
+        [ObservableProperty] private string _selectedHairColor = "Black";
 
-        [ObservableProperty]
-        private string _selectedSkinColor = "Light";
+        [ObservableProperty] private string _selectedSkinColor = "Light";
 
-        [ObservableProperty]
-        private string _selectedHairStyle = "Long";
+        [ObservableProperty] private string _selectedFace = "Default";
 
-        [ObservableProperty]
-        private string _selectedArmor = "Plate (Steel)";
+        [ObservableProperty] private string _selectedEyes = "Default";
 
-        [ObservableProperty]
-        private string _selectedWeapon = "Arming Sword (Steel)";
+        [ObservableProperty] private string _selectedHead = "Human Male";
 
-        [ObservableProperty]
-        private byte[]? _previewImageBytes;
+        [ObservableProperty] private string _selectedFeet = "Boots (Basic)";
 
-        public List<string> Classes { get; } = new() { "Warrior", "Mage", "Rogue" };
+        [ObservableProperty] private string _selectedArms = "None";
+
+        [ObservableProperty] private string _selectedLegs = "Slacks";
+
+        [ObservableProperty] private string _selectedHairStyle = "Long";
+
+        [ObservableProperty] private string _selectedArmor = "Plate (Steel)";
+
+        [ObservableProperty] private string _selectedWeapon = "Arming Sword (Steel)";
+
+        [ObservableProperty] private byte[]? _previewImageBytes;
+        public List<string> Classes { get; } = new() { "Knight", "Rogue", "Mage", "Warrior", "Cleric" };
         public List<string> HairColors => _catalog.HairColors;
         public List<string> SkinColors => _catalog.SkinColors;
+        public List<string> FaceTypes => _catalog.FaceTypes;
+        public List<string> EyeTypes => _catalog.EyeTypes;
+        public List<string> HeadTypes => _catalog.HeadTypes;
+        public List<string> FeetTypes => _catalog.FeetTypes;
+        public List<string> ArmsTypes => _catalog.ArmsTypes;
+        public List<string> LegsTypes => _catalog.LegsTypes;
         public List<string> HairStyles => _catalog.HairStyles;
         public List<string> ArmorTypes => _catalog.ArmorTypes;
         public List<string> WeaponTypes => _catalog.WeaponTypes;
@@ -69,10 +79,19 @@ namespace Darkness.Core.ViewModels
             var defaults = _catalog.GetDefaultAppearanceForClass(value);
             SelectedArmor = defaults.ArmorType;
             SelectedWeapon = defaults.WeaponType;
+            SelectedFeet = defaults.Feet;
+            SelectedArms = defaults.Arms;
+            SelectedLegs = defaults.Legs;
         }
 
         partial void OnSelectedHairColorChanged(string value) => UpdatePreviewAsync().FireAndForget();
         partial void OnSelectedSkinColorChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedFaceChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedEyesChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedHeadChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedFeetChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedArmsChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedLegsChanged(string value) => UpdatePreviewAsync().FireAndForget();
         partial void OnSelectedHairStyleChanged(string value) => UpdatePreviewAsync().FireAndForget();
         partial void OnSelectedArmorChanged(string value) => UpdatePreviewAsync().FireAndForget();
         partial void OnSelectedWeaponChanged(string value) => UpdatePreviewAsync().FireAndForget();
@@ -84,6 +103,12 @@ namespace Darkness.Core.ViewModels
                 var appearance = new CharacterAppearance
                 {
                     SkinColor = SelectedSkinColor,
+                    Face = SelectedFace,
+                    Eyes = SelectedEyes,
+                    Head = SelectedHead,
+                    Feet = SelectedFeet,
+                    Arms = SelectedArms,
+                    Legs = SelectedLegs,
                     HairStyle = SelectedHairStyle,
                     HairColor = SelectedHairColor,
                     ArmorType = SelectedArmor,
@@ -100,7 +125,8 @@ namespace Darkness.Core.ViewModels
                         // MAUI raw assets on Windows are at Resources/Raw/{path} in the package
                         var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
                         streams.Add(stream);
-                        System.Diagnostics.Debug.WriteLine($"[SpritePreview] Loaded: {layer.ResourcePath} ({stream.Length} bytes)");
+                        System.Diagnostics.Debug.WriteLine(
+                            $"[SpritePreview] Loaded: {layer.ResourcePath} ({stream.Length} bytes)");
                     }
                     catch
                     {
@@ -110,11 +136,13 @@ namespace Darkness.Core.ViewModels
                             var altPath = "Resources/Raw/" + layer.ResourcePath;
                             var stream = await _fileSystem.OpenAppPackageFileAsync(altPath);
                             streams.Add(stream);
-                            System.Diagnostics.Debug.WriteLine($"[SpritePreview] Loaded (alt): {altPath} ({stream.Length} bytes)");
+                            System.Diagnostics.Debug.WriteLine(
+                                $"[SpritePreview] Loaded (alt): {altPath} ({stream.Length} bytes)");
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine($"[SpritePreview] FAILED: {layer.ResourcePath} - {ex.Message}");
+                            System.Diagnostics.Debug.WriteLine(
+                                $"[SpritePreview] FAILED: {layer.ResourcePath} - {ex.Message}");
                         }
                     }
                 }
@@ -128,7 +156,8 @@ namespace Darkness.Core.ViewModels
                     var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
                     System.Diagnostics.Debug.WriteLine($"[SpritePreview] Composite sheet: {sheetBytes.Length} bytes");
                     PreviewImageBytes = _compositor.ExtractFrame(sheetBytes, 0, 2 * 64, 64, 64, 4);
-                    System.Diagnostics.Debug.WriteLine($"[SpritePreview] Preview frame: {PreviewImageBytes?.Length ?? 0} bytes");
+                    System.Diagnostics.Debug.WriteLine(
+                        $"[SpritePreview] Preview frame: {PreviewImageBytes?.Length ?? 0} bytes");
                 }
 
                 foreach (var s in streams) s.Dispose();
@@ -186,33 +215,67 @@ namespace Darkness.Core.ViewModels
         {
             switch (className)
             {
+                case "Knight":
+                    character.Strength = 12;
+                    character.Dexterity = 8;
+                    character.Constitution = 14;
+                    character.Intelligence = 10;
+                    character.Wisdom = 12;
+                    character.Charisma = 12;
+                    break;
                 case "Warrior":
-                    character.STR = 15; character.DEX = 10; character.CON = 15;
-                    character.INT = 5; character.WIS = 8; character.CHA = 10;
+                    character.Strength = 15;
+                    character.Dexterity = 13;
+                    character.Constitution = 14;
+                    character.Intelligence = 8;
+                    character.Wisdom = 10;
+                    character.Charisma = 8;
                     break;
                 case "Mage":
-                    character.STR = 5; character.DEX = 10; character.CON = 8;
-                    character.INT = 18; character.WIS = 15; character.CHA = 10;
+                    character.Strength = 9;
+                    character.Dexterity = 12;
+                    character.Constitution = 9;
+                    character.Intelligence = 15;
+                    character.Wisdom = 10;
+                    character.Charisma = 13;
                     break;
                 case "Rogue":
-                    character.STR = 10; character.DEX = 18; character.CON = 10;
-                    character.INT = 10; character.WIS = 8; character.CHA = 12;
+                    character.Strength = 12;
+                    character.Dexterity = 15;
+                    character.Constitution = 9;
+                    character.Intelligence = 14;
+                    character.Wisdom = 8;
+                    character.Charisma = 10;
+                    break;
+                case "Cleric":
+                    character.Strength = 12;
+                    character.Dexterity = 9;
+                    character.Constitution = 14;
+                    character.Intelligence = 8;
+                    character.Wisdom = 14;
+                    character.Charisma = 9;
                     break;
                 default:
-                    character.STR = 10; character.DEX = 10; character.CON = 10;
-                    character.INT = 10; character.WIS = 10; character.CHA = 10;
+                    throw new ArgumentException($"Unknown class: {className}");
+                    character.Strength = 10;
+                    character.Dexterity = 10;
+                    character.Constitution = 10;
+                    character.Intelligence = 10;
+                    character.Wisdom = 10;
+                    character.Charisma = 10;
                     break;
             }
 
-            character.MaxHP = character.CON * 10;
+            //TODO: Modifiers
+            character.MaxHP = character.Constitution * 10;
             character.CurrentHP = character.MaxHP;
-            character.Mana = character.WIS * 5;
-            character.Stamina = character.CON * 5;
-            character.Speed = character.DEX;
-            character.Accuracy = 80 + character.DEX / 2;
-            character.Evasion = character.DEX / 2;
-            character.Defense = character.CON / 2;
-            character.MagicDefense = character.WIS / 2;
+            character.Mana = character.Wisdom * 5;
+            character.Stamina = character.Constitution * 5;
+            character.Speed = character.Dexterity;
+            character.Accuracy = 80 + character.Dexterity / 2;
+            character.Evasion = character.Dexterity / 2;
+            character.Defense = character.Constitution / 2;
+            character.MagicDefense = character.Wisdom / 2;
         }
     }
 
@@ -220,7 +283,14 @@ namespace Darkness.Core.ViewModels
     {
         public static async void FireAndForget(this Task task)
         {
-            try { await task; } catch { }
+            try
+            {
+                await task;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Error with Task Extension {e.Message}");
+            }
         }
     }
 }

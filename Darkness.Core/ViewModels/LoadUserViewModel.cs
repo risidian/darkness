@@ -11,15 +11,13 @@ namespace Darkness.Core.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
 
-        [ObservableProperty]
-        private string _username = string.Empty;
+        [ObservableProperty] private string _username = string.Empty;
 
-        [ObservableProperty]
-        private string _password = string.Empty;
+        [ObservableProperty] private string _password = string.Empty;
 
         public LoadUserViewModel(
-            IUserService userService, 
-            ISessionService sessionService, 
+            IUserService userService,
+            ISessionService sessionService,
             INavigationService navigationService,
             IDialogService dialogService)
         {

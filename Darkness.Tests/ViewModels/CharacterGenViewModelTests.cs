@@ -97,10 +97,10 @@ namespace Darkness.Tests.ViewModels
             Assert.NotNull(savedCharacter);
             Assert.Equal("Conan", savedCharacter!.Name);
             Assert.Equal("Warrior", savedCharacter.Class);
-            Assert.Equal(15, savedCharacter.STR);
-            Assert.Equal(10, savedCharacter.DEX);
-            Assert.Equal(15, savedCharacter.CON);
-            Assert.Equal(150, savedCharacter.MaxHP); // CON * 10
+            Assert.Equal(15, savedCharacter.Strength);
+            Assert.Equal(10, savedCharacter.Dexterity);
+            Assert.Equal(15, savedCharacter.Constitution);
+            Assert.Equal(150, savedCharacter.MaxHP); // Constitution * 10
             Assert.Equal(150, savedCharacter.CurrentHP);
             Assert.Equal(1, savedCharacter.UserId);
         }
@@ -121,10 +121,10 @@ namespace Darkness.Tests.ViewModels
             await _viewModel.CreateCharacterCommand.ExecuteAsync(null);
 
             Assert.NotNull(savedCharacter);
-            Assert.Equal(18, savedCharacter!.INT);
-            Assert.Equal(15, savedCharacter.WIS);
-            Assert.Equal(5, savedCharacter.STR);
-            Assert.Equal(80, savedCharacter.MaxHP); // CON(8) * 10
+            Assert.Equal(18, savedCharacter!.Intelligence);
+            Assert.Equal(15, savedCharacter.Wisdom);
+            Assert.Equal(5, savedCharacter.Strength);
+            Assert.Equal(80, savedCharacter.MaxHP); // Constitution(8) * 10
         }
 
         [Fact]
@@ -143,9 +143,9 @@ namespace Darkness.Tests.ViewModels
             await _viewModel.CreateCharacterCommand.ExecuteAsync(null);
 
             Assert.NotNull(savedCharacter);
-            Assert.Equal(18, savedCharacter!.DEX);
-            Assert.Equal(12, savedCharacter.CHA);
-            Assert.Equal(18, savedCharacter.Speed); // DEX
+            Assert.Equal(18, savedCharacter!.Dexterity);
+            Assert.Equal(12, savedCharacter.Charisma);
+            Assert.Equal(18, savedCharacter.Speed); // Dexterity
         }
 
         [Fact]
@@ -206,14 +206,14 @@ namespace Darkness.Tests.ViewModels
             await _viewModel.CreateCharacterCommand.ExecuteAsync(null);
 
             Assert.NotNull(savedCharacter);
-            // Warrior: CON=15, DEX=10, WIS=8
-            Assert.Equal(75, savedCharacter!.Stamina);   // CON * 5
-            Assert.Equal(40, savedCharacter.Mana);       // WIS * 5
-            Assert.Equal(10, savedCharacter.Speed);      // DEX
-            Assert.Equal(85, savedCharacter.Accuracy);   // 80 + DEX/2
-            Assert.Equal(5, savedCharacter.Evasion);     // DEX / 2
-            Assert.Equal(7, savedCharacter.Defense);     // CON / 2
-            Assert.Equal(4, savedCharacter.MagicDefense); // WIS / 2
+            // Warrior: Constitution=15, Dexterity=10, Wisdom=8
+            Assert.Equal(75, savedCharacter!.Stamina);   // Constitution * 5
+            Assert.Equal(40, savedCharacter.Mana);       // Wisdom * 5
+            Assert.Equal(10, savedCharacter.Speed);      // Dexterity
+            Assert.Equal(85, savedCharacter.Accuracy);   // 80 + Dexterity/2
+            Assert.Equal(5, savedCharacter.Evasion);     // Dexterity / 2
+            Assert.Equal(7, savedCharacter.Defense);     // Constitution / 2
+            Assert.Equal(4, savedCharacter.MagicDefense); // Wisdom / 2
         }
 
         [Fact]
