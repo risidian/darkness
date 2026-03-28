@@ -42,9 +42,4 @@
         ContentTemplate="{DataTemplate pages:CharactersPage}"
         Route="CharactersPage" />
 
-    <ShellContent
-        Title="Study"
-        ContentTemplate="{DataTemplate pages:StudyPage}"
-        Route="StudyPage" />
-
 </Shell>

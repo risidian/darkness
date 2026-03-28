@@ -21,84 +21,28 @@ namespace Darkness.Core.ViewModels
         public void SetCharacter(Character character)
         {
             Character = character;
-            NotifyCommandStates();
+            UpgradeAttributeCommand.NotifyCanExecuteChanged();
         }
 
-        private bool CanUpgrade() => Character != null && Character.AttributePoints > 0;
-
-        private void NotifyCommandStates()
-        {
-            UpgradeStrengthCommand.NotifyCanExecuteChanged();
-            UpgradeDexterityCommand.NotifyCanExecuteChanged();
-            UpgradeConstitutionCommand.NotifyCanExecuteChanged();
-            UpgradeIntelligenceCommand.NotifyCanExecuteChanged();
-            UpgradeWisdomCommand.NotifyCanExecuteChanged();
-            UpgradeCharismaCommand.NotifyCanExecuteChanged();
-        }
+        private bool CanUpgrade(string? attribute) => Character != null && Character.AttributePoints > 0;
 
         [RelayCommand(CanExecute = nameof(CanUpgrade))]
-        public async Task UpgradeStrength()
+        public async Task UpgradeAttribute(string? attribute)
         {
-            if (Character == null || Character.AttributePoints <= 0) return;
-            Character.Strength++;
+            if (Character == null || Character.AttributePoints <= 0 || string.IsNullOrEmpty(attribute)) return;
+            
+            switch (attribute)
+            {
+                case "Strength": Character.Strength++; break;
+                case "Dexterity": Character.Dexterity++; break;
+                case "Constitution": Character.Constitution++; break;
+                case "Intelligence": Character.Intelligence++; break;
+                case "Wisdom": Character.Wisdom++; break;
+                case "Charisma": Character.Charisma++; break;
+            }
+            
             Character.AttributePoints--;
-            OnPropertyChanged(nameof(Character));
-            NotifyCommandStates();
-            await _characterService.SaveCharacterAsync(Character);
-        }
-        
-        [RelayCommand(CanExecute = nameof(CanUpgrade))]
-        public async Task UpgradeDexterity()
-        {
-            if (Character == null || Character.AttributePoints <= 0) return;
-            Character.Dexterity++;
-            Character.AttributePoints--;
-            OnPropertyChanged(nameof(Character));
-            NotifyCommandStates();
-            await _characterService.SaveCharacterAsync(Character);
-        }
-
-        [RelayCommand(CanExecute = nameof(CanUpgrade))]
-        public async Task UpgradeConstitution()
-        {
-            if (Character == null || Character.AttributePoints <= 0) return;
-            Character.Constitution++;
-            Character.AttributePoints--;
-            OnPropertyChanged(nameof(Character));
-            NotifyCommandStates();
-            await _characterService.SaveCharacterAsync(Character);
-        }
-
-        [RelayCommand(CanExecute = nameof(CanUpgrade))]
-        public async Task UpgradeIntelligence()
-        {
-            if (Character == null || Character.AttributePoints <= 0) return;
-            Character.Intelligence++;
-            Character.AttributePoints--;
-            OnPropertyChanged(nameof(Character));
-            NotifyCommandStates();
-            await _characterService.SaveCharacterAsync(Character);
-        }
-
-        [RelayCommand(CanExecute = nameof(CanUpgrade))]
-        public async Task UpgradeWisdom()
-        {
-            if (Character == null || Character.AttributePoints <= 0) return;
-            Character.Wisdom++;
-            Character.AttributePoints--;
-            OnPropertyChanged(nameof(Character));
-            NotifyCommandStates();
-            await _characterService.SaveCharacterAsync(Character);
-        }
-
-        [RelayCommand(CanExecute = nameof(CanUpgrade))]
-        public async Task UpgradeCharisma()
-        {
-            if (Character == null || Character.AttributePoints <= 0) return;
-            Character.Charisma++;
-            Character.AttributePoints--;
-            OnPropertyChanged(nameof(Character));
-            NotifyCommandStates();
+            UpgradeAttributeCommand.NotifyCanExecuteChanged();
             await _characterService.SaveCharacterAsync(Character);
         }
     }

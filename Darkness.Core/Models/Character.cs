@@ -1,43 +1,87 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using SQLite;
 
 namespace Darkness.Core.Models
 {
-    public class Character
+    public partial class Character : ObservableObject
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
+        [property: PrimaryKey, property: AutoIncrement]
+        [ObservableProperty]
+        private int _id;
         
-        [Indexed]
-        public int UserId { get; set; }
+        [property: Indexed]
+        [ObservableProperty]
+        private int _userId;
 
-        public string Name { get; set; } = string.Empty;
-        public string Class { get; set; } = string.Empty;
-        public string HairColor { get; set; } = string.Empty;
-        public string HairStyle { get; set; } = string.Empty;
-        public string SkinColor { get; set; } = string.Empty;
+        [ObservableProperty]
+        private string _name = string.Empty;
+
+        [ObservableProperty]
+        private string _class = string.Empty;
+
+        [ObservableProperty]
+        private string _hairColor = string.Empty;
+
+        [ObservableProperty]
+        private string _hairStyle = string.Empty;
+
+        [ObservableProperty]
+        private string _skinColor = string.Empty;
         
         // Base Stats
-        public int Strength { get; set; }
-        public int Dexterity { get; set; }
-        public int Constitution { get; set; }
-        public int Intelligence { get; set; }
-        public int Wisdom { get; set; }
-        public int Charisma { get; set; }
+        [ObservableProperty]
+        private int _strength;
+
+        [ObservableProperty]
+        private int _dexterity;
+
+        [ObservableProperty]
+        private int _constitution;
+
+        [ObservableProperty]
+        private int _intelligence;
+
+        [ObservableProperty]
+        private int _wisdom;
+
+        [ObservableProperty]
+        private int _charisma;
         
         // Derived Stats
-        public int CurrentHP { get; set; }
-        public int MaxHP { get; set; }
-        public int Stamina { get; set; }
-        public int Mana { get; set; }
-        
-        public int Speed { get; set; }
-        public int Accuracy { get; set; }
-        public int Evasion { get; set; }
-        public int Defense { get; set; }
-        public int MagicDefense { get; set; }
+        [ObservableProperty]
+        private int _currentHP;
 
-        public int Level { get; set; }
-        public int Experience { get; set; }
-        public int AttributePoints { get; set; } = 5;
+        [ObservableProperty]
+        private int _maxHP;
+
+        [ObservableProperty]
+        private int _stamina;
+
+        [ObservableProperty]
+        private int _mana;
+        
+        [ObservableProperty]
+        private int _speed;
+
+        [ObservableProperty]
+        private int _accuracy;
+
+        [ObservableProperty]
+        private int _evasion;
+
+        [ObservableProperty]
+        private int _defense;
+
+        [ObservableProperty]
+        private int _magicDefense;
+
+        [ObservableProperty]
+        private int _level;
+
+        [ObservableProperty]
+        private int _experience;
+
+        [ObservableProperty]
+        private int _attributePoints = 5;
     }
 }
