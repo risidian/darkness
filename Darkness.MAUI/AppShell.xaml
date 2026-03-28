@@ -42,4 +42,9 @@
         ContentTemplate="{DataTemplate pages:CharactersPage}"
         Route="CharactersPage" />
 
+    <ShellContent
+        Title="Forge"
+        ContentTemplate="{DataTemplate pages:ForgePage}"
+        Route="ForgePage" />
+
 </Shell>
