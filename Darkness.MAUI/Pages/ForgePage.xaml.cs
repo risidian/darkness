@@ -16,7 +16,14 @@ namespace Darkness.MAUI.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await _viewModel.LoadDataAsync();
+            try
+            {
+                await _viewModel.LoadDataAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading forge data: {ex.Message}");
+            }
         }
     }
 }
