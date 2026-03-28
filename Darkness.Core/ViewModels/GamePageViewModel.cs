@@ -6,12 +6,24 @@ using Darkness.Core.Models;
 namespace Darkness.Core.ViewModels
 {
     [QueryProperty(nameof(Encounter), "Encounter")]
+    [QueryProperty(nameof(Mode), "Mode")]
+    [QueryProperty(nameof(Player1), "Player1")]
+    [QueryProperty(nameof(Player2), "Player2")]
     public partial class GamePageViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private DeathmatchEncounter? _encounter;
+
+        [ObservableProperty]
+        private string _mode = string.Empty;
+
+        [ObservableProperty]
+        private Character? _player1;
+
+        [ObservableProperty]
+        private Character? _player2;
 
         public GamePageViewModel(INavigationService navigationService)
         {

@@ -57,4 +57,9 @@
         ContentTemplate="{DataTemplate pages:AlliesPage}"
         Route="AlliesPage" />
 
+    <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate pages:SettingsPage}"
+        Route="SettingsPage" />
+
 </Shell>

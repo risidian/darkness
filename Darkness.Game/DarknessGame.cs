@@ -5,11 +5,13 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Darkness.Core.Models;
 using Darkness.Game.Scenes;
+using Darkness.Core.Interfaces;
 
 namespace Darkness.Game
 {
     public class DarknessGame : Microsoft.Xna.Framework.Game
     {
+        private readonly ICombatService _combatService;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch? _spriteBatch;
         private WorldScene? _worldScene;
@@ -20,8 +22,9 @@ namespace Darkness.Game
         private bool _isDeathmatchActive = false;
         private bool _isPvpActive = false;
 
-        public DarknessGame()
+        public DarknessGame(ICombatService combatService)
         {
+            _combatService = combatService;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -49,7 +52,7 @@ namespace Darkness.Game
 
         public void StartPvp(Character player1, Character player2)
         {
-            _pvpScene = new PvpScene(this, player1, player2);
+            _pvpScene = new PvpScene(this, _combatService, player1, player2);
             _pvpScene.BattleEnded += (s, e) => _isPvpActive = false;
             _pvpScene.LoadContent(Content);
             _isPvpActive = true;

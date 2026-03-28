@@ -28,16 +28,16 @@ namespace Darkness.Game.Scenes
 
         public event EventHandler? BattleEnded;
 
-        public PvpScene(Microsoft.Xna.Framework.Game game, Character player1, Character player2)
+        public PvpScene(Microsoft.Xna.Framework.Game game, ICombatService combatService, Character player1, Character player2)
         {
             _game = game;
-            _combatService = new CombatEngine();
+            _combatService = combatService;
             _player1 = player1;
             _player2 = player2;
             
-            // For PvP, we use a simplified turn order calculation for now
-            _turnOrder = new List<Character> { _player1, _player2 }
-                .OrderByDescending(c => c.Dexterity + c.Speed + new Random().Next(1, 11))
+            // Use the combat service to calculate turn order
+            _turnOrder = _combatService.CalculateTurnOrder(new List<Character> { _player1, _player2 }, new List<Enemy>())
+                .Cast<Character>()
                 .ToList();
             
             _currentTurnIndex = 0;

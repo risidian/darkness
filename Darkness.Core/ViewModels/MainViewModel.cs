@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Darkness.Core.Interfaces;
-using Darkness.MAUI.Pages;
 
 namespace Darkness.Core.ViewModels
 {
@@ -91,14 +90,35 @@ namespace Darkness.Core.ViewModels
 
         // Placeholder commands for menu buttons
         [RelayCommand] public Task StorylineAsync() => _dialogService.DisplayAlertAsync("Mode", "Storyline coming soon!", "OK");
-        [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync(nameof(CharactersPage));
-        [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync(nameof(DeathmatchPage));
+        [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync("CharactersPage");
+        [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync("DeathmatchPage");
         [RelayCommand] public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
-        [RelayCommand] public Task PvpAsync() => _navigationService.NavigateToAsync(nameof(GamePage));
+        
+        [RelayCommand] 
+        public async Task PvpAsync() 
+        {
+            if (_sessionService.CurrentUser == null) return;
+            var characters = await _characterService.GetCharactersForUserAsync(_sessionService.CurrentUser.Id);
+            if (characters == null || characters.Count < 2)
+            {
+                await _dialogService.DisplayAlertAsync("PVP", "You need at least two characters to play PVP.", "OK");
+                return;
+            }
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "Mode", "PVP" },
+                { "Player1", characters[0] },
+                { "Player2", characters[1] }
+            };
+
+            await _navigationService.NavigateToAsync("GamePage", parameters);
+        }
+
         [RelayCommand] public Task SiegeAsync() => _dialogService.DisplayAlertAsync("Mode", "Siege coming soon!", "OK");
-        [RelayCommand] public Task AlliesAsync() => _navigationService.NavigateToAsync(nameof(AlliesPage));
-        [RelayCommand] public Task ForgeAsync() => _navigationService.NavigateToAsync(nameof(ForgePage));
+        [RelayCommand] public Task AlliesAsync() => _navigationService.NavigateToAsync("AlliesPage");
+        [RelayCommand] public Task ForgeAsync() => _navigationService.NavigateToAsync("ForgePage");
         [RelayCommand] public Task StudyAsync() => _dialogService.DisplayAlertAsync("Mode", "Study coming soon!", "OK");
-        [RelayCommand] public Task SettingsAsync() => _dialogService.DisplayAlertAsync("Mode", "Settings coming soon!", "OK");
+        [RelayCommand] public Task SettingsAsync() => _navigationService.NavigateToAsync("SettingsPage");
     }
 }

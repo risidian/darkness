@@ -16,5 +16,6 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(ForgePage), typeof(ForgePage));
 		Routing.RegisterRoute(nameof(AlliesPage), typeof(AlliesPage));
 		Routing.RegisterRoute(nameof(DeathmatchPage), typeof(DeathmatchPage));
+		Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 	}
 }

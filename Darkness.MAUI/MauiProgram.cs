@@ -38,6 +38,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ICraftingService, CraftingService>();
 		builder.Services.AddSingleton<IDeathmatchService, DeathmatchService>();
 		builder.Services.AddSingleton<IAllyService, AllyService>();
+		builder.Services.AddSingleton<ISettingsService, SettingsService>();
+		builder.Services.AddSingleton<ICombatService, CombatEngine>();
 		builder.Services.AddSingleton<INavigationService, MauiNavigationService>();
 		builder.Services.AddSingleton<IDialogService, MauiDialogService>();
 		builder.Services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();
@@ -48,6 +50,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<LoadUserViewModel>();
 		builder.Services.AddTransient<CharacterGenViewModel>();
 		builder.Services.AddTransient<MainViewModel>();
+		builder.Services.AddTransient<SettingsViewModel>();
 		builder.Services.AddTransient<CreateUserViewModel>();
 		builder.Services.AddTransient<BattlePageViewModel>();
 		builder.Services.AddTransient<GamePageViewModel>();
@@ -61,6 +64,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<Pages.CreateUserPage>();
 		builder.Services.AddTransient<Pages.LoadUserPage>();
 		builder.Services.AddTransient<Pages.CharacterGenPage>();
+		builder.Services.AddTransient<Pages.SettingsPage>();
 		builder.Services.AddTransient<Pages.GamePage>();
 		builder.Services.AddTransient<Pages.BattlePage>();
 		builder.Services.AddTransient<Pages.CharactersPage>();
