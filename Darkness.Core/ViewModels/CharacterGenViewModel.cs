@@ -16,33 +16,47 @@ namespace Darkness.Core.ViewModels
         private readonly ISpriteCompositor _compositor;
         private readonly IFileSystemService _fileSystem;
 
-        [ObservableProperty] private string _characterName = string.Empty;
+        [ObservableProperty]
+        private string _characterName;
 
-        [ObservableProperty] private string _selectedClass = "Warrior";
+        [ObservableProperty]
+        private string _selectedClass;
 
-        [ObservableProperty] private string _selectedHairColor = "Black";
+        [ObservableProperty]
+        private string _selectedHairColor;
 
-        [ObservableProperty] private string _selectedSkinColor = "Light";
+        [ObservableProperty]
+        private string _selectedSkinColor;
 
-        [ObservableProperty] private string _selectedFace = "Default";
+        [ObservableProperty]
+        private string _selectedFace;
 
-        [ObservableProperty] private string _selectedEyes = "Default";
+        [ObservableProperty]
+        private string _selectedEyes;
 
-        [ObservableProperty] private string _selectedHead = "Human Male";
+        [ObservableProperty]
+        private string _selectedHead;
 
-        [ObservableProperty] private string _selectedFeet = "Boots (Basic)";
+        [ObservableProperty]
+        private string _selectedFeet;
 
-        [ObservableProperty] private string _selectedArms = "None";
+        [ObservableProperty]
+        private string _selectedArms;
 
-        [ObservableProperty] private string _selectedLegs = "Slacks";
+        [ObservableProperty]
+        private string _selectedLegs;
 
-        [ObservableProperty] private string _selectedHairStyle = "Long";
+        [ObservableProperty]
+        private string _selectedHairStyle;
 
-        [ObservableProperty] private string _selectedArmor = "Plate (Steel)";
+        [ObservableProperty]
+        private string _selectedArmor;
 
-        [ObservableProperty] private string _selectedWeapon = "Arming Sword (Steel)";
+        [ObservableProperty]
+        private string _selectedWeapon;
 
-        [ObservableProperty] private byte[]? _previewImageBytes;
+        [ObservableProperty]
+        private byte[]? _previewImageBytes;
         public List<string> Classes { get; } = new() { "Knight", "Rogue", "Mage", "Warrior", "Cleric" };
         public List<string> HairColors => _catalog.HairColors;
         public List<string> SkinColors => _catalog.SkinColors;
@@ -72,6 +86,23 @@ namespace Darkness.Core.ViewModels
             _catalog = catalog;
             _compositor = compositor;
             _fileSystem = fileSystem;
+
+            // Set default values here to ensure OnPropertyChanged is raised
+            CharacterName = string.Empty;
+            SelectedClass = "Warrior";
+            SelectedHairColor = "Black";
+            SelectedSkinColor = "Light";
+            SelectedFace = "Default";
+            SelectedEyes = "Default";
+            SelectedHead = "Human Male";
+            SelectedFeet = "Boots (Basic)";
+            SelectedArms = "None";
+            SelectedLegs = "Slacks";
+            SelectedHairStyle = "Long";
+            SelectedArmor = "Plate (Steel)";
+            SelectedWeapon = "Arming Sword (Steel)";
+
+            UpdatePreviewAsync().FireAndForget();
         }
 
         partial void OnSelectedClassChanged(string value)
