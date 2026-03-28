@@ -10,6 +10,7 @@ namespace Darkness.Core.ViewModels
         private readonly IUserService _userService;
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
+        private readonly ISessionService _sessionService;
 
         [ObservableProperty]
         private string _username = string.Empty;
@@ -23,11 +24,13 @@ namespace Darkness.Core.ViewModels
         public CreateUserViewModel(
             IUserService userService,
             INavigationService navigationService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            ISessionService sessionService)
         {
             _userService = userService;
             _navigationService = navigationService;
             _dialogService = dialogService;
+            _sessionService = sessionService;
         }
 
         [RelayCommand]
@@ -55,7 +58,8 @@ namespace Darkness.Core.ViewModels
                 if (success)
                 {
                     await _dialogService.DisplayAlertAsync("Success", $"Created user: {newUser.Username}", "OK");
-                    await _navigationService.NavigateToAsync("///LoadUserPage");
+                    _sessionService.CurrentUser = newUser;
+                    await _navigationService.NavigateToAsync("///CharacterGenPage");
                 }
                 else
                 {

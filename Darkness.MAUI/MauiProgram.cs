@@ -26,6 +26,7 @@ public static class MauiProgram
 #endif
 
 		// Register Platform Services
+		builder.Services.AddSingleton<IDispatcherService, MauiDispatcherService>();
 		builder.Services.AddSingleton<IFileSystemService, MauiFileSystemService>();
 
 		// Register Core Services

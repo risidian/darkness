@@ -10,6 +10,7 @@ namespace Darkness.Core.ViewModels
         private readonly ISessionService _sessionService;
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
+        private readonly ICharacterService _characterService;
 
         [ObservableProperty] private string _username = string.Empty;
 
@@ -19,12 +20,14 @@ namespace Darkness.Core.ViewModels
             IUserService userService,
             ISessionService sessionService,
             INavigationService navigationService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            ICharacterService characterService)
         {
             _userService = userService;
             _sessionService = sessionService;
             _navigationService = navigationService;
             _dialogService = dialogService;
+            _characterService = characterService;
         }
 
         [RelayCommand]
@@ -42,7 +45,15 @@ namespace Darkness.Core.ViewModels
                 if (user != null)
                 {
                     _sessionService.CurrentUser = user;
-                    await _navigationService.NavigateToAsync("///MainPage");
+                    var characters = await _characterService.GetCharactersByUserIdAsync(user.Id);
+                    if (characters == null || characters.Count == 0)
+                    {
+                        await _navigationService.NavigateToAsync("///CharacterGenPage");
+                    }
+                    else
+                    {
+                        await _navigationService.NavigateToAsync("///MainPage");
+                    }
                 }
                 else
                 {

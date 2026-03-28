@@ -10,6 +10,7 @@ namespace Darkness.Tests.ViewModels
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IDialogService> _dialogServiceMock;
+        private readonly Mock<ISessionService> _sessionServiceMock;
         private readonly CreateUserViewModel _viewModel;
 
         public CreateUserViewModelTests()
@@ -17,11 +18,13 @@ namespace Darkness.Tests.ViewModels
             _userServiceMock = new Mock<IUserService>();
             _navigationServiceMock = new Mock<INavigationService>();
             _dialogServiceMock = new Mock<IDialogService>();
+            _sessionServiceMock = new Mock<ISessionService>();
 
             _viewModel = new CreateUserViewModel(
                 _userServiceMock.Object,
                 _navigationServiceMock.Object,
-                _dialogServiceMock.Object);
+                _dialogServiceMock.Object,
+                _sessionServiceMock.Object);
         }
 
         [Fact]
@@ -72,7 +75,8 @@ namespace Darkness.Tests.ViewModels
             await _viewModel.CreateAccountCommand.ExecuteAsync(null);
 
             _dialogServiceMock.Verify(x => x.DisplayAlertAsync("Success", It.Is<string>(s => s.Contains("newuser")), "OK"), Times.Once);
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///LoadUserPage", null), Times.Once);
+            _sessionServiceMock.VerifySet(x => x.CurrentUser = It.Is<User>(u => u.Username == "newuser"), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("///CharacterGenPage", null), Times.Once);
         }
 
         [Fact]

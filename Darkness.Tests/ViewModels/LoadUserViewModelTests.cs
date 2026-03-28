@@ -11,6 +11,7 @@ namespace Darkness.Tests.ViewModels
         private readonly Mock<ISessionService> _sessionServiceMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IDialogService> _dialogServiceMock;
+        private readonly Mock<ICharacterService> _characterServiceMock;
         private readonly LoadUserViewModel _viewModel;
 
         public LoadUserViewModelTests()
@@ -19,12 +20,14 @@ namespace Darkness.Tests.ViewModels
             _sessionServiceMock = new Mock<ISessionService>();
             _navigationServiceMock = new Mock<INavigationService>();
             _dialogServiceMock = new Mock<IDialogService>();
+            _characterServiceMock = new Mock<ICharacterService>();
 
             _viewModel = new LoadUserViewModel(
                 _userServiceMock.Object,
                 _sessionServiceMock.Object,
                 _navigationServiceMock.Object,
-                _dialogServiceMock.Object);
+                _dialogServiceMock.Object,
+                _characterServiceMock.Object);
         }
 
         [Fact]
@@ -43,13 +46,33 @@ namespace Darkness.Tests.ViewModels
         }
 
         [Fact]
-        public async Task LoginAsync_WithValidCredentials_SetsSessionAndNavigates()
+        public async Task LoginAsync_WithValidCredentials_NoCharacters_NavigatesToCharacterGen()
         {
             // Arrange
             var user = new User { Id = 1, Username = "testuser" };
             _viewModel.Username = "testuser";
             _viewModel.Password = "password";
             _userServiceMock.Setup(x => x.GetUserAsync("testuser", "password")).ReturnsAsync(user);
+            _characterServiceMock.Setup(x => x.GetCharactersByUserIdAsync(1)).ReturnsAsync(new List<Character>());
+
+            // Act
+            await _viewModel.LoginCommand.ExecuteAsync(null);
+
+            // Assert
+            _sessionServiceMock.VerifySet(x => x.CurrentUser = user, Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("///CharacterGenPage", null), Times.Once);
+        }
+
+        [Fact]
+        public async Task LoginAsync_WithValidCredentials_HasCharacters_NavigatesToMainPage()
+        {
+            // Arrange
+            var user = new User { Id = 1, Username = "testuser" };
+            _viewModel.Username = "testuser";
+            _viewModel.Password = "password";
+            _userServiceMock.Setup(x => x.GetUserAsync("testuser", "password")).ReturnsAsync(user);
+            _characterServiceMock.Setup(x => x.GetCharactersByUserIdAsync(1))
+                .ReturnsAsync(new List<Character> { new Character { Id = 1, Name = "Hero" } });
 
             // Act
             await _viewModel.LoginCommand.ExecuteAsync(null);

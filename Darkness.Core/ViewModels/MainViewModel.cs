@@ -34,23 +34,28 @@ namespace Darkness.Core.ViewModels
 
         public async Task OnAppearingAsync()
         {
-            await CheckForCharacterAsync();
-            await CheckDailyRewardAsync();
+            if (await CheckForCharacterAsync())
+            {
+                await CheckDailyRewardAsync();
+            }
         }
 
-        private async Task CheckForCharacterAsync()
+        private async Task<bool> CheckForCharacterAsync()
         {
             if (_sessionService.CurrentUser == null)
             {
                 await _navigationService.NavigateToAsync("///LoadUserPage");
-                return;
+                return false;
             }
 
             var characters = await _characterService.GetCharactersByUserIdAsync(_sessionService.CurrentUser.Id);
             if (characters == null || characters.Count == 0)
             {
-                await _navigationService.NavigateToAsync("CharacterGenPage");
+                await _navigationService.NavigateToAsync("///CharacterGenPage");
+                return false;
             }
+
+            return true;
         }
 
         private async Task CheckDailyRewardAsync()
