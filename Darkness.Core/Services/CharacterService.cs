@@ -58,5 +58,11 @@ namespace Darkness.Core.Services
                 .Where(c => c.Id == characterId)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<List<Character>> GetCharactersForUserAsync(int userId)
+        {
+            await InitializeAsync();
+            return await _database.Table<Character>().Where(c => c.UserId == userId).ToListAsync();
+        }
     }
 }

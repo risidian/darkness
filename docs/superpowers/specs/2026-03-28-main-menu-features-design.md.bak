@@ -54,7 +54,6 @@ The features will be implemented in the following order to prioritize the core s
 5.  **Allies Screen (MVVM):** Introduces social features.
 6.  **PVP (Local Hot-seat) Scene:** A basic implementation of player-vs-player combat.
 7.  **Settings Screen (MVVM):** Important but not critical for the initial gameplay loop.
-8.  **StoryMode**: Build out the initial scene for the gane loop
 
 ### 3.2 Future Roadmap
 -   **Asynchronous PVP:** The local hot-seat PVP will be a stepping stone towards a more advanced asynchronous PVP system, which will be implemented in a future update. This will involve significant backend development.

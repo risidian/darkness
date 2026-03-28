@@ -9,5 +9,6 @@ namespace Darkness.Core.Interfaces
         Task<bool> SaveCharacterAsync(Character character);
         Task<List<Character>> GetCharactersByUserIdAsync(int userId);
         Task<Character?> GetCharacterByIdAsync(int characterId);
+        Task<List<Character>> GetCharactersForUserAsync(int userId);
     }
 }
