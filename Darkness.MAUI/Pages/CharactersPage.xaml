@@ -19,6 +19,7 @@
             <Label Text="{Binding SelectedCharacter.Class}" />
             <Label Text="{Binding SelectedCharacter.Level, StringFormat='Level: {0}'}" />
             <Label Text="{Binding SelectedCharacter.Experience, StringFormat='XP: {0}'}" />
+            <Button Text="Study" Command="{Binding GoToStudyCommand}" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

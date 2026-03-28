@@ -38,5 +38,6 @@ namespace Darkness.Core.Models
 
         public int Level { get; set; }
         public int Experience { get; set; }
+        public int AttributePoints { get; set; } = 5;
     }
 }

@@ -48,7 +48,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<CreateUserViewModel>();
 		builder.Services.AddTransient<BattlePageViewModel>();
 		builder.Services.AddTransient<GamePageViewModel>();
-        builder.Services.AddTransient<CharactersViewModel>();
+		builder.Services.AddTransient<CharactersViewModel>();
+		builder.Services.AddTransient<StudyViewModel>();
 
 		// Register Pages
 		builder.Services.AddTransient<Pages.CreateUserPage>();
@@ -56,12 +57,12 @@ public static class MauiProgram
 		builder.Services.AddTransient<Pages.CharacterGenPage>();
 		builder.Services.AddTransient<Pages.GamePage>();
 		builder.Services.AddTransient<Pages.BattlePage>();
-        builder.Services.AddTransient<Pages.CharactersPage>();
+		builder.Services.AddTransient<Pages.CharactersPage>();
+		builder.Services.AddTransient<Pages.StudyPage>();
 		builder.Services.AddTransient<MainPage>();
 
 		return builder.Build();
-	}
-}
+		}}
 
 public class MauiFileSystemService : IFileSystemService
 {
