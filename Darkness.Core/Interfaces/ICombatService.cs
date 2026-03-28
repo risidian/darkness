@@ -31,6 +31,15 @@ namespace Darkness.Core.Interfaces
         int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null);
 
         /// <summary>
+        /// Calculates damage dealt by a character to another character.
+        /// </summary>
+        /// <param name="attacker">The character attacking.</param>
+        /// <param name="defender">The character defending.</param>
+        /// <param name="skill">The skill used, if any.</param>
+        /// <returns>The amount of damage dealt.</returns>
+        int CalculateDamage(Character attacker, Character defender, Skill? skill = null);
+
+        /// <summary>
         /// Checks if a status effect is applied based on resistance.
         /// </summary>
         /// <param name="target">The target of the status effect.</param>

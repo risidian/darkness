@@ -15,8 +15,10 @@ namespace Darkness.Game
         private WorldScene? _worldScene;
         private BattleScene? _battleScene;
         private DeathmatchScene? _deathmatchScene;
+        private PvpScene? _pvpScene;
         private bool _isBattleActive = false;
         private bool _isDeathmatchActive = false;
+        private bool _isPvpActive = false;
 
         public DarknessGame()
         {
@@ -32,6 +34,7 @@ namespace Darkness.Game
             _battleScene.LoadContent(Content);
             _isBattleActive = true;
             _isDeathmatchActive = false;
+            _isPvpActive = false;
         }
 
         public void StartDeathmatch(List<Character> party, DeathmatchEncounter encounter)
@@ -41,6 +44,17 @@ namespace Darkness.Game
             _deathmatchScene.LoadContent(Content);
             _isDeathmatchActive = true;
             _isBattleActive = false;
+            _isPvpActive = false;
+        }
+
+        public void StartPvp(Character player1, Character player2)
+        {
+            _pvpScene = new PvpScene(this, player1, player2);
+            _pvpScene.BattleEnded += (s, e) => _isPvpActive = false;
+            _pvpScene.LoadContent(Content);
+            _isPvpActive = true;
+            _isBattleActive = false;
+            _isDeathmatchActive = false;
         }
 
         protected override void Initialize()
@@ -68,6 +82,10 @@ namespace Darkness.Game
             {
                 _deathmatchScene?.Update(gameTime);
             }
+            else if (_isPvpActive)
+            {
+                _pvpScene?.Update(gameTime);
+            }
             else
             {
                 _worldScene?.Update(gameTime);
@@ -88,6 +106,10 @@ namespace Darkness.Game
             else if (_isDeathmatchActive)
             {
                 if (_spriteBatch != null) _deathmatchScene?.Draw(_spriteBatch);
+            }
+            else if (_isPvpActive)
+            {
+                if (_spriteBatch != null) _pvpScene?.Draw(_spriteBatch);
             }
             else
             {

@@ -88,6 +88,34 @@ namespace Darkness.Core.Logic
             return damage;
         }
 
+        public int CalculateDamage(Character attacker, Character defender, Skill? skill = null)
+        {
+            // Deduct costs if a skill is used
+            if (skill != null)
+            {
+                attacker.Mana -= skill.ManaCost;
+                attacker.Stamina -= skill.StaminaCost;
+            }
+
+            int baseAttack = attacker.Strength;
+            int power = skill?.BasePower ?? 0;
+            int totalAttack = baseAttack + power;
+
+            int damage = (totalAttack * 2) - defender.Defense;
+
+            // Critical hit calculation (Base 5% as Luck is not present)
+            bool isCritical = _random.NextDouble() < 0.05;
+            if (isCritical)
+            {
+                damage = (int)(damage * 1.5);
+            }
+
+            // Ensure damage is at least 0
+            damage = Math.Max(0, damage);
+
+            return damage;
+        }
+
         public bool CheckStatusEffect(Character target, StatusEffect effect)
         {
             // Resistance logic: Base chance could be influenced by Wisdom or something similar.

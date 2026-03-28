@@ -94,7 +94,7 @@ namespace Darkness.Core.ViewModels
         [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync(nameof(CharactersPage));
         [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync(nameof(DeathmatchPage));
         [RelayCommand] public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
-        [RelayCommand] public Task PvpAsync() => _dialogService.DisplayAlertAsync("Mode", "Pvp coming soon!", "OK");
+        [RelayCommand] public Task PvpAsync() => _navigationService.NavigateToAsync(nameof(GamePage));
         [RelayCommand] public Task SiegeAsync() => _dialogService.DisplayAlertAsync("Mode", "Siege coming soon!", "OK");
         [RelayCommand] public Task AlliesAsync() => _navigationService.NavigateToAsync(nameof(AlliesPage));
         [RelayCommand] public Task ForgeAsync() => _navigationService.NavigateToAsync(nameof(ForgePage));
