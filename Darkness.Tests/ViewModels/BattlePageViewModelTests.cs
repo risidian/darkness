@@ -41,18 +41,18 @@ namespace Darkness.Tests.ViewModels
         }
 
         [Fact]
-        public void Initialize_Beat8_ShowsEliteGuardsWithTywin()
+        public void Initialize_Beat8_ShowsAraknosDemonWithTywin()
         {
             _viewModel.Initialize(8);
 
-            Assert.Contains("Elite Guard A", _viewModel.StatusText);
+            Assert.Contains("Araknos Demon", _viewModel.StatusText);
             Assert.Contains("Tywin", _viewModel.StatusText);
         }
 
         [Fact]
-        public void Initialize_Beat10_ShowsFinalBossWithTywin()
+        public void Initialize_Beat9_ShowsFinalBossWithTywin()
         {
-            _viewModel.Initialize(10);
+            _viewModel.Initialize(9);
 
             Assert.Contains("Kyarias the Undead King", _viewModel.StatusText);
             Assert.Contains("Tywin", _viewModel.StatusText);
@@ -69,7 +69,7 @@ namespace Darkness.Tests.ViewModels
         [Fact]
         public void Initialize_BeatAfter8_IncludesTywin()
         {
-            _viewModel.Initialize(9);
+            _viewModel.Initialize(8);
 
             Assert.Contains("Tywin", _viewModel.StatusText);
         }

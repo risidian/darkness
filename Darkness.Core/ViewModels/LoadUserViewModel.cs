@@ -45,7 +45,7 @@ namespace Darkness.Core.ViewModels
                 if (user != null)
                 {
                     _sessionService.CurrentUser = user;
-                    var characters = await _characterService.GetCharactersByUserIdAsync(user.Id);
+                    var characters = await _characterService.GetCharactersForUserAsync(user.Id);
                     if (characters == null || characters.Count == 0)
                     {
                         await _navigationService.NavigateToAsync("///CharacterGenPage");

@@ -5,11 +5,11 @@ namespace Darkness.Core.Models
 {
     public partial class Character : ObservableObject
     {
-        [PrimaryKey, AutoIncrement]
+        [property: PrimaryKey, AutoIncrement]
         [ObservableProperty]
         private int _id;
         
-        [Indexed]
+        [property: Indexed]
         [ObservableProperty]
         private int _userId;
 

@@ -53,7 +53,7 @@ namespace Darkness.Tests.ViewModels
             _viewModel.Username = "testuser";
             _viewModel.Password = "password";
             _userServiceMock.Setup(x => x.GetUserAsync("testuser", "password")).ReturnsAsync(user);
-            _characterServiceMock.Setup(x => x.GetCharactersByUserIdAsync(1)).ReturnsAsync(new List<Character>());
+            _characterServiceMock.Setup(x => x.GetCharactersForUserAsync(1)).ReturnsAsync(new List<Character>());
 
             // Act
             await _viewModel.LoginCommand.ExecuteAsync(null);
@@ -71,7 +71,7 @@ namespace Darkness.Tests.ViewModels
             _viewModel.Username = "testuser";
             _viewModel.Password = "password";
             _userServiceMock.Setup(x => x.GetUserAsync("testuser", "password")).ReturnsAsync(user);
-            _characterServiceMock.Setup(x => x.GetCharactersByUserIdAsync(1))
+            _characterServiceMock.Setup(x => x.GetCharactersForUserAsync(1))
                 .ReturnsAsync(new List<Character> { new Character { Id = 1, Name = "Hero" } });
 
             // Act

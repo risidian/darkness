@@ -5,10 +5,6 @@ using Darkness.Core.Models;
 
 namespace Darkness.Core.ViewModels
 {
-    [QueryProperty(nameof(Encounter), "Encounter")]
-    [QueryProperty(nameof(Mode), "Mode")]
-    [QueryProperty(nameof(Player1), "Player1")]
-    [QueryProperty(nameof(Player2), "Player2")]
     public partial class GamePageViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;

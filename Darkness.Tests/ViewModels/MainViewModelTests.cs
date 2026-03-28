@@ -49,7 +49,7 @@ namespace Darkness.Tests.ViewModels
             // Arrange
             var user = new User { Id = 1 };
             _sessionServiceMock.Setup(x => x.CurrentUser).Returns(user);
-            _characterServiceMock.Setup(x => x.GetCharactersByUserIdAsync(1)).ReturnsAsync(new List<Character>());
+            _characterServiceMock.Setup(x => x.GetCharactersForUserAsync(1)).ReturnsAsync(new List<Character>());
 
             // Act
             await _viewModel.OnAppearingAsync();
@@ -65,7 +65,7 @@ namespace Darkness.Tests.ViewModels
             var user = new User { Id = 1 };
             var reward = new Item { Name = "Gold", Description = "Some gold" };
             _sessionServiceMock.Setup(x => x.CurrentUser).Returns(user);
-            _characterServiceMock.Setup(x => x.GetCharactersByUserIdAsync(1)).ReturnsAsync(new List<Character> { new Character() });
+            _characterServiceMock.Setup(x => x.GetCharactersForUserAsync(1)).ReturnsAsync(new List<Character> { new Character() });
             _rewardServiceMock.Setup(x => x.CheckDailyRewardAsync(user)).ReturnsAsync(reward);
 
             // Act
