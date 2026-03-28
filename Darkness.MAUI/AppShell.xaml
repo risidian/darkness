@@ -52,4 +52,9 @@
         ContentTemplate="{DataTemplate pages:DeathmatchPage}"
         Route="DeathmatchPage" />
 
+    <ShellContent
+        Title="Allies"
+        ContentTemplate="{DataTemplate pages:AlliesPage}"
+        Route="AlliesPage" />
+
 </Shell>
