@@ -92,7 +92,7 @@ namespace Darkness.Core.ViewModels
         // Placeholder commands for menu buttons
         [RelayCommand] public Task StorylineAsync() => _dialogService.DisplayAlertAsync("Mode", "Storyline coming soon!", "OK");
         [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync(nameof(CharactersPage));
-        [RelayCommand] public Task DeathmatchAsync() => _dialogService.DisplayAlertAsync("Mode", "Deathmatch coming soon!", "OK");
+        [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync(nameof(DeathmatchPage));
         [RelayCommand] public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
         [RelayCommand] public Task PvpAsync() => _dialogService.DisplayAlertAsync("Mode", "Pvp coming soon!", "OK");
         [RelayCommand] public Task SiegeAsync() => _dialogService.DisplayAlertAsync("Mode", "Siege coming soon!", "OK");

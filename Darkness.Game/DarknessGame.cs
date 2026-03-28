@@ -14,7 +14,9 @@ namespace Darkness.Game
         private SpriteBatch? _spriteBatch;
         private WorldScene? _worldScene;
         private BattleScene? _battleScene;
+        private DeathmatchScene? _deathmatchScene;
         private bool _isBattleActive = false;
+        private bool _isDeathmatchActive = false;
 
         public DarknessGame()
         {
@@ -29,6 +31,16 @@ namespace Darkness.Game
             _battleScene.BattleEnded += (s, e) => _isBattleActive = false;
             _battleScene.LoadContent(Content);
             _isBattleActive = true;
+            _isDeathmatchActive = false;
+        }
+
+        public void StartDeathmatch(List<Character> party, DeathmatchEncounter encounter)
+        {
+            _deathmatchScene = new DeathmatchScene(this, party, encounter);
+            _deathmatchScene.BattleEnded += (s, e) => _isDeathmatchActive = false;
+            _deathmatchScene.LoadContent(Content);
+            _isDeathmatchActive = true;
+            _isBattleActive = false;
         }
 
         protected override void Initialize()
@@ -52,6 +64,10 @@ namespace Darkness.Game
             {
                 _battleScene?.Update(gameTime);
             }
+            else if (_isDeathmatchActive)
+            {
+                _deathmatchScene?.Update(gameTime);
+            }
             else
             {
                 _worldScene?.Update(gameTime);
@@ -68,6 +84,10 @@ namespace Darkness.Game
             if (_isBattleActive)
             {
                 if (_spriteBatch != null) _battleScene?.Draw(_spriteBatch);
+            }
+            else if (_isDeathmatchActive)
+            {
+                if (_spriteBatch != null) _deathmatchScene?.Draw(_spriteBatch);
             }
             else
             {

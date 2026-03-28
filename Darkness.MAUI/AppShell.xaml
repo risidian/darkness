@@ -47,4 +47,9 @@
         ContentTemplate="{DataTemplate pages:ForgePage}"
         Route="ForgePage" />
 
+    <ShellContent
+        Title="Deathmatch"
+        ContentTemplate="{DataTemplate pages:DeathmatchPage}"
+        Route="DeathmatchPage" />
+
 </Shell>
