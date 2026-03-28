@@ -20,6 +20,13 @@ namespace Darkness.Core.Logic
 
             switch (beat)
             {
+                case 3:
+                    // Beat 3: First Combat (Darius vs 3 Undead Dogs)
+                    enemies.Add(new Enemy { Name = "Undead Dog A", MaxHP = 40, CurrentHP = 40, Attack = 12, Defense = 5, Speed = 12 });
+                    enemies.Add(new Enemy { Name = "Undead Dog B", MaxHP = 40, CurrentHP = 40, Attack = 12, Defense = 5, Speed = 12 });
+                    enemies.Add(new Enemy { Name = "Undead Dog C", MaxHP = 40, CurrentHP = 40, Attack = 12, Defense = 5, Speed = 12 });
+                    break;
+                
                 case 4:
                     // Beat 4: Dark Warrior (Invincible, vanishes after 5 rounds)
                     enemies.Add(new Enemy
@@ -35,35 +42,31 @@ namespace Darkness.Core.Logic
                     });
                     survivalTurns = 5;
                     break;
+                
+                case 5:
+                    // Beat 5: The Sorcerer
+                    enemies.Add(new Enemy { Name = "Sorcerer", Level = 8, MaxHP = 120, CurrentHP = 120, Attack = 35, Defense = 8, Speed = 20 });
+                    break;
+
+                case 6:
+                    // Beat 6: Journey Begins (Goblins)
+                    enemies.Add(new Enemy { Name = "Goblin Scout", MaxHP = 60, CurrentHP = 60, Attack = 15, Defense = 6, Speed = 14 });
+                    enemies.Add(new Enemy { Name = "Goblin Fighter", MaxHP = 80, CurrentHP = 80, Attack = 18, Defense = 8, Speed = 12 });
+                    break;
+
+                case 7:
+                    // Beat 7: The Knight (Meeting and fighting Tywin)
+                    enemies.Add(new Enemy { Name = "Tywin the Knight", Level = 12, MaxHP = 300, CurrentHP = 300, Attack = 40, Defense = 20, Speed = 18 });
+                    break;
 
                 case 8:
-                    // Beat 8: Tywin (Joint forces start here)
-                    enemies.Add(new Enemy
-                    {
-                        Name = "Elite Guard A",
-                        Level = 10,
-                        MaxHP = 150,
-                        CurrentHP = 150,
-                        Attack = 20,
-                        Defense = 10,
-                        Speed = 15
-                    });
-                    enemies.Add(new Enemy
-                    {
-                        Name = "Elite Guard B",
-                        Level = 10,
-                        MaxHP = 150,
-                        CurrentHP = 150,
-                        Attack = 20,
-                        Defense = 10,
-                        Speed = 15
-                    });
-                    
+                    // Beat 8: Araknos Demon (First joint-character boss battle)
+                    enemies.Add(new Enemy { Name = "Araknos Demon", Level = 15, MaxHP = 500, CurrentHP = 500, Attack = 60, Defense = 25, Speed = 22 });
                     additionalPartyMembers.Add(CreateTywin());
                     break;
 
-                case 10:
-                    // Beat 10: Final Boss Kyarias (Undead Army)
+                case 9:
+                    // Beat 9: Final Boss Kyarias (Undead Army)
                     enemies.Add(new Enemy
                     {
                         Name = "Kyarias the Undead King",
@@ -76,6 +79,7 @@ namespace Darkness.Core.Logic
                     });
                     enemies.Add(new Enemy { Name = "Undead Soldier A", MaxHP = 200, CurrentHP = 200, Attack = 30, Defense = 15, Speed = 10 });
                     enemies.Add(new Enemy { Name = "Undead Soldier B", MaxHP = 200, CurrentHP = 200, Attack = 30, Defense = 15, Speed = 10 });
+                    enemies.Add(new Enemy { Name = "Skeletal Archer", MaxHP = 150, CurrentHP = 150, Attack = 40, Defense = 10, Speed = 15 });
                     
                     additionalPartyMembers.Add(CreateTywin());
                     break;
