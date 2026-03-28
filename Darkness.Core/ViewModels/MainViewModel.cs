@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Darkness.Core.Interfaces;
+using Darkness.MAUI.Pages;
 
 namespace Darkness.Core.ViewModels
 {
@@ -48,7 +49,7 @@ namespace Darkness.Core.ViewModels
                 return false;
             }
 
-            var characters = await _characterService.GetCharactersByUserIdAsync(_sessionService.CurrentUser.Id);
+            var characters = await _characterService.GetCharactersForUserAsync(_sessionService.CurrentUser.Id);
             if (characters == null || characters.Count == 0)
             {
                 await _navigationService.NavigateToAsync("///CharacterGenPage");
@@ -90,7 +91,7 @@ namespace Darkness.Core.ViewModels
 
         // Placeholder commands for menu buttons
         [RelayCommand] public Task StorylineAsync() => _dialogService.DisplayAlertAsync("Mode", "Storyline coming soon!", "OK");
-        [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync("CharactersPage");
+        [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync(nameof(CharactersPage));
         [RelayCommand] public Task DeathmatchAsync() => _dialogService.DisplayAlertAsync("Mode", "Deathmatch coming soon!", "OK");
         [RelayCommand] public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
         [RelayCommand] public Task PvpAsync() => _dialogService.DisplayAlertAsync("Mode", "Pvp coming soon!", "OK");

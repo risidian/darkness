@@ -14,7 +14,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <VerticalStackLayout Grid.Row="1" Padding="20" Spacing="10" BindableLayout.ItemsSource="{Binding SelectedCharacter.Stats}">
+        <VerticalStackLayout Grid.Row="1" Padding="20" Spacing="10">
             <Label Text="{Binding SelectedCharacter.Name}" FontSize="Large" />
             <Label Text="{Binding SelectedCharacter.Class}" />
             <Label Text="{Binding SelectedCharacter.Level, StringFormat='Level: {0}'}" />

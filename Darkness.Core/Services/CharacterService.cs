@@ -43,14 +43,6 @@ namespace Darkness.Core.Services
             }
         }
 
-        public async Task<List<Character>> GetCharactersByUserIdAsync(int userId)
-        {
-            await InitializeAsync();
-            return await _database!.Table<Character>()
-                .Where(c => c.UserId == userId)
-                .ToListAsync();
-        }
-
         public async Task<Character?> GetCharacterByIdAsync(int characterId)
         {
             await InitializeAsync();
