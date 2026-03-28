@@ -30,7 +30,7 @@ namespace Darkness.Core.Services
             await Task.Delay(100);
             _mockAllies.Add(new Ally
             {
-                Id = _mockAllies.Count + 1,
+                Id = _mockAllies.Any() ? _mockAllies.Max(a => a.Id) + 1 : 1,
                 UserId = userId,
                 AllyUserId = allyUserId,
                 AllyUsername = allyUsername,

@@ -47,6 +47,10 @@ namespace Darkness.Core.ViewModels
                     Allies.Add(ally);
                 }
             }
+            catch (System.Exception ex)
+            {
+                await _dialogService.DisplayAlertAsync("Error", $"Failed to load allies: {ex.Message}", "OK");
+            }
             finally
             {
                 IsRefreshing = false;
