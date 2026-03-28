@@ -14,7 +14,7 @@
                HorizontalOptions="Center" />
 
         <ScrollView Grid.Row="1" Grid.ColumnSpan="2">
-            <Grid ColumnDefinitions="*, *" Padding="10" RowSpacing="10" ColumnSpacing="10">
+            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto" Padding="10" RowSpacing="10" ColumnSpacing="10">
                 <Button Grid.Row="0" Grid.Column="0" Text="Storyline" Command="{Binding StorylineCommand}" />
                 <Button Grid.Row="0" Grid.Column="1" Text="Characters" Command="{Binding CharactersCommand}" />
                 <Button Grid.Row="1" Grid.Column="0" Text="Deathmatch" Command="{Binding DeathmatchCommand}" />

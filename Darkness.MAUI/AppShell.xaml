@@ -62,4 +62,9 @@
         ContentTemplate="{DataTemplate pages:SettingsPage}"
         Route="SettingsPage" />
 
+    <ShellContent
+        Title="Study"
+        ContentTemplate="{DataTemplate pages:StudyPage}"
+        Route="StudyPage" />
+
 </Shell>

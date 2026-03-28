@@ -89,7 +89,12 @@ namespace Darkness.Core.ViewModels
         }
 
         // Placeholder commands for menu buttons
-        [RelayCommand] public Task StorylineAsync() => _dialogService.DisplayAlertAsync("Mode", "Storyline coming soon!", "OK");
+        [RelayCommand] 
+        public async Task StorylineAsync() 
+        {
+            await _navigationService.NavigateToAsync("GamePage");
+        }
+
         [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync("CharactersPage");
         [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync("DeathmatchPage");
         [RelayCommand] public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
@@ -118,7 +123,24 @@ namespace Darkness.Core.ViewModels
         [RelayCommand] public Task SiegeAsync() => _dialogService.DisplayAlertAsync("Mode", "Siege coming soon!", "OK");
         [RelayCommand] public Task AlliesAsync() => _navigationService.NavigateToAsync("AlliesPage");
         [RelayCommand] public Task ForgeAsync() => _navigationService.NavigateToAsync("ForgePage");
-        [RelayCommand] public Task StudyAsync() => _dialogService.DisplayAlertAsync("Mode", "Study coming soon!", "OK");
+        
+        [RelayCommand] 
+        public async Task StudyAsync() 
+        {
+            if (_sessionService.CurrentUser == null) return;
+            var characters = await _characterService.GetCharactersForUserAsync(_sessionService.CurrentUser.Id);
+            if (characters == null || characters.Count == 0)
+            {
+                await _dialogService.DisplayAlertAsync("Study", "You need a character to study.", "OK");
+                return;
+            }
+
+            await _navigationService.NavigateToAsync("StudyPage", new Dictionary<string, object>
+            {
+                { "Character", characters[0] }
+            });
+        }
+
         [RelayCommand] public Task SettingsAsync() => _navigationService.NavigateToAsync("SettingsPage");
     }
 }
