@@ -26,7 +26,7 @@ namespace Darkness.MAUI.Handlers
         {
             while (!_isDisposed)
             {
-                if (_game != null)
+                if (_game != null && PlatformView?.Visibility == Android.Views.ViewStates.Visible)
                 {
                     if (!_isInitialized)
                     {
