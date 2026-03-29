@@ -50,6 +50,14 @@ namespace Darkness.Core.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<User?> GetUserByIdAsync(int userId)
+        {
+            await InitializeAsync();
+            return await _database!.Table<User>()
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<List<User>> GetAllUsersAsync()
         {
             await InitializeAsync();

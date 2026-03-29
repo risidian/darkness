@@ -13,7 +13,7 @@ namespace Darkness.Core.ViewModels
         private DeathmatchEncounter? _encounter;
 
         [ObservableProperty]
-        private string _mode = string.Empty;
+        private string? _mode;
 
         [ObservableProperty]
         private Character? _player1;

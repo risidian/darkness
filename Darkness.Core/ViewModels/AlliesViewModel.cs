@@ -15,7 +15,10 @@ namespace Darkness.Core.ViewModels
         private readonly IDialogService _dialogService;
 
         [ObservableProperty]
-        private ObservableCollection<Ally> _allies = new();
+        private ObservableCollection<Ally> _acceptedAllies = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Ally> _pendingRequests = new();
 
         [ObservableProperty]
         private bool _isRefreshing;
@@ -41,10 +44,20 @@ namespace Darkness.Core.ViewModels
             try
             {
                 var alliesList = await _allyService.GetAlliesForUserAsync(_sessionService.CurrentUser.Id);
-                Allies.Clear();
+                
+                AcceptedAllies.Clear();
+                PendingRequests.Clear();
+
                 foreach (var ally in alliesList)
                 {
-                    Allies.Add(ally);
+                    if (ally.Status.Equals("Accepted", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        AcceptedAllies.Add(ally);
+                    }
+                    else if (ally.Status.Equals("Pending", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        PendingRequests.Add(ally);
+                    }
                 }
             }
             catch (System.Exception ex)

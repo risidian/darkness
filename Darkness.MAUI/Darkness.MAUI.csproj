@@ -32,6 +32,10 @@
 		<Nullable>enable</Nullable>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<WindowsPackageType>MSIX</WindowsPackageType>
+		
+		<!-- Android 16KB Page Size Compatibility -->
+		<AndroidExtractNativeLibs Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">true</AndroidExtractNativeLibs>
+		<AndroidEnable16KbPostProcessing Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">true</AndroidEnable16KbPostProcessing>
 	</PropertyGroup>
 
 	<ItemGroup>

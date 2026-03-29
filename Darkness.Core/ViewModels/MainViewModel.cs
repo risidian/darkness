@@ -11,6 +11,7 @@ namespace Darkness.Core.ViewModels
         private readonly INavigationService _navigationService;
         private readonly ICharacterService _characterService;
         private readonly IDialogService _dialogService;
+        private readonly ISettingsService _settingsService;
 
         [ObservableProperty]
         private bool _isDailyRewardVisible;
@@ -23,13 +24,15 @@ namespace Darkness.Core.ViewModels
             ISessionService sessionService,
             INavigationService navigationService,
             ICharacterService characterService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            ISettingsService settingsService)
         {
             _rewardService = rewardService;
             _sessionService = sessionService;
             _navigationService = navigationService;
             _characterService = characterService;
             _dialogService = dialogService;
+            _settingsService = settingsService;
         }
 
         public async Task OnAppearingAsync()
@@ -42,6 +45,11 @@ namespace Darkness.Core.ViewModels
 
         private async Task<bool> CheckForCharacterAsync()
         {
+            if (_sessionService.CurrentUser == null)
+            {
+                await _sessionService.InitializeAsync();
+            }
+
             if (_sessionService.CurrentUser == null)
             {
                 await _navigationService.NavigateToAsync("///LoadUserPage");
@@ -85,6 +93,11 @@ namespace Darkness.Core.ViewModels
         public async Task LogoutAsync()
         {
             _sessionService.CurrentUser = null;
+            
+            // Clear last user ID
+            _settingsService.LastUserId = 0;
+            await _settingsService.SaveSettingsAsync();
+
             await _navigationService.NavigateToAsync("///LoadUserPage");
         }
 
@@ -92,11 +105,11 @@ namespace Darkness.Core.ViewModels
         [RelayCommand] 
         public async Task StorylineAsync() 
         {
-            await _navigationService.NavigateToAsync("GamePage");
+            await _navigationService.NavigateToAsync("///GamePage");
         }
 
-        [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync("CharactersPage");
-        [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync("DeathmatchPage");
+        [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync("///CharactersPage");
+        [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync("///DeathmatchPage");
         [RelayCommand] public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
         
         [RelayCommand] 
@@ -117,12 +130,12 @@ namespace Darkness.Core.ViewModels
                 { "Player2", characters[1] }
             };
 
-            await _navigationService.NavigateToAsync("GamePage", parameters);
+            await _navigationService.NavigateToAsync("///GamePage", parameters);
         }
 
         [RelayCommand] public Task SiegeAsync() => _dialogService.DisplayAlertAsync("Mode", "Siege coming soon!", "OK");
-        [RelayCommand] public Task AlliesAsync() => _navigationService.NavigateToAsync("AlliesPage");
-        [RelayCommand] public Task ForgeAsync() => _navigationService.NavigateToAsync("ForgePage");
+        [RelayCommand] public Task AlliesAsync() => _navigationService.NavigateToAsync("///AlliesPage");
+        [RelayCommand] public Task ForgeAsync() => _navigationService.NavigateToAsync("///ForgePage");
         
         [RelayCommand] 
         public async Task StudyAsync() 
@@ -135,12 +148,12 @@ namespace Darkness.Core.ViewModels
                 return;
             }
 
-            await _navigationService.NavigateToAsync("StudyPage", new Dictionary<string, object>
+            await _navigationService.NavigateToAsync("///StudyPage", new Dictionary<string, object>
             {
                 { "Character", characters[0] }
             });
         }
 
-        [RelayCommand] public Task SettingsAsync() => _navigationService.NavigateToAsync("SettingsPage");
+        [RelayCommand] public Task SettingsAsync() => _navigationService.NavigateToAsync("///SettingsPage");
     }
 }

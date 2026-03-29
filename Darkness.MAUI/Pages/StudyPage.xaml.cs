@@ -8,7 +8,7 @@ namespace Darkness.MAUI.Pages
     {
         private StudyViewModel _viewModel;
         
-        public Character Character { get; set; }
+        public Character? Character { get; set; }
 
         public StudyPage(StudyViewModel viewModel)
         {

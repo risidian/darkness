@@ -17,7 +17,7 @@ namespace Darkness.MAUI.Pages
             set => _viewModel.Encounter = value;
         }
 
-        public string Mode
+        public string? Mode
         {
             get => _viewModel.Mode;
             set => _viewModel.Mode = value;
