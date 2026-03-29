@@ -83,5 +83,8 @@ namespace Darkness.Core.Models
 
         [ObservableProperty]
         private int _attributePoints = 5;
+
+        [ObservableProperty]
+        private byte[]? _thumbnail;
     }
 }

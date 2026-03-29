@@ -224,7 +224,8 @@ namespace Darkness.Core.ViewModels
                 HairStyle = SelectedHairStyle,
                 SkinColor = SelectedSkinColor,
                 Level = 1,
-                Experience = 0
+                Experience = 0,
+                Thumbnail = PreviewImageBytes
             };
 
             SetBaseStats(character, SelectedClass);
