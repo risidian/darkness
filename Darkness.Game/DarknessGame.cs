@@ -24,37 +24,71 @@ namespace Darkness.Game
         private bool _isBattleActive = false;
         private bool _isDeathmatchActive = false;
         private bool _isPvpActive = false;
+        private bool _isPaused = false;
 
         public DarknessGame(ICombatService combatService, ISessionService sessionService, StoryController storyController)
         {
+            System.Diagnostics.Debug.WriteLine("[DarknessGame] Constructor starting...");
             _combatService = combatService ?? throw new System.ArgumentNullException(nameof(combatService));
             _sessionService = sessionService ?? throw new System.ArgumentNullException(nameof(sessionService));
             _storyController = storyController ?? throw new System.ArgumentNullException(nameof(storyController));
             
-            // Ensure Services is not null for older Portable versions
-            if (Services == null)
-            {
-                try
-                {
-                    var servicesProperty = typeof(Microsoft.Xna.Framework.Game).GetProperty("Services", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-                    if (servicesProperty != null && servicesProperty.CanWrite)
-                    {
-                        servicesProperty.SetValue(this, new GameServiceContainer());
-                    }
-                }
-                catch { }
-            }
-
             try
             {
+                // In some hosted scenarios, creating the GraphicsDeviceManager in the constructor 
+                // triggers window creation which crashes the app.
                 _graphics = new GraphicsDeviceManager(this);
+                
+                // Set default buffer sizes to avoid 0x0 initialization
+                _graphics.PreferredBackBufferWidth = 1280;
+                _graphics.PreferredBackBufferHeight = 720;
+                
+                System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDeviceManager created.");
             }
             catch (System.Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[DarknessGame] Failed to initialize GraphicsDeviceManager: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[DarknessGame] Warning: Failed to initialize GraphicsDeviceManager in constructor: {ex.Message}");
             }
             
             IsMouseVisible = true;
+            System.Diagnostics.Debug.WriteLine("[DarknessGame] Constructor complete.");
+        }
+
+        public void Pause() 
+        {
+            _isPaused = true;
+            System.Diagnostics.Debug.WriteLine("[DarknessGame] Game Paused");
+        }
+
+        public void Resume() 
+        {
+            _isPaused = false;
+            System.Diagnostics.Debug.WriteLine("[DarknessGame] Game Resumed");
+        }
+
+        public void StartBattle(BattleSnapshot snapshot)
+        {
+            // Create fresh character instances from the snapshot to decouple from MAUI ViewModels
+            var party = snapshot.Party.Select(s => new Character
+            {
+                Name = s.Name,
+                Class = s.Class,
+                CurrentHP = s.CurrentHP,
+                MaxHP = s.MaxHP,
+                Level = s.Level,
+                Thumbnail = s.Thumbnail,
+                HairColor = s.HairColor,
+                HairStyle = s.HairStyle,
+                SkinColor = s.SkinColor
+            }).ToList();
+
+            _battleScene = new BattleScene(this, party, snapshot.Enemies, snapshot.SurvivalTurns);
+            _battleScene.BattleEnded += (s, e) => _isBattleActive = false;
+            _battleScene.LoadContent(Content);
+            _isBattleActive = true;
+            _isDeathmatchActive = false;
+            _isPvpActive = false;
+            _isPaused = false;
         }
 
         public void StartBattle(List<Character> party, List<Enemy> enemies, int? survivalTurns = null)
@@ -65,6 +99,7 @@ namespace Darkness.Game
             _isBattleActive = true;
             _isDeathmatchActive = false;
             _isPvpActive = false;
+            _isPaused = false;
         }
 
         public void StartDeathmatch(List<Character> party, DeathmatchEncounter encounter)
@@ -75,6 +110,7 @@ namespace Darkness.Game
             _isDeathmatchActive = true;
             _isBattleActive = false;
             _isPvpActive = false;
+            _isPaused = false;
         }
 
         public void StartPvp(Character player1, Character player2)
@@ -85,14 +121,16 @@ namespace Darkness.Game
             _isPvpActive = true;
             _isBattleActive = false;
             _isDeathmatchActive = false;
+            _isPaused = false;
         }
 
         public GraphicsDeviceManager? GraphicsManager => _graphics;
 
         public new void Tick()
         {
-            // If the device was created externally, ensure we use it
-            if (GraphicsDevice == null && _graphics != null)
+            if (_isPaused) return;
+
+            if (GraphicsDevice == null)
             {
                 PrepareForPlatform();
             }
@@ -105,14 +143,19 @@ namespace Darkness.Game
                 System.TimeSpan.FromMilliseconds(16.6) // Assume 60fps
             );
 
-            Update(gameTime);
-            Draw(gameTime);
+            try
+            {
+                Update(gameTime);
+                Draw(gameTime);
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DarknessGame] Error during loop: {ex.Message}");
+            }
         }
 
         public void PrepareForPlatform()
         {
-            System.Diagnostics.Debug.WriteLine("[DarknessGame] PrepareForPlatform called.");
-            
             if (Content == null)
             {
                 System.Diagnostics.Debug.WriteLine("[DarknessGame] Initializing ContentManager...");
@@ -121,33 +164,22 @@ namespace Darkness.Game
 
             if (GraphicsDevice == null && _graphics != null)
             {
-                System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDevice is null, attempting ApplyChanges...");
+                System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDevice is null, attempting initialization...");
                 try
                 {
+                    // For WindowsDX, we must ensure we don't call ApplyChanges if a window hasn't been 
+                    // assigned or if we're not ready, but since the Handler set the SwapChainPanel,
+                    // this should now be safe.
                     _graphics.ApplyChanges();
                     
-                    if (GraphicsDevice == null && Services != null)
-                    {
-                        // Some versions of MonoGame require the device to be created via service
-                        var deviceService = Services.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
-                        if (deviceService?.GraphicsDevice != null)
-                        {
-                            System.Diagnostics.Debug.WriteLine("[DarknessGame] Found GraphicsDevice via IGraphicsDeviceService.");
-                        }
-                    }
-
                     if (GraphicsDevice != null)
                     {
                         System.Diagnostics.Debug.WriteLine($"[DarknessGame] GraphicsDevice created successfully: {GraphicsDevice.Adapter.Description}");
                     }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDevice still null after ApplyChanges.");
-                    }
                 }
                 catch (System.Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[DarknessGame] Error during ApplyChanges: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[DarknessGame] Warning: ApplyChanges failed (this is expected if surface not ready): {ex.Message}");
                 }
             }
         }
