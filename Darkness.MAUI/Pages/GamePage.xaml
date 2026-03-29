@@ -9,13 +9,16 @@
              BackgroundColor="Black">
 
     <Grid>
-        <controls:MonoGameHost Game="{Binding GameInstance}" />
+        <!-- The MonoGameHost is the background layer -->
+        <controls:MonoGameHost Game="{Binding GameInstance}" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
-        <VerticalStackLayout VerticalOptions="End" Padding="20">
+        <!-- UI Overlay layer - defined after to be on top -->
+        <VerticalStackLayout VerticalOptions="End" Padding="20" Spacing="10" InputTransparent="False">
             <Button Text="Open Combat (Test)"
                     BackgroundColor="#444"
                     TextColor="White"
-                    Command="{Binding OpenCombatTestCommand}" />
+                    Command="{Binding OpenCombatTestCommand}"
+                    ZIndex="1" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

@@ -43,6 +43,16 @@ namespace Darkness.Core.ViewModels
             _storyController = storyController;
         }
 
+        public (List<Enemy> Enemies, int? SurvivalTurns, List<Character> AdditionalPartyMembers) GetEncounter()
+        {
+            return _storyController.GetEncounterForBeat(_storyController.CurrentBeat);
+        }
+
+        public List<Character> GetParty()
+        {
+            return _party;
+        }
+
         public void Initialize(int storyBeat)
         {
             // TODO: Load from session once character selection is wired up

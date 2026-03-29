@@ -9,10 +9,11 @@
              BackgroundColor="Black">
 
     <Grid RowDefinitions="*, Auto">
-        <controls:MonoGameHost Grid.Row="0" Game="{Binding GameInstance}" />
+        <!-- Background Layer -->
+        <controls:MonoGameHost Grid.Row="0" Grid.RowSpan="2" Game="{Binding GameInstance}" />
 
-        <!-- UI Overlay for controls or status -->
-        <VerticalStackLayout Grid.Row="1" Padding="20" Spacing="10">
+        <!-- Foreground Layer (UI) -->
+        <VerticalStackLayout Grid.Row="1" Padding="20" Spacing="10" BackgroundColor="#80000000">
             <Label Text="{Binding StatusText}"
                    TextColor="{Binding StatusColor}"
                    HorizontalOptions="Center" />

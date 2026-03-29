@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Darkness.Core\Darkness.Core.csproj" />
+    <ProjectReference Include="..\Darkness.Game\Darkness.Game.csproj" />
   </ItemGroup>
 
 </Project>

@@ -18,6 +18,9 @@ namespace Darkness.MAUI.Handlers
         public static IPropertyMapper<MonoGameHost, MonoGameHostHandler> Mapper = new PropertyMapper<MonoGameHost, MonoGameHostHandler>(ViewHandler.ViewMapper)
         {
             [nameof(MonoGameHost.Game)] = MapGame,
+#if WINDOWS
+            [nameof(Microsoft.Maui.IView.Background)] = (handler, view) => { },
+#endif
         };
 
         public MonoGameHostHandler() : base(Mapper)

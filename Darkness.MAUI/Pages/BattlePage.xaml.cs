@@ -22,6 +22,15 @@ namespace Darkness.MAUI.Pages
         {
             base.OnAppearing();
             _viewModel.Initialize(4);
+
+            // Start the actual game engine battle
+            var encounter = _viewModel.GetEncounter();
+            var party = _viewModel.GetParty();
+            
+            if (encounter.Enemies != null && encounter.Enemies.Count > 0)
+            {
+                _game.StartBattle(party, encounter.Enemies, encounter.SurvivalTurns);
+            }
         }
     }
 }
