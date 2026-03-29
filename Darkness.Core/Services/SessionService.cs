@@ -8,6 +8,7 @@ namespace Darkness.Core.Services
     {
         private readonly ISettingsService _settingsService;
         private readonly IUserService _userService;
+        private readonly SemaphoreSlim _initializeSemaphore = new SemaphoreSlim(1, 1);
         private bool _isInitialized;
 
         public User? CurrentUser { get; set; }
@@ -23,12 +24,22 @@ namespace Darkness.Core.Services
         {
             if (_isInitialized) return;
 
-            await _settingsService.LoadSettingsAsync();
-            if (_settingsService.LastUserId > 0)
+            await _initializeSemaphore.WaitAsync();
+            try
             {
-                CurrentUser = await _userService.GetUserByIdAsync(_settingsService.LastUserId);
+                if (_isInitialized) return;
+
+                await _settingsService.LoadSettingsAsync();
+                if (_settingsService.LastUserId > 0)
+                {
+                    CurrentUser = await _userService.GetUserByIdAsync(_settingsService.LastUserId);
+                }
+                _isInitialized = true;
             }
-            _isInitialized = true;
+            finally
+            {
+                _initializeSemaphore.Release();
+            }
         }
     }
 }

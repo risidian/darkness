@@ -24,16 +24,4 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(GamePage), typeof(GamePage));
 		Routing.RegisterRoute(nameof(BattlePage), typeof(BattlePage));
 	}
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-
-        await _sessionService.InitializeAsync();
-        if (_sessionService.CurrentUser != null)
-        {
-            // If already logged in, skip the login screen and go to the Home page
-            await GoToAsync("///MainPage");
-        }
-    }
 }

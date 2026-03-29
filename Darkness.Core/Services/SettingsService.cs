@@ -48,6 +48,12 @@ namespace Darkness.Core.Services
         {
             try
             {
+                string? directory = Path.GetDirectoryName(_settingsPath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
                 var settings = new SettingsData
                 {
                     MasterVolume = MasterVolume,
