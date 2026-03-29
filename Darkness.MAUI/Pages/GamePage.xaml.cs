@@ -46,6 +46,8 @@ namespace Darkness.MAUI.Pages
             _game = game;
             _sessionService = sessionService;
             BindingContext = _viewModel;
+
+            _viewModel.SetGame(_game);
         }
 
         protected override void OnAppearing()
