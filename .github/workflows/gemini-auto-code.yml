@@ -4,6 +4,11 @@ on:
   issues:
     types: [labeled]
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
 jobs:
   auto-code:
     if: github.event.label.name == 'Ready'
@@ -27,13 +32,12 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO: ${{ github.repository }}
         run: |
           # Construct the prompt using environment variables
-          echo "The status of this issue is 'Ready'. Issue #$ISSUE_NUMBER: $ISSUE_TITLE" > prompt.txt
-          echo "" >> prompt.txt
-          echo "$ISSUE_BODY" >> prompt.txt
-          echo "" >> prompt.txt
-          echo "Research the codebase, implement the fix/feature, and create a Pull Request on a new branch." >> prompt.txt
+          printf "The status of this issue is 'Ready' in repository %s.\nIssue #%s: %s\n\n" "$REPO" "$ISSUE_NUMBER" "$ISSUE_TITLE" > prompt.txt
+          printf "%s\n\n" "$ISSUE_BODY" >> prompt.txt
+          printf "Research the codebase, implement the fix/feature, and create a Pull Request on a new branch." >> prompt.txt
           
           # Run Gemini CLI in headless mode
           cat prompt.txt | gemini -p
