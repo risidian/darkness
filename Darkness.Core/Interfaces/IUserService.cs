@@ -8,6 +8,7 @@ namespace Darkness.Core.Interfaces
     {
         Task<bool> CreateUserAsync(User user);
         Task<User?> GetUserAsync(string username, string password);
+        Task<User?> GetUserByIdAsync(int userId);
         Task<List<User>> GetAllUsersAsync();
         Task InitializeAsync();
     }

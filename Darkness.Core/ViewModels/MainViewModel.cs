@@ -11,6 +11,7 @@ namespace Darkness.Core.ViewModels
         private readonly INavigationService _navigationService;
         private readonly ICharacterService _characterService;
         private readonly IDialogService _dialogService;
+        private readonly ISettingsService _settingsService;
 
         [ObservableProperty]
         private bool _isDailyRewardVisible;
@@ -23,13 +24,15 @@ namespace Darkness.Core.ViewModels
             ISessionService sessionService,
             INavigationService navigationService,
             ICharacterService characterService,
-            IDialogService dialogService)
+            IDialogService dialogService,
+            ISettingsService settingsService)
         {
             _rewardService = rewardService;
             _sessionService = sessionService;
             _navigationService = navigationService;
             _characterService = characterService;
             _dialogService = dialogService;
+            _settingsService = settingsService;
         }
 
         public async Task OnAppearingAsync()
@@ -42,6 +45,11 @@ namespace Darkness.Core.ViewModels
 
         private async Task<bool> CheckForCharacterAsync()
         {
+            if (_sessionService.CurrentUser == null)
+            {
+                await _sessionService.InitializeAsync();
+            }
+
             if (_sessionService.CurrentUser == null)
             {
                 await _navigationService.NavigateToAsync("///LoadUserPage");
@@ -85,6 +93,11 @@ namespace Darkness.Core.ViewModels
         public async Task LogoutAsync()
         {
             _sessionService.CurrentUser = null;
+            
+            // Clear last user ID
+            _settingsService.LastUserId = 0;
+            await _settingsService.SaveSettingsAsync();
+
             await _navigationService.NavigateToAsync("///LoadUserPage");
         }
 
