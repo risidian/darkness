@@ -63,6 +63,17 @@ namespace Darkness.Game
         protected override void Initialize()
         {
             _worldScene = new WorldScene(this);
+            _worldScene.EncounterTriggered += (s, e) =>
+            {
+                // Trigger a random battle for now
+                var party = new List<Character> { 
+                    new Character { Name = "Hero", MaxHP = 100, CurrentHP = 100, Strength = 10, Defense = 5, Speed = 10 } 
+                };
+                var enemies = new List<Enemy> { 
+                    new Enemy { Name = "Dark Hound", MaxHP = 50, CurrentHP = 50, Attack = 8, Defense = 2, Speed = 12 } 
+                };
+                StartBattle(party, enemies);
+            };
             base.Initialize();
         }
 
