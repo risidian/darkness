@@ -113,13 +113,14 @@ namespace Darkness.Game.Scenes
 
         public void LoadContent(ContentManager content)
         {
-            if (_game == null || _game.GraphicsDevice == null || content == null)
+            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
+            if (deviceService?.GraphicsDevice == null || content == null)
             {
                 System.Diagnostics.Debug.WriteLine("[DeathmatchScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");
                 return;
             }
 
-            _pixel = new Texture2D(_game.GraphicsDevice, 1, 1);
+            _pixel = new Texture2D(deviceService.GraphicsDevice, 1, 1);
             _pixel.SetData(new[] { Color.White });
             
             try 

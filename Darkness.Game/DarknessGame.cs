@@ -31,6 +31,20 @@ namespace Darkness.Game
             _sessionService = sessionService ?? throw new System.ArgumentNullException(nameof(sessionService));
             _storyController = storyController ?? throw new System.ArgumentNullException(nameof(storyController));
             
+            // Ensure Services is not null for older Portable versions
+            if (Services == null)
+            {
+                try
+                {
+                    var servicesProperty = typeof(Microsoft.Xna.Framework.Game).GetProperty("Services", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                    if (servicesProperty != null && servicesProperty.CanWrite)
+                    {
+                        servicesProperty.SetValue(this, new GameServiceContainer());
+                    }
+                }
+                catch { }
+            }
+
             try
             {
                 _graphics = new GraphicsDeviceManager(this);
@@ -73,24 +87,67 @@ namespace Darkness.Game
             _isDeathmatchActive = false;
         }
 
+        public GraphicsDeviceManager? GraphicsManager => _graphics;
+
+        public new void Tick()
+        {
+            // If the device was created externally, ensure we use it
+            if (GraphicsDevice == null && _graphics != null)
+            {
+                PrepareForPlatform();
+            }
+
+            if (GraphicsDevice == null) return;
+
+            // Drive the game loop manually
+            var gameTime = new GameTime(
+                System.TimeSpan.FromMilliseconds(System.Environment.TickCount),
+                System.TimeSpan.FromMilliseconds(16.6) // Assume 60fps
+            );
+
+            Update(gameTime);
+            Draw(gameTime);
+        }
+
         public void PrepareForPlatform()
         {
+            System.Diagnostics.Debug.WriteLine("[DarknessGame] PrepareForPlatform called.");
+            
             if (Content == null)
             {
+                System.Diagnostics.Debug.WriteLine("[DarknessGame] Initializing ContentManager...");
                 Content = new Microsoft.Xna.Framework.Content.ContentManager(Services, "Content");
             }
 
             if (GraphicsDevice == null && _graphics != null)
             {
+                System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDevice is null, attempting ApplyChanges...");
                 try
                 {
-                    // Force the GraphicsDeviceManager to create the device
-                    var method = _graphics.GetType().GetMethod("ApplyChanges");
-                    method?.Invoke(_graphics, null);
+                    _graphics.ApplyChanges();
+                    
+                    if (GraphicsDevice == null && Services != null)
+                    {
+                        // Some versions of MonoGame require the device to be created via service
+                        var deviceService = Services.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
+                        if (deviceService?.GraphicsDevice != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine("[DarknessGame] Found GraphicsDevice via IGraphicsDeviceService.");
+                        }
+                    }
+
+                    if (GraphicsDevice != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[DarknessGame] GraphicsDevice created successfully: {GraphicsDevice.Adapter.Description}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDevice still null after ApplyChanges.");
+                    }
                 }
                 catch (System.Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[DarknessGame] Failed to force GraphicsDevice creation: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[DarknessGame] Error during ApplyChanges: {ex.Message}");
                 }
             }
         }

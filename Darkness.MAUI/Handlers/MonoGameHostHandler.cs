@@ -4,7 +4,7 @@ using Darkness.MAUI.Controls;
 #if IOS || MACCATALYST
 using PlatformView = UIKit.UIView;
 #elif ANDROID
-using PlatformView = Android.Views.View;
+using PlatformView = Android.Widget.FrameLayout;
 #elif WINDOWS
 using PlatformView = Microsoft.UI.Xaml.Controls.SwapChainPanel;
 #else
@@ -35,7 +35,7 @@ namespace Darkness.MAUI.Handlers
         protected override PlatformView CreatePlatformView()
         {
 #if ANDROID
-            return new Android.Views.View(Context);
+            return new Android.Widget.FrameLayout(Context);
 #elif WINDOWS
             return new Microsoft.UI.Xaml.Controls.SwapChainPanel();
 #else

@@ -59,13 +59,14 @@ namespace Darkness.Game.Scenes
 
         public void LoadContent(ContentManager content)
         {
-            if (_game == null || _game.GraphicsDevice == null || content == null)
+            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
+            if (deviceService?.GraphicsDevice == null || content == null)
             {
                 System.Diagnostics.Debug.WriteLine("[WorldScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");    
                 return;
             }
 
-            _pixel = new Texture2D(_game.GraphicsDevice, 1, 1);
+            _pixel = new Texture2D(deviceService.GraphicsDevice, 1, 1);
             _pixel.SetData(new[] { Color.White });
 
             // Load character texture from session thumbnail if available
@@ -75,14 +76,14 @@ namespace Darkness.Game.Scenes
             }
             else
             {
-                _characterTexture = new Texture2D(_game.GraphicsDevice, 64, 64);
+                _characterTexture = new Texture2D(deviceService.GraphicsDevice, 64, 64);
                 Color[] data = new Color[64 * 64];
                 for(int i=0; i<data.Length; i++) data[i] = Color.Red;
                 _characterTexture.SetData(data);
             }
 
             // NPC texture (Blue placeholder)
-            _npcTexture = new Texture2D(_game.GraphicsDevice, 64, 64);
+            _npcTexture = new Texture2D(deviceService.GraphicsDevice, 64, 64);
             Color[] npcData = new Color[64 * 64];
             for(int i=0; i<npcData.Length; i++) npcData[i] = Color.Blue;
             _npcTexture.SetData(npcData);
@@ -92,9 +93,10 @@ namespace Darkness.Game.Scenes
 
         private Texture2D LoadTextureFromBytes(byte[] bytes)
         {
+            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
             using (var stream = new MemoryStream(bytes))
             {
-                return Texture2D.FromStream(_game.GraphicsDevice, stream);
+                return Texture2D.FromStream(deviceService!.GraphicsDevice, stream);
             }
         }
 
