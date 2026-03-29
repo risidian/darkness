@@ -1,5 +1,7 @@
 using Darkness.Core.ViewModels;
 using Darkness.Core.Models;
+using Darkness.Core.Interfaces;
+using Darkness.Game;
 
 namespace Darkness.MAUI.Pages
 {
@@ -10,6 +12,8 @@ namespace Darkness.MAUI.Pages
     public partial class GamePage : ContentPage
     {
         private readonly GamePageViewModel _viewModel;
+        private readonly DarknessGame _game;
+        private readonly ISessionService _sessionService;
 
         public DeathmatchEncounter? Encounter
         {
@@ -35,10 +39,12 @@ namespace Darkness.MAUI.Pages
             set => _viewModel.Player2 = value;
         }
 
-        public GamePage(GamePageViewModel viewModel)
+        public GamePage(GamePageViewModel viewModel, DarknessGame game, ISessionService sessionService)
         {
             InitializeComponent();
             _viewModel = viewModel;
+            _game = game;
+            _sessionService = sessionService;
             BindingContext = _viewModel;
         }
 
@@ -48,9 +54,26 @@ namespace Darkness.MAUI.Pages
             
             if (_viewModel.Mode == "PVP")
             {
-                // In a real implementation, this would trigger the MonoGame StartPvp
-                System.Diagnostics.Debug.WriteLine($"Starting PVP: {_viewModel.Player1?.Name} vs {_viewModel.Player2?.Name}");
+                if (_viewModel.Player1 != null && _viewModel.Player2 != null)
+                {
+                    _game.StartPvp(_viewModel.Player1, _viewModel.Player2);
+                }
             }
+            else if (_viewModel.Encounter != null)
+            {
+                if (_sessionService.CurrentCharacter != null)
+                {
+                    _game.StartDeathmatch(new List<Character> { _sessionService.CurrentCharacter }, _viewModel.Encounter);
+                }
+            }
+            else
+            {
+                // Story mode or World mode
+                System.Diagnostics.Debug.WriteLine("Starting Story/World mode");
+            }
+
+            // In a real implementation with a proper MonoGame host, 
+            // the game would be running inside the MonoGameHost control.
         }
     }
 }
