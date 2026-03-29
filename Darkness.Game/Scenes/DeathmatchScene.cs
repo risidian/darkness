@@ -113,9 +113,9 @@ namespace Darkness.Game.Scenes
 
         public void LoadContent(ContentManager content)
         {
-            if (_game == null || _game.GraphicsDevice == null)
+            if (_game == null || _game.GraphicsDevice == null || content == null)
             {
-                System.Diagnostics.Debug.WriteLine("[DeathmatchScene] GraphicsDevice is not ready. Skipping LoadContent.");
+                System.Diagnostics.Debug.WriteLine("[DeathmatchScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");
                 return;
             }
 

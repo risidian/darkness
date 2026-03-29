@@ -130,14 +130,13 @@ namespace Darkness.Game.Scenes
 
         public void LoadContent(ContentManager content)
         {
-            if (_game == null || _game.GraphicsDevice == null)
+            if (_game == null || _game.GraphicsDevice == null || content == null)
             {
-                System.Diagnostics.Debug.WriteLine("[BattleScene] GraphicsDevice is not ready. Skipping LoadContent.");
+                System.Diagnostics.Debug.WriteLine("[BattleScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");    
                 return;
             }
 
-            _pixel = new Texture2D(_game.GraphicsDevice, 1, 1);
-            _pixel.SetData(new[] { Color.White });
+            _pixel = new Texture2D(_game.GraphicsDevice, 1, 1);            _pixel.SetData(new[] { Color.White });
             
             // Try to load a font, fallback to a default if not found
             try 

@@ -73,12 +73,31 @@ namespace Darkness.Game
             _isDeathmatchActive = false;
         }
 
+        public void PrepareForPlatform()
+        {
+            if (Content == null)
+            {
+                Content = new Microsoft.Xna.Framework.Content.ContentManager(Services, "Content");
+            }
+
+            if (GraphicsDevice == null && _graphics != null)
+            {
+                try
+                {
+                    // Force the GraphicsDeviceManager to create the device
+                    var method = _graphics.GetType().GetMethod("ApplyChanges");
+                    method?.Invoke(_graphics, null);
+                }
+                catch (System.Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[DarknessGame] Failed to force GraphicsDevice creation: {ex.Message}");
+                }
+            }
+        }
+
         protected override void Initialize()
         {
-            if (Content != null)
-            {
-                Content.RootDirectory = "Content";
-            }
+            PrepareForPlatform();
 
             _worldScene = new WorldScene(this, _sessionService);
             _worldScene.EncounterTriggered += (s, e) =>
@@ -99,6 +118,7 @@ namespace Darkness.Game
 
         protected override void LoadContent()
         {
+            if (GraphicsDevice == null) return;
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _worldScene?.LoadContent(Content);
         }
@@ -130,6 +150,7 @@ namespace Darkness.Game
 
         protected override void Draw(GameTime gameTime)
         {
+            if (GraphicsDevice == null) return;
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch?.Begin();
