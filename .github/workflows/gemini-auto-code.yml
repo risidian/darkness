@@ -19,3 +19,14 @@ jobs:
 
       - name: Install Gemini CLI
         run: npm install -g @google/gemini-cli
+
+      - name: Run Gemini Task
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Construct the prompt with issue context
+          PROMPT="The status of this issue is 'Ready'. Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}\n\n${{ github.event.issue.body }}\n\nResearch the codebase, implement the fix/feature, and create a Pull Request on a new branch."
+          
+          # Run Gemini CLI in headless mode
+          echo -e "$PROMPT" | gemini -p
