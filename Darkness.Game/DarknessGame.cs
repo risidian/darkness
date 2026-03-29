@@ -27,11 +27,11 @@ namespace Darkness.Game
 
         public DarknessGame(ICombatService combatService, ISessionService sessionService, StoryController storyController)
         {
-            _combatService = combatService;
-            _sessionService = sessionService;
-            _storyController = storyController;
+            _combatService = combatService ?? throw new System.ArgumentNullException(nameof(combatService));
+            _sessionService = sessionService ?? throw new System.ArgumentNullException(nameof(sessionService));
+            _storyController = storyController ?? throw new System.ArgumentNullException(nameof(storyController));
+            
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
 
@@ -67,6 +67,11 @@ namespace Darkness.Game
 
         protected override void Initialize()
         {
+            if (Content != null)
+            {
+                Content.RootDirectory = "Content";
+            }
+
             _worldScene = new WorldScene(this, _sessionService);
             _worldScene.EncounterTriggered += (s, e) =>
             {
