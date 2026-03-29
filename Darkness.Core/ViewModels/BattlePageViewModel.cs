@@ -18,6 +18,9 @@ namespace Darkness.Core.ViewModels
         private List<Character> _party = new();
 
         [ObservableProperty]
+        private object? _gameInstance;
+
+        [ObservableProperty]
         private string _statusText = "Battle in progress...";
 
         [ObservableProperty]

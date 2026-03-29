@@ -10,6 +10,9 @@ namespace Darkness.Core.ViewModels
         private readonly INavigationService _navigationService;
 
         [ObservableProperty]
+        private object? _gameInstance;
+
+        [ObservableProperty]
         private DeathmatchEncounter? _encounter;
 
         [ObservableProperty]
@@ -24,6 +27,11 @@ namespace Darkness.Core.ViewModels
         public GamePageViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+        }
+
+        public void SetGame(object game)
+        {
+            GameInstance = game;
         }
 
         [RelayCommand]
