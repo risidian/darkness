@@ -1,0 +1,21 @@
+name: Gemini Auto-Code Workflow
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  auto-code:
+    if: github.event.label.name == 'Ready'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Gemini CLI
+        run: npm install -g @google/gemini-cli
