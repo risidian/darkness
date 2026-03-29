@@ -14,7 +14,7 @@ namespace Darkness.Core.ViewModels
         private readonly IDialogService _dialogService;
         private readonly StoryController _storyController;
 
-        private Character _currentPlayer = null!;
+        private Character? _currentPlayer;
         private List<Character> _party = new();
 
         [ObservableProperty]
@@ -69,6 +69,13 @@ namespace Darkness.Core.ViewModels
         {
             var encounter = _storyController.GetEncounterForBeat(_storyController.CurrentBeat);
             var enemies = encounter.Enemies;
+
+            if (enemies == null || enemies.Count == 0)
+            {
+                StatusText = "No enemies encountered. The path is clear.";
+                IsContinueVisible = true;
+                return;
+            }
 
             foreach (var member in encounter.AdditionalPartyMembers)
             {

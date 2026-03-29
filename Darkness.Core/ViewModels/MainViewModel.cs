@@ -92,7 +92,7 @@ namespace Darkness.Core.ViewModels
         [RelayCommand] 
         public async Task StorylineAsync() 
         {
-            await _navigationService.NavigateToAsync("GamePage");
+            await _navigationService.NavigateToAsync("///GamePage");
         }
 
         [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync("CharactersPage");
