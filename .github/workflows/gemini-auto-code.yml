@@ -24,9 +24,16 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          # Construct the prompt with issue context
-          PROMPT="The status of this issue is 'Ready'. Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}\n\n${{ github.event.issue.body }}\n\nResearch the codebase, implement the fix/feature, and create a Pull Request on a new branch."
+          # Construct the prompt using environment variables
+          echo "The status of this issue is 'Ready'. Issue #$ISSUE_NUMBER: $ISSUE_TITLE" > prompt.txt
+          echo "" >> prompt.txt
+          echo "$ISSUE_BODY" >> prompt.txt
+          echo "" >> prompt.txt
+          echo "Research the codebase, implement the fix/feature, and create a Pull Request on a new branch." >> prompt.txt
           
           # Run Gemini CLI in headless mode
-          echo -e "$PROMPT" | gemini -p
+          cat prompt.txt | gemini -p
