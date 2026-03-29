@@ -86,5 +86,9 @@ namespace Darkness.Core.Models
 
         [ObservableProperty]
         private byte[]? _thumbnail;
+
+        public CharacterSnapshot ToSnapshot() => new CharacterSnapshot(
+            Name, Class, CurrentHP, MaxHP, Level, Thumbnail, HairColor, HairStyle, SkinColor
+        );
     }
 }
