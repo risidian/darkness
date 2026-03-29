@@ -41,7 +41,7 @@ namespace Darkness.Core.ViewModels
 
             // In a real implementation, we would pass the encounter to the GamePage
             // For now, we'll navigate to GamePage and pass the encounter
-            await _navigationService.NavigateToAsync("GamePage", new Dictionary<string, object>
+            await _navigationService.NavigateToAsync("///GamePage", new Dictionary<string, object>
             {
                 { "Encounter", SelectedEncounter }
             });
