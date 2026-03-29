@@ -63,6 +63,12 @@ namespace Darkness.Core.ViewModels
                 return false;
             }
 
+            // For now, default to the first character
+            if (_sessionService.CurrentCharacter == null)
+            {
+                _sessionService.CurrentCharacter = characters[0];
+            }
+
             return true;
         }
 
