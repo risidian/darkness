@@ -28,6 +28,10 @@ Automate the implementation of features and bug fixes by triggering the Gemini C
 4. **Context:** The issue title and body are piped into the CLI as part of the prompt.
 5. **Action:** The CLI uses its `mcp_github_*` tools to interact with the repository and perform the task.
 
+## Setup Requirements
+1. **GitHub Secret**: Add `GEMINI_API_KEY` to your repository's Actions secrets.
+2. **Permissions**: Ensure the `GITHUB_TOKEN` has `write` permissions for `contents` and `pull-requests` in the repository settings (found under **Settings > Actions > General > Workflow permissions**).
+
 ## Security & Safety
 - The `GITHUB_TOKEN` is automatically scoped to the current repository.
 - Changes are pushed to a **new branch** and a **Pull Request** is created, ensuring a human review step before merging.
