@@ -6,12 +6,15 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Darkness.Core.Models;
 using Darkness.Game.Scenes;
 using Darkness.Core.Interfaces;
+using Darkness.Core.Logic;
 
 namespace Darkness.Game
 {
     public class DarknessGame : Microsoft.Xna.Framework.Game
     {
         private readonly ICombatService _combatService;
+        private readonly ISessionService _sessionService;
+        private readonly StoryController _storyController;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch? _spriteBatch;
         private WorldScene? _worldScene;
@@ -22,9 +25,11 @@ namespace Darkness.Game
         private bool _isDeathmatchActive = false;
         private bool _isPvpActive = false;
 
-        public DarknessGame(ICombatService combatService)
+        public DarknessGame(ICombatService combatService, ISessionService sessionService, StoryController storyController)
         {
             _combatService = combatService;
+            _sessionService = sessionService;
+            _storyController = storyController;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -62,17 +67,19 @@ namespace Darkness.Game
 
         protected override void Initialize()
         {
-            _worldScene = new WorldScene(this);
+            _worldScene = new WorldScene(this, _sessionService);
             _worldScene.EncounterTriggered += (s, e) =>
             {
-                // Trigger a random battle for now
-                var party = new List<Character> { 
-                    new Character { Name = "Hero", MaxHP = 100, CurrentHP = 100, Strength = 10, Defense = 5, Speed = 10 } 
-                };
-                var enemies = new List<Enemy> { 
-                    new Enemy { Name = "Dark Hound", MaxHP = 50, CurrentHP = 50, Attack = 8, Defense = 2, Speed = 12 } 
-                };
-                StartBattle(party, enemies);
+                if (_sessionService.CurrentCharacter == null) return;
+
+                // Load encounter for story beat 3
+                _storyController.SetBeat(3);
+                var (enemies, survivalTurns, additionalMembers) = _storyController.GetEncounterForBeat(3);
+                
+                var party = new List<Character> { _sessionService.CurrentCharacter };
+                party.AddRange(additionalMembers);
+
+                StartBattle(party, enemies, survivalTurns);
             };
             base.Initialize();
         }

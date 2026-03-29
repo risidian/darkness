@@ -16,6 +16,7 @@ namespace Darkness.Tests.ViewModels
         private readonly Mock<IRewardService> _rewardServiceMock;
         private readonly Mock<IDialogService> _dialogServiceMock;
         private readonly Mock<IDeathmatchService> _deathmatchServiceMock;
+        private readonly Mock<ISettingsService> _settingsServiceMock;
 
         public NavigationRegressionTests()
         {
@@ -25,6 +26,7 @@ namespace Darkness.Tests.ViewModels
             _rewardServiceMock = new Mock<IRewardService>();
             _dialogServiceMock = new Mock<IDialogService>();
             _deathmatchServiceMock = new Mock<IDeathmatchService>();
+            _settingsServiceMock = new Mock<ISettingsService>();
         }
 
         [Fact]
@@ -35,7 +37,8 @@ namespace Darkness.Tests.ViewModels
                 _sessionServiceMock.Object,
                 _navigationServiceMock.Object,
                 _characterServiceMock.Object,
-                _dialogServiceMock.Object);
+                _dialogServiceMock.Object,
+                _settingsServiceMock.Object);
 
             await viewModel.DeathmatchCommand.ExecuteAsync(null);
 
@@ -50,7 +53,8 @@ namespace Darkness.Tests.ViewModels
                 _sessionServiceMock.Object,
                 _navigationServiceMock.Object,
                 _characterServiceMock.Object,
-                _dialogServiceMock.Object);
+                _dialogServiceMock.Object,
+                _settingsServiceMock.Object);
 
             await viewModel.CharactersCommand.ExecuteAsync(null);
 
@@ -65,7 +69,8 @@ namespace Darkness.Tests.ViewModels
                 _sessionServiceMock.Object,
                 _navigationServiceMock.Object,
                 _characterServiceMock.Object,
-                _dialogServiceMock.Object);
+                _dialogServiceMock.Object,
+                _settingsServiceMock.Object);
 
             await viewModel.SettingsCommand.ExecuteAsync(null);
 

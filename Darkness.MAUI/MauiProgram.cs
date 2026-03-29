@@ -44,7 +44,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IDialogService, MauiDialogService>();
 		builder.Services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();
 		builder.Services.AddSingleton<ISpriteCompositor, SpriteCompositor>();
-		builder.Services.AddTransient<StoryController>();
+		builder.Services.AddSingleton<StoryController>();
 
 		// Register ViewModels
 		builder.Services.AddTransient<LoadUserViewModel>();

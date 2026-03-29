@@ -11,6 +11,7 @@ namespace Darkness.Core.Services
         private bool _isInitialized;
 
         public User? CurrentUser { get; set; }
+        public Character? CurrentCharacter { get; set; }
 
         public SessionService(ISettingsService settingsService, IUserService userService)
         {

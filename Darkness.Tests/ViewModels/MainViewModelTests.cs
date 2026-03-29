@@ -12,6 +12,7 @@ namespace Darkness.Tests.ViewModels
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<ICharacterService> _characterServiceMock;
         private readonly Mock<IDialogService> _dialogServiceMock;
+        private readonly Mock<ISettingsService> _settingsServiceMock;
         private readonly MainViewModel _viewModel;
 
         public MainViewModelTests()
@@ -21,13 +22,15 @@ namespace Darkness.Tests.ViewModels
             _navigationServiceMock = new Mock<INavigationService>();
             _characterServiceMock = new Mock<ICharacterService>();
             _dialogServiceMock = new Mock<IDialogService>();
+            _settingsServiceMock = new Mock<ISettingsService>();
 
             _viewModel = new MainViewModel(
                 _rewardServiceMock.Object,
                 _sessionServiceMock.Object,
                 _navigationServiceMock.Object,
                 _characterServiceMock.Object,
-                _dialogServiceMock.Object);
+                _dialogServiceMock.Object,
+                _settingsServiceMock.Object);
         }
 
         [Fact]
