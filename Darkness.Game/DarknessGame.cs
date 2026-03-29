@@ -15,7 +15,7 @@ namespace Darkness.Game
         private readonly ICombatService _combatService;
         private readonly ISessionService _sessionService;
         private readonly StoryController _storyController;
-        private GraphicsDeviceManager _graphics;
+        private GraphicsDeviceManager? _graphics;
         private SpriteBatch? _spriteBatch;
         private WorldScene? _worldScene;
         private BattleScene? _battleScene;
@@ -31,7 +31,15 @@ namespace Darkness.Game
             _sessionService = sessionService ?? throw new System.ArgumentNullException(nameof(sessionService));
             _storyController = storyController ?? throw new System.ArgumentNullException(nameof(storyController));
             
-            _graphics = new GraphicsDeviceManager(this);
+            try
+            {
+                _graphics = new GraphicsDeviceManager(this);
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DarknessGame] Failed to initialize GraphicsDeviceManager: {ex.Message}");
+            }
+            
             IsMouseVisible = true;
         }
 

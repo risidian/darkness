@@ -49,7 +49,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();
 		builder.Services.AddSingleton<ISpriteCompositor, SpriteCompositor>();
 		builder.Services.AddSingleton<StoryController>();
-		builder.Services.AddTransient<Darkness.Game.DarknessGame>();
+		builder.Services.AddSingleton<Darkness.Game.DarknessGame>();
 
 		// Register ViewModels
 		builder.Services.AddTransient<LoadUserViewModel>();
