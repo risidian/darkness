@@ -132,14 +132,14 @@ namespace Darkness.Core.ViewModels
             bool confirmed = await _dialogService.DisplayConfirmAsync("Flee", "Are you sure you want to attempt to flee?", "Yes", "No");
             if (confirmed)
             {
-                await _navigationService.NavigateToAsync("///GamePage");
+                await _navigationService.GoBackAsync();
             }
         }
 
         [RelayCommand]
         public async Task ContinueAsync()
         {
-            await _navigationService.NavigateToAsync("///GamePage");
+            await _navigationService.GoBackAsync();
         }
     }
 }

@@ -1,12 +1,16 @@
 using Darkness.MAUI.Pages;
+using Darkness.Core.Interfaces;
 
 namespace Darkness.MAUI;
 
 public partial class AppShell : Shell
 {
-	public AppShell()
+    private readonly ISessionService _sessionService;
+
+	public AppShell(ISessionService sessionService)
 	{
 		InitializeComponent();
+        _sessionService = sessionService;
 
 		Routing.RegisterRoute(nameof(CharacterGenPage), typeof(CharacterGenPage));
 		Routing.RegisterRoute(nameof(CreateUserPage), typeof(CreateUserPage));
@@ -20,4 +24,16 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(GamePage), typeof(GamePage));
 		Routing.RegisterRoute(nameof(BattlePage), typeof(BattlePage));
 	}
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        await _sessionService.InitializeAsync();
+        if (_sessionService.CurrentUser != null)
+        {
+            // If already logged in, skip the login screen and go to the Home page
+            await GoToAsync("///MainPage");
+        }
+    }
 }

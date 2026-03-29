@@ -35,9 +35,15 @@ namespace Darkness.Core.ViewModels
         }
 
         [RelayCommand]
+        public async Task GoBackAsync()
+        {
+            await _navigationService.GoBackAsync();
+        }
+
+        [RelayCommand]
         public async Task OpenCombatTestAsync()
         {
-            await _navigationService.NavigateToAsync("///BattlePage");
+            await _navigationService.NavigateToAsync("BattlePage");
         }
     }
 }

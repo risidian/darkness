@@ -6,12 +6,12 @@ public partial class App : Application
 {
     private readonly ISessionService _sessionService;
 
-	public App(ISessionService sessionService)
+	public App(ISessionService sessionService, AppShell shell)
 	{
 		InitializeComponent();
 
         _sessionService = sessionService;
-		MainPage = new AppShell();
+		MainPage = shell;
 	}
 
     protected override async void OnStart()

@@ -1,0 +1,80 @@
+<h2>MonoGame Host Control Design</h2>
+<p class="subtitle">Creating a reusable MAUI control to host the Darkness game engine</p>
+
+<div class="mockup">
+  <div class="mockup-header">Control Architecture</div>
+  <div class="mockup-body" style="background: #1a1a1a; padding: 20px; border: 2px solid #333;">
+    <div style="display: flex; gap: 20px; align-items: center;">
+      <!-- MAUI Page -->
+      <div style="background: #BB86FC; color: black; padding: 10px; border-radius: 5px; flex: 1; text-align: center;">
+        <strong>GamePage.xaml</strong><br>
+        <span style="font-size: 10px;">MAUI Layout</span>
+      </div>
+      <div style="color: white; font-size: 20px;">&rarr;</div>
+      <!-- MonoGameHost Control -->
+      <div style="background: #03DAC6; color: black; padding: 10px; border-radius: 5px; flex: 1; text-align: center; border: 2px solid white;">
+        <strong>MonoGameHost</strong><br>
+        <span style="font-size: 10px;">Custom Control</span>
+      </div>
+      <div style="color: white; font-size: 20px;">&rarr;</div>
+      <!-- DarknessGame -->
+      <div style="background: #3d3d3d; color: white; padding: 10px; border-radius: 5px; flex: 1; text-align: center;">
+        <strong>DarknessGame</strong><br>
+        <span style="font-size: 10px;">MonoGame Instance</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Implementation Details</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="card-body">
+        <h4>1. Custom View</h4>
+        <p>Create <code>MonoGameHost</code> inheriting from <code>View</code>. Add a <code>Game</code> BindableProperty.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h4>2. Platform Handlers</h4>
+        <p>Implement handlers for Windows (WinUI) and Android to provide the native rendering surface.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h4>3. Lifecycle Management</h4>
+        <p>Correctly call <code>Run()</code>, <code>Tick()</code>, and <code>Dispose()</code> based on MAUI page events.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Proposed XAML Usage</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="background: #000; padding: 15px; color: #BB86FC; font-family: monospace; font-size: 12px;">
+      &lt;controls:MonoGameHost<br>
+      &nbsp;&nbsp;Game="{Binding GameInstance}"<br>
+      &nbsp;&nbsp;HorizontalOptions="Fill"<br>
+      &nbsp;&nbsp;VerticalOptions="Fill" /&gt;
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="proceed" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Proceed!</h3>
+      <p>Build the control using this architecture.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="simplify" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Simplify</h3>
+      <p>Use a simpler non-handler approach if possible (e.g. Direct Canvas).</p>
+    </div>
+  </div>
+</div>

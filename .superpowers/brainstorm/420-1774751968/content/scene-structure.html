@@ -1,0 +1,73 @@
+<h2>Shore of Camelot: Fixed Area Design</h2>
+<p class="subtitle">Architecture and features for the first story scene</p>
+
+<div class="mockup">
+  <div class="mockup-header">Scene Layout & Boundaries</div>
+  <div class="mockup-body" style="background: #1a1a1a; height: 400px; position: relative; border: 2px solid #333; display: flex; align-items: center; justify-content: center;">
+    <!-- Map Visualization -->
+    <div style="width: 80%; height: 80%; background: #3d3d3d; border: 4px dashed #555; position: relative; display: flex; align-items: center; justify-content: center;">
+      <div style="position: absolute; top: -25px; color: #888;">North Boundary (Cliffs)</div>
+      <div style="position: absolute; bottom: -25px; color: #888;">South Boundary (Water)</div>
+      <div style="position: absolute; left: -80px; transform: rotate(-90deg); color: #888;">West Boundary</div>
+      <div style="position: absolute; right: -80px; transform: rotate(90deg); color: #888;">East Boundary</div>
+      
+      <!-- Key Elements -->
+      <div style="background: #BB86FC; width: 40px; height: 40px; position: absolute; left: 20%; top: 20%; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-weight: bold; font-size: 10px;">NPC</div>
+      <div style="background: red; width: 32px; height: 32px; position: absolute; left: 50%; top: 50%; border: 1px solid white;"></div>
+      <div style="background: #cf6679; width: 40px; height: 40px; position: absolute; right: 10%; bottom: 10%; border: 2px solid white; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px;">EXIT</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>1. Scene Components</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="card-body">
+        <h4>World Boundaries</h4>
+        <p>Collision logic to keep player within the playable shore area.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h4>NPC System</h4>
+        <p>Proximity-based interaction triggers. Press Action key to talk.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h4>Transition Trigger</h4>
+        <p>Walking to the 'East' exit triggers the heartbeat animation and battle (Beat 3).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>2. Data Flow</h3>
+  <div class="mockup">
+    <div class="mockup-body" style="background: #000; padding: 10px; color: #0f0; font-family: monospace; font-size: 12px;">
+      [Initialize] -> Load Character Sprite (from Session)<br>
+      [Update] -> Process WASD/Arrows -> Check Collision -> Check NPC Proximity<br>
+      [Draw] -> Draw Background -> Draw NPC -> Draw Player -> Draw UI/Dialog<br>
+      [Encounter] -> Trigger Heartbeat -> Transition to BattleScene
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approve-structure" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Looks good!</h3>
+      <p>Proceed with the design document for this structure.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="refine-interaction" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Refine Interaction</h3>
+      <p>I want to change how NPCs or boundaries work.</p>
+    </div>
+  </div>
+</div>

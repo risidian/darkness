@@ -13,58 +13,8 @@
         Route="LoadUserPage" />
 
     <ShellContent
-        Title="Create Account"
-        ContentTemplate="{DataTemplate pages:CreateUserPage}"
-        Route="CreateUserPage" />
-
-    <ShellContent
-        Title="Character Creation"
-        ContentTemplate="{DataTemplate pages:CharacterGenPage}"
-        Route="CharacterGenPage" />
-
-    <ShellContent
-        Title="World"
-        ContentTemplate="{DataTemplate pages:GamePage}"
-        Route="GamePage" />
-
-    <ShellContent
-        Title="Battle"
-        ContentTemplate="{DataTemplate pages:BattlePage}"
-        Route="BattlePage" />
-
-    <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-
-    <ShellContent
-        Title="Characters"
-        ContentTemplate="{DataTemplate pages:CharactersPage}"
-        Route="CharactersPage" />
-
-    <ShellContent
-        Title="Forge"
-        ContentTemplate="{DataTemplate pages:ForgePage}"
-        Route="ForgePage" />
-
-    <ShellContent
-        Title="Deathmatch"
-        ContentTemplate="{DataTemplate pages:DeathmatchPage}"
-        Route="DeathmatchPage" />
-
-    <ShellContent
-        Title="Allies"
-        ContentTemplate="{DataTemplate pages:AlliesPage}"
-        Route="AlliesPage" />
-
-    <ShellContent
-        Title="Settings"
-        ContentTemplate="{DataTemplate pages:SettingsPage}"
-        Route="SettingsPage" />
-
-    <ShellContent
-        Title="Study"
-        ContentTemplate="{DataTemplate pages:StudyPage}"
-        Route="StudyPage" />
 
 </Shell>

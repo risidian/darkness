@@ -20,7 +20,7 @@ namespace Darkness.Tests.ViewModels
         {
             await _viewModel.OpenCombatTestCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///BattlePage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("BattlePage", null), Times.Once);
         }
     }
 }

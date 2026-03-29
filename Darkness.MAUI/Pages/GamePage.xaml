@@ -12,6 +12,16 @@
         <!-- The MonoGameHost is the background layer -->
         <controls:MonoGameHost Game="{Binding GameInstance}" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
+        <!-- Top Menu Layer -->
+        <HorizontalStackLayout VerticalOptions="Start" HorizontalOptions="Start" Padding="15" Spacing="10">
+            <Button Text="Menu" 
+                    WidthRequest="80"
+                    BackgroundColor="#BB86FC"
+                    TextColor="Black"
+                    FontAttributes="Bold"
+                    Command="{Binding GoBackCommand}" />
+        </HorizontalStackLayout>
+
         <!-- UI Overlay layer - defined after to be on top -->
         <VerticalStackLayout VerticalOptions="End" Padding="20" Spacing="10" InputTransparent="False">
             <Button Text="Open Combat (Test)"

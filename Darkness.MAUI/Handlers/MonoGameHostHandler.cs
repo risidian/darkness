@@ -19,7 +19,9 @@ namespace Darkness.MAUI.Handlers
         {
             [nameof(MonoGameHost.Game)] = MapGame,
 #if WINDOWS
-            [nameof(Microsoft.Maui.IView.Background)] = (handler, view) => { },
+            [nameof(IView.Background)] = MapBackground,
+            ["Background"] = MapBackground,
+            ["BackgroundColor"] = MapBackground,
 #endif
         };
 
@@ -30,6 +32,12 @@ namespace Darkness.MAUI.Handlers
         public static void MapGame(MonoGameHostHandler handler, MonoGameHost view)
         {
             handler.UpdateGame(view.Game);
+        }
+
+        public static void MapBackground(IViewHandler handler, IView view)
+        {
+            // Do absolutely nothing. 
+            // SwapChainPanel does not support Background and will throw COMException if MAUI tries to set it.
         }
 
         protected override PlatformView CreatePlatformView()

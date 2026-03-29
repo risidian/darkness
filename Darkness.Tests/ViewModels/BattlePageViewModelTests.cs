@@ -106,7 +106,7 @@ namespace Darkness.Tests.ViewModels
 
             await _viewModel.FleeCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///GamePage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.GoBackAsync(), Times.Once);
         }
 
         [Fact]
@@ -117,6 +117,7 @@ namespace Darkness.Tests.ViewModels
 
             await _viewModel.FleeCommand.ExecuteAsync(null);
 
+            _navigationServiceMock.Verify(x => x.GoBackAsync(), Times.Never);
             _navigationServiceMock.Verify(x => x.NavigateToAsync(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()), Times.Never);
         }
 
@@ -125,7 +126,7 @@ namespace Darkness.Tests.ViewModels
         {
             await _viewModel.ContinueCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///GamePage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.GoBackAsync(), Times.Once);
         }
 
         [Fact]
