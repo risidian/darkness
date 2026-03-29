@@ -1,6 +1,7 @@
 using Darkness.Core.ViewModels;
 using Darkness.Core.Models;
 using Darkness.Core.Interfaces;
+using Darkness.Core.Logic;
 using Darkness.Game;
 
 namespace Darkness.MAUI.Pages
@@ -12,8 +13,10 @@ namespace Darkness.MAUI.Pages
     public partial class GamePage : ContentPage
     {
         private readonly GamePageViewModel _viewModel;
-        private readonly DarknessGame _game;
+        private DarknessGame? _game;
         private readonly ISessionService _sessionService;
+        private readonly ICombatService _combatService;
+        private readonly StoryController _storyController;
 
         public DeathmatchEncounter? Encounter
         {
@@ -39,20 +42,28 @@ namespace Darkness.MAUI.Pages
             set => _viewModel.Player2 = value;
         }
 
-        public GamePage(GamePageViewModel viewModel, DarknessGame game, ISessionService sessionService)
+        public GamePage(GamePageViewModel viewModel, ISessionService sessionService, ICombatService combatService, StoryController storyController)
         {
             InitializeComponent();
             _viewModel = viewModel;
-            _game = game;
             _sessionService = sessionService;
+            _combatService = combatService;
+            _storyController = storyController;
             BindingContext = _viewModel;
-
-            _viewModel.SetGame(_game);
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            // Lazy initialization of the game engine
+            if (_game == null)
+            {
+                _game = new DarknessGame(_combatService, _sessionService, _storyController);
+                _viewModel.SetGame(_game);
+            }
+
+            _game.Resume();
             
             if (_viewModel.Mode == "PVP")
             {
@@ -73,9 +84,15 @@ namespace Darkness.MAUI.Pages
                 // Story mode or World mode
                 System.Diagnostics.Debug.WriteLine("Starting Story/World mode");
             }
+        }
 
-            // In a real implementation with a proper MonoGame host, 
-            // the game would be running inside the MonoGameHost control.
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            
+            // Pause game engine to prevent background processing
+            System.Diagnostics.Debug.WriteLine("Leaving World - pausing Game engine");
+            _game?.Pause();
         }
     }
 }
