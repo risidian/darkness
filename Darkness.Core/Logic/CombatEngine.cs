@@ -28,27 +28,33 @@ namespace Darkness.Core.Logic
 
             return participants
                 .OrderByDescending(p => p.Initiative)
+                .ThenBy(p => p.Participant is Character ? 0 : 1)
+                .ThenBy(p => (p.Participant as Character)?.Name ?? (p.Participant as Enemy)?.Name)
                 .Select(p => p.Participant)
                 .ToList();
         }
 
-        public int CalculateDamage(Character attacker, Enemy defender, Skill? skill = null)
+        public int CalculateDamage(Character attacker, Enemy defender, Skill? skill = null, double? critRoll = null)
         {
-            // Deduct costs if a skill is used
-            if (skill != null)
-            {
-                attacker.Mana -= skill.ManaCost;
-                attacker.Stamina -= skill.StaminaCost;
-            }
-
             int baseAttack = attacker.Strength; // Using Strength as base attack for Character
             int power = skill?.BasePower ?? 0;
             int totalAttack = baseAttack + power;
 
-            int damage = (totalAttack * 2) - defender.Defense;
+            int damage = 0;
+            if (totalAttack + defender.Defense > 0)
+            {
+                long squaredAttack = (long)totalAttack * totalAttack;
+                damage = (int)(squaredAttack / (totalAttack + defender.Defense));
+            }
+
+            if (totalAttack > 0 && damage == 0)
+            {
+                damage = 1;
+            }
 
             // Critical hit calculation (Base 5% as Luck is not present)
-            bool isCritical = _random.NextDouble() < 0.05;
+            double roll = critRoll ?? _random.NextDouble();
+            bool isCritical = roll < 0.05;
             if (isCritical)
             {
                 damage = (int)(damage * 1.5);
@@ -60,23 +66,27 @@ namespace Darkness.Core.Logic
             return damage;
         }
 
-        public int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null)
+        public int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null, double? critRoll = null)
         {
-            // Deduct costs if a skill is used
-            if (skill != null)
-            {
-                attacker.Mana -= skill.ManaCost;
-                attacker.Stamina -= skill.StaminaCost;
-            }
-
             int baseAttack = attacker.Attack;
             int power = skill?.BasePower ?? 0;
             int totalAttack = baseAttack + power;
 
-            int damage = (totalAttack * 2) - defender.Defense;
+            int damage = 0;
+            if (totalAttack + defender.Defense > 0)
+            {
+                long squaredAttack = (long)totalAttack * totalAttack;
+                damage = (int)(squaredAttack / (totalAttack + defender.Defense));
+            }
+
+            if (totalAttack > 0 && damage == 0)
+            {
+                damage = 1;
+            }
 
             // Critical hit calculation (Base 5% as Luck is not present)
-            bool isCritical = _random.NextDouble() < 0.05;
+            double roll = critRoll ?? _random.NextDouble();
+            bool isCritical = roll < 0.05;
             if (isCritical)
             {
                 damage = (int)(damage * 1.5);
@@ -88,23 +98,27 @@ namespace Darkness.Core.Logic
             return damage;
         }
 
-        public int CalculateDamage(Character attacker, Character defender, Skill? skill = null)
+        public int CalculateDamage(Character attacker, Character defender, Skill? skill = null, double? critRoll = null)
         {
-            // Deduct costs if a skill is used
-            if (skill != null)
-            {
-                attacker.Mana -= skill.ManaCost;
-                attacker.Stamina -= skill.StaminaCost;
-            }
-
             int baseAttack = attacker.Strength;
             int power = skill?.BasePower ?? 0;
             int totalAttack = baseAttack + power;
 
-            int damage = (totalAttack * 2) - defender.Defense;
+            int damage = 0;
+            if (totalAttack + defender.Defense > 0)
+            {
+                long squaredAttack = (long)totalAttack * totalAttack;
+                damage = (int)(squaredAttack / (totalAttack + defender.Defense));
+            }
+
+            if (totalAttack > 0 && damage == 0)
+            {
+                damage = 1;
+            }
 
             // Critical hit calculation (Base 5% as Luck is not present)
-            bool isCritical = _random.NextDouble() < 0.05;
+            double roll = critRoll ?? _random.NextDouble();
+            bool isCritical = roll < 0.05;
             if (isCritical)
             {
                 damage = (int)(damage * 1.5);
@@ -114,6 +128,20 @@ namespace Darkness.Core.Logic
             damage = Math.Max(0, damage);
 
             return damage;
+        }
+
+        public void ApplySkillCosts(Character attacker, Skill skill)
+        {
+            if (attacker == null || skill == null) return;
+            attacker.Mana = Math.Max(0, attacker.Mana - skill.ManaCost);
+            attacker.Stamina = Math.Max(0, attacker.Stamina - skill.StaminaCost);
+        }
+
+        public void ApplySkillCosts(Enemy attacker, Skill skill)
+        {
+            if (attacker == null || skill == null) return;
+            attacker.Mana = Math.Max(0, attacker.Mana - skill.ManaCost);
+            attacker.Stamina = Math.Max(0, attacker.Stamina - skill.StaminaCost);
         }
 
         public bool CheckStatusEffect(Character target, StatusEffect effect)

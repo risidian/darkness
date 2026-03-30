@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,16 +16,19 @@ namespace Darkness.Game
         private readonly ICombatService _combatService;
         private readonly ISessionService _sessionService;
         private readonly StoryController _storyController;
+        private readonly Input.InputManager _inputManager;
         private GraphicsDeviceManager? _graphics;
         private SpriteBatch? _spriteBatch;
         private WorldScene? _worldScene;
         private BattleScene? _battleScene;
         private DeathmatchScene? _deathmatchScene;
         private PvpScene? _pvpScene;
-        private bool _isBattleActive = false;
-        private bool _isDeathmatchActive = false;
-        private bool _isPvpActive = false;
-        private bool _isPaused = false;
+        private volatile bool _isBattleActive = false;
+        private volatile bool _isDeathmatchActive = false;
+        private volatile bool _isPvpActive = false;
+        private volatile bool _isPaused = false;
+        private volatile bool _disposed = false;
+        private readonly object _sceneLock = new object();
 
         public DarknessGame(ICombatService combatService, ISessionService sessionService, StoryController storyController)
         {
@@ -32,6 +36,7 @@ namespace Darkness.Game
             _combatService = combatService ?? throw new System.ArgumentNullException(nameof(combatService));
             _sessionService = sessionService ?? throw new System.ArgumentNullException(nameof(sessionService));
             _storyController = storyController ?? throw new System.ArgumentNullException(nameof(storyController));
+            _inputManager = new Input.InputManager();
             
             try
             {
@@ -68,128 +73,123 @@ namespace Darkness.Game
 
         public void StartBattle(BattleSnapshot snapshot)
         {
-            // Create fresh character instances from the snapshot to decouple from MAUI ViewModels
-            var party = snapshot.Party.Select(s => new Character
+            lock (_sceneLock)
             {
-                Name = s.Name,
-                Class = s.Class,
-                CurrentHP = s.CurrentHP,
-                MaxHP = s.MaxHP,
-                Level = s.Level,
-                Thumbnail = s.Thumbnail,
-                HairColor = s.HairColor,
-                HairStyle = s.HairStyle,
-                SkinColor = s.SkinColor
-            }).ToList();
+                DisposeTransientScenes();
+                // Create fresh character instances from the snapshot to decouple from MAUI ViewModels
+                var party = snapshot.Party.Select(s => new Character
+                {
+                    Name = s.Name,
+                    Class = s.Class,
+                    CurrentHP = s.CurrentHP,
+                    MaxHP = s.MaxHP,
+                    Level = s.Level,
+                    Thumbnail = s.Thumbnail,
+                    HairColor = s.HairColor,
+                    HairStyle = s.HairStyle,
+                    SkinColor = s.SkinColor
+                }).ToList();
 
-            _battleScene = new BattleScene(this, party, snapshot.Enemies, snapshot.SurvivalTurns);
-            _battleScene.BattleEnded += (s, e) => _isBattleActive = false;
-            _battleScene.LoadContent(Content);
-            _isBattleActive = true;
-            _isDeathmatchActive = false;
-            _isPvpActive = false;
-            _isPaused = false;
+                _battleScene = new BattleScene(this, _inputManager, party, snapshot.Enemies, snapshot.SurvivalTurns);
+                _battleScene.BattleEnded += OnBattleEnded;
+                _battleScene.LoadContent(Content);
+                _isBattleActive = true;
+                _isDeathmatchActive = false;
+                _isPvpActive = false;
+                _isPaused = false;
+            }
         }
 
         public void StartBattle(List<Character> party, List<Enemy> enemies, int? survivalTurns = null)
         {
-            _battleScene = new BattleScene(this, party, enemies, survivalTurns);
-            _battleScene.BattleEnded += (s, e) => _isBattleActive = false;
-            _battleScene.LoadContent(Content);
-            _isBattleActive = true;
-            _isDeathmatchActive = false;
-            _isPvpActive = false;
-            _isPaused = false;
+            lock (_sceneLock)
+            {
+                DisposeTransientScenes();
+                _battleScene = new BattleScene(this, _inputManager, party, enemies, survivalTurns);
+                _battleScene.BattleEnded += OnBattleEnded;
+                _battleScene.LoadContent(Content);
+                _isBattleActive = true;
+                _isDeathmatchActive = false;
+                _isPvpActive = false;
+                _isPaused = false;
+            }
         }
 
         public void StartDeathmatch(List<Character> party, DeathmatchEncounter encounter)
         {
-            _deathmatchScene = new DeathmatchScene(this, party, encounter);
-            _deathmatchScene.BattleEnded += (s, e) => _isDeathmatchActive = false;
-            _deathmatchScene.LoadContent(Content);
-            _isDeathmatchActive = true;
-            _isBattleActive = false;
-            _isPvpActive = false;
-            _isPaused = false;
+            lock (_sceneLock)
+            {
+                DisposeTransientScenes();
+                _deathmatchScene = new DeathmatchScene(this, _inputManager, party, encounter);
+                _deathmatchScene.BattleEnded += OnDeathmatchEnded;
+                _deathmatchScene.LoadContent(Content);
+                _isDeathmatchActive = true;
+                _isBattleActive = false;
+                _isPvpActive = false;
+                _isPaused = false;
+            }
         }
 
         public void StartPvp(Character player1, Character player2)
         {
-            _pvpScene = new PvpScene(this, _combatService, player1, player2);
-            _pvpScene.BattleEnded += (s, e) => _isPvpActive = false;
-            _pvpScene.LoadContent(Content);
-            _isPvpActive = true;
-            _isBattleActive = false;
-            _isDeathmatchActive = false;
-            _isPaused = false;
-        }
-
-        public GraphicsDeviceManager? GraphicsManager => _graphics;
-
-        public new void Tick()
-        {
-            if (_isPaused) return;
-
-            if (GraphicsDevice == null)
+            lock (_sceneLock)
             {
-                PrepareForPlatform();
-            }
-
-            if (GraphicsDevice == null) return;
-
-            // Drive the game loop manually
-            var gameTime = new GameTime(
-                System.TimeSpan.FromMilliseconds(System.Environment.TickCount),
-                System.TimeSpan.FromMilliseconds(16.6) // Assume 60fps
-            );
-
-            try
-            {
-                Update(gameTime);
-                Draw(gameTime);
-            }
-            catch (System.Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[DarknessGame] Error during loop: {ex.Message}");
+                DisposeTransientScenes();
+                _pvpScene = new PvpScene(this, _inputManager, _combatService, player1, player2);
+                _pvpScene.BattleEnded += OnPvpEnded;
+                _pvpScene.LoadContent(Content);
+                _isPvpActive = true;
+                _isBattleActive = false;
+                _isDeathmatchActive = false;
+                _isPaused = false;
             }
         }
 
-        public void PrepareForPlatform()
+        private void OnBattleEnded(object? sender, System.EventArgs e)
         {
-            if (Content == null)
+            lock (_sceneLock)
             {
-                System.Diagnostics.Debug.WriteLine("[DarknessGame] Initializing ContentManager...");
-                Content = new Microsoft.Xna.Framework.Content.ContentManager(Services, "Content");
-            }
-
-            if (GraphicsDevice == null && _graphics != null)
-            {
-                System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDevice is null, attempting initialization...");
-                try
+                _isBattleActive = false;
+                if (_battleScene != null)
                 {
-                    // For WindowsDX, we must ensure we don't call ApplyChanges if a window hasn't been 
-                    // assigned or if we're not ready, but since the Handler set the SwapChainPanel,
-                    // this should now be safe.
-                    _graphics.ApplyChanges();
-                    
-                    if (GraphicsDevice != null)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[DarknessGame] GraphicsDevice created successfully: {GraphicsDevice.Adapter.Description}");
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[DarknessGame] Warning: ApplyChanges failed (this is expected if surface not ready): {ex.Message}");
+                    _battleScene.BattleEnded -= OnBattleEnded;
+                    _battleScene.Dispose();
+                    _battleScene = null;
                 }
             }
         }
 
-        protected override void Initialize()
+        private void OnDeathmatchEnded(object? sender, System.EventArgs e)
         {
-            PrepareForPlatform();
+            lock (_sceneLock)
+            {
+                _isDeathmatchActive = false;
+                if (_deathmatchScene != null)
+                {
+                    _deathmatchScene.BattleEnded -= OnDeathmatchEnded;
+                    _deathmatchScene.Dispose();
+                    _deathmatchScene = null;
+                }
+            }
+        }
 
-            _worldScene = new WorldScene(this, _sessionService);
-            _worldScene.EncounterTriggered += (s, e) =>
+        private void OnPvpEnded(object? sender, System.EventArgs e)
+        {
+            lock (_sceneLock)
+            {
+                _isPvpActive = false;
+                if (_pvpScene != null)
+                {
+                    _pvpScene.BattleEnded -= OnPvpEnded;
+                    _pvpScene.Dispose();
+                    _pvpScene = null;
+                }
+            }
+        }
+
+        private void OnEncounterTriggered(object? sender, System.EventArgs e)
+        {
+            lock (_sceneLock)
             {
                 if (_sessionService.CurrentCharacter == null) return;
 
@@ -201,15 +201,162 @@ namespace Darkness.Game
                 party.AddRange(additionalMembers);
 
                 StartBattle(party, enemies, survivalTurns);
-            };
-            base.Initialize();
+            }
+        }
+
+        private void DisposeTransientScenes()
+        {
+            if (_battleScene != null)
+            {
+                _battleScene.BattleEnded -= OnBattleEnded;
+                _battleScene.Dispose();
+                _battleScene = null;
+            }
+            if (_deathmatchScene != null)
+            {
+                _deathmatchScene.BattleEnded -= OnDeathmatchEnded;
+                _deathmatchScene.Dispose();
+                _deathmatchScene = null;
+            }
+            if (_pvpScene != null)
+            {
+                _pvpScene.BattleEnded -= OnPvpEnded;
+                _pvpScene.Dispose();
+                _pvpScene = null;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            if (disposing)
+            {
+                lock (_sceneLock)
+                {
+                    if (_worldScene != null)
+                    {
+                        _worldScene.EncounterTriggered -= OnEncounterTriggered;
+                        _worldScene.Dispose();
+                        _worldScene = null;
+                    }
+                    _spriteBatch?.Dispose();
+                    _spriteBatch = null;
+                    DisposeTransientScenes();
+                    
+                    if (_graphics is System.IDisposable disposableGraphics)
+                    {
+                        disposableGraphics.Dispose();
+                    }
+                    _graphics = null;
+                }
+            }
+            _disposed = true;
+            base.Dispose(disposing);
+        }
+
+        public GraphicsDeviceManager? GraphicsManager => _graphics;
+
+        public new void Tick()
+        {
+            if (_isPaused || _disposed) return;
+
+            if (GraphicsDevice == null)
+            {
+                PrepareForPlatform();
+            }
+
+            if (GraphicsDevice == null) return;
+
+            // Late-initialization check: ensure _spriteBatch exists AND content for active scenes is loaded.
+            // We call LoadContent() to re-verify state even if _spriteBatch is already present.
+            LoadContent();
+
+            // Drive the game loop manually
+            var gameTime = new GameTime(
+                System.TimeSpan.FromMilliseconds(System.Environment.TickCount),
+                System.TimeSpan.FromMilliseconds(16.6) // Assume 60fps
+            );
+
+            try
+            {
+                lock (_sceneLock)
+                {
+                    _inputManager.Update();
+                    Update(gameTime);
+                    Draw(gameTime);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DarknessGame] Error during loop: {ex.Message}");
+            }
+        }
+
+        public void PrepareForPlatform()
+        {
+            lock (_sceneLock)
+            {
+                if (Content == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("[DarknessGame] Initializing ContentManager...");
+                    Content = new Microsoft.Xna.Framework.Content.ContentManager(Services, "Content");
+                }
+
+                if (GraphicsDevice == null && _graphics != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("[DarknessGame] GraphicsDevice is null, attempting initialization...");
+                    try
+                    {
+                        // For WindowsDX, we must ensure we don't call ApplyChanges if a window hasn't been 
+                        // assigned or if we're not ready, but since the Handler set the SwapChainPanel,
+                        // this should now be safe.
+                        _graphics.ApplyChanges();
+                        
+                        if (GraphicsDevice != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[DarknessGame] GraphicsDevice created successfully: {GraphicsDevice.Adapter.Description}");
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[DarknessGame] Warning: ApplyChanges failed (this is expected if surface not ready): {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        protected override void Initialize()
+        {
+            lock (_sceneLock)
+            {
+                PrepareForPlatform();
+
+                _worldScene = new WorldScene(this, _inputManager, _sessionService);
+                _worldScene.EncounterTriggered += OnEncounterTriggered;
+                base.Initialize();
+            }
         }
 
         protected override void LoadContent()
         {
-            if (GraphicsDevice == null) return;
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _worldScene?.LoadContent(Content);
+            lock (_sceneLock)
+            {
+                if (GraphicsDevice == null || Content == null) return;
+                
+                if (_spriteBatch == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("[DarknessGame] Creating SpriteBatch...");
+                    _spriteBatch = new SpriteBatch(GraphicsDevice);
+                }
+                
+                // Always attempt to load content for all non-null scenes to ensure they are ready for the next frame.
+                // Individual scenes handle redundant LoadContent calls via internal null-checks for resources.
+                _worldScene?.LoadContent(Content);
+                _battleScene?.LoadContent(Content);
+                _deathmatchScene?.LoadContent(Content);
+                _pvpScene?.LoadContent(Content);
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -217,6 +364,7 @@ namespace Darkness.Game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Note: Update and Draw are called within _sceneLock from Tick()
             if (_isBattleActive)
             {
                 _battleScene?.Update(gameTime);
@@ -243,6 +391,7 @@ namespace Darkness.Game
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch?.Begin();
+            // Note: Update and Draw are called within _sceneLock from Tick()
             if (_isBattleActive)
             {
                 if (_spriteBatch != null) _battleScene?.Draw(_spriteBatch);

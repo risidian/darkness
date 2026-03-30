@@ -11,9 +11,10 @@ using Darkness.Core.Interfaces;
 
 namespace Darkness.Game.Scenes
 {
-    public class PvpScene
+    public class PvpScene : IDisposable
     {
         private readonly Microsoft.Xna.Framework.Game _game;
+        private readonly Input.InputManager _inputManager;
         private readonly ICombatService _combatService;
         private Character _player1;
         private Character _player2;
@@ -25,12 +26,14 @@ namespace Darkness.Game.Scenes
 
         private Texture2D? _pixel;
         private SpriteFont? _font;
+        private bool _disposed = false;
 
         public event EventHandler? BattleEnded;
 
-        public PvpScene(Microsoft.Xna.Framework.Game game, ICombatService combatService, Character player1, Character player2)
+        public PvpScene(Microsoft.Xna.Framework.Game game, Input.InputManager inputManager, ICombatService combatService, Character player1, Character player2)
         {
             _game = game;
+            _inputManager = inputManager;
             _combatService = combatService;
             _player1 = player1;
             _player2 = player2;
@@ -44,32 +47,71 @@ namespace Darkness.Game.Scenes
             _battleLog = $"{_turnOrder[_currentTurnIndex].Name}'s turn! Press 1 to Attack.";
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _pixel?.Dispose();
+                    _pixel = null;
+                    _font = null;
+                    // Clear event invocation list to prevent leaks
+                    BattleEnded = null;
+                }
+                _disposed = true;
+            }
+        }
+
         public void LoadContent(ContentManager content)
         {
-            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
-            if (deviceService?.GraphicsDevice == null || content == null)
+            if (content == null) return;
+            
+            var graphicsDevice = _game?.GraphicsDevice;
+            if (graphicsDevice == null)
             {
-                System.Diagnostics.Debug.WriteLine("[PvpScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");       
+                var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
+                graphicsDevice = deviceService?.GraphicsDevice;
+            }
+
+            if (graphicsDevice == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[PvpScene] GraphicsDevice is not ready. Skipping LoadContent.");       
                 return;
             }
 
-            _pixel = new Texture2D(deviceService.GraphicsDevice, 1, 1);            _pixel.SetData(new[] { Color.White });
-            
-            try 
+            if (_pixel == null)
             {
-                _font = content.Load<SpriteFont>("font");
+                _pixel = new Texture2D(graphicsDevice, 1, 1);
+                _pixel.SetData(new[] { Color.White });
             }
-            catch
+            
+            if (_font == null)
             {
-                // Fallback handled in Draw
+                try 
+                {
+                    _font = content.Load<SpriteFont>("font");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[PvpScene] Failed to load font: {ex.Message}");
+                }
             }
         }
 
         public void Update(GameTime gameTime)
         {
+            if (_disposed) return;
+
             if (_battleOver)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                if (_inputManager.IsKeyJustPressed(Keys.Enter) || _inputManager.IsTouchJustPressed())
                 {
                     BattleEnded?.Invoke(this, EventArgs.Empty);
                 }
@@ -79,8 +121,7 @@ namespace Darkness.Game.Scenes
             var currentPlayer = _turnOrder[_currentTurnIndex];
             var opponent = _turnOrder[(_currentTurnIndex + 1) % 2];
 
-            var kState = Keyboard.GetState();
-            if (kState.IsKeyDown(Keys.D1)) 
+            if (_inputManager.IsKeyJustPressed(Keys.D1) || _inputManager.IsTouchJustPressed()) 
             {
                 ExecuteAttack(currentPlayer, opponent);
             }
@@ -109,7 +150,7 @@ namespace Darkness.Game.Scenes
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_pixel == null) return;
+            if (_disposed || _pixel == null) return;
 
             // Draw Background (Dark Blue-Gray for PvP)
             spriteBatch.Draw(_pixel, new Rectangle(0, 0, _game.GraphicsDevice.Viewport.Width, _game.GraphicsDevice.Viewport.Height), new Color(20, 20, 40));
