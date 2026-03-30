@@ -91,11 +91,16 @@ namespace Darkness.Game.Scenes
         {
             if (content == null) return;
             
-            var graphicsDevice = _game?.GraphicsDevice;
-            if (graphicsDevice == null)
+            // Safely check if graphics device is ready
+            GraphicsDevice? graphicsDevice = null;
+            try
             {
                 var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
-                graphicsDevice = deviceService?.GraphicsDevice;
+                graphicsDevice = deviceService?.GraphicsDevice ?? _game?.GraphicsDevice;
+            }
+            catch (InvalidOperationException)
+            {
+                // GraphicsDevice service not available yet
             }
 
             if (graphicsDevice == null)
