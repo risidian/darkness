@@ -12,6 +12,13 @@ namespace Darkness.MAUI.Handlers
         private Microsoft.Xna.Framework.Game? _game;
         private bool _isInitialized;
 
+        // Custom DXGI bridge fields for per-frame rebinding
+        private SharpDX.DXGI.SwapChain1? _customSwapChain;
+        private SharpDX.Direct3D11.RenderTargetView? _customRtv;
+        private SharpDX.Direct3D11.DeviceContext? _customD3dContext;
+        private int _renderWidth;
+        private int _renderHeight;
+
         // COM interface for binding a DXGI swap chain to a WinUI3 SwapChainPanel
         [ComImport, Guid("63aad0b8-7c24-40ff-85a8-640d944cc325")]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -47,7 +54,20 @@ namespace Darkness.MAUI.Handlers
                 {
                     if (_game is Darkness.Game.DarknessGame darknessGame)
                     {
+                        // Ensure the context is targeting our composition swap chain RTV
+                        // MonoGame's Clear() and SpriteBatch often reset this, so we re-bind it
+                        // right before the game's Tick() calls into its draw logic.
+                        if (_customD3dContext != null && _customRtv != null)
+                        {
+                            _customD3dContext.OutputMerger.SetRenderTargets(_customRtv);
+                            _customD3dContext.Rasterizer.SetViewport(0, 0, _renderWidth, _renderHeight);
+                        }
+
                         darknessGame.Tick();
+
+                        // Explicitly present to our composition swap chain. 
+                        // Using SyncInterval 1 (VSync) for smooth composition.
+                        _customSwapChain?.Present(1, SharpDX.DXGI.PresentFlags.None);
                     }
                 }
                 catch (System.Exception ex)
@@ -104,36 +124,39 @@ namespace Darkness.MAUI.Handlers
 
                 // Get MonoGame's internal D3D11 device
                 var d3dDeviceField = gdType.GetField("_d3dDevice", flags);
-                var d3dDevice = d3dDeviceField?.GetValue(graphicsDevice);
+                var d3dDevice = d3dDeviceField?.GetValue(graphicsDevice) as SharpDX.Direct3D11.Device;
                 if (d3dDevice == null)
                 {
                     System.Diagnostics.Debug.WriteLine("[MonoGameHostHandler] Could not access _d3dDevice.");
                     return;
                 }
 
+                // Get MonoGame's internal D3D11 context
+                var d3dContextField = gdType.GetField("_d3dContext", flags);
+                _customD3dContext = d3dContextField?.GetValue(graphicsDevice) as SharpDX.Direct3D11.DeviceContext;
+
                 System.Diagnostics.Debug.WriteLine("[MonoGameHostHandler] Got D3D11 device from MonoGame.");
 
                 // Get the DXGI device → adapter → factory for creating a composition swap chain
-                var dxgiDeviceType = typeof(SharpDX.DXGI.Device1);
-                var dxgiDevice = ((SharpDX.Direct3D11.Device)d3dDevice).QueryInterface<SharpDX.DXGI.Device1>();
+                var dxgiDevice = d3dDevice.QueryInterface<SharpDX.DXGI.Device1>();
                 var dxgiAdapter = dxgiDevice.Adapter;
                 var dxgiFactory = dxgiAdapter.GetParent<SharpDX.DXGI.Factory2>();
 
                 System.Diagnostics.Debug.WriteLine("[MonoGameHostHandler] Got DXGI Factory2.");
 
                 // Determine swap chain size
-                int width = Math.Max(1, (int)panel.ActualWidth);
-                int height = Math.Max(1, (int)panel.ActualHeight);
+                _renderWidth = Math.Max(1, (int)panel.ActualWidth);
+                _renderHeight = Math.Max(1, (int)panel.ActualHeight);
 
                 var pp = graphicsDevice.PresentationParameters;
-                if (pp.BackBufferWidth > 0) width = pp.BackBufferWidth;
-                if (pp.BackBufferHeight > 0) height = pp.BackBufferHeight;
+                if (pp.BackBufferWidth > 0) _renderWidth = pp.BackBufferWidth;
+                if (pp.BackBufferHeight > 0) _renderHeight = pp.BackBufferHeight;
 
                 // Create a new swap chain for composition (required for SwapChainPanel)
                 var swapChainDesc = new SharpDX.DXGI.SwapChainDescription1
                 {
-                    Width = width,
-                    Height = height,
+                    Width = _renderWidth,
+                    Height = _renderHeight,
                     Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm,
                     Stereo = false,
                     SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0),
@@ -145,17 +168,16 @@ namespace Darkness.MAUI.Handlers
                     AlphaMode = SharpDX.DXGI.AlphaMode.Ignore,
                 };
 
-                var newSwapChain = new SharpDX.DXGI.SwapChain1(
-                    dxgiFactory,
-                    (SharpDX.Direct3D11.Device)d3dDevice,
-                    ref swapChainDesc);
+                // Dispose old custom swap chain before creating new one
+                _customSwapChain?.Dispose();
+                _customSwapChain = new SharpDX.DXGI.SwapChain1(dxgiFactory, d3dDevice, ref swapChainDesc);
 
-                System.Diagnostics.Debug.WriteLine($"[MonoGameHostHandler] Created composition swap chain ({width}x{height}).");
+                System.Diagnostics.Debug.WriteLine($"[MonoGameHostHandler] Created composition swap chain ({_renderWidth}x{_renderHeight}).");
 
                 // Bind the new swap chain to the WinUI3 SwapChainPanel via COM interop
                 var panelNative = Marshal.GetComInterfaceForObject<SwapChainPanel, ISwapChainPanelNative>(panel);
                 var native = Marshal.GetObjectForIUnknown(panelNative) as ISwapChainPanelNative;
-                native?.SetSwapChain(newSwapChain.NativePointer);
+                native?.SetSwapChain(_customSwapChain.NativePointer);
                 Marshal.Release(panelNative);
 
                 System.Diagnostics.Debug.WriteLine("[MonoGameHostHandler] Bound swap chain to SwapChainPanel.");
@@ -165,36 +187,33 @@ namespace Darkness.MAUI.Handlers
                 if (swapChainField != null)
                 {
                     var oldSwapChain = swapChainField.GetValue(graphicsDevice) as IDisposable;
-                    swapChainField.SetValue(graphicsDevice, newSwapChain);
+                    swapChainField.SetValue(graphicsDevice, _customSwapChain);
                     oldSwapChain?.Dispose();
                     System.Diagnostics.Debug.WriteLine("[MonoGameHostHandler] Replaced MonoGame swap chain.");
                 }
 
                 // Create a new render target view from the new swap chain's back buffer
                 var renderTargetField = gdType.GetField("_renderTargetView", flags);
-                SharpDX.Direct3D11.RenderTargetView? newRtv = null;
                 if (renderTargetField != null)
                 {
                     // Dispose old render target view
+                    _customRtv?.Dispose();
                     var oldRtv = renderTargetField.GetValue(graphicsDevice);
                     if (oldRtv is IDisposable disposableRtv)
                         disposableRtv.Dispose();
 
                     // Create new render target view from the new swap chain's back buffer
-                    using var backBuffer = SharpDX.Direct3D11.Resource.FromSwapChain<SharpDX.Direct3D11.Texture2D>(newSwapChain, 0);
-                    newRtv = new SharpDX.Direct3D11.RenderTargetView((SharpDX.Direct3D11.Device)d3dDevice, backBuffer);
-                    renderTargetField.SetValue(graphicsDevice, newRtv);
+                    using var backBuffer = SharpDX.Direct3D11.Resource.FromSwapChain<SharpDX.Direct3D11.Texture2D>(_customSwapChain, 0);
+                    _customRtv = new SharpDX.Direct3D11.RenderTargetView(d3dDevice, backBuffer);
+                    renderTargetField.SetValue(graphicsDevice, _customRtv);
                     System.Diagnostics.Debug.WriteLine("[MonoGameHostHandler] Replaced render target view.");
                 }
 
-                // Bind the new render target to the D3D11 device context so draw calls go to it
-                var d3dContextField = gdType.GetField("_d3dContext", flags);
-                var d3dContext = d3dContextField?.GetValue(graphicsDevice) as SharpDX.Direct3D11.DeviceContext;
-                if (d3dContext != null && newRtv != null)
+                // Initial bind to context
+                if (_customD3dContext != null && _customRtv != null)
                 {
-                    d3dContext.OutputMerger.SetRenderTargets(newRtv);
-                    d3dContext.Rasterizer.SetViewport(0, 0, width, height);
-                    System.Diagnostics.Debug.WriteLine("[MonoGameHostHandler] Bound new render target to D3D11 context.");
+                    _customD3dContext.OutputMerger.SetRenderTargets(_customRtv);
+                    _customD3dContext.Rasterizer.SetViewport(0, 0, _renderWidth, _renderHeight);
                 }
 
                 // Clean up DXGI objects (don't dispose device/adapter - MonoGame owns those)

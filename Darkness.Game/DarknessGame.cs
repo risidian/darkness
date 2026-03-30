@@ -285,9 +285,6 @@ namespace Darkness.Game
                     _inputManager.Update();
                     Update(gameTime);
                     Draw(gameTime);
-                    // Present the frame — Tick() bypasses MonoGame's normal BeginDraw/EndDraw
-                    // pipeline, so we must call Present explicitly.
-                    GraphicsDevice.Present();
                 }
             }
             catch (System.Exception ex)
@@ -391,7 +388,7 @@ namespace Darkness.Game
         protected override void Draw(GameTime gameTime)
         {
             if (GraphicsDevice == null) return;
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch?.Begin();
             // Note: Update and Draw are called within _sceneLock from Tick()
