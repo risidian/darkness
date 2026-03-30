@@ -1,0 +1,5 @@
+res://src/Game/WorldScene.cs
+res://src/UI/CharacterGenScene.cs
+res://src/Game/BattleScene.cs
+res://src/UI/MainScene.cs
+res://src/Core/Global.cs

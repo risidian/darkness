@@ -1,0 +1,66 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6l7x5y5y5y5y"]
+
+[ext_resource type="Script" path="res://src/Game/BattleScene.cs" id="1_x5y5y"]
+
+[node name="BattleScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x5y5y")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.0784314, 0.0784314, 1)
+
+[node name="CombatLog" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -250.0
+offset_right = -50.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 0
+bbcode_enabled = true
+text = "A battle begins!"
+
+[node name="ActionsArea" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -120.0
+offset_right = -50.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Attack1" type="Button" parent="ActionsArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ATTACK 1"
+
+[node name="Attack2" type="Button" parent="ActionsArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ATTACK 2"
+
+[node name="Attack3" type="Button" parent="ActionsArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ATTACK 3"

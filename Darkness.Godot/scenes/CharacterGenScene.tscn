@@ -1,0 +1,87 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6l7x3y3y3y3y"]
+
+[ext_resource type="Script" path="res://src/UI/CharacterGenScene.cs" id="1_x3y3y"]
+
+[node name="CharacterGenScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x3y3y")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.129412, 0.129412, 0.129412, 1)
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PreviewArea" type="Control" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpritePreview" type="TextureRect" parent="HSplitContainer/PreviewArea"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ControlsArea" type="VBoxContainer" parent="HSplitContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Label" type="Label" parent="HSplitContainer/ControlsArea"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "CUSTOMIZE CHARACTER"
+horizontal_alignment = 1
+
+[node name="NameEdit" type="LineEdit" parent="HSplitContainer/ControlsArea"]
+layout_mode = 2
+placeholder_text = "CHARACTER NAME"
+
+[node name="ClassOption" type="OptionButton" parent="HSplitContainer/ControlsArea"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "WARRIOR"
+popup/item_0/id = 0
+popup/item_1/text = "MAGE"
+popup/item_1/id = 1
+popup/item_2/text = "ROGUE"
+popup/item_2/id = 2
+
+[node name="CreateButton" type="Button" parent="HSplitContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "CREATE CHARACTER"
+
+[node name="BackButton" type="Button" parent="HSplitContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "CANCEL"
