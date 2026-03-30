@@ -47,6 +47,29 @@ shape = SubResource("RectangleShape2D_x1y1y")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="TopMenu" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 600.0
+offset_bottom = 70.0
+theme_override_constants/separation = 10
+
+[node name="ForgeButton" type="Button" parent="CanvasLayer/TopMenu"]
+layout_mode = 2
+text = "FORGE"
+
+[node name="StudyButton" type="Button" parent="CanvasLayer/TopMenu"]
+layout_mode = 2
+text = "STUDY"
+
+[node name="AlliesButton" type="Button" parent="CanvasLayer/TopMenu"]
+layout_mode = 2
+text = "ALLIES"
+
+[node name="DeathmatchButton" type="Button" parent="CanvasLayer/TopMenu"]
+layout_mode = 2
+text = "DEATHMATCH"
+
 [node name="DialogueBox" type="PanelContainer" parent="CanvasLayer"]
 visible = false
 anchors_preset = 12

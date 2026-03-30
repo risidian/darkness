@@ -3,3 +3,6 @@ res://src/UI/CharacterGenScene.cs
 res://src/Game/BattleScene.cs
 res://src/UI/MainScene.cs
 res://src/Core/Global.cs
+res://src/UI/CharactersScene.cs
+res://src/UI/CreateUserScene.cs
+res://src/UI/LoadUserScene.cs

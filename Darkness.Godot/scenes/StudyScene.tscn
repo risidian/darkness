@@ -1,0 +1,135 @@
+[gd_scene load_steps=2 format=3 uid="uid://study_scene_uid"]
+
+[ext_resource type="Script" path="res://src/UI/StudyScene.cs" id="1_study"]
+
+[node name="StudyScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_study")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.129412, 0.129412, 0.129412, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -250.0
+offset_right = 250.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="CharName" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "CHARACTER NAME"
+horizontal_alignment = 1
+
+[node name="Points" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+text = "Attribute Points: 0"
+horizontal_alignment = 1
+
+[node name="StatsGrid" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Strength" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Strength"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Strength: 10"
+
+[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Strength"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "+"
+
+[node name="Dexterity" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Dexterity"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Dexterity: 10"
+
+[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Dexterity"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "+"
+
+[node name="Constitution" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Constitution"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Constitution: 10"
+
+[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Constitution"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "+"
+
+[node name="Intelligence" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Intelligence"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Intelligence: 10"
+
+[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Intelligence"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "+"
+
+[node name="Wisdom" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Wisdom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Wisdom: 10"
+
+[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Wisdom"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "+"
+
+[node name="Charisma" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Charisma"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Charisma: 10"
+
+[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Charisma"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "+"
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "BACK"

@@ -151,7 +151,7 @@ namespace Darkness.Core.Logic
             // Using a simple logic: if random (0-100) > target.Wisdom (resistance factor), effect is applied.
             int resistance = target.Wisdom;
             int roll = _random.Next(1, 101);
-            
+
             return roll > resistance;
         }
 
@@ -159,7 +159,7 @@ namespace Darkness.Core.Logic
         {
             int resistance = target.WIS;
             int roll = _random.Next(1, 101);
-            
+
             return roll > resistance;
         }
     }

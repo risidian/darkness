@@ -39,6 +39,11 @@ public partial class WorldScene : Node2D, IInitializable
         _nameLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/NameLabel");
         _textLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/TextLabel");
 
+        GetNode<Button>("CanvasLayer/TopMenu/ForgeButton").Pressed += () => _navigation.NavigateToAsync("ForgePage");
+        GetNode<Button>("CanvasLayer/TopMenu/StudyButton").Pressed += () => _navigation.NavigateToAsync("StudyPage");
+        GetNode<Button>("CanvasLayer/TopMenu/AlliesButton").Pressed += () => _navigation.NavigateToAsync("AlliesPage");
+        GetNode<Button>("CanvasLayer/TopMenu/DeathmatchButton").Pressed += () => _navigation.NavigateToAsync("DeathmatchPage");
+
         GetNode<Area2D>("NPC").BodyEntered += (body) => {
             if (body == _player) StartDialogue();
         };
@@ -101,9 +106,10 @@ public partial class WorldScene : Node2D, IInitializable
         _textLabel.Text = _dialogue[_currentDialogueIndex];
     }
 
-    private void TriggerEncounter()
+    private async void TriggerEncounter()
     {
+        GD.Print("[WorldScene] Encounter Triggered! Navigating to Battle.");
         // Navigate to Battle
-        _navigation.NavigateToAsync("BattlePage");
+        await _navigation.NavigateToAsync("BattlePage");
     }
 }

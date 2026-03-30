@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Godot;
+using Darkness.Core.Data;
 using Darkness.Core.Services;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Logic;
@@ -19,11 +20,18 @@ public partial class Global : Node
         // Infrastructure
         services.AddSingleton<IDispatcherService, GodotDispatcherService>();
         services.AddSingleton<IFileSystemService, GodotFileSystemService>();
+        services.AddSingleton<IDialogService>(sp => new GodotDialogService(this));
         
         // Core Services
+        services.AddSingleton<LocalDatabaseService>();
         services.AddSingleton<ISessionService, SessionService>();
         services.AddSingleton<IUserService, UserService>();
         services.AddSingleton<ICharacterService, CharacterService>();
+        services.AddSingleton<ICraftingService, CraftingService>();
+        services.AddSingleton<IDeathmatchService, DeathmatchService>();
+        services.AddSingleton<IAllyService, AllyService>();
+        services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IRewardService, RewardService>();
         services.AddSingleton<ICombatService, CombatEngine>();
         services.AddSingleton<ISpriteCompositor, SpriteCompositor>();
         services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();

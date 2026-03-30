@@ -80,6 +80,6 @@ public partial class BattleScene : Control, IInitializable
     {
         _combatLog.AppendText("\n[color=yellow]VICTORY![/color]");
         await ToSignal(GetTree().CreateTimer(2.0), "timeout");
-        _navigation.NavigateToAsync("MainPage");
+        await _navigation.NavigateToAsync("MainPage");
     }
 }
