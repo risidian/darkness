@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using System;
@@ -10,10 +11,11 @@ using System.IO;
 
 namespace Darkness.Game.Scenes
 {
-    public class WorldScene
+    public class WorldScene : IDisposable
     {
         private readonly Microsoft.Xna.Framework.Game _game;
         private readonly ISessionService _sessionService;
+        private readonly Input.InputManager _inputManager;
         
         private Texture2D? _characterTexture;
         private Texture2D? _npcTexture;
@@ -42,12 +44,14 @@ namespace Darkness.Game.Scenes
         private int _pulses = 0;
         private float _pulseScale = 1f;
         private Vector2 _enemyPosition;
+        private bool _disposed = false;
 
         public event EventHandler? EncounterTriggered;
 
-        public WorldScene(Microsoft.Xna.Framework.Game game, ISessionService sessionService)
+        public WorldScene(Microsoft.Xna.Framework.Game game, Input.InputManager inputManager, ISessionService sessionService)
         {
             _game = game;
+            _inputManager = inputManager;
             _sessionService = sessionService;
             _characterPosition = new Vector2(200, 300);
             _npcPosition = new Vector2(400, 200);
@@ -57,46 +61,96 @@ namespace Darkness.Game.Scenes
             _exitTrigger = new Rectangle(1200, 0, 80, 720);
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _characterTexture?.Dispose();
+                    _characterTexture = null;
+                    _npcTexture?.Dispose();
+                    _npcTexture = null;
+                    _pixel?.Dispose();
+                    _pixel = null;
+                    _font = null;
+                    // Clear event invocation list
+                    EncounterTriggered = null;
+                }
+                _disposed = true;
+            }
+        }
+
         public void LoadContent(ContentManager content)
         {
-            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
-            if (deviceService?.GraphicsDevice == null || content == null)
+            if (content == null) return;
+            
+            // Safely check if graphics device is ready
+            GraphicsDevice? graphicsDevice = null;
+            try
             {
-                System.Diagnostics.Debug.WriteLine("[WorldScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");    
+                var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
+                graphicsDevice = deviceService?.GraphicsDevice ?? _game?.GraphicsDevice;
+            }
+            catch (InvalidOperationException)
+            {
+                // GraphicsDevice service not available yet
+            }
+
+            if (graphicsDevice == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[WorldScene] GraphicsDevice is not ready. Skipping LoadContent.");    
                 return;
             }
 
-            _pixel = new Texture2D(deviceService.GraphicsDevice, 1, 1);
-            _pixel.SetData(new[] { Color.White });
+            if (_pixel == null)
+            {
+                _pixel = new Texture2D(graphicsDevice, 1, 1);
+                _pixel.SetData(new[] { Color.White });
+            }
 
             // Load character texture from session thumbnail if available
-            if (_sessionService.CurrentCharacter?.Thumbnail != null)
+            if (_characterTexture == null)
             {
-                _characterTexture = LoadTextureFromBytes(_sessionService.CurrentCharacter.Thumbnail);
-            }
-            else
-            {
-                _characterTexture = new Texture2D(deviceService.GraphicsDevice, 64, 64);
-                Color[] data = new Color[64 * 64];
-                for(int i=0; i<data.Length; i++) data[i] = Color.Red;
-                _characterTexture.SetData(data);
+                if (_sessionService.CurrentCharacter?.Thumbnail != null)
+                {
+                    _characterTexture = LoadTextureFromBytes(graphicsDevice, _sessionService.CurrentCharacter.Thumbnail);
+                }
+                else
+                {
+                    _characterTexture = new Texture2D(graphicsDevice, 64, 64);
+                    Color[] data = new Color[64 * 64];
+                    for(int i=0; i<data.Length; i++) data[i] = Color.Red;
+                    _characterTexture.SetData(data);
+                }
             }
 
             // NPC texture (Blue placeholder)
-            _npcTexture = new Texture2D(deviceService.GraphicsDevice, 64, 64);
-            Color[] npcData = new Color[64 * 64];
-            for(int i=0; i<npcData.Length; i++) npcData[i] = Color.Blue;
-            _npcTexture.SetData(npcData);
+            if (_npcTexture == null)
+            {
+                _npcTexture = new Texture2D(graphicsDevice, 64, 64);
+                Color[] npcData = new Color[64 * 64];
+                for(int i=0; i<npcData.Length; i++) npcData[i] = Color.Blue;
+                _npcTexture.SetData(npcData);
+            }
 
-            try { _font = content.Load<SpriteFont>("font"); } catch { }
+            if (_font == null)
+            {
+                try { _font = content.Load<SpriteFont>("font"); } catch { }
+            }
         }
 
-        private Texture2D LoadTextureFromBytes(byte[] bytes)
+        private Texture2D LoadTextureFromBytes(GraphicsDevice graphicsDevice, byte[] bytes)
         {
-            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
             using (var stream = new MemoryStream(bytes))
             {
-                return Texture2D.FromStream(deviceService!.GraphicsDevice, stream);
+                return Texture2D.FromStream(graphicsDevice, stream);
             }
         }
 
@@ -113,6 +167,8 @@ namespace Darkness.Game.Scenes
 
         public void Update(GameTime gameTime)
         {
+            if (_disposed) return;
+
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (_isEncountering)
@@ -123,26 +179,34 @@ namespace Darkness.Game.Scenes
 
             if (_currentDialogueIndex >= 0)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Space) || Keyboard.GetState().IsKeyDown(Keys.Enter))
+                if (_inputManager.IsKeyJustPressed(Keys.Space) || _inputManager.IsKeyJustPressed(Keys.Enter) || _inputManager.IsTouchJustPressed())
                 {
-                    // Delay to prevent rapid-fire skipping
-                    if (gameTime.TotalGameTime.TotalMilliseconds % 200 < 50)
-                    {
-                        _currentDialogueIndex++;
-                        if (_currentDialogueIndex >= _dialogue.Length)
-                            _currentDialogueIndex = -1;
-                    }
+                    _currentDialogueIndex++;
+                    if (_currentDialogueIndex >= _dialogue.Length)
+                        _currentDialogueIndex = -1;
                 }
                 return;
             }
 
-            var kState = Keyboard.GetState();
             Vector2 movement = Vector2.Zero;
 
-            if (kState.IsKeyDown(Keys.Left) || kState.IsKeyDown(Keys.A)) movement.X -= 1;
-            if (kState.IsKeyDown(Keys.Right) || kState.IsKeyDown(Keys.D)) movement.X += 1;
-            if (kState.IsKeyDown(Keys.Up) || kState.IsKeyDown(Keys.W)) movement.Y -= 1;
-            if (kState.IsKeyDown(Keys.Down) || kState.IsKeyDown(Keys.S)) movement.Y += 1;
+            if (_inputManager.IsKeyDown(Keys.Left) || _inputManager.IsKeyDown(Keys.A)) movement.X -= 1;
+            if (_inputManager.IsKeyDown(Keys.Right) || _inputManager.IsKeyDown(Keys.D)) movement.X += 1;
+            if (_inputManager.IsKeyDown(Keys.Up) || _inputManager.IsKeyDown(Keys.W)) movement.Y -= 1;
+            if (_inputManager.IsKeyDown(Keys.Down) || _inputManager.IsKeyDown(Keys.S)) movement.Y += 1;
+
+            var activeTouches = _inputManager.GetActiveTouches();
+            foreach (var touch in activeTouches)
+            {
+                if (touch.State == TouchLocationState.Pressed || touch.State == TouchLocationState.Moved)
+                {
+                    if (touch.Position.X < _characterPosition.X) movement.X -= 1;
+                    else if (touch.Position.X > _characterPosition.X + 64) movement.X += 1;
+                    
+                    if (touch.Position.Y < _characterPosition.Y) movement.Y -= 1;
+                    else if (touch.Position.Y > _characterPosition.Y + 64) movement.Y += 1;
+                }
+            }
 
             if (movement != Vector2.Zero)
             {
@@ -160,7 +224,7 @@ namespace Darkness.Game.Scenes
             float dist = Vector2.Distance(_characterPosition, _npcPosition);
             _isNearNpc = dist < 100f;
 
-            if (_isNearNpc && (kState.IsKeyDown(Keys.Space) || kState.IsKeyDown(Keys.Enter)))
+            if (_isNearNpc && (_inputManager.IsKeyJustPressed(Keys.Space) || _inputManager.IsKeyJustPressed(Keys.Enter) || _inputManager.IsTouchJustPressed()))
             {
                 _currentDialogueIndex = 0;
             }
@@ -197,7 +261,7 @@ namespace Darkness.Game.Scenes
 
         public void Draw(SpriteBatch? spriteBatch)
         {
-            if (spriteBatch == null || _pixel == null) return;
+            if (_disposed || spriteBatch == null || _pixel == null) return;
 
             // Draw Background (Sandy Shore) - This should cover the Black clear from DarknessGame
             spriteBatch.Draw(_pixel, _worldBounds, new Color(194, 178, 128));

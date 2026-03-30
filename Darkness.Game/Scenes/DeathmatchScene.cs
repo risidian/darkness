@@ -11,9 +11,10 @@ using Darkness.Core.Interfaces;
 
 namespace Darkness.Game.Scenes
 {
-    public class DeathmatchScene
+    public class DeathmatchScene : IDisposable
     {
         private readonly Microsoft.Xna.Framework.Game _game;
+        private readonly Input.InputManager _inputManager;
         private readonly ICombatService _combatService;
         private readonly DeathmatchEncounter _encounter;
         private List<Character> _party;
@@ -27,49 +28,90 @@ namespace Darkness.Game.Scenes
 
         private Texture2D? _pixel;
         private SpriteFont? _font;
+        private bool _disposed = false;
 
         public event EventHandler? BattleEnded;
 
-        public DeathmatchScene(Microsoft.Xna.Framework.Game game, List<Character> party, DeathmatchEncounter encounter)
+        public DeathmatchScene(Microsoft.Xna.Framework.Game game, Input.InputManager inputManager, List<Character> party, DeathmatchEncounter encounter)
         {
             _game = game;
+            _inputManager = inputManager;
             _combatService = new CombatEngine();
             _party = party;
             _encounter = encounter;
             _enemies = encounter.Enemies;
             _turnOrder = _combatService.CalculateTurnOrder(_party, _enemies);
             _currentTurnIndex = 0;
+
+            if (_turnOrder.Count == 0)
+            {
+                _battleOver = true;
+                _victoryMessage = "No combatants found.";
+                return;
+            }
+
             DetermineTurn();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _pixel?.Dispose();
+                    _pixel = null;
+                    _font = null;
+                    // Clear event invocation list to prevent leaks
+                    BattleEnded = null;
+                }
+                _disposed = true;
+            }
+        }
+
+        private bool IsParticipantAlive(object participant)
+        {
+            if (participant is Character character) return character.CurrentHP > 0;
+            if (participant is Enemy enemy) return enemy.CurrentHP > 0;
+            return false;
         }
 
         private void DetermineTurn()
         {
-            if (_battleOver) return;
+            if (_battleOver || _turnOrder.Count == 0) return;
+
+            int initialIndex = _currentTurnIndex;
+            int participantsChecked = 0;
+
+            while (!IsParticipantAlive(_turnOrder[_currentTurnIndex]))
+            {
+                _currentTurnIndex = (_currentTurnIndex + 1) % _turnOrder.Count;
+                participantsChecked++;
+
+                if (participantsChecked >= _turnOrder.Count)
+                {
+                    _battleOver = true;
+                    _victoryMessage = "The match has ended.";
+                    return;
+                }
+            }
 
             var currentParticipant = _turnOrder[_currentTurnIndex];
             if (currentParticipant is Character character)
             {
-                if (character.CurrentHP > 0)
-                {
-                    _isPlayerTurn = true;
-                    _battleLog = $"{character.Name}'s turn! Choose an action.";
-                }
-                else
-                {
-                    NextParticipant();
-                }
+                _isPlayerTurn = true;
+                _battleLog = $"{character.Name}'s turn! Choose an action.";
             }
             else if (currentParticipant is Enemy enemy)
             {
                 _isPlayerTurn = false;
-                if (enemy.CurrentHP > 0)
-                {
-                    ExecuteEnemyTurn(enemy);
-                }
-                else
-                {
-                    NextParticipant();
-                }
+                ExecuteEnemyTurn(enemy);
             }
         }
 
@@ -107,37 +149,59 @@ namespace Darkness.Game.Scenes
 
         private void NextParticipant()
         {
+            if (_battleOver || _turnOrder.Count == 0) return;
             _currentTurnIndex = (_currentTurnIndex + 1) % _turnOrder.Count;
             DetermineTurn();
         }
 
         public void LoadContent(ContentManager content)
         {
-            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
-            if (deviceService?.GraphicsDevice == null || content == null)
+            if (content == null) return;
+            
+            // Safely check if graphics device is ready
+            GraphicsDevice? graphicsDevice = null;
+            try
             {
-                System.Diagnostics.Debug.WriteLine("[DeathmatchScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");
+                var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
+                graphicsDevice = deviceService?.GraphicsDevice ?? _game?.GraphicsDevice;
+            }
+            catch (InvalidOperationException)
+            {
+                // GraphicsDevice service not available yet
+            }
+
+            if (graphicsDevice == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[DeathmatchScene] GraphicsDevice is not ready. Skipping LoadContent.");
                 return;
             }
 
-            _pixel = new Texture2D(deviceService.GraphicsDevice, 1, 1);
-            _pixel.SetData(new[] { Color.White });
-            
-            try 
+            if (_pixel == null)
             {
-                _font = content.Load<SpriteFont>("font");
+                _pixel = new Texture2D(graphicsDevice, 1, 1);
+                _pixel.SetData(new[] { Color.White });
             }
-            catch
+            
+            if (_font == null)
             {
-                // Fallback font loading here if necessary
+                try 
+                {
+                    _font = content.Load<SpriteFont>("font");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[DeathmatchScene] Failed to load font: {ex.Message}");
+                }
             }
         }
 
         public void Update(GameTime gameTime)
         {
+            if (_disposed) return;
+
             if (_battleOver)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                if (_inputManager.IsKeyJustPressed(Keys.Enter) || _inputManager.IsTouchJustPressed())
                 {
                     BattleEnded?.Invoke(this, EventArgs.Empty);
                 }
@@ -149,18 +213,29 @@ namespace Darkness.Game.Scenes
                 var currentParticipant = _turnOrder[_currentTurnIndex] as Character;
                 if (currentParticipant == null) return;
 
-                var kState = Keyboard.GetState();
-                if (kState.IsKeyDown(Keys.D1))
+                if (_inputManager.IsKeyJustPressed(Keys.D1))
                 {
                     ExecutePlayerAttack(currentParticipant, 0);
                 }
-                else if (kState.IsKeyDown(Keys.D2) && _enemies.Count > 1)
+                else if (_inputManager.IsKeyJustPressed(Keys.D2) && _enemies.Count > 1)
                 {
                     ExecutePlayerAttack(currentParticipant, 1);
                 }
-                else if (kState.IsKeyDown(Keys.D3) && _enemies.Count > 2)
+                else if (_inputManager.IsKeyJustPressed(Keys.D3) && _enemies.Count > 2)
                 {
                     ExecutePlayerAttack(currentParticipant, 2);
+                }
+                else if (_inputManager.IsTouchJustPressed())
+                {
+                    // Simple touch to attack first living enemy
+                    for (int i = 0; i < _enemies.Count; i++)
+                    {
+                        if (_enemies[i].CurrentHP > 0)
+                        {
+                            ExecutePlayerAttack(currentParticipant, i);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -195,7 +270,7 @@ namespace Darkness.Game.Scenes
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_pixel == null) return;
+            if (_disposed || _pixel == null) return;
 
             spriteBatch.Draw(_pixel, new Rectangle(0, 0, _game.GraphicsDevice.Viewport.Width, _game.GraphicsDevice.Viewport.Height), new Color(30, 10, 10)); // Dark Reddish Background for Deathmatch
 

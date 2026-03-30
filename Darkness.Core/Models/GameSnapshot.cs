@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Darkness.Core.Models
 {
     public record CharacterSnapshot(

@@ -11,15 +11,25 @@ using Darkness.Core.Interfaces;
 
 namespace Darkness.Game.Scenes
 {
-    public class BattleScene
+    public class BattleScene : IDisposable
     {
         private readonly Microsoft.Xna.Framework.Game _game;
         private readonly ICombatService _combatService;
+        private readonly Input.InputManager _inputManager;
         private List<Character> _party;
         private List<Enemy> _enemies;
         private List<object> _turnOrder;
         private int _currentTurnIndex;
-        private bool _isPlayerTurn;
+        
+        private enum BattleState
+        {
+            PlayerTurn,
+            EnemyAction,
+            Delaying
+        }
+        private BattleState _turnState;
+        private double _turnDelayTimer;
+
         private string _battleLog = "A battle begins!";
         private bool _battleOver = false;
         private string _victoryMessage = "";
@@ -30,49 +40,115 @@ namespace Darkness.Game.Scenes
 
         private Texture2D? _pixel;
         private SpriteFont? _font;
+        private bool _disposed = false;
 
         public event EventHandler? BattleEnded;
 
-        public BattleScene(Microsoft.Xna.Framework.Game game, List<Character> party, List<Enemy> enemies, int? survivalTurns = null)
+        public BattleScene(Microsoft.Xna.Framework.Game game, Input.InputManager inputManager, List<Character> party, List<Enemy> enemies, int? survivalTurns = null)
         {
             _game = game;
             _combatService = new CombatEngine();
+            _inputManager = inputManager;
             _party = party;
             _enemies = enemies;
             _survivalTurns = survivalTurns;
             _turnOrder = _combatService.CalculateTurnOrder(_party, _enemies);
             _currentTurnIndex = 0;
+
+            if (_turnOrder.Count == 0)
+            {
+                _battleOver = true;
+                _victoryMessage = "The battlefield is silent...";
+                return;
+            }
+
             DetermineTurn();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _pixel?.Dispose();
+                    _pixel = null;
+                    _font = null;
+                    // Clear event invocation list to prevent leaks
+                    BattleEnded = null;
+                }
+                _disposed = true;
+            }
+        }
+
+        private Rectangle GetButtonRegion(int index)
+        {
+            var viewport = _game.GraphicsDevice.Viewport;
+            int buttonWidth = (int)(viewport.Width * 0.25f);
+            int buttonHeight = (int)(viewport.Height * 0.15f);
+            int spacing = (int)(viewport.Width * 0.05f);
+            int startX = (int)(viewport.Width * 0.05f);
+            int y = (int)(viewport.Height * 0.75f);
+
+            return new Rectangle(startX + index * (buttonWidth + spacing), y, buttonWidth, buttonHeight);
+        }
+
+        private bool IsParticipantAlive(object participant)
+        {
+            if (participant is Character character) return character.CurrentHP > 0;
+            if (participant is Enemy enemy) return enemy.CurrentHP > 0;
+            return false;
         }
 
         private void DetermineTurn()
         {
-            if (_battleOver) return;
+            if (_battleOver || _turnOrder.Count == 0) return;
+
+            int initialIndex = _currentTurnIndex;
+            int participantsChecked = 0;
+
+            while (!IsParticipantAlive(_turnOrder[_currentTurnIndex]))
+            {
+                // Current participant is incapacitated, move to next
+                _participantsActedThisRound++;
+                if (_participantsActedThisRound >= _turnOrder.Count)
+                {
+                    _participantsActedThisRound = 0;
+                    _roundsCompleted++;
+                    if (_survivalTurns.HasValue && _roundsCompleted >= _survivalTurns.Value)
+                    {
+                        _battleOver = true;
+                        _victoryMessage = "You survived! The enemies vanish into the darkness.";
+                        return;
+                    }
+                }
+
+                _currentTurnIndex = (_currentTurnIndex + 1) % _turnOrder.Count;
+                participantsChecked++;
+
+                if (participantsChecked >= _turnOrder.Count)
+                {
+                    _battleOver = true;
+                    _victoryMessage = "The battle has ended.";
+                    return;
+                }
+            }
 
             var currentParticipant = _turnOrder[_currentTurnIndex];
             if (currentParticipant is Character character)
             {
-                if (character.CurrentHP > 0)
-                {
-                    _isPlayerTurn = true;
-                    _battleLog = $"{character.Name}'s turn! Choose an action.";
-                }
-                else
-                {
-                    NextParticipant();
-                }
+                _turnState = BattleState.PlayerTurn;
+                _battleLog = $"{character.Name}'s turn! Choose an action.";
             }
             else if (currentParticipant is Enemy enemy)
             {
-                _isPlayerTurn = false;
-                if (enemy.CurrentHP > 0)
-                {
-                    ExecuteEnemyTurn(enemy);
-                }
-                else
-                {
-                    NextParticipant();
-                }
+                _turnState = BattleState.EnemyAction;
             }
         }
 
@@ -105,12 +181,15 @@ namespace Darkness.Game.Scenes
             }
             else
             {
-                NextParticipant();
+                _turnState = BattleState.Delaying;
+                _turnDelayTimer = 1.5;
             }
         }
 
         private void NextParticipant()
         {
+            if (_battleOver || _turnOrder.Count == 0) return;
+
             _participantsActedThisRound++;
             if (_participantsActedThisRound >= _turnOrder.Count)
             {
@@ -130,55 +209,100 @@ namespace Darkness.Game.Scenes
 
         public void LoadContent(ContentManager content)
         {
+            if (content == null) return;
+            
             // Safely check if graphics device is ready without triggering InvalidOperationException
-            var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
-            if (deviceService?.GraphicsDevice == null || content == null)
+            GraphicsDevice? graphicsDevice = null;
+            try
             {
-                System.Diagnostics.Debug.WriteLine("[BattleScene] GraphicsDevice or Content is not ready. Skipping LoadContent.");    
+                var deviceService = _game?.Services?.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
+                graphicsDevice = deviceService?.GraphicsDevice ?? _game?.GraphicsDevice;
+            }
+            catch (InvalidOperationException)
+            {
+                // GraphicsDevice service not available yet
+            }
+
+            if (graphicsDevice == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[BattleScene] GraphicsDevice is not ready. Skipping LoadContent.");    
                 return;
             }
 
-            _pixel = new Texture2D(deviceService.GraphicsDevice, 1, 1);            _pixel.SetData(new[] { Color.White });
-            
-            // Try to load a font, fallback to a default if not found
-            try 
+            if (_pixel == null)
             {
-                _font = content.Load<SpriteFont>("font");
+                _pixel = new Texture2D(graphicsDevice, 1, 1);
+                _pixel.SetData(new[] { Color.White });
             }
-            catch
+            
+            if (_font == null)
             {
-                // In a real scenario, we'd want a proper fallback or ensure the asset exists
+                // Try to load a font, fallback to a default if not found
+                try 
+                {
+                    _font = content.Load<SpriteFont>("font");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[BattleScene] Failed to load font: {ex.Message}");
+                }
             }
         }
 
         public void Update(GameTime gameTime)
         {
+            if (_disposed) return;
+
             if (_battleOver)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                if (_inputManager.IsKeyJustPressed(Keys.Enter) || _inputManager.IsTouchJustPressed())
                 {
                     BattleEnded?.Invoke(this, EventArgs.Empty);
                 }
                 return;
             }
 
-            if (_isPlayerTurn)
+            if (_turnState == BattleState.Delaying)
+            {
+                _turnDelayTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                if (_turnDelayTimer <= 0)
+                {
+                    NextParticipant();
+                }
+                return;
+            }
+
+            if (_turnState == BattleState.EnemyAction)
+            {
+                var enemy = _turnOrder[_currentTurnIndex] as Enemy;
+                if (enemy != null)
+                {
+                    ExecuteEnemyTurn(enemy);
+                }
+                return;
+            }
+
+            if (_turnState == BattleState.PlayerTurn)
             {
                 var currentParticipant = _turnOrder[_currentTurnIndex] as Character;
                 if (currentParticipant == null) return;
 
-                var kState = Keyboard.GetState();
-                if (kState.IsKeyDown(Keys.D1)) // Attack first enemy
+                int enemyIndex = -1;
+
+                if (_inputManager.IsKeyJustPressed(Keys.D1)) enemyIndex = 0;
+                else if (_inputManager.IsKeyJustPressed(Keys.D2)) enemyIndex = 1;
+                else if (_inputManager.IsKeyJustPressed(Keys.D3)) enemyIndex = 2;
+
+                if (enemyIndex != -1)
                 {
-                    ExecutePlayerAttack(currentParticipant, 0);
+                    ExecutePlayerAttack(currentParticipant, enemyIndex);
                 }
-                else if (kState.IsKeyDown(Keys.D2) && _enemies.Count > 1)
+                else if (_inputManager.IsTouchJustPressed())
                 {
-                    ExecutePlayerAttack(currentParticipant, 1);
-                }
-                else if (kState.IsKeyDown(Keys.D3) && _enemies.Count > 2)
-                {
-                    ExecutePlayerAttack(currentParticipant, 2);
+                    // Check button regions with multi-touch support
+                    if (_inputManager.IsRegionJustPressed(GetButtonRegion(0))) ExecutePlayerAttack(currentParticipant, 0);
+                    else if (_inputManager.IsRegionJustPressed(GetButtonRegion(1))) ExecutePlayerAttack(currentParticipant, 1);
+                    else if (_inputManager.IsRegionJustPressed(GetButtonRegion(2))) ExecutePlayerAttack(currentParticipant, 2);
                 }
             }
         }
@@ -214,15 +338,14 @@ namespace Darkness.Game.Scenes
             }
             else
             {
-                _isPlayerTurn = false;
-                // Wait for a small delay or input? For now just next participant
-                NextParticipant();
+                _turnState = BattleState.Delaying;
+                _turnDelayTimer = 1.0;
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_pixel == null) return;
+            if (_disposed || _pixel == null) return;
 
             // Draw Background (Dark Gray)
             spriteBatch.Draw(_pixel, new Rectangle(0, 0, _game.GraphicsDevice.Viewport.Width, _game.GraphicsDevice.Viewport.Height), new Color(20, 20, 20));
@@ -257,9 +380,24 @@ namespace Darkness.Game.Scenes
                     spriteBatch.DrawString(_font, _victoryMessage, new Vector2(50, 450), Color.Gold);
                     spriteBatch.DrawString(_font, "Press ENTER to continue...", new Vector2(50, 500), Color.White);
                 }
-                else if (_isPlayerTurn)
+                else if (_turnState == BattleState.PlayerTurn)
                 {
                     spriteBatch.DrawString(_font, "Press 1, 2, or 3 to attack enemies", new Vector2(50, 450), Color.LightBlue);
+                    
+                    // Draw Attack Buttons
+                    for (int i = 0; i < Math.Min(3, _enemies.Count); i++)
+                    {
+                        var region = GetButtonRegion(i);
+                        Color buttonColor = _enemies[i].CurrentHP > 0 ? Color.DarkRed : Color.DimGray;
+
+                        if (_enemies[i].CurrentHP > 0 && _inputManager.IsRegionTouched(region))
+                        {
+                            buttonColor = Color.Red;
+                        }
+
+                        spriteBatch.Draw(_pixel, region, buttonColor);
+                        spriteBatch.DrawString(_font, $"Attack {i + 1}", new Vector2(region.X + 10, region.Y + 10), Color.White);
+                    }
                 }
             }
         }
