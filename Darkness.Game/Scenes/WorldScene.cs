@@ -21,6 +21,7 @@ namespace Darkness.Game.Scenes
         private Texture2D? _npcTexture;
         private Texture2D? _pixel;
         private SpriteFont? _font;
+    private bool _fontLoadAttempted;
 
         private Vector2 _characterPosition;
         private readonly float _moveSpeed = 250f;
@@ -140,8 +141,9 @@ namespace Darkness.Game.Scenes
                 _npcTexture.SetData(npcData);
             }
 
-            if (_font == null)
+            if (_font == null && !_fontLoadAttempted)
             {
+                _fontLoadAttempted = true;
                 try { _font = content.Load<SpriteFont>("font"); } catch { }
             }
         }

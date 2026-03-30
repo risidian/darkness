@@ -9,6 +9,10 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows10.0.26100.0'">
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.2.1105" />
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.1.30" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETCore.DotNetAppHost" Version="2.1.30" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETCore.DotNetHostPolicy" Version="2.1.30" ExcludeAssets="all" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETCore.DotNetHostResolver" Version="2.1.30" ExcludeAssets="all" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">

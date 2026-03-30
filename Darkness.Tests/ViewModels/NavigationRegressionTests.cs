@@ -42,7 +42,7 @@ namespace Darkness.Tests.ViewModels
 
             await viewModel.DeathmatchCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///DeathmatchPage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("DeathmatchPage", null), Times.Once);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace Darkness.Tests.ViewModels
 
             await viewModel.CharactersCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///CharactersPage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("CharactersPage", null), Times.Once);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace Darkness.Tests.ViewModels
 
             await viewModel.SettingsCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///SettingsPage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("SettingsPage", null), Times.Once);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Darkness.Tests.ViewModels
 
             await viewModel.StartDeathmatchCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///GamePage", It.IsAny<IDictionary<string, object>>()), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("GamePage", It.IsAny<IDictionary<string, object>>()), Times.Once);
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Darkness.Tests.ViewModels
 
             await viewModel.GoToStudyCommand.ExecuteAsync(null);
 
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///StudyPage", It.IsAny<IDictionary<string, object>>()), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("StudyPage", It.IsAny<IDictionary<string, object>>()), Times.Once);
         }
     }
 }

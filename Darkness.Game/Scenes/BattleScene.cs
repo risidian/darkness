@@ -40,6 +40,7 @@ namespace Darkness.Game.Scenes
 
         private Texture2D? _pixel;
         private SpriteFont? _font;
+        private bool _fontLoadAttempted;
         private bool _disposed = false;
 
         public event EventHandler? BattleEnded;
@@ -235,10 +236,10 @@ namespace Darkness.Game.Scenes
                 _pixel.SetData(new[] { Color.White });
             }
             
-            if (_font == null)
+            if (_font == null && !_fontLoadAttempted)
             {
-                // Try to load a font, fallback to a default if not found
-                try 
+                _fontLoadAttempted = true;
+                try
                 {
                     _font = content.Load<SpriteFont>("font");
                 }

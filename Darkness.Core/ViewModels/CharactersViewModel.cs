@@ -39,7 +39,7 @@ namespace Darkness.Core.ViewModels
         public async Task GoToStudy()
         {
             if (SelectedCharacter == null) return;
-            await _navigationService.NavigateToAsync("///StudyPage", new Dictionary<string, object>
+            await _navigationService.NavigateToAsync("StudyPage", new Dictionary<string, object>
             {
                 { "Character", SelectedCharacter }
             });

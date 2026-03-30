@@ -13,6 +13,12 @@ namespace Darkness.Core.ViewModels
         private object? _gameInstance;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEngineUnavailable))]
+        private bool _isEngineAvailable;
+
+        public bool IsEngineUnavailable => !IsEngineAvailable;
+
+        [ObservableProperty]
         private DeathmatchEncounter? _encounter;
 
         [ObservableProperty]
@@ -32,6 +38,7 @@ namespace Darkness.Core.ViewModels
         public void SetGame(object game)
         {
             GameInstance = game;
+            IsEngineAvailable = true;
         }
 
         [RelayCommand]

@@ -15,6 +15,7 @@ namespace Darkness.Core.ViewModels
         private readonly ISpriteLayerCatalog _catalog;
         private readonly ISpriteCompositor _compositor;
         private readonly IFileSystemService _fileSystem;
+        private CancellationTokenSource? _previewCts;
 
         [ObservableProperty]
         private string _characterName;
@@ -102,7 +103,7 @@ namespace Darkness.Core.ViewModels
             SelectedArmor = "Plate (Steel)";
             SelectedWeapon = "Arming Sword (Steel)";
 
-            UpdatePreviewAsync().FireAndForget();
+            SchedulePreviewUpdate();
         }
 
         partial void OnSelectedClassChanged(string value)
@@ -115,17 +116,34 @@ namespace Darkness.Core.ViewModels
             SelectedLegs = defaults.Legs;
         }
 
-        partial void OnSelectedHairColorChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedSkinColorChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedFaceChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedEyesChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedHeadChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedFeetChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedArmsChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedLegsChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedHairStyleChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedArmorChanged(string value) => UpdatePreviewAsync().FireAndForget();
-        partial void OnSelectedWeaponChanged(string value) => UpdatePreviewAsync().FireAndForget();
+        partial void OnSelectedHairColorChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedSkinColorChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedFaceChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedEyesChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedHeadChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedFeetChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedArmsChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedLegsChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedHairStyleChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedArmorChanged(string value) => SchedulePreviewUpdate();
+        partial void OnSelectedWeaponChanged(string value) => SchedulePreviewUpdate();
+
+        private void SchedulePreviewUpdate()
+        {
+            _previewCts?.Cancel();
+            _previewCts = new CancellationTokenSource();
+            var token = _previewCts.Token;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(250, token);
+                    if (!token.IsCancellationRequested)
+                        await UpdatePreviewAsync();
+                }
+                catch (TaskCanceledException) { }
+            });
+        }
 
         public async Task UpdatePreviewAsync()
         {

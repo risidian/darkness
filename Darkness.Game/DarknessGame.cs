@@ -285,6 +285,9 @@ namespace Darkness.Game
                     _inputManager.Update();
                     Update(gameTime);
                     Draw(gameTime);
+                    // Present the frame — Tick() bypasses MonoGame's normal BeginDraw/EndDraw
+                    // pipeline, so we must call Present explicitly.
+                    GraphicsDevice.Present();
                 }
             }
             catch (System.Exception ex)

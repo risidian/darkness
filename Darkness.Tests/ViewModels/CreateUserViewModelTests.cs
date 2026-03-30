@@ -79,7 +79,7 @@ namespace Darkness.Tests.ViewModels
 
             _dialogServiceMock.Verify(x => x.DisplayAlertAsync("Success", It.Is<string>(s => s.Contains("newuser")), "OK"), Times.Once);
             _sessionServiceMock.VerifySet(x => x.CurrentUser = It.Is<User>(u => u.Username == "newuser"), Times.Once);
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///CharacterGenPage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("CharacterGenPage", null), Times.Once);
         }
 
         [Fact]

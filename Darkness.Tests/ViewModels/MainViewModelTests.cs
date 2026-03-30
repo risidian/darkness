@@ -58,7 +58,7 @@ namespace Darkness.Tests.ViewModels
             await _viewModel.OnAppearingAsync();
 
             // Assert
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///CharacterGenPage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("CharacterGenPage", null), Times.Once);
         }
 
         [Fact]

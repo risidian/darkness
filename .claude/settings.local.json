@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build:*)",
+      "Bash(dotnet --version)",
+      "Bash(dotnet --list-sdks)",
+      "Bash(powershell -Command \"Get-ChildItem Cert:\\\\\\\\CurrentUser\\\\\\\\My | Where-Object { \\\\$_.Subject -like '*CN=Mayce*' } | Format-List Subject, NotBefore, NotAfter, Thumbprint\" 2>&1)",
+      "Bash(powershell.exe -Command \"Get-ChildItem Cert:\\\\CurrentUser\\\\My | Where-Object { \\\\$_.Subject -like '*Mayce*' } | Format-List Subject, NotBefore, NotAfter, Thumbprint\")",
+      "Bash(powershell.exe -NoProfile -Command 'Get-ChildItem Cert:\\\\CurrentUser\\\\My | Where-Object { $_.Subject -like \"*Mayce*\" } | Format-List Subject, NotBefore, NotAfter')",
+      "Bash(\"/c/Program Files/PowerShell/7/pwsh.exe\" -NoProfile -Command 'Get-ChildItem Cert:\\\\CurrentUser\\\\My | Where-Object { $_.Subject -like \"*Mayce*\" } | Format-List Subject, NotBefore, NotAfter')",
+      "Bash(ls Darkness.MAUI/bin/Debug/net10.0-windows10.0.26100.0/win-x64/*.dll)",
+      "Bash(./Darkness.MAUI.exe)",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(COREHOST_TRACE=1 ./Darkness.MAUI.exe)",
+      "Bash(dotnet clean:*)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet test:*)",
+      "Bash(grep -E \"Failed|Verify|///|Expected\")",
+      "Bash(\"/c/Program Files/PowerShell/7/pwsh.exe\" -NoProfile -Command '\n$asm = [System.Reflection.Assembly]::LoadFrom\\(\"C:\\\\Users\\\\Mayce\\\\.nuget\\\\packages\\\\monogame.framework.windowsdx\\\\3.8.2.1105\\\\lib\\\\net8.0-windows7.0\\\\MonoGame.Framework.dll\"\\)\n$gd = $asm.GetType\\(\"Microsoft.Xna.Framework.Graphics.GraphicsDevice\"\\)\nWrite-Host \"=== GraphicsDevice Fields ===\"\n$gd.GetFields\\(\"Instance,NonPublic\"\\) | Where-Object { $_.Name -match \"swap|chain|device|d3d|dxgi|render|target|back\" } | ForEach-Object { \"$\\($_.FieldType.Name\\) $\\($_.Name\\)\" }\nWrite-Host \"=== GraphicsDevice Properties ===\"\n$gd.GetProperties\\(\"Instance,Public,NonPublic\"\\) | Where-Object { $_.Name -match \"swap|chain|device|d3d|dxgi|render|target|back|handle|present\" } | ForEach-Object { \"$\\($_.PropertyType.Name\\) $\\($_.Name\\)\" }\n')",
+      "Bash(\"/c/Program Files/PowerShell/7/pwsh.exe\" -NoProfile -Command '\n$asm = [System.Reflection.Assembly]::LoadFrom\\(\"C:\\\\Users\\\\Mayce\\\\.nuget\\\\packages\\\\monogame.framework.windowsdx\\\\3.8.2.1105\\\\lib\\\\net8.0-windows7.0\\\\MonoGame.Framework.dll\"\\)\n$gd = $asm.GetType\\(\"Microsoft.Xna.Framework.Graphics.GraphicsDevice\"\\)\n$fields = $gd.GetFields\\(\"Instance,NonPublic\"\\)\nforeach \\($f in $fields\\) {\n    if \\($f.Name -match \"_d3d|_swap|_render\"\\) {\n        Write-Host \"$\\($f.Name\\): $\\($f.FieldType.FullName\\)\"\n    }\n}\n')",
+      "Read(//c/Users/Mayce/.nuget/packages/sharpdx/**)",
+      "Read(//c/Users/Mayce/.nuget/packages/sharpdx.dxgi/**)",
+      "Read(//c/Users/Mayce/.nuget/packages/sharpdx.direct3d11/**)"
+    ]
+  }
+}

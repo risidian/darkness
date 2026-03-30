@@ -71,6 +71,13 @@
 		<PackageReference Include="SkiaSharp" Version="3.116.1" />
 	</ItemGroup>
 
+	<!-- SharpDX references for DXGI swap chain interop (Windows only) -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<PackageReference Include="SharpDX" Version="4.0.1" />
+		<PackageReference Include="SharpDX.DXGI" Version="4.0.1" />
+		<PackageReference Include="SharpDX.Direct3D11" Version="4.0.1" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <Folder Include="Resources\Images\" />
 	</ItemGroup>

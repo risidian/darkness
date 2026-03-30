@@ -59,12 +59,20 @@ namespace Darkness.MAUI.Pages
             // Lazy initialization of the game engine
             if (_game == null)
             {
-                _game = new DarknessGame(_combatService, _sessionService, _storyController);
-                _viewModel.SetGame(_game);
+                try
+                {
+                    _game = new DarknessGame(_combatService, _sessionService, _storyController);
+                    _viewModel.SetGame(_game);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[GamePage] Failed to create DarknessGame: {ex.Message}");
+                    return;
+                }
             }
 
             _game.Resume();
-            
+
             if (_viewModel.Mode == "PVP")
             {
                 if (_viewModel.Player1 != null && _viewModel.Player2 != null)
@@ -81,7 +89,6 @@ namespace Darkness.MAUI.Pages
             }
             else
             {
-                // Story mode or World mode
                 System.Diagnostics.Debug.WriteLine("Starting Story/World mode");
             }
         }

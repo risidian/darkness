@@ -63,7 +63,7 @@ namespace Darkness.Tests.ViewModels
 
             // Assert
             _sessionServiceMock.VerifySet(x => x.CurrentUser = user, Times.Once);
-            _navigationServiceMock.Verify(x => x.NavigateToAsync("///CharacterGenPage", null), Times.Once);
+            _navigationServiceMock.Verify(x => x.NavigateToAsync("CharacterGenPage", null), Times.Once);
         }
 
         [Fact]

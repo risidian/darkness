@@ -67,7 +67,7 @@ namespace Darkness.Core.ViewModels
                     _settingsService.LastUserId = newUser.Id;
                     await _settingsService.SaveSettingsAsync();
 
-                    await _navigationService.NavigateToAsync("///CharacterGenPage");
+                    await _navigationService.NavigateToAsync("CharacterGenPage");
                 }
                 else
                 {
