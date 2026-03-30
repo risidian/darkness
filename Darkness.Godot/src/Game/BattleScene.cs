@@ -21,7 +21,19 @@ public partial class BattleScene : Control, IInitializable
 
     public void Initialize(IDictionary<string, object> parameters)
     {
-        // Parameters passed from WorldScene
+        if (parameters.ContainsKey("Encounter") && parameters["Encounter"] is DeathmatchEncounter encounter)
+        {
+            _enemies.Clear();
+            foreach (var enemy in encounter.Enemies)
+            {
+                _enemies.Add(new Enemy 
+                { 
+                    Name = enemy.Name, 
+                    MaxHP = enemy.MaxHP, 
+                    CurrentHP = enemy.MaxHP 
+                });
+            }
+        }
     }
 
     public override void _Ready()
@@ -47,9 +59,12 @@ public partial class BattleScene : Control, IInitializable
             _party.Add(_session.CurrentCharacter);
         }
 
-        // Spawn test enemies
-        _enemies.Add(new Enemy { Name = "Hound", MaxHP = 50, CurrentHP = 50 });
-        _enemies.Add(new Enemy { Name = "Shadow", MaxHP = 75, CurrentHP = 75 });
+        if (_enemies.Count == 0)
+        {
+            // Spawn test enemies
+            _enemies.Add(new Enemy { Name = "Hound", MaxHP = 50, CurrentHP = 50 });
+            _enemies.Add(new Enemy { Name = "Shadow", MaxHP = 75, CurrentHP = 75 });
+        }
     }
 
     private void ExecuteAttack(int enemyIndex)

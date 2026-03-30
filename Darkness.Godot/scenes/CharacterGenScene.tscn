@@ -27,6 +27,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+split_offset = 600
 
 [node name="PreviewArea" type="Control" parent="HSplitContainer"]
 layout_mode = 2
@@ -48,23 +49,28 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ControlsArea" type="VBoxContainer" parent="HSplitContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HSplitContainer"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ControlsArea" type="VBoxContainer" parent="HSplitContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 15
 alignment = 1
 
-[node name="Label" type="Label" parent="HSplitContainer/ControlsArea"]
+[node name="Label" type="Label" parent="HSplitContainer/ScrollContainer/ControlsArea"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "CUSTOMIZE CHARACTER"
 horizontal_alignment = 1
 
-[node name="NameEdit" type="LineEdit" parent="HSplitContainer/ControlsArea"]
+[node name="NameEdit" type="LineEdit" parent="HSplitContainer/ScrollContainer/ControlsArea"]
 layout_mode = 2
 placeholder_text = "CHARACTER NAME"
 
-[node name="ClassOption" type="OptionButton" parent="HSplitContainer/ControlsArea"]
+[node name="ClassOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/ControlsArea"]
 layout_mode = 2
 item_count = 3
 popup/item_0/text = "WARRIOR"
@@ -74,13 +80,34 @@ popup/item_1/id = 1
 popup/item_2/text = "ROGUE"
 popup/item_2/id = 2
 
-[node name="CreateButton" type="Button" parent="HSplitContainer/ControlsArea"]
+[node name="SkinLabel" type="Label" parent="HSplitContainer/ScrollContainer/ControlsArea"]
+layout_mode = 2
+text = "Skin Color"
+
+[node name="SkinOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/ControlsArea"]
+layout_mode = 2
+
+[node name="HairStyleLabel" type="Label" parent="HSplitContainer/ScrollContainer/ControlsArea"]
+layout_mode = 2
+text = "Hair Style"
+
+[node name="HairStyleOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/ControlsArea"]
+layout_mode = 2
+
+[node name="HairColorLabel" type="Label" parent="HSplitContainer/ScrollContainer/ControlsArea"]
+layout_mode = 2
+text = "Hair Color"
+
+[node name="HairColorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/ControlsArea"]
+layout_mode = 2
+
+[node name="CreateButton" type="Button" parent="HSplitContainer/ScrollContainer/ControlsArea"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "CREATE CHARACTER"
 
-[node name="BackButton" type="Button" parent="HSplitContainer/ControlsArea"]
+[node name="BackButton" type="Button" parent="HSplitContainer/ScrollContainer/ControlsArea"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24

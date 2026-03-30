@@ -21,7 +21,7 @@ public partial class CharactersScene : Control
         _characterService = global.Services!.GetRequiredService<ICharacterService>();
         _session = global.Services!.GetRequiredService<ISessionService>();
 
-        _characterList = GetNode<VBoxContainer>("VBoxContainer/CharacterList");
+        _characterList = GetNode<VBoxContainer>("VBoxContainer/ScrollContainer/CharacterList");
         GetNode<Button>("VBoxContainer/NewButton").Pressed += OnNewPressed;
         GetNode<Button>("VBoxContainer/BackButton").Pressed += OnBackPressed;
 
@@ -35,13 +35,31 @@ public partial class CharactersScene : Control
         var characters = await _characterService.GetCharactersForUserAsync(_session.CurrentUser.Id);
         foreach (var character in characters)
         {
+            var hbox = new HBoxContainer();
+            
+            var tex = ImageUtils.ByteArrayToTexture(character.Thumbnail);
+            if (tex != null)
+            {
+                var rect = new TextureRect
+                {
+                    Texture = tex,
+                    CustomMinimumSize = new Vector2(50, 50),
+                    ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                    StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
+                };
+                hbox.AddChild(rect);
+            }
+
             var btn = new Button
             {
                 Text = $"{character.Name} (Level {character.Level})",
-                CustomMinimumSize = new Vector2(0, 50)
+                CustomMinimumSize = new Vector2(0, 50),
+                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
             };
             btn.Pressed += () => OnCharacterSelected(character);
-            _characterList.AddChild(btn);
+            hbox.AddChild(btn);
+            
+            _characterList.AddChild(hbox);
         }
     }
 

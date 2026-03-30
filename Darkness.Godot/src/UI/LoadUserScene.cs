@@ -21,7 +21,7 @@ public partial class LoadUserScene : Control
         _userService = global.Services.GetRequiredService<IUserService>();
         _session = global.Services.GetRequiredService<ISessionService>();
 
-        _userList = GetNode<VBoxContainer>("VBoxContainer/UserList");
+        _userList = GetNode<VBoxContainer>("VBoxContainer/ScrollContainer/UserList");
         GetNode<Button>("VBoxContainer/CreateButton").Pressed += OnCreatePressed;
         GetNode<Button>("VBoxContainer/BackButton").Pressed += OnBackPressed;
 

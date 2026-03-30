@@ -6,3 +6,8 @@ res://src/Core/Global.cs
 res://src/UI/CharactersScene.cs
 res://src/UI/CreateUserScene.cs
 res://src/UI/LoadUserScene.cs
+res://src/UI/StudyScene.cs
+res://src/UI/SettingsScene.cs
+res://src/UI/ForgeScene.cs
+res://src/UI/DeathmatchScene.cs
+res://src/UI/AlliesScene.cs
