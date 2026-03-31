@@ -66,7 +66,7 @@ public partial class CharactersScene : Control
     private void OnCharacterSelected(Character character)
     {
         _session.CurrentCharacter = character;
-        _navigation.NavigateToAsync("WorldPage");
+        _navigation.NavigateToAsync("MainMenuPage");
     }
 
 

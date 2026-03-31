@@ -10,132 +10,188 @@ namespace Darkness.Godot.UI;
 
 public partial class CharacterGenScene : Control
 {
-    private INavigationService _navigation;
-    private ISpriteCompositor _compositor;
-    private ISpriteLayerCatalog _catalog;
-    private ICharacterService _characterService;
-    private ISessionService _session;
-    private TextureRect _spritePreview;
-    private LineEdit _nameEdit;
-    private OptionButton _classOption;
-    private OptionButton _skinOption;
-    private OptionButton _hairStyleOption;
-    private OptionButton _hairColorOption;
+	private INavigationService _navigation;
+	private ISpriteCompositor _compositor;
+	private ISpriteLayerCatalog _catalog;
+	private ICharacterService _characterService;
+	private ISessionService _session;
+	private IFileSystemService _fileSystem;
 
-    public override void _Ready()
-    {
-    	var global = GetNode<Global>("/root/Global");
-    	_navigation = global.Services!.GetRequiredService<INavigationService>();
-    	_compositor = global.Services!.GetRequiredService<ISpriteCompositor>();
-    	_catalog = global.Services!.GetRequiredService<ISpriteLayerCatalog>();
-    	_characterService = global.Services!.GetRequiredService<ICharacterService>();
-    	_session = global.Services!.GetRequiredService<ISessionService>();
+	private TextureRect _spritePreview;
+	private LineEdit _nameEdit;
+	private OptionButton _classOption;
+	private OptionButton _skinOption;
+	private OptionButton _hairStyleOption;
+	private OptionButton _hairColorOption;
+	private OptionButton _faceOption;
+	private OptionButton _eyesOption;
+	private OptionButton _armorOption;
+	private OptionButton _weaponOption;
 
-    	_spritePreview = GetNode<TextureRect>("HSplitContainer/PreviewArea/SpritePreview");
-    	_nameEdit = GetNode<LineEdit>("HSplitContainer/ScrollContainer/ControlsArea/NameEdit");
-    	_classOption = GetNode<OptionButton>("HSplitContainer/ScrollContainer/ControlsArea/ClassOption");
-    	_skinOption = GetNode<OptionButton>("HSplitContainer/ScrollContainer/ControlsArea/SkinOption");
-    	_hairStyleOption = GetNode<OptionButton>("HSplitContainer/ScrollContainer/ControlsArea/HairStyleOption");
-    	_hairColorOption = GetNode<OptionButton>("HSplitContainer/ScrollContainer/ControlsArea/HairColorOption");
+	private byte[]? _previewBytes;
 
-    	SetupOptions();
+	public override void _Ready()
+	{
+		var global = GetNode<Global>("/root/Global");
+		var sp = global.Services!;
+		_navigation = sp.GetRequiredService<INavigationService>();
+		_compositor = sp.GetRequiredService<ISpriteCompositor>();
+		_catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
+		_characterService = sp.GetRequiredService<ICharacterService>();
+		_session = sp.GetRequiredService<ISessionService>();
+		_fileSystem = sp.GetRequiredService<IFileSystemService>();
 
-    	_classOption.ItemSelected += (_) => UpdatePreview();
-    	_skinOption.ItemSelected += (_) => UpdatePreview();
-    	_hairStyleOption.ItemSelected += (_) => UpdatePreview();
-    	_hairColorOption.ItemSelected += (_) => UpdatePreview();
+		var container = "HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/";
+		_spritePreview = GetNode<TextureRect>("HSplitContainer/PreviewArea/SpritePreview");
+		_nameEdit = GetNode<LineEdit>(container + "NameEdit");
+		_classOption = GetNode<OptionButton>(container + "ClassOption");
+		_skinOption = GetNode<OptionButton>(container + "SkinOption");
+		_hairStyleOption = GetNode<OptionButton>(container + "HairStyleOption");
+		_hairColorOption = GetNode<OptionButton>(container + "HairColorOption");
+		_faceOption = GetNode<OptionButton>(container + "FaceOption");
+		_eyesOption = GetNode<OptionButton>(container + "EyesOption");
+		_armorOption = GetNode<OptionButton>(container + "ArmorOption");
+		_weaponOption = GetNode<OptionButton>(container + "WeaponOption");
 
-    	GetNode<Button>("HSplitContainer/ScrollContainer/ControlsArea/CreateButton").Pressed += OnCreatePressed;
-    	GetNode<Button>("HSplitContainer/ScrollContainer/ControlsArea/BackButton").Pressed += OnBackPressed;
+		SetupOptions();
 
-    	UpdatePreview();
-    }
+		_classOption.ItemSelected += (_) => OnClassChanged();
+		_skinOption.ItemSelected += (_) => UpdatePreview();
+		_hairStyleOption.ItemSelected += (_) => UpdatePreview();
+		_hairColorOption.ItemSelected += (_) => UpdatePreview();
+		_faceOption.ItemSelected += (_) => UpdatePreview();
+		_eyesOption.ItemSelected += (_) => UpdatePreview();
+		_armorOption.ItemSelected += (_) => UpdatePreview();
+		_weaponOption.ItemSelected += (_) => UpdatePreview();
 
-    private void SetupOptions()
-    {
-    	string[] skins = { "Light", "Tan", "Dark" };
-    	foreach (var s in skins) _skinOption.AddItem(s);
+		GetNode<Button>(container + "CreateButton").Pressed += OnCreatePressed;
+		GetNode<Button>(container + "BackButton").Pressed += () => _navigation.GoBackAsync();
 
-    	string[] styles = { "Short", "Long", "Bald", "Mohawk" };
-    	foreach (var s in styles) _hairStyleOption.AddItem(s);
+		UpdatePreview();
+	}
 
-    	string[] colors = { "Brown", "Black", "Blonde", "Red" };
-    	foreach (var c in colors) _hairColorOption.AddItem(c);
-    }
+	private void SetupOptions()
+	{
+		Populate(_classOption, new[] { "Knight", "Rogue", "Mage", "Warrior", "Cleric" });
+		Populate(_skinOption, _catalog.SkinColors);
+		Populate(_hairStyleOption, _catalog.HairStyles);
+		Populate(_hairColorOption, _catalog.HairColors);
+		Populate(_faceOption, _catalog.FaceTypes);
+		Populate(_eyesOption, _catalog.EyeTypes);
+		Populate(_armorOption, _catalog.ArmorTypes);
+		Populate(_weaponOption, _catalog.WeaponTypes);
+	}
 
-    private async void UpdatePreview()
-    {
-    	var appearance = new CharacterAppearance
-    	{
-    		SkinColor = _skinOption.GetItemText(_skinOption.Selected),
-    		HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
-    		HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected)
-    	};
+	private void Populate(OptionButton node, List<string> items)
+	{
+		node.Clear();
+		foreach (var item in items) node.AddItem(item);
+	}
 
-    	try
-    	{
-    		var layers = _catalog.GetLayersForAppearance(appearance);
-    		var streams = new List<System.IO.Stream>();
-    		foreach (var layer in layers)
-    		{
-    			var stream = await ((Global)GetNode("/root/Global")).Services!.GetRequiredService<IFileSystemService>().OpenAppPackageFileAsync(layer.ResourcePath);
-    			streams.Add(stream);
-    		}
-    		if (streams.Count > 0)
-    		{
-    			// CompositeLayers(IReadOnlyList<Stream> layerStreams, int sheetWidth, int sheetHeight)
-    			// Assuming standard 1024x1024 sheet for now
-    			var bytes = _compositor.CompositeLayers(streams, 1024, 1024);
+	private void Populate(OptionButton node, string[] items)
+	{
+		node.Clear();
+		foreach (var item in items) node.AddItem(item);
+	}
 
-    			// Now we need to extract a frame from the composite sheet
-    			// ExtractFrame(byte[] spriteSheetPng, int frameX, int frameY, int frameWidth, int frameHeight, int scale)
-    			// Let's assume frame (0,0) of 64x64 scaled by 1
-    			var frameBytes = _compositor.ExtractFrame(bytes, 0, 0, 64, 64, 1);
+	private void OnClassChanged()
+	{
+		var className = _classOption.GetItemText(_classOption.Selected);
+		var defaults = _catalog.GetDefaultAppearanceForClass(className);
+		
+		SelectByText(_armorOption, defaults.ArmorType);
+		SelectByText(_weaponOption, defaults.WeaponType);
+		
+		UpdatePreview();
+	}
 
-    			var img = Image.CreateFromData(64, 64, false, Image.Format.Rgba8, frameBytes);
-    			var tex = ImageTexture.CreateFromImage(img);
-    			_spritePreview.Texture = tex;
-    		}
-    	}
+	private void SelectByText(OptionButton node, string text)
+	{
+		for (int i = 0; i < node.ItemCount; i++)
+		{
+			if (node.GetItemText(i) == text)
+			{
+				node.Select(i);
+				return;
+			}
+		}
+	}
 
-    	catch (System.Exception ex)
-    	{
-    		GD.PrintErr($"Failed to update preview: {ex.Message}");
-    		// Fallback to red box
-    		var img = Image.Create(64, 64, false, Image.Format.Rgba8);
-    		img.Fill(Colors.Red);
-    		_spritePreview.Texture = ImageTexture.CreateFromImage(img);
-    	}
-    }
+	private async void UpdatePreview()
+	{
+		var appearance = new CharacterAppearance
+		{
+			SkinColor = _skinOption.GetItemText(_skinOption.Selected),
+			Face = _faceOption.GetItemText(_faceOption.Selected),
+			Eyes = _eyesOption.GetItemText(_eyesOption.Selected),
+			HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
+			HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected),
+			ArmorType = _armorOption.GetItemText(_armorOption.Selected),
+			WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
+			Head = "Human Male"
+		};
 
-    private async void OnCreatePressed()
-    {
-    	if (string.IsNullOrWhiteSpace(_nameEdit.Text) || _session.CurrentUser == null) return;
+		try
+		{
+			var layers = _catalog.GetLayersForAppearance(appearance);
+			var streams = new List<System.IO.Stream>();
+			foreach (var layer in layers)
+			{
+				var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
+				streams.Add(stream);
+			}
 
-    	var charClass = _classOption.GetItemText(_classOption.Selected);
-    	var character = new Character
-    	{
-    		Name = _nameEdit.Text,
-    		UserId = _session.CurrentUser.Id,
-    		Class = charClass,
-    		Level = 1,
-    		MaxHP = charClass == "WARRIOR" ? 120 : 80,
-    		CurrentHP = charClass == "WARRIOR" ? 120 : 80,
-    		Strength = charClass == "WARRIOR" ? 15 : 10,
-    		Intelligence = charClass == "MAGE" ? 15 : 10,
-    		Dexterity = charClass == "ROGUE" ? 15 : 10,
-    		SkinColor = _skinOption.GetItemText(_skinOption.Selected),
-    		HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
-    		HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected)
-    	};
+			if (streams.Count > 0)
+			{
+				var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
+				_previewBytes = _compositor.ExtractFrame(sheetBytes, 0, 2 * 64, 64, 64, 4);
 
-    	await _characterService.SaveCharacterAsync(character);
-    	await _navigation.NavigateToAsync("CharactersPage");
-    }
+				var img = new Image();
+				img.LoadPngFromBuffer(_previewBytes);
+				_spritePreview.Texture = ImageTexture.CreateFromImage(img);
+			}
+			
+			foreach (var s in streams) s.Dispose();
+		}
+		catch (System.Exception ex)
+		{
+			GD.PrintErr($"[CharacterGen] Failed to update preview: {ex.Message}");
+		}
+	}
 
+	private async void OnCreatePressed()
+	{
+		if (string.IsNullOrWhiteSpace(_nameEdit.Text) || _session.CurrentUser == null) return;
 
-    private void OnBackPressed()
-    {
-        _navigation.GoBackAsync();
-    }
+		var character = new Character
+		{
+			UserId = _session.CurrentUser.Id,
+			Name = _nameEdit.Text,
+			Class = _classOption.GetItemText(_classOption.Selected),
+			SkinColor = _skinOption.GetItemText(_skinOption.Selected),
+			HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
+			HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected),
+			Thumbnail = _previewBytes,
+			Level = 1
+		};
+
+		SetStats(character, character.Class);
+
+		await _characterService.SaveCharacterAsync(character);
+		await _navigation.NavigateToAsync("MainMenuPage");
+	}
+
+	private void SetStats(Character c, string cls)
+	{
+		switch (cls)
+		{
+			case "Knight": c.Strength = 12; c.Constitution = 14; break;
+			case "Warrior": c.Strength = 15; c.Constitution = 14; break;
+			case "Mage": c.Intelligence = 15; c.Wisdom = 14; break;
+			case "Rogue": c.Dexterity = 15; c.Strength = 12; break;
+			case "Cleric": c.Wisdom = 15; c.Constitution = 14; break;
+		}
+		c.MaxHP = c.Constitution * 10;
+		c.CurrentHP = c.MaxHP;
+	}
 }
