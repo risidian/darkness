@@ -1,8 +1,10 @@
 using Godot;
 using Darkness.Godot.Core;
 using Darkness.Core.Interfaces;
+using Darkness.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Darkness.Godot.Game;
 
@@ -10,7 +12,13 @@ public partial class WorldScene : Node2D, IInitializable
 {
     private INavigationService _navigation;
     private ISessionService _session;
+    private ISpriteCompositor _compositor;
+    private ISpriteLayerCatalog _catalog;
+    private IFileSystemService _fileSystem;
+
     private CharacterBody2D _player;
+    private Sprite2D _playerSprite;
+    private Sprite2D _npcSprite;
     private PanelContainer _dialogueBox;
     private Label _nameLabel;
     private Label _textLabel;
@@ -31,10 +39,17 @@ public partial class WorldScene : Node2D, IInitializable
     public override void _Ready()
     {
         var global = GetNode<Global>("/root/Global");
-        _navigation = global.Services.GetRequiredService<INavigationService>();
-        _session = global.Services.GetRequiredService<ISessionService>();
+        var sp = global.Services!;
+        _navigation = sp.GetRequiredService<INavigationService>();
+        _session = sp.GetRequiredService<ISessionService>();
+        _compositor = sp.GetRequiredService<ISpriteCompositor>();
+        _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
+        _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
         _player = GetNode<CharacterBody2D>("Player");
+        _playerSprite = GetNode<Sprite2D>("Player/Sprite");
+        _npcSprite = GetNode<Sprite2D>("NPC/Sprite");
+        
         _dialogueBox = GetNode<PanelContainer>("CanvasLayer/DialogueBox");
         _nameLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/NameLabel");
         _textLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/TextLabel");
@@ -47,6 +62,71 @@ public partial class WorldScene : Node2D, IInitializable
         GetNode<Area2D>("NPC").BodyEntered += (body) => {
             if (body == _player) StartDialogue();
         };
+
+        UpdateSprites();
+    }
+
+    private async void UpdateSprites()
+    {
+        // 1. Update Player Sprite
+        if (_session.CurrentCharacter != null)
+        {
+            await LoadCharacterSprite(_session.CurrentCharacter, _playerSprite);
+        }
+
+        // 2. Update NPC Sprite (Basic Knight)
+        var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
+        await LoadCharacterSprite(new Character { 
+            SkinColor = knightAppearance.SkinColor,
+            HairStyle = knightAppearance.HairStyle,
+            HairColor = knightAppearance.HairColor,
+            ArmorType = knightAppearance.ArmorType,
+            WeaponType = knightAppearance.WeaponType,
+            Face = "Default",
+            Eyes = "Default"
+        }, _npcSprite);
+    }
+
+    private async Task LoadCharacterSprite(Character c, Sprite2D spriteNode)
+    {
+        var appearance = new CharacterAppearance
+        {
+            SkinColor = c.SkinColor,
+            Face = c.Face ?? "Default",
+            Eyes = c.Eyes ?? "Default",
+            HairStyle = c.HairStyle,
+            HairColor = c.HairColor,
+            ArmorType = c.ArmorType,
+            WeaponType = c.WeaponType,
+            Head = "Human Male"
+        };
+
+        try
+        {
+            var layers = _catalog.GetLayersForAppearance(appearance);
+            var streams = new List<System.IO.Stream>();
+            foreach (var layer in layers)
+            {
+                var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
+                streams.Add(stream);
+            }
+
+            if (streams.Count > 0)
+            {
+                var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
+                var frameBytes = _compositor.ExtractFrame(sheetBytes, 0, 2 * 64, 64, 64, 1);
+
+                var img = new Image();
+                img.LoadPngFromBuffer(frameBytes);
+                spriteNode.Texture = ImageTexture.CreateFromImage(img);
+            }
+            
+            foreach (var s in streams) s.Dispose();
+        }
+        catch (System.Exception ex)
+        {
+            GD.PrintErr($"[WorldScene] Failed to load sprite: {ex.Message}");
+        }
     }
 
     public override void _Process(double delta)

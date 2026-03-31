@@ -27,6 +27,30 @@ namespace Darkness.Core.Models
 
         [ObservableProperty]
         private string _skinColor = string.Empty;
+
+        [ObservableProperty]
+        private string _face = "Default";
+
+        [ObservableProperty]
+        private string _eyes = "Default";
+
+        [ObservableProperty]
+        private string _head = "Human Male";
+
+        [ObservableProperty]
+        private string _feet = "Boots (Basic)";
+
+        [ObservableProperty]
+        private string _arms = "None";
+
+        [ObservableProperty]
+        private string _legs = "Slacks";
+
+        [ObservableProperty]
+        private string _armorType = "Leather";
+
+        [ObservableProperty]
+        private string _weaponType = "Arming Sword (Steel)";
         
         // Base Stats
         [ObservableProperty]
