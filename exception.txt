@@ -1,77 +1,258 @@
-System.Runtime.InteropServices.COMException: 'Unspecified error Setting 'Background' property is not supported on SwapChainPanel.'
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\Extensions.cs(6,21): error CS0101: The namespace 'Darkness.Godot.Core' already contains a definition for 'TaskExtensions'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\IInitializable.cs(5,18): error CS0101: The namespace 'Darkness.Godot.Core' already contains a definition for 'IInitializable'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\ImageUtils.cs(7,21): error CS0101: The namespace 'Darkness.Godot.Core' already contains a definition for 'ImageUtils'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotDialogService.cs(8,14): error CS0101: The namespace 'Darkness.Godot.Services' already contains a definition for 'GodotDialogService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotDispatcherService.cs(7,14): error CS0101: The namespace 'Darkness.Godot.Services' already contains a definition for 'GodotDispatcherService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotFileSystemService.cs(8,14): error CS0101: The namespace 'Darkness.Godot.Services' already contains a definition for 'GodotFileSystemService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotNavigationService.cs(9,14): error CS0101: The namespace 'Darkness.Godot.Services' already contains a definition for 'GodotNavigationService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotFileSystemService.cs(12,25): error CS0111: Type 'GodotFileSystemService' already defines a member called 'OpenAppPackageFileAsync' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\IInitializable.cs(7,10): error CS0111: Type 'IInitializable' already defines a member called 'Initialize' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotNavigationService.cs(13,12): error CS0111: Type 'GodotNavigationService' already defines a member called 'GodotNavigationService' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotNavigationService.cs(18,23): error CS0111: Type 'GodotNavigationService' already defines a member called 'NavigateToAsync' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotNavigationService.cs(52,17): error CS0111: Type 'GodotNavigationService' already defines a member called 'GoBackAsync' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotDispatcherService.cs(9,17): error CS0111: Type 'GodotDispatcherService' already defines a member called 'InvokeOnMainThread' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotDialogService.cs(12,9): error CS0111: Type 'GodotDialogService' already defines a member called 'GodotDialogService' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotDialogService.cs(17,20): error CS0111: Type 'GodotDialogService' already defines a member called 'DisplayAlertAsync' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Services\GodotDialogService.cs(31,26): error CS0111: Type 'GodotDialogService' already defines a member called 'DisplayConfirmAsync' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\Extensions.cs(8,30): error CS0111: Type 'TaskExtensions' already defines a member called 'FireAndForget' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\ImageUtils.cs(9,30): error CS0111: Type 'ImageUtils' already defines a member called 'ByteArrayToTexture' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\ImageUtils.cs(35,33): error CS0111: Type 'ImageUtils' already defines a member called 'CreateSpriteFrames' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\Global.cs(14,30): error CS0102: The type 'Global' already contains a definition for 'Services'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Core\Global.cs(16,26): error CS0111: Type 'Global' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(13,23): error CS0102: The type 'AlliesScene' already contains a definition for '_allyService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(14,26): error CS0102: The type 'AlliesScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(15,29): error CS0102: The type 'AlliesScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(17,24): error CS0102: The type 'AlliesScene' already contains a definition for '_pendingList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(18,24): error CS0102: The type 'AlliesScene' already contains a definition for '_acceptedList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(20,29): error CS0111: Type 'AlliesScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(35,21): error CS0111: Type 'AlliesScene' already defines a member called 'RefreshAllies' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(57,15): error CS0111: Type 'AlliesScene' already defines a member called 'AddPendingAllyUI' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(73,15): error CS0111: Type 'AlliesScene' already defines a member called 'AddAcceptedAllyUI' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\AlliesScene.cs(79,21): error CS0111: Type 'AlliesScene' already defines a member called 'RespondToRequest' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(12,32): error CS0102: The type 'CharactersScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(13,31): error CS0102: The type 'CharactersScene' already contains a definition for '_characterService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(14,29): error CS0102: The type 'CharactersScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(15,27): error CS0102: The type 'CharactersScene' already contains a definition for '_characterList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(17,26): error CS0111: Type 'CharactersScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(31,24): error CS0111: Type 'CharactersScene' already defines a member called 'LoadCharacters' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(66,18): error CS0111: Type 'CharactersScene' already defines a member called 'OnCharacterSelected' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(73,24): error CS0111: Type 'CharactersScene' already defines a member called 'OnNewPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharactersScene.cs(78,24): error CS0111: Type 'CharactersScene' already defines a member called 'OnBackPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(14,29): error CS0102: The type 'WorldScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(15,26): error CS0102: The type 'WorldScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(16,28): error CS0102: The type 'WorldScene' already contains a definition for '_compositor'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(17,30): error CS0102: The type 'WorldScene' already contains a definition for '_catalog'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(18,29): error CS0102: The type 'WorldScene' already contains a definition for '_fileSystem'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(20,26): error CS0102: The type 'WorldScene' already contains a definition for '_player'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(21,27): error CS0102: The type 'WorldScene' already contains a definition for '_playerSprite'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(22,27): error CS0102: The type 'WorldScene' already contains a definition for '_npcSprite'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(23,25): error CS0102: The type 'WorldScene' already contains a definition for '_dialogueBox'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(24,20): error CS0102: The type 'WorldScene' already contains a definition for '_pauseMenu'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(25,16): error CS0102: The type 'WorldScene' already contains a definition for '_nameLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(26,16): error CS0102: The type 'WorldScene' already contains a definition for '_textLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(28,16): error CS0102: The type 'WorldScene' already contains a definition for '_moveSpeed'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(29,19): error CS0102: The type 'WorldScene' already contains a definition for '_dialogue'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(34,14): error CS0102: The type 'WorldScene' already contains a definition for '_currentDialogueIndex'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(35,17): error CS0102: The type 'WorldScene' already contains a definition for '_lastDirection'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(37,14): error CS0111: Type 'WorldScene' already defines a member called 'Initialize' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(41,29): error CS0111: Type 'WorldScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(73,21): error CS0111: Type 'WorldScene' already defines a member called 'UpdateSprites' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(92,36): error CS0111: Type 'WorldScene' already defines a member called 'LoadCharacterFrames' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(131,23): error CS0111: Type 'WorldScene' already defines a member called '_Process' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(171,15): error CS0111: Type 'WorldScene' already defines a member called 'UpdateAnimation' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(184,15): error CS0111: Type 'WorldScene' already defines a member called 'StartDialogue' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(191,15): error CS0111: Type 'WorldScene' already defines a member called 'NextDialogue' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(205,15): error CS0111: Type 'WorldScene' already defines a member called 'UpdateDialogueUI' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\WorldScene.cs(211,21): error CS0111: Type 'WorldScene' already defines a member called 'TriggerEncounter' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(13,29): error CS0102: The type 'CharacterGenScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(14,28): error CS0102: The type 'CharacterGenScene' already contains a definition for '_compositor'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(15,30): error CS0102: The type 'CharacterGenScene' already contains a definition for '_catalog'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(16,28): error CS0102: The type 'CharacterGenScene' already contains a definition for '_characterService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(17,26): error CS0102: The type 'CharacterGenScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(18,29): error CS0102: The type 'CharacterGenScene' already contains a definition for '_fileSystem'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(20,22): error CS0102: The type 'CharacterGenScene' already contains a definition for '_spritePreview'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(21,19): error CS0102: The type 'CharacterGenScene' already contains a definition for '_nameEdit'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(22,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_classOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(23,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_skinOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(24,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_hairStyleOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(25,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_hairColorOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(26,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_faceOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(27,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_eyesOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(28,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_armorOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(29,23): error CS0102: The type 'CharacterGenScene' already contains a definition for '_weaponOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(31,18): error CS0102: The type 'CharacterGenScene' already contains a definition for '_previewBytes'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(33,23): error CS0111: Type 'CharacterGenScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(73,15): error CS0111: Type 'CharacterGenScene' already defines a member called 'SetupOptions' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(85,15): error CS0111: Type 'CharacterGenScene' already defines a member called 'Populate' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(91,15): error CS0111: Type 'CharacterGenScene' already defines a member called 'Populate' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(97,15): error CS0111: Type 'CharacterGenScene' already defines a member called 'OnClassChanged' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(108,15): error CS0111: Type 'CharacterGenScene' already defines a member called 'SelectByText' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(120,21): error CS0111: Type 'CharacterGenScene' already defines a member called 'UpdatePreview' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(162,21): error CS0111: Type 'CharacterGenScene' already defines a member called 'OnCreatePressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CharacterGenScene.cs(192,15): error CS0111: Type 'CharacterGenScene' already defines a member called 'SetStats' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(15,29): error CS0102: The type 'BattleScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(16,26): error CS0102: The type 'BattleScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(17,25): error CS0102: The type 'BattleScene' already contains a definition for '_combat'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(18,28): error CS0102: The type 'BattleScene' already contains a definition for '_compositor'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(19,30): error CS0102: The type 'BattleScene' already contains a definition for '_catalog'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(20,29): error CS0102: The type 'BattleScene' already contains a definition for '_fileSystem'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(21,24): error CS0102: The type 'BattleScene' already contains a definition for '_combatLog'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(22,20): error CS0102: The type 'BattleScene' already contains a definition for '_pauseMenu'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(24,24): error CS0102: The type 'BattleScene' already contains a definition for '_partyContainer'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(25,24): error CS0102: The type 'BattleScene' already contains a definition for '_enemyContainer'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(27,26): error CS0102: The type 'BattleScene' already contains a definition for '_party'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(28,22): error CS0102: The type 'BattleScene' already contains a definition for '_enemies'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(30,14): error CS0111: Type 'BattleScene' already defines a member called 'Initialize' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(48,29): error CS0111: Type 'BattleScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(73,23): error CS0111: Type 'BattleScene' already defines a member called '_Input' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(81,15): error CS0111: Type 'BattleScene' already defines a member called 'SetupBattle' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(95,21): error CS0111: Type 'BattleScene' already defines a member called 'UpdateSprites' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(124,36): error CS0111: Type 'BattleScene' already defines a member called 'LoadCharacterFrames' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(163,15): error CS0111: Type 'BattleScene' already defines a member called 'ExecuteAttack' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\Game\BattleScene.cs(188,21): error CS0111: Type 'BattleScene' already defines a member called 'Victory' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CreateUserScene.cs(11,32): error CS0102: The type 'CreateUserScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CreateUserScene.cs(12,26): error CS0102: The type 'CreateUserScene' already contains a definition for '_userService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CreateUserScene.cs(13,29): error CS0102: The type 'CreateUserScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CreateUserScene.cs(14,22): error CS0102: The type 'CreateUserScene' already contains a definition for '_usernameEdit'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CreateUserScene.cs(16,26): error CS0111: Type 'CreateUserScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CreateUserScene.cs(28,24): error CS0111: Type 'CreateUserScene' already defines a member called 'OnCreatePressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\CreateUserScene.cs(42,18): error CS0111: Type 'CreateUserScene' already defines a member called 'OnBackPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(13,29): error CS0102: The type 'DeathmatchScene' already contains a definition for '_deathmatchService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(14,29): error CS0102: The type 'DeathmatchScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(16,19): error CS0102: The type 'DeathmatchScene' already contains a definition for '_encounterList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(17,16): error CS0102: The type 'DeathmatchScene' already contains a definition for '_nameLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(18,16): error CS0102: The type 'DeathmatchScene' already contains a definition for '_reqLevelLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(19,17): error CS0102: The type 'DeathmatchScene' already contains a definition for '_startButton'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(21,36): error CS0102: The type 'DeathmatchScene' already contains a definition for '_encounters'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(22,31): error CS0102: The type 'DeathmatchScene' already contains a definition for '_selectedEncounter'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(24,29): error CS0111: Type 'DeathmatchScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(42,21): error CS0111: Type 'DeathmatchScene' already defines a member called 'LoadEncounters' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(54,15): error CS0111: Type 'DeathmatchScene' already defines a member called 'OnEncounterSelected' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\DeathmatchScene.cs(61,21): error CS0111: Type 'DeathmatchScene' already defines a member called 'OnStartPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\InventoryScene.cs(13,26): error CS0102: The type 'InventoryScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\InventoryScene.cs(14,29): error CS0102: The type 'InventoryScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\InventoryScene.cs(15,24): error CS0102: The type 'InventoryScene' already contains a definition for '_itemList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\InventoryScene.cs(17,23): error CS0111: Type 'InventoryScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\InventoryScene.cs(29,15): error CS0111: Type 'InventoryScene' already defines a member called 'LoadInventory' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(13,27): error CS0102: The type 'ForgeScene' already contains a definition for '_craftingService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(14,26): error CS0102: The type 'ForgeScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(15,28): error CS0102: The type 'ForgeScene' already contains a definition for '_characterService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(16,29): error CS0102: The type 'ForgeScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(17,25): error CS0102: The type 'ForgeScene' already contains a definition for '_dialogService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(19,19): error CS0102: The type 'ForgeScene' already contains a definition for '_recipeList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(20,16): error CS0102: The type 'ForgeScene' already contains a definition for '_titleLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(21,16): error CS0102: The type 'ForgeScene' already contains a definition for '_descLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(22,16): error CS0102: The type 'ForgeScene' already contains a definition for '_materialsLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(23,16): error CS0102: The type 'ForgeScene' already contains a definition for '_statsLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(24,17): error CS0102: The type 'ForgeScene' already contains a definition for '_forgeButton'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(26,23): error CS0102: The type 'ForgeScene' already contains a definition for '_recipes'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(27,18): error CS0102: The type 'ForgeScene' already contains a definition for '_selectedRecipe'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(28,21): error CS0102: The type 'ForgeScene' already contains a definition for '_currentCharacter'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(30,29): error CS0111: Type 'ForgeScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(53,21): error CS0111: Type 'ForgeScene' already defines a member called 'LoadData' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(74,15): error CS0111: Type 'ForgeScene' already defines a member called 'OnRecipeSelected' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\ForgeScene.cs(83,21): error CS0111: Type 'ForgeScene' already defines a member called 'OnForgePressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.InventoryScene_ScriptProperties.generated.cs(20,61): error CS0102: The type 'InventoryScene.PropertyName' already contains a definition for '_itemList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CreateUserScene_ScriptProperties.generated.cs(20,61): error CS0102: The type 'CreateUserScene.PropertyName' already contains a definition for '_usernameEdit'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.BattleScene_ScriptProperties.generated.cs(32,61): error CS0102: The type 'BattleScene.PropertyName' already contains a definition for '_combatLog'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.BattleScene_ScriptProperties.generated.cs(36,61): error CS0102: The type 'BattleScene.PropertyName' already contains a definition for '_pauseMenu'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.BattleScene_ScriptProperties.generated.cs(40,61): error CS0102: The type 'BattleScene.PropertyName' already contains a definition for '_partyContainer'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.BattleScene_ScriptProperties.generated.cs(44,61): error CS0102: The type 'BattleScene.PropertyName' already contains a definition for '_enemyContainer'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.DeathmatchScene_ScriptProperties.generated.cs(32,61): error CS0102: The type 'DeathmatchScene.PropertyName' already contains a definition for '_encounterList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharactersScene_ScriptProperties.generated.cs(20,61): error CS0102: The type 'CharactersScene.PropertyName' already contains a definition for '_characterList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.DeathmatchScene_ScriptProperties.generated.cs(36,61): error CS0102: The type 'DeathmatchScene.PropertyName' already contains a definition for '_nameLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.DeathmatchScene_ScriptProperties.generated.cs(40,61): error CS0102: The type 'DeathmatchScene.PropertyName' already contains a definition for '_reqLevelLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.DeathmatchScene_ScriptProperties.generated.cs(44,61): error CS0102: The type 'DeathmatchScene.PropertyName' already contains a definition for '_startButton'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.AlliesScene_ScriptProperties.generated.cs(24,61): error CS0102: The type 'AlliesScene.PropertyName' already contains a definition for '_pendingList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.AlliesScene_ScriptProperties.generated.cs(28,61): error CS0102: The type 'AlliesScene.PropertyName' already contains a definition for '_acceptedList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(60,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_spritePreview'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(64,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_nameEdit'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(68,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_classOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(72,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_skinOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(76,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_hairStyleOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(80,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_hairColorOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(84,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_faceOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(88,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_eyesOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(92,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_armorOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(96,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_weaponOption'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.CharacterGenScene_ScriptProperties.generated.cs(100,61): error CS0102: The type 'CharacterGenScene.PropertyName' already contains a definition for '_previewBytes'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(60,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_player'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(64,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_playerSprite'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(68,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_npcSprite'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(72,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_dialogueBox'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(76,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_pauseMenu'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(80,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_nameLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(84,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_textLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(88,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_moveSpeed'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(92,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_dialogue'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(96,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_currentDialogueIndex'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.Game.WorldScene_ScriptProperties.generated.cs(100,61): error CS0102: The type 'WorldScene.PropertyName' already contains a definition for '_lastDirection'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.ForgeScene_ScriptProperties.generated.cs(40,61): error CS0102: The type 'ForgeScene.PropertyName' already contains a definition for '_recipeList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.ForgeScene_ScriptProperties.generated.cs(44,61): error CS0102: The type 'ForgeScene.PropertyName' already contains a definition for '_titleLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.ForgeScene_ScriptProperties.generated.cs(48,61): error CS0102: The type 'ForgeScene.PropertyName' already contains a definition for '_descLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.ForgeScene_ScriptProperties.generated.cs(52,61): error CS0102: The type 'ForgeScene.PropertyName' already contains a definition for '_materialsLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.ForgeScene_ScriptProperties.generated.cs(56,61): error CS0102: The type 'ForgeScene.PropertyName' already contains a definition for '_statsLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.ForgeScene_ScriptProperties.generated.cs(60,61): error CS0102: The type 'ForgeScene.PropertyName' already contains a definition for '_forgeButton'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\PauseMenu.cs(10,29): error CS0102: The type 'PauseMenu' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\PauseMenu.cs(12,23): error CS0111: Type 'PauseMenu' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\PauseMenu.cs(25,14): error CS0111: Type 'PauseMenu' already defines a member called 'Toggle' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\PauseMenu.cs(31,15): error CS0111: Type 'PauseMenu' already defines a member called 'OnResumePressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\PauseMenu.cs(36,15): error CS0111: Type 'PauseMenu' already defines a member called 'OnInventoryPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\PauseMenu.cs(42,15): error CS0111: Type 'PauseMenu' already defines a member called 'OnSettingsPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\PauseMenu.cs(48,15): error CS0111: Type 'PauseMenu' already defines a member called 'OnMenuPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(12,32): error CS0102: The type 'LoadUserScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(13,26): error CS0102: The type 'LoadUserScene' already contains a definition for '_userService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(14,29): error CS0102: The type 'LoadUserScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(15,27): error CS0102: The type 'LoadUserScene' already contains a definition for '_userList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(17,26): error CS0111: Type 'LoadUserScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(31,24): error CS0111: Type 'LoadUserScene' already defines a member called 'LoadUsers' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(46,18): error CS0111: Type 'LoadUserScene' already defines a member called 'OnUserSelected' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(52,18): error CS0111: Type 'LoadUserScene' already defines a member called 'OnCreatePressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\LoadUserScene.cs(57,18): error CS0111: Type 'LoadUserScene' already defines a member called 'OnBackPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(11,27): error CS0102: The type 'SettingsScene' already contains a definition for '_settingsService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(12,29): error CS0102: The type 'SettingsScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(14,18): error CS0102: The type 'SettingsScene' already contains a definition for '_masterSlider'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(15,18): error CS0102: The type 'SettingsScene' already contains a definition for '_musicSlider'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(16,18): error CS0102: The type 'SettingsScene' already contains a definition for '_sfxSlider'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(18,23): error CS0111: Type 'SettingsScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(36,21): error CS0111: Type 'SettingsScene' already defines a member called 'OnSavePressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SettingsScene.cs(46,21): error CS0111: Type 'SettingsScene' already defines a member called 'OnCancelPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.LoadUserScene_ScriptProperties.generated.cs(20,61): error CS0102: The type 'LoadUserScene.PropertyName' already contains a definition for '_userList'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.SettingsScene_ScriptProperties.generated.cs(28,61): error CS0102: The type 'SettingsScene.PropertyName' already contains a definition for '_masterSlider'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.SettingsScene_ScriptProperties.generated.cs(32,61): error CS0102: The type 'SettingsScene.PropertyName' already contains a definition for '_musicSlider'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.SettingsScene_ScriptProperties.generated.cs(36,61): error CS0102: The type 'SettingsScene.PropertyName' already contains a definition for '_sfxSlider'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(12,29): error CS0102: The type 'MainMenuScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(13,25): error CS0102: The type 'MainMenuScene' already contains a definition for '_rewardService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(14,26): error CS0102: The type 'MainMenuScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(15,28): error CS0102: The type 'MainMenuScene' already contains a definition for '_characterService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(16,25): error CS0102: The type 'MainMenuScene' already contains a definition for '_dialogService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(17,27): error CS0102: The type 'MainMenuScene' already contains a definition for '_settingsService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(19,29): error CS0111: Type 'MainMenuScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(42,21): error CS0111: Type 'MainMenuScene' already defines a member called 'RunStartupChecks' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(69,21): error CS0111: Type 'MainMenuScene' already defines a member called 'CheckDailyReward' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(80,21): error CS0111: Type 'MainMenuScene' already defines a member called 'OnPvpPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\MainMenuScene.cs(100,21): error CS0111: Type 'MainMenuScene' already defines a member called 'OnLogoutPressed' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SplashScene.cs(11,29): error CS0102: The type 'SplashScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SplashScene.cs(12,26): error CS0102: The type 'SplashScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SplashScene.cs(13,15): error CS0102: The type 'SplashScene' already contains a definition for '_isInitialized'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SplashScene.cs(15,23): error CS0111: Type 'SplashScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SplashScene.cs(22,23): error CS0111: Type 'SplashScene' already defines a member called '_Input' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\SplashScene.cs(31,21): error CS0111: Type 'SplashScene' already defines a member called 'StartGame' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.SplashScene_ScriptProperties.generated.cs(20,61): error CS0102: The type 'SplashScene.PropertyName' already contains a definition for '_isInitialized'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(13,28): error CS0102: The type 'StudyScene' already contains a definition for '_characterService'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(14,26): error CS0102: The type 'StudyScene' already contains a definition for '_session'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(15,29): error CS0102: The type 'StudyScene' already contains a definition for '_navigation'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(17,21): error CS0102: The type 'StudyScene' already contains a definition for '_character'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(18,16): error CS0102: The type 'StudyScene' already contains a definition for '_charNameLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(19,16): error CS0102: The type 'StudyScene' already contains a definition for '_pointsLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(21,59): error CS0102: The type 'StudyScene' already contains a definition for '_statControls'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(23,23): error CS0111: Type 'StudyScene' already defines a member called '_Ready' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(46,15): error CS0111: Type 'StudyScene' already defines a member called 'SetupStatControl' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(54,15): error CS0111: Type 'StudyScene' already defines a member called 'UpdateUI' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(69,15): error CS0111: Type 'StudyScene' already defines a member called 'UpdateStatRow' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\src\UI\StudyScene.cs(76,21): error CS0111: Type 'StudyScene' already defines a member called 'UpgradeAttribute' with the same parameter types
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.StudyScene_ScriptProperties.generated.cs(24,61): error CS0102: The type 'StudyScene.PropertyName' already contains a definition for '_charNameLabel'
+    C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\.godot\mono\temp\obj\Debug\Godot.SourceGenerators\Godot.SourceGenerators.ScriptPropertiesGenerator\Darkness.Godot.UI.StudyScene_ScriptProperties.generated.cs(28,61): error CS0102: The type 'StudyScene.PropertyName' already contains a definition for '_pointsLabel'
 
-   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
-   at ABI.Microsoft.UI.Xaml.IDependencyObjectMethods.ClearValue(IObjectReference _obj, DependencyProperty dp)
-   at Microsoft.UI.Xaml.DependencyObject.ClearValue(DependencyProperty dp)
-   at Microsoft.Maui.Platform.ViewExtensions.UpdateProperty(FrameworkElement platformControl, DependencyProperty property, Object value)
-   at Microsoft.Maui.Platform.ControlExtensions.UpdateBackground(Panel platformControl, Paint paint, Brush defaultBrush)
-   at Microsoft.Maui.Platform.ViewExtensions.UpdatePlatformViewBackground(FrameworkElement platformView, IView view)
-   at Microsoft.Maui.Platform.ViewExtensions.UpdateBackground(FrameworkElement platformView, IView view)
-   at Microsoft.Maui.Handlers.ViewHandler.MapBackground(IViewHandler handler, IView view)
-   at Microsoft.Maui.PropertyMapper`2.<>c__DisplayClass5_0.<Add>b__0(IElementHandler h, IElement v)
-   at Microsoft.Maui.PropertyMapper.UpdateProperties(IElementHandler viewHandler, IElement virtualView)
-   at Microsoft.Maui.Handlers.ElementHandler.SetVirtualView(IElement view)
-   at Microsoft.Maui.Handlers.ViewHandler`2.SetVirtualView(IView view)
-   at Microsoft.Maui.Handlers.ViewHandler`2.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Element.SetHandler(IElementHandler newHandler)
-   at Microsoft.Maui.Controls.Element.set_Handler(IElementHandler value)
-   at Microsoft.Maui.Controls.VisualElement.Microsoft.Maui.IElement.set_Handler(IElementHandler value)
-   at Microsoft.Maui.Platform.ElementExtensions.ToHandler(IElement view, IMauiContext context)
-   at Microsoft.Maui.Platform.ElementExtensions.ToPlatform(IElement view, IMauiContext context)
-   at Microsoft.Maui.Handlers.LayoutHandler.SetVirtualView(IView view)
-   at Microsoft.Maui.Handlers.ViewHandler`2.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Element.SetHandler(IElementHandler newHandler)
-   at Microsoft.Maui.Controls.Element.set_Handler(IElementHandler value)
-   at Microsoft.Maui.Controls.VisualElement.Microsoft.Maui.IElement.set_Handler(IElementHandler value)
-   at Microsoft.Maui.Platform.ElementExtensions.ToHandler(IElement view, IMauiContext context)
-   at Microsoft.Maui.Platform.ElementExtensions.ToPlatform(IElement view, IMauiContext context)
-   at Microsoft.Maui.Handlers.ContentViewHandler.UpdateContent(IContentViewHandler handler)
-   at Microsoft.Maui.Handlers.ContentViewHandler.MapContent(IContentViewHandler handler, IContentView page)
-   at Microsoft.Maui.PropertyMapper`2.<>c__DisplayClass5_0.<Add>b__0(IElementHandler h, IElement v)
-   at Microsoft.Maui.PropertyMapper.UpdateProperties(IElementHandler viewHandler, IElement virtualView)
-   at Microsoft.Maui.Handlers.ElementHandler.SetVirtualView(IElement view)
-   at Microsoft.Maui.Handlers.ViewHandler`2.SetVirtualView(IView view)
-   at Microsoft.Maui.Handlers.ContentViewHandler.SetVirtualView(IView view)
-   at Microsoft.Maui.Handlers.ViewHandler`2.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Element.SetHandler(IElementHandler newHandler)
-   at Microsoft.Maui.Controls.Element.set_Handler(IElementHandler value)
-   at Microsoft.Maui.Controls.VisualElement.Microsoft.Maui.IElement.set_Handler(IElementHandler value)
-   at Microsoft.Maui.Platform.ElementExtensions.ToHandler(IElement view, IMauiContext context)
-   at Microsoft.Maui.Platform.ElementExtensions.ToPlatform(IElement view, IMauiContext context)
-   at Microsoft.Maui.Controls.Handlers.ShellContentHandler.CreatePlatformElement()
-   at Microsoft.Maui.Handlers.ElementHandler`2.OnCreatePlatformElement()
-   at Microsoft.Maui.Handlers.ElementHandler.CreatePlatformElement()
-   at Microsoft.Maui.Handlers.ElementHandler.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Element.SetHandler(IElementHandler newHandler)
-   at Microsoft.Maui.Controls.Element.set_Handler(IElementHandler value)
-   at Microsoft.Maui.Platform.ElementExtensions.ToHandler(IElement view, IMauiContext context)
-   at Microsoft.Maui.Platform.ElementExtensions.ToPlatform(IElement view, IMauiContext context)
-   at Microsoft.Maui.Controls.Handlers.ShellSectionHandler.SyncNavigationStack(Boolean animated, NavigationRequestedEventArgs e)
-   at Microsoft.Maui.Controls.Handlers.ShellSectionHandler.MapCurrentItem(ShellSectionHandler handler, ShellSection item)
-   at Microsoft.Maui.PropertyMapper`2.<>c__DisplayClass5_0.<Add>b__0(IElementHandler h, IElement v)
-   at Microsoft.Maui.PropertyMapper.UpdateProperties(IElementHandler viewHandler, IElement virtualView)
-   at Microsoft.Maui.Handlers.ElementHandler.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Handlers.ShellSectionHandler.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Handlers.ShellItemHandler.UpdateCurrentItem()
-   at Microsoft.Maui.Controls.Handlers.ShellItemHandler.MapCurrentItem(ShellItemHandler handler, ShellItem item)
-   at Microsoft.Maui.PropertyMapper`2.<>c__DisplayClass5_0.<Add>b__0(IElementHandler h, IElement v)
-   at Microsoft.Maui.PropertyMapper.UpdateProperties(IElementHandler viewHandler, IElement virtualView)
-   at Microsoft.Maui.Handlers.ElementHandler.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Handlers.ShellItemHandler.SetVirtualView(IElement view)
-   at Microsoft.Maui.Controls.Platform.ShellView.CreateShellItemView()
-   at Microsoft.Maui.Controls.Platform.ShellView.SwitchShellItem(ShellItem newItem, Boolean animate)
-   at Microsoft.Maui.Controls.Handlers.ShellHandler.MapCurrentItem(ShellHandler handler, Shell view)
-   at Microsoft.Maui.PropertyMapper`2.<>c__DisplayClass5_0.<Add>b__0(IElementHandler h, IElement v)
-   at Microsoft.Maui.PropertyMapper.TryUpdatePropertyCore(String key, IElementHandler viewHandler, IElement virtualView)
-   at Microsoft.Maui.PropertyMapper.UpdateProperty(IElementHandler viewHandler, IElement virtualView, String property)
-   at Microsoft.Maui.Handlers.ElementHandler.UpdateValue(String property)
-   at Microsoft.Maui.Controls.Element.OnBindablePropertySet(BindableProperty property, Object original, Object value, Boolean changed, Boolean willFirePropertyChanged)
-   at Microsoft.Maui.Controls.BindableObject.SetValueActual(BindableProperty property, BindablePropertyContext context, Object value, Boolean currentlyApplying, SetValueFlags attributes, SetterSpecificity specificity, Boolean silent)
-   at Microsoft.Maui.Controls.BindableObject.SetValueCore(BindableProperty property, Object value, SetValueFlags attributes, SetValuePrivateFlags privateAttributes, SetterSpecificity specificity)
-   at Microsoft.Maui.Controls.BindableObject.SetValue(BindableProperty property, Object value, SetterSpecificity specificity)
-   at Microsoft.Maui.Controls.Element.SetValueFromRenderer(BindableProperty property, Object value)
-   at Microsoft.Maui.Controls.ShellNavigationManager.<GoToAsync>d__14.MoveNext()
-   at Darkness.Core.ViewModels.MainViewModel.<StorylineAsync>d__13.MoveNext() in C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Core\ViewModels\MainViewModel.cs:line 114
-   at CommunityToolkit.Mvvm.Input.AsyncRelayCommand.<AwaitAndThrowIfFailed>d__40.MoveNext()
-   at System.Threading.Tasks.Task.<>c.<ThrowAsync>b__124_0(Object state)
-   at Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext.<>c__DisplayClass4_0.<Post>b__0()
+Build failed with 255 error(s) in 7.4s
+Write-Error: C# Build Failed!
