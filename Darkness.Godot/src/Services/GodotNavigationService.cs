@@ -1,6 +1,7 @@
 using Darkness.Core.Interfaces;
 using Darkness.Godot.Core;
 using Godot;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -29,6 +30,8 @@ public class GodotNavigationService : INavigationService
         if (error != Error.Ok)
         {
             GD.PrintErr($"[Navigation] Failed to change scene to {path}: {error}");
+            var dialog = _global.Services!.GetRequiredService<IDialogService>();
+            await dialog.DisplayAlertAsync("Navigation Error", $"Failed to load scene {route} (Error: {error}). Path: {path}", "OK");
             return;
         }
 

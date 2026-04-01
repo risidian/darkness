@@ -37,17 +37,24 @@ public partial class CreateUserScene : Control
 
     private async void OnCreatePressed()
     {
-        GD.Print("[CreateUserScene] Create pressed.");
+        GD.Print("[CreateUserScene] Create button pressed.");
+        var global = GetNode<Global>("/root/Global");
+        var dialog = global.Services!.GetRequiredService<IDialogService>();
+
+        // DEBUG: Immediate confirmation that button was hit
+        await dialog.DisplayAlertAsync("Debug", $"Create button hit! Username entered: '{_usernameEdit.Text}'", "OK");
+
         if (string.IsNullOrWhiteSpace(_usernameEdit.Text)) 
         {
             GD.Print("[CreateUserScene] Username is empty.");
+            await dialog.DisplayAlertAsync("Validation Error", "Please enter a username.", "OK");
             return;
         }
 
         try
         {
             var user = new User { Username = _usernameEdit.Text };
-            GD.Print($"[CreateUserScene] Creating user: {user.Username}");
+            GD.Print($"[CreateUserScene] Creating user: '{user.Username}'");
             
             var success = await _userService.CreateUserAsync(user);
             GD.Print($"[CreateUserScene] Create success: {success}");
@@ -61,12 +68,15 @@ public partial class CreateUserScene : Control
             else
             {
                 GD.PrintErr("[CreateUserScene] CreateUserAsync returned false.");
+                await dialog.DisplayAlertAsync("Create Failed", "Failed to create user. The username might already be in use.", "OK");
             }
         }
         catch (System.Exception ex)
         {
             GD.PrintErr($"[CreateUserScene] EXCEPTION: {ex.Message}");
             GD.PrintErr(ex.StackTrace);
+            string stackTrace = ex.StackTrace ?? "No stack trace available";
+            await dialog.DisplayAlertAsync("System Error", $"An error occurred during user creation: {ex.Message}\n\nStack Trace: {stackTrace.Substring(0, System.Math.Min(stackTrace.Length, 200))}...", "OK");
         }
     }
 

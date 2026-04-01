@@ -18,6 +18,10 @@ public partial class Global : Node
         GD.Print("[Global] _Ready started.");
         try
         {
+            // Initialize SQLite for mobile platforms
+            SQLitePCL.Batteries_V2.Init();
+            GD.Print("[Global] SQLite initialized successfully.");
+
             var services = new ServiceCollection();
             
             // Infrastructure

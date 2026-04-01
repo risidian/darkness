@@ -24,15 +24,35 @@ namespace Darkness.Core.Services
             if (_database != null)
                 return;
 
-            await _dbService.CopyDatabaseIfNotExistsAsync("Darkness.db3");
-            _database = new SQLiteAsyncConnection(_dbPath);
-            await _database.CreateTableAsync<User>();
-            await _database.CreateTableAsync<Character>();
-            await _database.CreateTableAsync<Level>();
-            await _database.CreateTableAsync<Item>();
-            await _database.CreateTableAsync<Skill>();
-            await _database.CreateTableAsync<Enemy>();
-            await _database.CreateTableAsync<StatusEffect>();
+            System.Console.WriteLine($"[UserService] Initializing database at path: {_dbPath}");
+            try
+            {
+                System.Console.WriteLine("[UserService] Checking if database needs to be copied...");
+                await _dbService.CopyDatabaseIfNotExistsAsync("Darkness.db3");
+                System.Console.WriteLine("[UserService] Database copy/check completed.");
+
+                System.Console.WriteLine("[UserService] Opening SQLite connection...");
+                _database = new SQLiteAsyncConnection(_dbPath);
+                System.Console.WriteLine("[UserService] SQLiteAsyncConnection created.");
+
+                System.Console.WriteLine("[UserService] Creating tables (Async)...");
+                await _database.CreateTableAsync<User>();
+                System.Console.WriteLine("[UserService] Table 'User' verified.");
+                await _database.CreateTableAsync<Character>();
+                System.Console.WriteLine("[UserService] Table 'Character' verified.");
+                await _database.CreateTableAsync<Level>();
+                await _database.CreateTableAsync<Item>();
+                await _database.CreateTableAsync<Skill>();
+                await _database.CreateTableAsync<Enemy>();
+                await _database.CreateTableAsync<StatusEffect>();
+                System.Console.WriteLine("[UserService] All tables verified/created successfully.");
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine($"[UserService] ERROR during initialization: {ex.Message}");
+                System.Console.WriteLine(ex.StackTrace);
+                throw;
+            }
         }
 
         public async Task<bool> CreateUserAsync(User user)
