@@ -16,52 +16,78 @@ public partial class CharactersScene : Control
 
     public override void _Ready()
     {
-        var global = GetNode<Global>("/root/Global");
-        _navigation = global.Services!.GetRequiredService<INavigationService>();
-        _characterService = global.Services!.GetRequiredService<ICharacterService>();
-        _session = global.Services!.GetRequiredService<ISessionService>();
+        GD.Print("[CharactersScene] _Ready started.");
+        try
+        {
+            var global = GetNode<Global>("/root/Global");
+            _navigation = global.Services!.GetRequiredService<INavigationService>();
+            _characterService = global.Services!.GetRequiredService<ICharacterService>();
+            _session = global.Services!.GetRequiredService<ISessionService>();
 
-        _characterList = GetNode<VBoxContainer>("VBoxContainer/ScrollContainer/CharacterList");
-        GetNode<Button>("VBoxContainer/NewButton").Pressed += OnNewPressed;
-        GetNode<Button>("VBoxContainer/BackButton").Pressed += OnBackPressed;
+            _characterList = GetNode<VBoxContainer>("VBoxContainer/ScrollContainer/CharacterList");
+            GetNode<Button>("VBoxContainer/NewButton").Pressed += OnNewPressed;
+            GetNode<Button>("VBoxContainer/BackButton").Pressed += OnBackPressed;
 
-        LoadCharacters();
+            LoadCharacters();
+        }
+        catch (System.Exception ex)
+        {
+            GD.PrintErr($"[CharactersScene] Error in _Ready: {ex.Message}");
+        }
     }
 
     private async void LoadCharacters()
     {
-        if (_session.CurrentUser == null) return;
-
-        var characters = await _characterService.GetCharactersForUserAsync(_session.CurrentUser.Id);
-        foreach (var character in characters)
+        GD.Print("[CharactersScene] LoadCharacters started.");
+        if (_session.CurrentUser == null)
         {
-            var hbox = new HBoxContainer();
-            
-            var tex = ImageUtils.ByteArrayToTexture(character.Thumbnail);
-            if (tex != null)
-            {
-                var rect = new TextureRect
-                {
-                    Texture = tex,
-                    CustomMinimumSize = new Vector2(50, 50),
-                    ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
-                    StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
-                };
-                hbox.AddChild(rect);
-            }
+            GD.Print("[CharactersScene] CurrentUser is null.");
+            return;
+        }
 
-            var btn = new Button
+        try
+        {
+            var characters = await _characterService.GetCharactersForUserAsync(_session.CurrentUser.Id);
+            GD.Print($"[CharactersScene] Loaded {characters?.Count ?? 0} characters.");
+
+            if (characters != null)
             {
-                Text = $"{character.Name} (Level {character.Level})",
-                CustomMinimumSize = new Vector2(0, 50),
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
-            };
-            btn.Pressed += () => OnCharacterSelected(character);
-            hbox.AddChild(btn);
-            
-            _characterList.AddChild(hbox);
+                foreach (var character in characters)
+                {
+                    var hbox = new HBoxContainer();
+
+                    var tex = ImageUtils.ByteArrayToTexture(character.Thumbnail);
+                    if (tex != null)
+                    {
+                        var rect = new TextureRect
+                        {
+                            Texture = tex,
+                            CustomMinimumSize = new Vector2(50, 50),
+                            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                            StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
+                        };
+                        hbox.AddChild(rect);
+                    }
+
+                    var btn = new Button
+                    {
+                        Text = $"{character.Name} (Level {character.Level})",
+                        CustomMinimumSize = new Vector2(0, 50),
+                        SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+                    };
+                    btn.Pressed += () => OnCharacterSelected(character);
+                    hbox.AddChild(btn);
+
+                    _characterList.AddChild(hbox);
+                }
+            }
+        }
+        catch (System.Exception ex)
+        {
+            GD.PrintErr($"[CharactersScene] Error loading characters: {ex.Message}");
         }
     }
+
 
     private void OnCharacterSelected(Character character)
     {

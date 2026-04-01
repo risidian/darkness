@@ -1,14 +1,13 @@
 res://scenes/AlliesScene.tscn::e723114c63d02e1401cf9ac73ce6023f::1774910445::res://.godot/exported/133200997/export-86e7273c3baae672e959533c32acd3a5-AlliesScene.scn
 res://scenes/BattleScene.tscn::a5d8d8756b3821862ef8c3666a4e25f6::1774999228::res://.godot/exported/133200997/export-b5f03f2d917d86b69d0a4e5a820f6fda-BattleScene.scn
-res://scenes/CharacterGenScene.tscn::c3377a143442caee866d9530084e2269::1774923391::res://.godot/exported/133200997/export-99d508747a13fe0b75dc40a90b99f2a8-CharacterGenScene.scn
+res://scenes/CharacterGenScene.tscn::a020c9e6f56e79d8a8cdb776a272b9df::1775000858::res://.godot/exported/133200997/export-99d508747a13fe0b75dc40a90b99f2a8-CharacterGenScene.scn
 res://scenes/CharactersScene.tscn::7b636dcc30b6976dc8e9e4e021ab558a::1774912369::res://.godot/exported/133200997/export-6971b36f320672923de2d267ea29cb01-CharactersScene.scn
-res://scenes/CreateUserScene.tscn::f0bcdeb64302f35c2589f3eea3a9b0f8::1774882802::res://.godot/exported/133200997/export-d7832594942965b9be3756e7a8950e2b-CreateUserScene.scn
+res://scenes/CreateUserScene.tscn::f03ed110f29ff713e5f1a9e18a71e644::1775043812::res://.godot/exported/133200997/export-d7832594942965b9be3756e7a8950e2b-CreateUserScene.scn
 res://scenes/DeathmatchScene.tscn::6db8ddea3ec42c0b8ba18f4c7eb891b1::1774885443::res://.godot/exported/133200997/export-d23d00611b25f93022a377893e45fe4f-DeathmatchScene.scn
 res://scenes/ForgeScene.tscn::102fec76dd036fa2a5ad6912fbae3e53::1774884711::res://.godot/exported/133200997/export-3e1b3df1e1aac682366b027d7dbb8d58-ForgeScene.scn
 res://scenes/InventoryScene.tscn::63a7279e7fe9857c254bac0229b5e3d1::1774999264::res://.godot/exported/133200997/export-8a74330932cdfb6a0856c17a6b368706-InventoryScene.scn
 res://scenes/LoadUserScene.tscn::aa174bd96d1bbf3cba65f3512178ed0b::1774912197::res://.godot/exported/133200997/export-a1a3ddf20aafebedb66443387b29939e-LoadUserScene.scn
 res://scenes/MainMenuScene.tscn::a7965acb415defaee052a521e1480159::1774920539::res://.godot/exported/133200997/export-ee0d2cf94e351b5dde1ad471b8e74ea3-MainMenuScene.scn
-res://scenes/MainScene.tscn::4394a418fd66ed9864bbb69fce7b6960::1774920547::res://.godot/exported/133200997/export-f42045b8d26c557411d54b08a027ee0f-MainScene.scn
 res://scenes/PauseMenu.tscn::1331e7b828d4edde7db6044d3d8a33aa::1774999129::res://.godot/exported/133200997/export-322493d365676aa8c0336579f6935b26-PauseMenu.scn
 res://scenes/SettingsScene.tscn::0d2dc60b31d0b0e5b1bcc9c149d96f92::1774910393::res://.godot/exported/133200997/export-18f0db4684828660a43e0a35872c103f-SettingsScene.scn
 res://scenes/SplashScene.tscn::5e8c923c2bb456db3a6b11e895725600::1774914584::res://.godot/exported/133200997/export-e6ef747c582c8593690e178fa4b89526-SplashScene.scn

@@ -51,7 +51,7 @@ public class GodotNavigationService : INavigationService
 
     public Task GoBackAsync()
     {
-        // For now, go back to main menu
-        return NavigateToAsync("MainPage");
+        // Return to Hub
+        return NavigateToAsync("MainMenuPage");
     }
 }

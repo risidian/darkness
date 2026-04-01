@@ -22,6 +22,12 @@ namespace Darkness.Core.Data
         public async Task CopyDatabaseIfNotExistsAsync(string filename)
         {
             string targetPath = GetLocalFilePath(filename);
+            string directory = Path.GetDirectoryName(targetPath);
+
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
 
             if (!File.Exists(targetPath))
             {
@@ -34,11 +40,11 @@ namespace Darkness.Core.Data
                 catch (FileNotFoundException)
                 {
                     // If the seed database is not in the app package, we just skip copying.
-                    // The database will be created by SQLite when it's first accessed.
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Other potential exceptions (e.g. platform specific ones)
+                    // Log error to console if possible
+                    System.Diagnostics.Debug.WriteLine($"DB COPY ERROR: {ex.Message}");
                 }
             }
         }

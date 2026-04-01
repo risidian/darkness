@@ -1,2 +1,2 @@
-﻿26956
-C:/Users/Mayce/Downloads/Godot_v4.6.1-stable_mono_win64/Godot_v4.6.1-stable_mono_win64.exe
+﻿65297
+C:/Users/Mayce/Documents/GitHub/Godot_v4.6.1-stable_mono_win64/Godot.exe

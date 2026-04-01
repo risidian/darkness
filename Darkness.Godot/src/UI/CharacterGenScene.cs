@@ -25,6 +25,9 @@ public partial class CharacterGenScene : Control
 	private OptionButton _hairColorOption;
 	private OptionButton _faceOption;
 	private OptionButton _eyesOption;
+	private OptionButton _legsOption;
+	private OptionButton _feetOption;
+	private OptionButton _armsOption;
 	private OptionButton _armorOption;
 	private OptionButton _weaponOption;
 
@@ -50,6 +53,9 @@ public partial class CharacterGenScene : Control
 		_hairColorOption = GetNode<OptionButton>(container + "HairColorOption");
 		_faceOption = GetNode<OptionButton>(container + "FaceOption");
 		_eyesOption = GetNode<OptionButton>(container + "EyesOption");
+		_legsOption = GetNode<OptionButton>(container + "LegsOption");
+		_feetOption = GetNode<OptionButton>(container + "FeetOption");
+		_armsOption = GetNode<OptionButton>(container + "ArmsOption");
 		_armorOption = GetNode<OptionButton>(container + "ArmorOption");
 		_weaponOption = GetNode<OptionButton>(container + "WeaponOption");
 
@@ -61,6 +67,9 @@ public partial class CharacterGenScene : Control
 		_hairColorOption.ItemSelected += (_) => UpdatePreview();
 		_faceOption.ItemSelected += (_) => UpdatePreview();
 		_eyesOption.ItemSelected += (_) => UpdatePreview();
+		_legsOption.ItemSelected += (_) => UpdatePreview();
+		_feetOption.ItemSelected += (_) => UpdatePreview();
+		_armsOption.ItemSelected += (_) => UpdatePreview();
 		_armorOption.ItemSelected += (_) => UpdatePreview();
 		_weaponOption.ItemSelected += (_) => UpdatePreview();
 
@@ -78,6 +87,9 @@ public partial class CharacterGenScene : Control
 		Populate(_hairColorOption, _catalog.HairColors);
 		Populate(_faceOption, _catalog.FaceTypes);
 		Populate(_eyesOption, _catalog.EyeTypes);
+		Populate(_legsOption, _catalog.LegsTypes);
+		Populate(_feetOption, _catalog.FeetTypes);
+		Populate(_armsOption, _catalog.ArmsTypes);
 		Populate(_armorOption, _catalog.ArmorTypes);
 		Populate(_weaponOption, _catalog.WeaponTypes);
 	}
@@ -101,6 +113,9 @@ public partial class CharacterGenScene : Control
 		
 		SelectByText(_armorOption, defaults.ArmorType);
 		SelectByText(_weaponOption, defaults.WeaponType);
+		SelectByText(_legsOption, defaults.Legs);
+		SelectByText(_feetOption, defaults.Feet);
+		SelectByText(_armsOption, defaults.Arms);
 		
 		UpdatePreview();
 	}
@@ -126,6 +141,9 @@ public partial class CharacterGenScene : Control
 			Eyes = _eyesOption.GetItemText(_eyesOption.Selected),
 			HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
 			HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected),
+			Legs = _legsOption.GetItemText(_legsOption.Selected),
+			Feet = _feetOption.GetItemText(_feetOption.Selected),
+			Arms = _armsOption.GetItemText(_armsOption.Selected),
 			ArmorType = _armorOption.GetItemText(_armorOption.Selected),
 			WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
 			Head = "Human Male"
@@ -173,6 +191,9 @@ public partial class CharacterGenScene : Control
 			Eyes = _eyesOption.GetItemText(_eyesOption.Selected),
 			HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
 			HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected),
+			Legs = _legsOption.GetItemText(_legsOption.Selected),
+			Feet = _feetOption.GetItemText(_feetOption.Selected),
+			Arms = _armsOption.GetItemText(_armsOption.Selected),
 			ArmorType = _armorOption.GetItemText(_armorOption.Selected),
 			WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
 			Thumbnail = _previewBytes,

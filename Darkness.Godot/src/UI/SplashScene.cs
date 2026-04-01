@@ -10,6 +10,7 @@ public partial class SplashScene : Control
 {
 	private INavigationService _navigation;
 	private ISessionService _session;
+	private IDialogService _dialog;
 	private bool _isInitialized;
 
 	public override void _Ready()
@@ -17,11 +18,12 @@ public partial class SplashScene : Control
 		var global = GetNode<Global>("/root/Global");
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
 		_session = global.Services!.GetRequiredService<ISessionService>();
+		_dialog = global.Services!.GetRequiredService<IDialogService>();
 	}
 
 	public override void _Input(InputEvent @event)
 	{
-		if (!_isInitialized && (@event is InputEventKey || @event is InputEventMouseButton))
+		if (!_isInitialized && (@event is InputEventKey || @event is InputEventMouseButton || @event is InputEventScreenTouch))
 		{
 			_isInitialized = true;
 			StartGame();
@@ -31,18 +33,32 @@ public partial class SplashScene : Control
 	private async void StartGame()
 	{
 		GetNode<Label>("VBoxContainer/Subtitle").Hide();
-		GetNode<Label>("VBoxContainer/LoadingLabel").Show();
+		var loading = GetNode<Label>("VBoxContainer/LoadingLabel");
+		loading.Show();
 
-		// Ensure DI and session are ready
-		await _session.InitializeAsync();
-
-		if (_session.CurrentUser == null)
+		try 
 		{
-			await _navigation.NavigateToAsync("LoadUserPage");
+			// Ensure DI and session are ready
+			GD.Print("[Splash] Initializing Session/Database...");
+			await _session.InitializeAsync();
+			GD.Print("[Splash] Initialization Successful.");
+
+			if (_session.CurrentUser == null)
+			{
+				await _navigation.NavigateToAsync("LoadUserPage");
+			}
+			else
+			{
+				await _navigation.NavigateToAsync("MainMenuPage");
+			}
 		}
-		else
+		catch (System.Exception ex)
 		{
-			await _navigation.NavigateToAsync("MainMenuPage");
+			GD.PrintErr($"[Splash] CRITICAL INITIALIZATION FAILURE: {ex.Message}");
+			await _dialog.DisplayAlertAsync("System Error", "Failed to initialize game database. Please ensure the app has storage permissions.", "OK");
+			_isInitialized = false;
+			GetNode<Label>("VBoxContainer/Subtitle").Show();
+			loading.Hide();
 		}
 	}
 }

@@ -14,13 +14,22 @@ public class GodotFileSystemService : IFileSystemService
         // Godot assets are prefixed with "res://"
         string path = filename.StartsWith("res://") ? filename : $"res://{filename}";
         
-        using var file = global::Godot.FileAccess.Open(path, global::Godot.FileAccess.ModeFlags.Read);
-        if (file == null)
+        GD.Print($"[FileSystem] Attempting to open asset: {path}");
+
+        if (!global::Godot.FileAccess.FileExists(path))
         {
+            GD.PrintErr($"[FileSystem] Asset NOT FOUND: {path}");
             throw new FileNotFoundException($"Could not find asset: {path}");
         }
 
-        var bytes = file.GetBuffer((long)file.GetLength());
+        byte[] bytes = global::Godot.FileAccess.GetFileAsBytes(path);
+        if (bytes == null || bytes.Length == 0)
+        {
+            GD.PrintErr($"[FileSystem] FAILED TO READ bytes from asset: {path}");
+            throw new IOException($"Failed to read bytes from asset: {path}");
+        }
+
+        GD.Print($"[FileSystem] Successfully read {bytes.Length} bytes from {path}");
         return Task.FromResult<Stream>(new MemoryStream(bytes));
     }
 }
