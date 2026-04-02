@@ -1,10 +1,7 @@
-using SQLite;
-
 namespace Darkness.Core.Models
 {
     public class StatusEffect
     {
-        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         
         public string Name { get; set; } = string.Empty;

@@ -22,7 +22,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Darkness.Core\Darkness.Core.csproj" />
-    <ProjectReference Include="..\Darkness.Game\Darkness.Game.csproj" />
+  </ItemGroup>
+
+  <!-- Exclude tests that depend on Darkness.Game (MonoGame project removed during Godot migration) -->
+  <ItemGroup>
+    <Compile Remove="Input\InputManagerTests.cs" />
+    <Compile Remove="Scenes\BattleSceneTests.cs" />
+    <Compile Remove="Scenes\SceneDisposalTests.cs" />
   </ItemGroup>
 
 </Project>

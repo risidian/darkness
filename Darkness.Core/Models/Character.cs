@@ -1,115 +1,46 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using SQLite;
-
 namespace Darkness.Core.Models
 {
-    public partial class Character : ObservableObject
+    public class Character
     {
-        [property: PrimaryKey, AutoIncrement]
-        [ObservableProperty]
-        private int _id;
-        
-        [property: Indexed]
-        [ObservableProperty]
-        private int _userId;
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Class { get; set; } = string.Empty;
+        public string HairColor { get; set; } = string.Empty;
+        public string HairStyle { get; set; } = string.Empty;
+        public string SkinColor { get; set; } = string.Empty;
+        public string Face { get; set; } = "Default";
+        public string Eyes { get; set; } = "Default";
+        public string Head { get; set; } = "Human Male";
+        public string Feet { get; set; } = "Boots (Basic)";
+        public string Arms { get; set; } = "None";
+        public string Legs { get; set; } = "Slacks";
+        public string ArmorType { get; set; } = "Leather";
+        public string WeaponType { get; set; } = "Arming Sword (Steel)";
 
-        [ObservableProperty]
-        private string _name = string.Empty;
-
-        [ObservableProperty]
-        private string _class = string.Empty;
-
-        [ObservableProperty]
-        private string _hairColor = string.Empty;
-
-        [ObservableProperty]
-        private string _hairStyle = string.Empty;
-
-        [ObservableProperty]
-        private string _skinColor = string.Empty;
-
-        [ObservableProperty]
-        private string _face = "Default";
-
-        [ObservableProperty]
-        private string _eyes = "Default";
-
-        [ObservableProperty]
-        private string _head = "Human Male";
-
-        [ObservableProperty]
-        private string _feet = "Boots (Basic)";
-
-        [ObservableProperty]
-        private string _arms = "None";
-
-        [ObservableProperty]
-        private string _legs = "Slacks";
-
-        [ObservableProperty]
-        private string _armorType = "Leather";
-
-        [ObservableProperty]
-        private string _weaponType = "Arming Sword (Steel)";
-        
         // Base Stats
-        [ObservableProperty]
-        private int _strength;
+        public int Strength { get; set; }
+        public int Dexterity { get; set; }
+        public int Constitution { get; set; }
+        public int Intelligence { get; set; }
+        public int Wisdom { get; set; }
+        public int Charisma { get; set; }
 
-        [ObservableProperty]
-        private int _dexterity;
-
-        [ObservableProperty]
-        private int _constitution;
-
-        [ObservableProperty]
-        private int _intelligence;
-
-        [ObservableProperty]
-        private int _wisdom;
-
-        [ObservableProperty]
-        private int _charisma;
-        
         // Derived Stats
-        [ObservableProperty]
-        private int _currentHP;
+        public int CurrentHP { get; set; }
+        public int MaxHP { get; set; }
+        public int Stamina { get; set; }
+        public int Mana { get; set; }
+        public int Speed { get; set; }
+        public int Accuracy { get; set; }
+        public int Evasion { get; set; }
+        public int Defense { get; set; }
+        public int MagicDefense { get; set; }
 
-        [ObservableProperty]
-        private int _maxHP;
-
-        [ObservableProperty]
-        private int _stamina;
-
-        [ObservableProperty]
-        private int _mana;
-        
-        [ObservableProperty]
-        private int _speed;
-
-        [ObservableProperty]
-        private int _accuracy;
-
-        [ObservableProperty]
-        private int _evasion;
-
-        [ObservableProperty]
-        private int _defense;
-
-        [ObservableProperty]
-        private int _magicDefense;
-
-        [ObservableProperty]
-        private int _level;
-
-        [ObservableProperty]
-        private int _experience;
-
-        [ObservableProperty]
-        private int _attributePoints = 5;
-
-        [ObservableProperty]
-        private byte[]? _thumbnail;
+        public int Level { get; set; }
+        public int Experience { get; set; }
+        public int AttributePoints { get; set; } = 5;
+        public byte[]? Thumbnail { get; set; }
 
         public CharacterSnapshot ToSnapshot() => new CharacterSnapshot(
             Name, Class, CurrentHP, MaxHP, Level, Thumbnail, HairColor, HairStyle, SkinColor

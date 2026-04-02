@@ -1,60 +1,54 @@
 using Darkness.Core.Data;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
-using SQLite;
+using LiteDB;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Darkness.Core.Services
 {
     public class CharacterService : ICharacterService
     {
-        private SQLiteAsyncConnection? _database;
-        private readonly LocalDatabaseService _dbService;
         private readonly string _dbPath;
 
         public CharacterService(LocalDatabaseService dbService)
         {
-            _dbService = dbService;
-            _dbPath = _dbService.GetLocalFilePath("Darkness.db3");
+            _dbPath = dbService.GetLocalFilePath("Darkness.db");
         }
 
-        private async Task InitializeAsync()
-        {
-            if (_database != null)
-                return;
+        private LiteDatabase OpenDb() => new LiteDatabase(_dbPath);
 
-            _database = new SQLiteAsyncConnection(_dbPath);
-            await _database.CreateTableAsync<Character>();
-        }
-
-        public async Task<bool> SaveCharacterAsync(Character character)
+        public Task<bool> SaveCharacterAsync(Character character)
         {
-            await InitializeAsync();
-            if (character.Id != 0)
+            return Task.Run(() =>
             {
-                int rowsUpdated = await _database!.UpdateAsync(character);
-                return rowsUpdated > 0;
-            }
-            else
+                using var db = OpenDb();
+                var col = db.GetCollection<Character>("characters");
+                col.EnsureIndex(c => c.UserId);
+                return col.Upsert(character);
+            });
+        }
+
+        public Task<Character?> GetCharacterByIdAsync(int characterId)
+        {
+            return Task.Run(() =>
             {
-                int rowsAdded = await _database!.InsertAsync(character);
-                return rowsAdded > 0;
-            }
+                using var db = OpenDb();
+                var col = db.GetCollection<Character>("characters");
+                return col.FindById(characterId);
+            });
         }
 
-        public async Task<Character?> GetCharacterByIdAsync(int characterId)
+        public Task<List<Character>> GetCharactersForUserAsync(int userId)
         {
-            await InitializeAsync();
-            return await _database!.Table<Character>()
-                .Where(c => c.Id == characterId)
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<List<Character>> GetCharactersForUserAsync(int userId)
-        {
-            await InitializeAsync();
-            return await _database.Table<Character>().Where(c => c.UserId == userId).ToListAsync();
+            return Task.Run(() =>
+            {
+                using var db = OpenDb();
+                var col = db.GetCollection<Character>("characters");
+                col.EnsureIndex(c => c.UserId);
+                return col.Find(c => c.UserId == userId).ToList();
+            });
         }
     }
 }

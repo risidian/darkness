@@ -16,39 +16,5 @@
     <ProjectReference Include="..\Darkness.Core\Darkness.Core.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.10" />
-    <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.1.10" />
   </ItemGroup>
-
-  <!-- Replace Linux-built libe_sqlite3.so with Android (Bionic) build from android/libs/.
-       The NuGet package only ships Linux/Win/Mac natives; .NET picks the Linux .so as the
-       closest match for android RIDs, but it links against glibc which doesn't exist on Android.
-       We copy to BOTH the .NET output dir AND the Gradle jniLibs source dir (libs/debug/) since
-       Godot's export pipeline reads from the latter when building the APK. -->
-  <Target Name="FixAndroidSqliteNative" AfterTargets="Build;Publish"
-          Condition="$(RuntimeIdentifier.StartsWith('android'))">
-    <PropertyGroup>
-      <_SqliteArch Condition="'$(RuntimeIdentifier)' == 'android-arm64'">arm64-v8a</_SqliteArch>
-      <_SqliteArch Condition="'$(RuntimeIdentifier)' == 'android-x64'">x86_64</_SqliteArch>
-      <_SqliteArch Condition="'$(RuntimeIdentifier)' == 'android-arm'">armeabi-v7a</_SqliteArch>
-      <_SqliteArch Condition="'$(RuntimeIdentifier)' == 'android-x86'">x86</_SqliteArch>
-    </PropertyGroup>
-    <Message Importance="high"
-             Text="[FixAndroidSqliteNative] Replacing Linux libe_sqlite3.so with Android build ($(_SqliteArch))"
-             Condition="'$(_SqliteArch)' != ''" />
-    <!-- Replace in .NET build output -->
-    <Copy SourceFiles="$(ProjectDir)android/libs/$(_SqliteArch)/libe_sqlite3.so"
-          DestinationFiles="$(OutputPath)/libe_sqlite3.so"
-          OverwriteReadOnlyFiles="true"
-          Condition="'$(_SqliteArch)' != '' AND Exists('$(ProjectDir)android/libs/$(_SqliteArch)/libe_sqlite3.so')" />
-    <!-- Replace in Gradle jniLibs source (debug and release) -->
-    <Copy SourceFiles="$(ProjectDir)android/libs/$(_SqliteArch)/libe_sqlite3.so"
-          DestinationFiles="$(ProjectDir)android/build/libs/debug/$(_SqliteArch)/libe_sqlite3.so"
-          OverwriteReadOnlyFiles="true"
-          Condition="'$(_SqliteArch)' != '' AND Exists('$(ProjectDir)android/libs/$(_SqliteArch)/libe_sqlite3.so') AND Exists('$(ProjectDir)android/build/libs/debug/$(_SqliteArch)/')" />
-    <Copy SourceFiles="$(ProjectDir)android/libs/$(_SqliteArch)/libe_sqlite3.so"
-          DestinationFiles="$(ProjectDir)android/build/libs/release/$(_SqliteArch)/libe_sqlite3.so"
-          OverwriteReadOnlyFiles="true"
-          Condition="'$(_SqliteArch)' != '' AND Exists('$(ProjectDir)android/libs/$(_SqliteArch)/libe_sqlite3.so') AND Exists('$(ProjectDir)android/build/libs/release/$(_SqliteArch)/')" />
-  </Target>
 </Project>
