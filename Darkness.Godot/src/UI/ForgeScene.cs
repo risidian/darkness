@@ -29,6 +29,7 @@ public partial class ForgeScene : Control
 
 	public override async void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_craftingService = global.Services!.GetRequiredService<ICraftingService>();
 		_session = global.Services!.GetRequiredService<ISessionService>();

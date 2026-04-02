@@ -16,6 +16,7 @@ public partial class LoadUserScene : Control
 
     public override void _Ready()
     {
+        if (!IsInsideTree()) return;
         var global = GetNode<Global>("/root/Global");
         _navigation = global.Services.GetRequiredService<INavigationService>();
         _userService = global.Services.GetRequiredService<IUserService>();
@@ -36,8 +37,9 @@ public partial class LoadUserScene : Control
             var btn = new Button
             {
                 Text = user.Username,
-                CustomMinimumSize = new Vector2(0, 50)
+                CustomMinimumSize = new Vector2(0, 80)
             };
+            btn.AddThemeFontSizeOverride("font_size", 28);
             btn.Pressed += () => OnUserSelected(user);
             _userList.AddChild(btn);
         }

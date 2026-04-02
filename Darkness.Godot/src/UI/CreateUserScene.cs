@@ -15,6 +15,7 @@ public partial class CreateUserScene : Control
 
     public override void _Ready()
     {
+        if (!IsInsideTree()) return;
         GD.Print("[CreateUserScene] _Ready started.");
         try
         {

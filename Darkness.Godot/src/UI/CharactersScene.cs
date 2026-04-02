@@ -16,6 +16,7 @@ public partial class CharactersScene : Control
 
     public override void _Ready()
     {
+        if (!IsInsideTree()) return;
         GD.Print("[CharactersScene] _Ready started.");
         try
         {
@@ -55,6 +56,8 @@ public partial class CharactersScene : Control
                 foreach (var character in characters)
                 {
                     var hbox = new HBoxContainer();
+                    hbox.CustomMinimumSize = new Vector2(0, 100);
+                    hbox.ThemeOverrideConstantsAdd("separation", 20);
 
                     var tex = ImageUtils.ByteArrayToTexture(character.Thumbnail);
                     if (tex != null)
@@ -62,7 +65,7 @@ public partial class CharactersScene : Control
                         var rect = new TextureRect
                         {
                             Texture = tex,
-                            CustomMinimumSize = new Vector2(50, 50),
+                            CustomMinimumSize = new Vector2(80, 80),
                             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
                             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered
                         };
@@ -72,9 +75,10 @@ public partial class CharactersScene : Control
                     var btn = new Button
                     {
                         Text = $"{character.Name} (Level {character.Level})",
-                        CustomMinimumSize = new Vector2(0, 50),
+                        CustomMinimumSize = new Vector2(0, 80),
                         SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
                     };
+                    btn.AddThemeFontSizeOverride("font_size", 28);
                     btn.Pressed += () => OnCharacterSelected(character);
                     hbox.AddChild(btn);
 

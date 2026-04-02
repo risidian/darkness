@@ -81,9 +81,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 50.0
-offset_top = -120.0
-offset_right = -200.0
-offset_bottom = -50.0
+offset_top = -140.0
+offset_right = -50.0
+offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 20
@@ -92,31 +92,37 @@ alignment = 1
 [node name="Attack1" type="Button" parent="ActionsArea"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
 text = "ATTACK 1"
 
 [node name="Attack2" type="Button" parent="ActionsArea"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
 text = "ATTACK 2"
 
 [node name="Attack3" type="Button" parent="ActionsArea"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
 text = "ATTACK 3"
 
-[node name="MenuButton" type="Button" parent="."]
+[node name="TopRightMenu" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -180.0
-offset_top = -120.0
-offset_right = -50.0
-offset_bottom = -50.0
+offset_left = -220.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 100.0
 grow_horizontal = 0
-grow_vertical = 0
+alignment = 2
+
+[node name="MenuButton" type="Button" parent="TopRightMenu"]
+custom_minimum_size = Vector2(150, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "MENU"
 
 [node name="PauseMenu" parent="." instance=ExtResource("2_pause")]

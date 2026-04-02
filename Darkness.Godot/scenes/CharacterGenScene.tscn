@@ -75,90 +75,124 @@ text = "CHARACTER CREATOR"
 horizontal_alignment = 1
 
 [node name="NameEdit" type="LineEdit" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 placeholder_text = "CHARACTER NAME"
 
 [node name="ClassOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="SkinLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Skin Color"
 
 [node name="SkinOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="HairStyleLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Hair Style"
 
 [node name="HairStyleOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="HairColorLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Hair Color"
 
 [node name="HairColorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="FaceLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Face Type"
 
 [node name="FaceOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="EyesLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Eyes"
 
 [node name="EyesOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="LegsLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Legs"
 
 [node name="LegsOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="FeetLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Feet"
 
 [node name="FeetOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="ArmsLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Arms"
 
 [node name="ArmsOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="ArmorLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Armor"
 
 [node name="ArmorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="WeaponLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Weapon"
 
 [node name="WeaponOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-layout_mode = 2
-
-[node name="CreateButton" type="Button" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="CreateButton" type="Button" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "FINISH"
 
 [node name="BackButton" type="Button" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "BACK"

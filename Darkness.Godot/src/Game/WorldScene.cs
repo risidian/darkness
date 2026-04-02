@@ -33,9 +33,29 @@ public partial class WorldScene : Node2D, IInitializable
 	};
 	private int _currentDialogueIndex = -1;
 	private string _lastDirection = "down";
+	private Vector2? _targetPosition = null;
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
+	}
+
+	public override void _Input(InputEvent @event)
+	{
+		bool isClickOrTouch = (@event is InputEventScreenTouch touch && touch.Pressed) || 
+		                      (@event is InputEventMouseButton mouse && mouse.Pressed && mouse.ButtonIndex == MouseButton.Left);
+
+		if (isClickOrTouch)
+		{
+			if (_currentDialogueIndex >= 0)
+			{
+				NextDialogue();
+				GetViewport().SetInputAsHandled();
+			}
+			else
+			{
+				_targetPosition = GetGlobalMousePosition();
+			}
+		}
 	}
 
 	public override async void _Ready()
@@ -67,7 +87,7 @@ public partial class WorldScene : Node2D, IInitializable
 		GetNode<Button>("CanvasLayer/TopMenu/StudyButton").Pressed += () => _navigation.NavigateToAsync("StudyPage");
 		GetNode<Button>("CanvasLayer/TopMenu/AlliesButton").Pressed += () => _navigation.NavigateToAsync("AlliesPage");
 		GetNode<Button>("CanvasLayer/TopMenu/DeathmatchButton").Pressed += () => _navigation.NavigateToAsync("DeathmatchPage");
-		GetNode<Button>("CanvasLayer/TopMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
+		GetNode<Button>("CanvasLayer/TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
 
 		GetNode<Area2D>("NPC").BodyEntered += (body) => {
 			if (body == _player) StartDialogue();
@@ -100,6 +120,7 @@ public partial class WorldScene : Node2D, IInitializable
 
 	public override void _Process(double delta)
 	{
+		if (!IsInsideTree()) return;
 		if (Input.IsActionJustPressed("ui_cancel"))
 		{
 			_pauseMenu.Toggle();
@@ -116,10 +137,29 @@ public partial class WorldScene : Node2D, IInitializable
 		}
 
 		Vector2 velocity = Vector2.Zero;
-		if (Input.IsActionPressed("ui_left")) velocity.X -= 1;
-		if (Input.IsActionPressed("ui_right")) velocity.X += 1;
-		if (Input.IsActionPressed("ui_up")) velocity.Y -= 1;
-		if (Input.IsActionPressed("ui_down")) velocity.Y += 1;
+		
+		bool keyboardMoving = false;
+		if (Input.IsActionPressed("ui_left")) { velocity.X -= 1; keyboardMoving = true; }
+		if (Input.IsActionPressed("ui_right")) { velocity.X += 1; keyboardMoving = true; }
+		if (Input.IsActionPressed("ui_up")) { velocity.Y -= 1; keyboardMoving = true; }
+		if (Input.IsActionPressed("ui_down")) { velocity.Y += 1; keyboardMoving = true; }
+
+		if (keyboardMoving)
+		{
+			_targetPosition = null;
+		}
+		else if (_targetPosition.HasValue)
+		{
+			Vector2 toTarget = _targetPosition.Value - _player.GlobalPosition;
+			if (toTarget.Length() < 5)
+			{
+				_targetPosition = null;
+			}
+			else
+			{
+				velocity = toTarget.Normalized();
+			}
+		}
 
 		if (velocity != Vector2.Zero)
 		{
@@ -153,8 +193,17 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private void StartDialogue()
 	{
+		_targetPosition = null;
+		_player.Velocity = Vector2.Zero;
+		_playerSprite.Play("idle_" + _lastDirection);
+		
 		_currentDialogueIndex = 0;
 		_dialogueBox.Show();
+		
+		// Update prompt for mobile/touch
+		var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+		prompt.Text = "[TAP TO CONTINUE]";
+		
 		UpdateDialogueUI();
 	}
 

@@ -16,6 +16,7 @@ public partial class InventoryScene : Control
 
 	public override void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_session = global.Services!.GetRequiredService<ISessionService>();
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
@@ -40,9 +41,15 @@ public partial class InventoryScene : Control
 		foreach (var item in items)
 		{
 			var hbox = new HBoxContainer();
-			hbox.AddChild(new Label { Text = item, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			hbox.CustomMinimumSize = new Vector2(0, 80);
+			hbox.ThemeOverrideConstantsAdd("separation", 20);
+
+			var label = new Label { Text = item, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+			label.AddThemeFontSizeOverride("font_size", 24);
+			hbox.AddChild(label);
 			
-			var equipBtn = new Button { Text = "Use/Equip" };
+			var equipBtn = new Button { Text = "USE/EQUIP", CustomMinimumSize = new Vector2(180, 0) };
+			equipBtn.AddThemeFontSizeOverride("font_size", 20);
 			hbox.AddChild(equipBtn);
 			
 			_itemList.AddChild(hbox);

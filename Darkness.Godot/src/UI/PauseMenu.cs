@@ -11,6 +11,7 @@ public partial class PauseMenu : CanvasLayer
 
 	public override void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
 

@@ -35,6 +35,7 @@ public partial class CharacterGenScene : Control
 
 	public override void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		var sp = global.Services!;
 		_navigation = sp.GetRequiredService<INavigationService>();

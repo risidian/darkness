@@ -18,6 +18,7 @@ public partial class MainMenuScene : Control
 
 	public override async void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
 		_rewardService = global.Services!.GetRequiredService<IRewardService>();
@@ -42,7 +43,7 @@ public partial class MainMenuScene : Control
 		GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/StudyButton").Pressed += () => _navigation.NavigateToAsync("StudyPage");
 		GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/AlliesButton").Pressed += () => _navigation.NavigateToAsync("AlliesPage");
 		GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/SettingsButton").Pressed += () => _navigation.NavigateToAsync("SettingsPage");
-		GetNode<Button>("MarginContainer/VBoxContainer/HBoxContainer/LogoutButton").Pressed += OnLogoutPressed;
+		GetNode<Button>("TopRightMenu/LogoutButton").Pressed += OnLogoutPressed;
 
 		await RunStartupChecks();
 	}

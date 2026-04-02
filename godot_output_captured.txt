@@ -1,0 +1,904 @@
+WorkerThreadPool: 8 threads, 6 max low-priority.
+Godot Engine v4.6.1.stable.mono.official.14d19694e - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Unrecognized output string "misc2" in mapping:
+030000000d0f00000202000000000000,Horipad O Nintendo Switch 2 Controller,a:b1,b:b0,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,misc1:b13,misc2:b14,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b2,platform:Windows,
+Unrecognized output string "misc2" in mapping:
+030000000d0f00009601000000000000,Horipad Steam,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,misc2:b2,paddle1:b5,paddle2:b15,paddle3:b18,paddle4:b19,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b3,y:b4,platform:Windows,
+Unrecognized output string "misc2" in mapping:
+030000007e0500006920000000000000,Nintendo Switch 2 Pro Controller,a:b0,b:b1,back:b14,dpdown:b8,dpleft:b10,dpright:b9,dpup:b11,guide:b16,leftshoulder:b12,leftstick:b15,lefttrigger:b13,leftx:a0,lefty:a1~,misc1:b17,misc2:b20,paddle1:b18,paddle2:b19,rightshoulder:b4,rightstick:b7,righttrigger:b5,rightx:a2,righty:a3~,start:b6,x:b2,y:b3,platform:Windows,
+Using "default" pen tablet driver...
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+.NET: Initializing module...
+Found hostfxr: C:/Program Files/dotnet/host/fxr/10.0.5/hostfxr.dll
+.NET: hostfxr initialized
+.NET: GodotPlugins initialized
+CORE API HASH: 3470380980
+EDITOR API HASH: 1382129929
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: C:/Users/Mayce/AppData/Roaming/Godot/editor_settings-4.6.tres
+EditorSettings: Load OK!
+EditorTheme: Generating new theme for the config '3810048042'.
+EditorTheme: Generating new icons.
+EditorTheme: Generating new fonts.
+EditorTheme: Generating new styles.
+Found .NET Sdk version '10.0.201': C:\Program Files\dotnet\sdk\10.0.201
+Loading resource: C:/Users/Mayce/AppData/Local/Godot/editor_doc_cache-4.6.res
+Loaded system CA certificates
+Failed to bind socket. Error: 3.
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+Loading resource: res://src/Core/Global.cs
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mdotnet_publish_project[22m | Started Publishing .NET project... (1 steps)[39m[0m
+[   0% ] [90m[1mdotnet_publish_project[22m | Running dotnet publish[39m[0m
+Running:  "C:\Program Files\dotnet\dotnet.EXE" publish C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/Darkness.Godot.csproj -c ExportDebug -r android-x64 --self-contained true -v normal -l:GodotTools.BuildLogger.GodotBuildLogger,C:/Users/Mayce/Documents/GitHub/Godot_v4.6.1-stable_mono_win64/GodotSharp/Tools\GodotTools.BuildLogger.dll;C:/Users/Mayce/AppData/Roaming/Godot/mono/build_logs\c4f0a4e93a7f874d5b63ad2a47a15b91_ExportDebug -p:GodotTargetPlatform=android -o C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64
+[92m[ DONE ][39m [1mdotnet_publish_project[22m
+[0m
+[   0% ] [90m[1mdotnet_publish_project[22m | Started Publishing .NET project... (1 steps)[39m[0m
+[   0% ] [90m[1mdotnet_publish_project[22m | Running dotnet publish[39m[0m
+Running:  "C:\Program Files\dotnet\dotnet.EXE" publish C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/Darkness.Godot.csproj -c ExportDebug -r android-arm64 --self-contained true -v normal -l:GodotTools.BuildLogger.GodotBuildLogger,C:/Users/Mayce/Documents/GitHub/Godot_v4.6.1-stable_mono_win64/GodotSharp/Tools\GodotTools.BuildLogger.dll;C:/Users/Mayce/AppData/Roaming/Godot/mono/build_logs\c4f0a4e93a7f874d5b63ad2a47a15b91_ExportDebug -p:GodotTargetPlatform=android -o C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64
+[92m[ DONE ][39m [1mdotnet_publish_project[22m
+[0m
+[   0% ] [90m[1mexport[22m | Started Exporting for Android (105 steps)[39m[0m
+Exporting for Android...
+- debug build: true
+- export path: ../bin/Darkness.apk
+- export format: 0
+- sign build: true
+- gradle build enabled: true
+- apk expansion enabled: false
+- enabled abis: arm64-v8a,x86_64
+- export filter: 0
+- include filter: *.so
+- exclude filter: 
+Loading regular icon from res://icon.svg
+Loading resource: res://icon.svg
+Loading resource: res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex
+Loading adaptive foreground icon from res://icon.svg
+Loading resource: res://icon.svg
+Loading resource: res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex
+Loading adaptive background icon from res://icon.svg
+Loading resource: res://icon.svg
+Loading resource: res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex
+Loading adaptive monochrome icon from res://icon.svg
+Loading resource: res://icon.svg
+Loading resource: res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex
+0 param: --xr_mode_regular
+1 param: --xr-mode
+2 param: off
+3 param: --fullscreen
+4 param: --background_color
+5 param: #000000
+Starting gradle build...
+Checking build version...
+- build version: 4.6.1.stable.mono
+Java sdk path: C:/Program Files/Eclipse Adoptium/jdk-17.0.18.8-hotspot
+Android sdk path: C:\Program Files (x86)\Android\android-sdk\
+Creating strings resources for supported locales for project Darkness RPG
+Processing launcher icon for dimension 192 into res/mipmap-xxxhdpi-v4/icon.webp
+Processing launcher adaptive icon p_foreground for dimension 432 into res/mipmap-xxxhdpi-v4/icon_foreground.webp
+Processing launcher adaptive icon p_background for dimension 432 into res/mipmap-xxxhdpi-v4/icon_background.webp
+Processing launcher adaptive icon p_monochrome for dimension 432 into res/mipmap-xxxhdpi-v4/icon_monochrome.webp
+Processing launcher icon for dimension 144 into res/mipmap-xxhdpi-v4/icon.webp
+Processing launcher adaptive icon p_foreground for dimension 324 into res/mipmap-xxhdpi-v4/icon_foreground.webp
+Processing launcher adaptive icon p_background for dimension 324 into res/mipmap-xxhdpi-v4/icon_background.webp
+Processing launcher adaptive icon p_monochrome for dimension 324 into res/mipmap-xxhdpi-v4/icon_monochrome.webp
+Processing launcher icon for dimension 96 into res/mipmap-xhdpi-v4/icon.webp
+Processing launcher adaptive icon p_foreground for dimension 216 into res/mipmap-xhdpi-v4/icon_foreground.webp
+Processing launcher adaptive icon p_background for dimension 216 into res/mipmap-xhdpi-v4/icon_background.webp
+Processing launcher adaptive icon p_monochrome for dimension 216 into res/mipmap-xhdpi-v4/icon_monochrome.webp
+Processing launcher icon for dimension 72 into res/mipmap-hdpi-v4/icon.webp
+Processing launcher adaptive icon p_foreground for dimension 162 into res/mipmap-hdpi-v4/icon_foreground.webp
+Processing launcher adaptive icon p_background for dimension 162 into res/mipmap-hdpi-v4/icon_background.webp
+Processing launcher adaptive icon p_monochrome for dimension 162 into res/mipmap-hdpi-v4/icon_monochrome.webp
+Processing launcher icon for dimension 48 into res/mipmap-mdpi-v4/icon.webp
+Processing launcher adaptive icon p_foreground for dimension 108 into res/mipmap-mdpi-v4/icon_foreground.webp
+Processing launcher adaptive icon p_background for dimension 108 into res/mipmap-mdpi-v4/icon_background.webp
+Processing launcher adaptive icon p_monochrome for dimension 108 into res/mipmap-mdpi-v4/icon_monochrome.webp
+Processing launcher icon for dimension 192 into res/mipmap/icon.webp
+Processing launcher adaptive icon p_foreground for dimension 432 into res/mipmap/icon_foreground.webp
+Processing launcher adaptive icon p_background for dimension 432 into res/mipmap/icon_background.webp
+Processing launcher adaptive icon p_monochrome for dimension 432 into res/mipmap/icon_monochrome.webp
+Building temporary manifest...
+Storing manifest into res://android/build/src/debug/AndroidManifest.xml: 
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <supports-screens 
+        tools:node="replace"
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true" />
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application android:label="@string/godot_project_name_string"
+        android:allowBackup="false"
+        android:icon="@mipmap/icon"
+        android:isGame="true"
+        android:hasFragileUserData="false"
+        android:requestLegacyExternalStorage="false"
+        android:appCategory="game"
+        tools:replace="android:allowBackup,android:appCategory,android:isGame,android:hasFragileUserData,android:requestLegacyExternalStorage"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <meta-data tools:node="replace" android:name="org.godotengine.rendering.method" android:value="gl_compatibility" />
+        <meta-data tools:node="replace" android:name="org.godotengine.editor.version" android:value="4.6.1.stable.mono" />
+        <activity android:name=".GodotApp" tools:replace="android:screenOrientation,android:excludeFromRecents,android:resizeableActivity" tools:node="mergeOnlyAttributes" android:excludeFromRecents="false" android:screenOrientation="landscape" android:resizeableActivity="true">
+        </activity>
+        <activity-alias
+            tools:node="mergeOnlyAttributes"
+            android:name=".GodotAppLauncher"
+            android:targetActivity=".GodotApp"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+    </application>
+</manifest>
+
+Successfully modified res://android/build/res/values/themes.xml: 
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- GodotAppMainTheme is auto-generated during export. Manual changes will be overwritten.
+		 To add custom attributes, use the "gradle_build/custom_theme_attributes" Android export option. -->
+	<style name="GodotAppMainTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+		<item name="android:windowSwipeToDismiss">false</item>
+		<item name="android:windowIsTranslucent">false</item>
+		<item name="android:windowBackground">#000000</item>
+	</style>
+
+	<!-- GodotAppSplashTheme is auto-generated during export. Manual changes will be overwritten.
+		 To add custom attributes, use the "gradle_build/custom_theme_attributes" Android export option. -->
+	<style name="GodotAppSplashTheme" parent="Theme.SplashScreen">
+		<item name="android:windowSplashScreenBackground">@mipmap/icon_background</item>
+		<item name="windowSplashScreenAnimatedIcon">@mipmap/icon_foreground</item>
+		<item name="postSplashScreenTheme">@style/GodotAppMainTheme</item>
+		<item name="android:windowIsTranslucent">false</item>
+	</style>
+</resources>
+
+Clearing APK assets directory...
+Removing previously installed libraries...
+Removing previously installed library res://android/build/libs/debug/x86_64/libbrotlicommon.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libbrotlidec.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libbrotlienc.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-debugger-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-debugger-stub-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-debugger.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-diagnostics_tracing-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-diagnostics_tracing-stub-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-diagnostics_tracing.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-hot_reload-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-hot_reload-stub-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-hot_reload.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-marshal-ilgen-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-marshal-ilgen-stub-static.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmono-component-marshal-ilgen.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libmonosgen-2.0.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libmonosgen-2.0.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Globalization.Native.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Globalization.Native.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.IO.Compression.Native.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.IO.Compression.Native.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Native.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Native.so
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.a
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.dex
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.jar
+Removing previously installed library res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libbrotlicommon.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libbrotlidec.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libbrotlienc.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-debugger-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-debugger-stub-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-debugger.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-diagnostics_tracing-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-diagnostics_tracing-stub-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-diagnostics_tracing.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-hot_reload-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-hot_reload-stub-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-hot_reload.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-marshal-ilgen-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-marshal-ilgen-stub-static.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmono-component-marshal-ilgen.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmonosgen-2.0.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libmonosgen-2.0.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.Globalization.Native.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.Globalization.Native.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.IO.Compression.Native.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.IO.Compression.Native.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.Native.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.Native.so
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.Security.Cryptography.Native.Android.a
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.Security.Cryptography.Native.Android.dex
+Removing previously installed library res://android/build/libs/debug/arm64-v8a/libSystem.Security.Cryptography.Native.Android.so
+Exporting project files...
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libbrotlicommon.a to res://android/build/libs/debug/x86_64/libbrotlicommon.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libbrotlidec.a to res://android/build/libs/debug/x86_64/libbrotlidec.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libbrotlienc.a to res://android/build/libs/debug/x86_64/libbrotlienc.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-debugger-static.a to res://android/build/libs/debug/x86_64/libmono-component-debugger-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-debugger-stub-static.a to res://android/build/libs/debug/x86_64/libmono-component-debugger-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-debugger.so to res://android/build/libs/debug/x86_64/libmono-component-debugger.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-diagnostics_tracing-static.a to res://android/build/libs/debug/x86_64/libmono-component-diagnostics_tracing-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-diagnostics_tracing-stub-static.a to res://android/build/libs/debug/x86_64/libmono-component-diagnostics_tracing-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-diagnostics_tracing.so to res://android/build/libs/debug/x86_64/libmono-component-diagnostics_tracing.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-hot_reload-static.a to res://android/build/libs/debug/x86_64/libmono-component-hot_reload-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-hot_reload-stub-static.a to res://android/build/libs/debug/x86_64/libmono-component-hot_reload-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-hot_reload.so to res://android/build/libs/debug/x86_64/libmono-component-hot_reload.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-marshal-ilgen-static.a to res://android/build/libs/debug/x86_64/libmono-component-marshal-ilgen-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-marshal-ilgen-stub-static.a to res://android/build/libs/debug/x86_64/libmono-component-marshal-ilgen-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmono-component-marshal-ilgen.so to res://android/build/libs/debug/x86_64/libmono-component-marshal-ilgen.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmonosgen-2.0.a to res://android/build/libs/debug/x86_64/libmonosgen-2.0.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libmonosgen-2.0.so to res://android/build/libs/debug/x86_64/libmonosgen-2.0.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Globalization.Native.a to res://android/build/libs/debug/x86_64/libSystem.Globalization.Native.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Globalization.Native.so to res://android/build/libs/debug/x86_64/libSystem.Globalization.Native.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.IO.Compression.Native.a to res://android/build/libs/debug/x86_64/libSystem.IO.Compression.Native.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.IO.Compression.Native.so to res://android/build/libs/debug/x86_64/libSystem.IO.Compression.Native.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Native.a to res://android/build/libs/debug/x86_64/libSystem.Native.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Native.so to res://android/build/libs/debug/x86_64/libSystem.Native.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Security.Cryptography.Native.Android.a to res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Security.Cryptography.Native.Android.dex to res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.dex
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Security.Cryptography.Native.Android.jar to res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.jar
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-x64\libSystem.Security.Cryptography.Native.Android.so to res://android/build/libs/debug/x86_64/libSystem.Security.Cryptography.Native.Android.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libbrotlicommon.a to res://android/build/libs/debug/arm64-v8a/libbrotlicommon.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libbrotlidec.a to res://android/build/libs/debug/arm64-v8a/libbrotlidec.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libbrotlienc.a to res://android/build/libs/debug/arm64-v8a/libbrotlienc.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-debugger-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-debugger-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-debugger-stub-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-debugger-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-debugger.so to res://android/build/libs/debug/arm64-v8a/libmono-component-debugger.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-diagnostics_tracing-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-diagnostics_tracing-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-diagnostics_tracing-stub-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-diagnostics_tracing-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-diagnostics_tracing.so to res://android/build/libs/debug/arm64-v8a/libmono-component-diagnostics_tracing.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-hot_reload-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-hot_reload-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-hot_reload-stub-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-hot_reload-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-hot_reload.so to res://android/build/libs/debug/arm64-v8a/libmono-component-hot_reload.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-marshal-ilgen-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-marshal-ilgen-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-marshal-ilgen-stub-static.a to res://android/build/libs/debug/arm64-v8a/libmono-component-marshal-ilgen-stub-static.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmono-component-marshal-ilgen.so to res://android/build/libs/debug/arm64-v8a/libmono-component-marshal-ilgen.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmonosgen-2.0.a to res://android/build/libs/debug/arm64-v8a/libmonosgen-2.0.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libmonosgen-2.0.so to res://android/build/libs/debug/arm64-v8a/libmonosgen-2.0.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.Globalization.Native.a to res://android/build/libs/debug/arm64-v8a/libSystem.Globalization.Native.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.Globalization.Native.so to res://android/build/libs/debug/arm64-v8a/libSystem.Globalization.Native.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.IO.Compression.Native.a to res://android/build/libs/debug/arm64-v8a/libSystem.IO.Compression.Native.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.IO.Compression.Native.so to res://android/build/libs/debug/arm64-v8a/libSystem.IO.Compression.Native.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.Native.a to res://android/build/libs/debug/arm64-v8a/libSystem.Native.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.Native.so to res://android/build/libs/debug/arm64-v8a/libSystem.Native.so
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.Security.Cryptography.Native.Android.a to res://android/build/libs/debug/arm64-v8a/libSystem.Security.Cryptography.Native.Android.a
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.Security.Cryptography.Native.Android.dex to res://android/build/libs/debug/arm64-v8a/libSystem.Security.Cryptography.Native.Android.dex
+Copying .so file from C:\Users\Mayce\AppData\Local\Temp\godot-publish-dotnet\21088-ExportDebug-android-arm64\libSystem.Security.Cryptography.Native.Android.so to res://android/build/libs/debug/arm64-v8a/libSystem.Security.Cryptography.Native.Android.so
+Saving project files from res://.godot/mono/publish/x86_64/CommunityToolkit.Mvvm.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/CommunityToolkit.Mvvm.dll
+Saving project files from res://.godot/mono/publish/x86_64/Darkness.Core.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Darkness.Core.dll
+Saving project files from res://.godot/mono/publish/x86_64/Darkness.Core.pdb into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Darkness.Core.pdb
+Saving project files from res://.godot/mono/publish/x86_64/Darkness.Godot.deps.json into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Darkness.Godot.deps.json
+Saving project files from res://.godot/mono/publish/x86_64/Darkness.Godot.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Darkness.Godot.dll
+Saving project files from res://.godot/mono/publish/x86_64/Darkness.Godot.pdb into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Darkness.Godot.pdb
+Saving project files from res://.godot/mono/publish/x86_64/GodotSharp.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/GodotSharp.dll
+Saving project files from res://.godot/mono/publish/x86_64/LiteDB.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/LiteDB.dll
+Saving project files from res://.godot/mono/publish/x86_64/Microsoft.CSharp.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Microsoft.CSharp.dll
+Saving project files from res://.godot/mono/publish/x86_64/Microsoft.Extensions.DependencyInjection.Abstractions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+Saving project files from res://.godot/mono/publish/x86_64/Microsoft.Extensions.DependencyInjection.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Microsoft.Extensions.DependencyInjection.dll
+Saving project files from res://.godot/mono/publish/x86_64/Microsoft.VisualBasic.Core.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Microsoft.VisualBasic.Core.dll
+Saving project files from res://.godot/mono/publish/x86_64/Microsoft.VisualBasic.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Microsoft.VisualBasic.dll
+Saving project files from res://.godot/mono/publish/x86_64/Microsoft.Win32.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Microsoft.Win32.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/Microsoft.Win32.Registry.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Microsoft.Win32.Registry.dll
+Saving project files from res://.godot/mono/publish/x86_64/mscorlib.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/mscorlib.dll
+Saving project files from res://.godot/mono/publish/x86_64/netstandard.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/netstandard.dll
+Saving project files from res://.godot/mono/publish/x86_64/Newtonsoft.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/Newtonsoft.Json.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.AppContext.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.AppContext.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Buffers.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Buffers.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Collections.Concurrent.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Collections.Concurrent.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Collections.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Collections.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Collections.Immutable.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Collections.Immutable.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Collections.NonGeneric.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Collections.NonGeneric.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Collections.Specialized.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Collections.Specialized.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ComponentModel.Annotations.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ComponentModel.Annotations.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ComponentModel.DataAnnotations.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ComponentModel.DataAnnotations.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ComponentModel.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ComponentModel.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ComponentModel.EventBasedAsync.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ComponentModel.EventBasedAsync.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ComponentModel.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ComponentModel.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ComponentModel.TypeConverter.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ComponentModel.TypeConverter.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Configuration.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Configuration.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Console.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Console.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Core.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Core.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Data.Common.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Data.Common.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Data.DataSetExtensions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Data.DataSetExtensions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Data.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Data.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.Contracts.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.Contracts.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.Debug.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.Debug.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.DiagnosticSource.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.DiagnosticSource.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.FileVersionInfo.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.FileVersionInfo.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.Process.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.Process.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.StackTrace.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.StackTrace.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.TextWriterTraceListener.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.TextWriterTraceListener.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.Tools.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.Tools.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.TraceSource.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.TraceSource.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Diagnostics.Tracing.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Diagnostics.Tracing.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Drawing.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Drawing.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Drawing.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Drawing.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Dynamic.Runtime.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Dynamic.Runtime.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Formats.Asn1.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Formats.Asn1.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Formats.Tar.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Formats.Tar.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Globalization.Calendars.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Globalization.Calendars.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Globalization.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Globalization.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Globalization.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Globalization.Extensions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.Compression.Brotli.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.Compression.Brotli.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.Compression.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.Compression.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.Compression.FileSystem.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.Compression.FileSystem.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.Compression.ZipFile.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.Compression.ZipFile.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.FileSystem.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.FileSystem.AccessControl.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.FileSystem.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.FileSystem.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.FileSystem.DriveInfo.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.FileSystem.DriveInfo.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.FileSystem.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.FileSystem.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.FileSystem.Watcher.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.FileSystem.Watcher.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.IsolatedStorage.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.IsolatedStorage.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.MemoryMappedFiles.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.MemoryMappedFiles.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.Pipelines.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.Pipelines.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.Pipes.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.Pipes.AccessControl.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.Pipes.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.Pipes.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.IO.UnmanagedMemoryStream.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.IO.UnmanagedMemoryStream.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Linq.AsyncEnumerable.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Linq.AsyncEnumerable.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Linq.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Linq.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Linq.Expressions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Linq.Expressions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Linq.Parallel.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Linq.Parallel.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Linq.Queryable.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Linq.Queryable.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Memory.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Memory.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Http.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Http.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Http.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Http.Json.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.HttpListener.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.HttpListener.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Mail.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Mail.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.NameResolution.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.NameResolution.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.NetworkInformation.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.NetworkInformation.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Ping.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Ping.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Quic.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Quic.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Requests.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Requests.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Security.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Security.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.ServerSentEvents.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.ServerSentEvents.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.ServicePoint.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.ServicePoint.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.Sockets.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.Sockets.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.WebClient.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.WebClient.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.WebHeaderCollection.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.WebHeaderCollection.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.WebProxy.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.WebProxy.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.WebSockets.Client.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.WebSockets.Client.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Net.WebSockets.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Net.WebSockets.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Numerics.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Numerics.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Numerics.Vectors.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Numerics.Vectors.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ObjectModel.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ObjectModel.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Private.CoreLib.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Private.CoreLib.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Private.DataContractSerialization.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Private.DataContractSerialization.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Private.Uri.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Private.Uri.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Private.Xml.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Private.Xml.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Private.Xml.Linq.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Private.Xml.Linq.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.DispatchProxy.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.DispatchProxy.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.Emit.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.Emit.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.Emit.ILGeneration.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.Emit.ILGeneration.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.Emit.Lightweight.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.Emit.Lightweight.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.Extensions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.Metadata.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.Metadata.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Reflection.TypeExtensions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Reflection.TypeExtensions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Resources.Reader.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Resources.Reader.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Resources.ResourceManager.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Resources.ResourceManager.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Resources.Writer.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Resources.Writer.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.CompilerServices.Unsafe.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.CompilerServices.Unsafe.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.CompilerServices.VisualC.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.CompilerServices.VisualC.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Extensions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Handles.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Handles.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.InteropServices.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.InteropServices.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.InteropServices.JavaScript.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.InteropServices.JavaScript.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.InteropServices.RuntimeInformation.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.InteropServices.RuntimeInformation.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Intrinsics.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Intrinsics.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Loader.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Loader.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Numerics.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Numerics.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Serialization.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Serialization.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Serialization.Formatters.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Serialization.Formatters.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Serialization.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Serialization.Json.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Serialization.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Serialization.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Runtime.Serialization.Xml.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Runtime.Serialization.Xml.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.AccessControl.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Claims.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Claims.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.Algorithms.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.Algorithms.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.Cng.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.Cng.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.Csp.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.Csp.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.Encoding.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.Encoding.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.OpenSsl.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.OpenSsl.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.Primitives.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Cryptography.X509Certificates.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Cryptography.X509Certificates.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Principal.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Principal.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.Principal.Windows.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.Principal.Windows.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Security.SecureString.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Security.SecureString.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ServiceModel.Web.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ServiceModel.Web.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ServiceProcess.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ServiceProcess.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Text.Encoding.CodePages.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Text.Encoding.CodePages.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Text.Encoding.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Text.Encoding.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Text.Encoding.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Text.Encoding.Extensions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Text.Encodings.Web.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Text.Encodings.Web.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Text.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Text.Json.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Text.RegularExpressions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Text.RegularExpressions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.AccessControl.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Channels.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Channels.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Overlapped.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Overlapped.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Tasks.Dataflow.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Tasks.Dataflow.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Tasks.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Tasks.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Tasks.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Tasks.Extensions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Tasks.Parallel.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Tasks.Parallel.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Thread.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Thread.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.ThreadPool.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.ThreadPool.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Threading.Timer.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Threading.Timer.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Transactions.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Transactions.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Transactions.Local.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Transactions.Local.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.ValueTuple.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.ValueTuple.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Web.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Web.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Web.HttpUtility.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Web.HttpUtility.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Windows.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Windows.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.Linq.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.Linq.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.ReaderWriter.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.ReaderWriter.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.Serialization.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.Serialization.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.XDocument.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.XDocument.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.XmlDocument.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.XmlDocument.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.XmlSerializer.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.XmlSerializer.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.XPath.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.XPath.dll
+Saving project files from res://.godot/mono/publish/x86_64/System.Xml.XPath.XDocument.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/System.Xml.XPath.XDocument.dll
+Saving project files from res://.godot/mono/publish/x86_64/WindowsBase.dll into res://android/build/src/main/assets/.godot/mono/publish/x86_64/WindowsBase.dll
+Saving project files from res://.godot/mono/publish/x86_64/.dotnet-publish-manifest into res://android/build/src/main/assets/.godot/mono/publish/x86_64/.dotnet-publish-manifest
+Saving project files from res://.godot/mono/publish/arm64/CommunityToolkit.Mvvm.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/CommunityToolkit.Mvvm.dll
+Saving project files from res://.godot/mono/publish/arm64/Darkness.Core.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Darkness.Core.dll
+Saving project files from res://.godot/mono/publish/arm64/Darkness.Core.pdb into res://android/build/src/main/assets/.godot/mono/publish/arm64/Darkness.Core.pdb
+Saving project files from res://.godot/mono/publish/arm64/Darkness.Godot.deps.json into res://android/build/src/main/assets/.godot/mono/publish/arm64/Darkness.Godot.deps.json
+Saving project files from res://.godot/mono/publish/arm64/Darkness.Godot.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Darkness.Godot.dll
+Saving project files from res://.godot/mono/publish/arm64/Darkness.Godot.pdb into res://android/build/src/main/assets/.godot/mono/publish/arm64/Darkness.Godot.pdb
+Saving project files from res://.godot/mono/publish/arm64/GodotSharp.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/GodotSharp.dll
+Saving project files from res://.godot/mono/publish/arm64/libSystem.Security.Cryptography.Native.Android.jar into res://android/build/src/main/assets/.godot/mono/publish/arm64/libSystem.Security.Cryptography.Native.Android.jar
+Saving project files from res://.godot/mono/publish/arm64/LiteDB.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/LiteDB.dll
+Saving project files from res://.godot/mono/publish/arm64/Microsoft.CSharp.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Microsoft.CSharp.dll
+Saving project files from res://.godot/mono/publish/arm64/Microsoft.Extensions.DependencyInjection.Abstractions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+Saving project files from res://.godot/mono/publish/arm64/Microsoft.Extensions.DependencyInjection.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Microsoft.Extensions.DependencyInjection.dll
+Saving project files from res://.godot/mono/publish/arm64/Microsoft.VisualBasic.Core.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Microsoft.VisualBasic.Core.dll
+Saving project files from res://.godot/mono/publish/arm64/Microsoft.VisualBasic.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Microsoft.VisualBasic.dll
+Saving project files from res://.godot/mono/publish/arm64/Microsoft.Win32.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Microsoft.Win32.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/Microsoft.Win32.Registry.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Microsoft.Win32.Registry.dll
+Saving project files from res://.godot/mono/publish/arm64/mscorlib.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/mscorlib.dll
+Saving project files from res://.godot/mono/publish/arm64/netstandard.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/netstandard.dll
+Saving project files from res://.godot/mono/publish/arm64/Newtonsoft.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/Newtonsoft.Json.dll
+Saving project files from res://.godot/mono/publish/arm64/System.AppContext.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.AppContext.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Buffers.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Buffers.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Collections.Concurrent.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Collections.Concurrent.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Collections.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Collections.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Collections.Immutable.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Collections.Immutable.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Collections.NonGeneric.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Collections.NonGeneric.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Collections.Specialized.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Collections.Specialized.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ComponentModel.Annotations.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ComponentModel.Annotations.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ComponentModel.DataAnnotations.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ComponentModel.DataAnnotations.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ComponentModel.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ComponentModel.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ComponentModel.EventBasedAsync.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ComponentModel.EventBasedAsync.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ComponentModel.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ComponentModel.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ComponentModel.TypeConverter.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ComponentModel.TypeConverter.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Configuration.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Configuration.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Console.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Console.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Core.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Core.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Data.Common.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Data.Common.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Data.DataSetExtensions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Data.DataSetExtensions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Data.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Data.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.Contracts.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.Contracts.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.Debug.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.Debug.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.DiagnosticSource.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.DiagnosticSource.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.FileVersionInfo.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.FileVersionInfo.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.Process.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.Process.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.StackTrace.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.StackTrace.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.TextWriterTraceListener.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.TextWriterTraceListener.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.Tools.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.Tools.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.TraceSource.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.TraceSource.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Diagnostics.Tracing.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Diagnostics.Tracing.dll
+Saving project files from res://.godot/mono/publish/arm64/System.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Drawing.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Drawing.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Drawing.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Drawing.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Dynamic.Runtime.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Dynamic.Runtime.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Formats.Asn1.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Formats.Asn1.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Formats.Tar.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Formats.Tar.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Globalization.Calendars.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Globalization.Calendars.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Globalization.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Globalization.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Globalization.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Globalization.Extensions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.Compression.Brotli.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.Compression.Brotli.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.Compression.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.Compression.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.Compression.FileSystem.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.Compression.FileSystem.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.Compression.ZipFile.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.Compression.ZipFile.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.FileSystem.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.FileSystem.AccessControl.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.FileSystem.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.FileSystem.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.FileSystem.DriveInfo.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.FileSystem.DriveInfo.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.FileSystem.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.FileSystem.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.FileSystem.Watcher.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.FileSystem.Watcher.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.IsolatedStorage.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.IsolatedStorage.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.MemoryMappedFiles.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.MemoryMappedFiles.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.Pipelines.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.Pipelines.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.Pipes.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.Pipes.AccessControl.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.Pipes.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.Pipes.dll
+Saving project files from res://.godot/mono/publish/arm64/System.IO.UnmanagedMemoryStream.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.IO.UnmanagedMemoryStream.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Linq.AsyncEnumerable.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Linq.AsyncEnumerable.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Linq.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Linq.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Linq.Expressions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Linq.Expressions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Linq.Parallel.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Linq.Parallel.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Linq.Queryable.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Linq.Queryable.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Memory.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Memory.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Http.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Http.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Http.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Http.Json.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.HttpListener.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.HttpListener.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Mail.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Mail.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.NameResolution.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.NameResolution.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.NetworkInformation.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.NetworkInformation.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Ping.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Ping.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Quic.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Quic.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Requests.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Requests.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Security.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Security.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.ServerSentEvents.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.ServerSentEvents.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.ServicePoint.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.ServicePoint.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.Sockets.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.Sockets.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.WebClient.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.WebClient.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.WebHeaderCollection.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.WebHeaderCollection.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.WebProxy.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.WebProxy.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.WebSockets.Client.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.WebSockets.Client.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Net.WebSockets.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Net.WebSockets.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Numerics.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Numerics.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Numerics.Vectors.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Numerics.Vectors.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ObjectModel.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ObjectModel.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Private.CoreLib.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Private.CoreLib.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Private.DataContractSerialization.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Private.DataContractSerialization.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Private.Uri.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Private.Uri.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Private.Xml.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Private.Xml.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Private.Xml.Linq.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Private.Xml.Linq.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.DispatchProxy.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.DispatchProxy.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.Emit.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.Emit.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.Emit.ILGeneration.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.Emit.ILGeneration.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.Emit.Lightweight.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.Emit.Lightweight.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.Extensions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.Metadata.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.Metadata.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Reflection.TypeExtensions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Reflection.TypeExtensions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Resources.Reader.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Resources.Reader.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Resources.ResourceManager.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Resources.ResourceManager.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Resources.Writer.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Resources.Writer.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.CompilerServices.Unsafe.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.CompilerServices.Unsafe.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.CompilerServices.VisualC.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.CompilerServices.VisualC.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Extensions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Handles.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Handles.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.InteropServices.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.InteropServices.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.InteropServices.JavaScript.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.InteropServices.JavaScript.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.InteropServices.RuntimeInformation.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.InteropServices.RuntimeInformation.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Intrinsics.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Intrinsics.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Loader.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Loader.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Numerics.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Numerics.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Serialization.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Serialization.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Serialization.Formatters.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Serialization.Formatters.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Serialization.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Serialization.Json.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Serialization.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Serialization.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Runtime.Serialization.Xml.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Runtime.Serialization.Xml.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.AccessControl.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Claims.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Claims.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.Algorithms.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.Algorithms.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.Cng.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.Cng.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.Csp.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.Csp.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.Encoding.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.Encoding.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.OpenSsl.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.OpenSsl.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.Primitives.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.Primitives.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Cryptography.X509Certificates.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Cryptography.X509Certificates.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Principal.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Principal.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.Principal.Windows.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.Principal.Windows.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Security.SecureString.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Security.SecureString.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ServiceModel.Web.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ServiceModel.Web.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ServiceProcess.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ServiceProcess.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Text.Encoding.CodePages.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Text.Encoding.CodePages.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Text.Encoding.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Text.Encoding.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Text.Encoding.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Text.Encoding.Extensions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Text.Encodings.Web.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Text.Encodings.Web.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Text.Json.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Text.Json.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Text.RegularExpressions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Text.RegularExpressions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.AccessControl.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.AccessControl.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Channels.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Channels.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Overlapped.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Overlapped.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Tasks.Dataflow.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Tasks.Dataflow.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Tasks.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Tasks.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Tasks.Extensions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Tasks.Extensions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Tasks.Parallel.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Tasks.Parallel.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Thread.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Thread.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.ThreadPool.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.ThreadPool.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Threading.Timer.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Threading.Timer.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Transactions.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Transactions.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Transactions.Local.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Transactions.Local.dll
+Saving project files from res://.godot/mono/publish/arm64/System.ValueTuple.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.ValueTuple.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Web.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Web.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Web.HttpUtility.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Web.HttpUtility.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Windows.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Windows.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.Linq.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.Linq.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.ReaderWriter.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.ReaderWriter.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.Serialization.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.Serialization.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.XDocument.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.XDocument.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.XmlDocument.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.XmlDocument.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.XmlSerializer.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.XmlSerializer.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.XPath.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.XPath.dll
+Saving project files from res://.godot/mono/publish/arm64/System.Xml.XPath.XDocument.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/System.Xml.XPath.XDocument.dll
+Saving project files from res://.godot/mono/publish/arm64/WindowsBase.dll into res://android/build/src/main/assets/.godot/mono/publish/arm64/WindowsBase.dll
+Saving project files from res://.godot/mono/publish/arm64/.dotnet-publish-manifest into res://android/build/src/main/assets/.godot/mono/publish/arm64/.dotnet-publish-manifest
+Saving project files from res://Properties/launchSettings.json into res://android/build/src/main/assets/Properties/launchSettings.json
+Saving project files from res://.godot/exported/133200997/export-86e7273c3baae672e959533c32acd3a5-AlliesScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-86e7273c3baae672e959533c32acd3a5-AlliesScene.scn
+Saving project files from res://.godot/exported/133200997/export-b5f03f2d917d86b69d0a4e5a820f6fda-BattleScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-b5f03f2d917d86b69d0a4e5a820f6fda-BattleScene.scn
+Saving project files from res://.godot/exported/133200997/export-99d508747a13fe0b75dc40a90b99f2a8-CharacterGenScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-99d508747a13fe0b75dc40a90b99f2a8-CharacterGenScene.scn
+Saving project files from res://.godot/exported/133200997/export-6971b36f320672923de2d267ea29cb01-CharactersScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-6971b36f320672923de2d267ea29cb01-CharactersScene.scn
+Saving project files from res://.godot/exported/133200997/export-d7832594942965b9be3756e7a8950e2b-CreateUserScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-d7832594942965b9be3756e7a8950e2b-CreateUserScene.scn
+Saving project files from res://.godot/exported/133200997/export-d23d00611b25f93022a377893e45fe4f-DeathmatchScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-d23d00611b25f93022a377893e45fe4f-DeathmatchScene.scn
+Saving project files from res://.godot/exported/133200997/export-3e1b3df1e1aac682366b027d7dbb8d58-ForgeScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-3e1b3df1e1aac682366b027d7dbb8d58-ForgeScene.scn
+Saving project files from res://.godot/exported/133200997/export-8a74330932cdfb6a0856c17a6b368706-InventoryScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-8a74330932cdfb6a0856c17a6b368706-InventoryScene.scn
+Saving project files from res://.godot/exported/133200997/export-8594ceeabe0523b1ed6725c690b0e4b0-LayeredSprite.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-8594ceeabe0523b1ed6725c690b0e4b0-LayeredSprite.scn
+Saving project files from res://.godot/exported/133200997/export-a1a3ddf20aafebedb66443387b29939e-LoadUserScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-a1a3ddf20aafebedb66443387b29939e-LoadUserScene.scn
+Saving project files from res://.godot/exported/133200997/export-ee0d2cf94e351b5dde1ad471b8e74ea3-MainMenuScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-ee0d2cf94e351b5dde1ad471b8e74ea3-MainMenuScene.scn
+Saving project files from res://.godot/exported/133200997/export-322493d365676aa8c0336579f6935b26-PauseMenu.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-322493d365676aa8c0336579f6935b26-PauseMenu.scn
+Saving project files from res://.godot/exported/133200997/export-18f0db4684828660a43e0a35872c103f-SettingsScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-18f0db4684828660a43e0a35872c103f-SettingsScene.scn
+Saving project files from res://.godot/exported/133200997/export-e6ef747c582c8593690e178fa4b89526-SplashScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-e6ef747c582c8593690e178fa4b89526-SplashScene.scn
+Saving project files from res://.godot/exported/133200997/export-4487c3755fa99b26d935d02816b69532-StudyScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-4487c3755fa99b26d935d02816b69532-StudyScene.scn
+Saving project files from res://.godot/exported/133200997/export-789eeee973550606b1eb838f85696f4b-WorldScene.scn into res://android/build/src/main/assets/.godot/exported/133200997/export-789eeee973550606b1eb838f85696f4b-WorldScene.scn
+Saving project files from res://.godot/imported/leather_black.png-0f873e08efe237cad099b64652af74e7.ctex into res://android/build/src/main/assets/.godot/imported/leather_black.png-0f873e08efe237cad099b64652af74e7.ctex
+Saving project files from res://sprites/armor/leather_black.png.import into res://android/build/src/main/assets/sprites/armor/leather_black.png.import
+Saving project files from res://.godot/imported/leather_brown.png-6a634b6edb64409e01f698dd295d1033.ctex into res://android/build/src/main/assets/.godot/imported/leather_brown.png-6a634b6edb64409e01f698dd295d1033.ctex
+Saving project files from res://sprites/armor/leather_brown.png.import into res://android/build/src/main/assets/sprites/armor/leather_brown.png.import
+Saving project files from res://.godot/imported/leather_leather.png-43ae13ddeecb583f53c30dc06d06df51.ctex into res://android/build/src/main/assets/.godot/imported/leather_leather.png-43ae13ddeecb583f53c30dc06d06df51.ctex
+Saving project files from res://sprites/armor/leather_leather.png.import into res://android/build/src/main/assets/sprites/armor/leather_leather.png.import
+Saving project files from res://.godot/imported/longsleeve_blue.png-225d5a8bf342f048b0355bedfda4a11d.ctex into res://android/build/src/main/assets/.godot/imported/longsleeve_blue.png-225d5a8bf342f048b0355bedfda4a11d.ctex
+Saving project files from res://sprites/armor/longsleeve_blue.png.import into res://android/build/src/main/assets/sprites/armor/longsleeve_blue.png.import
+Saving project files from res://.godot/imported/longsleeve_brown.png-79b9a9e7d0cdd63dc98c2f9caf714873.ctex into res://android/build/src/main/assets/.godot/imported/longsleeve_brown.png-79b9a9e7d0cdd63dc98c2f9caf714873.ctex
+Saving project files from res://sprites/armor/longsleeve_brown.png.import into res://android/build/src/main/assets/sprites/armor/longsleeve_brown.png.import
+Saving project files from res://.godot/imported/longsleeve_white.png-c696d020041fc5c2e153a8f6cf5a9a07.ctex into res://android/build/src/main/assets/.godot/imported/longsleeve_white.png-c696d020041fc5c2e153a8f6cf5a9a07.ctex
+Saving project files from res://sprites/armor/longsleeve_white.png.import into res://android/build/src/main/assets/sprites/armor/longsleeve_white.png.import
+Saving project files from res://.godot/imported/plate_gold.png-b38ed05379a49aba099f803e1740139c.ctex into res://android/build/src/main/assets/.godot/imported/plate_gold.png-b38ed05379a49aba099f803e1740139c.ctex
+Saving project files from res://sprites/armor/plate_gold.png.import into res://android/build/src/main/assets/sprites/armor/plate_gold.png.import
+Saving project files from res://.godot/imported/plate_iron.png-d5e890ef603215ba5d58923b95a6e98d.ctex into res://android/build/src/main/assets/.godot/imported/plate_iron.png-d5e890ef603215ba5d58923b95a6e98d.ctex
+Saving project files from res://sprites/armor/plate_iron.png.import into res://android/build/src/main/assets/sprites/armor/plate_iron.png.import
+Saving project files from res://.godot/imported/plate_steel.png-74ed8787b832d9bde1fae76be7d73d46.ctex into res://android/build/src/main/assets/.godot/imported/plate_steel.png-74ed8787b832d9bde1fae76be7d73d46.ctex
+Saving project files from res://sprites/armor/plate_steel.png.import into res://android/build/src/main/assets/sprites/armor/plate_steel.png.import
+Saving project files from res://.godot/imported/gloves.png-67213004aaa0570e64b3a25e92a127d9.ctex into res://android/build/src/main/assets/.godot/imported/gloves.png-67213004aaa0570e64b3a25e92a127d9.ctex
+Saving project files from res://sprites/arms/gloves.png.import into res://android/build/src/main/assets/sprites/arms/gloves.png.import
+Saving project files from res://.godot/imported/amber.png-b99bb1d301eab6b2fd5668a65bcfb608.ctex into res://android/build/src/main/assets/.godot/imported/amber.png-b99bb1d301eab6b2fd5668a65bcfb608.ctex
+Saving project files from res://sprites/body/amber.png.import into res://android/build/src/main/assets/sprites/body/amber.png.import
+Saving project files from res://.godot/imported/black.png-b03b46f820485922d15152baa166a086.ctex into res://android/build/src/main/assets/.godot/imported/black.png-b03b46f820485922d15152baa166a086.ctex
+Saving project files from res://sprites/body/black.png.import into res://android/build/src/main/assets/sprites/body/black.png.import
+Saving project files from res://.godot/imported/bronze.png-25872eac1259a27cbd024057756dbd86.ctex into res://android/build/src/main/assets/.godot/imported/bronze.png-25872eac1259a27cbd024057756dbd86.ctex
+Saving project files from res://sprites/body/bronze.png.import into res://android/build/src/main/assets/sprites/body/bronze.png.import
+Saving project files from res://.godot/imported/brown.png-f0cd9c30e21f6547c02d27119eb72ac0.ctex into res://android/build/src/main/assets/.godot/imported/brown.png-f0cd9c30e21f6547c02d27119eb72ac0.ctex
+Saving project files from res://sprites/body/brown.png.import into res://android/build/src/main/assets/sprites/body/brown.png.import
+Saving project files from res://.godot/imported/light.png-e2298d0712acf6b705262ae8eaff61b1.ctex into res://android/build/src/main/assets/.godot/imported/light.png-e2298d0712acf6b705262ae8eaff61b1.ctex
+Saving project files from res://sprites/body/light.png.import into res://android/build/src/main/assets/sprites/body/light.png.import
+Saving project files from res://.godot/imported/olive.png-5d322ea0388836a21f9fce750d97ea4c.ctex into res://android/build/src/main/assets/.godot/imported/olive.png-5d322ea0388836a21f9fce750d97ea4c.ctex
+Saving project files from res://sprites/body/olive.png.import into res://android/build/src/main/assets/sprites/body/olive.png.import
+Saving project files from res://.godot/imported/taupe.png-9101a4a1b9116da860b0e5dde81665cb.ctex into res://android/build/src/main/assets/.godot/imported/taupe.png-9101a4a1b9116da860b0e5dde81665cb.ctex
+Saving project files from res://sprites/body/taupe.png.import into res://android/build/src/main/assets/sprites/body/taupe.png.import
+Saving project files from res://.godot/imported/anger.png-64391be6f494f73a2e570e4705cca597.ctex into res://android/build/src/main/assets/.godot/imported/anger.png-64391be6f494f73a2e570e4705cca597.ctex
+Saving project files from res://sprites/eyes/anger.png.import into res://android/build/src/main/assets/sprites/eyes/anger.png.import
+Saving project files from res://.godot/imported/default.png-5deb285bd13c348feafa8c05dcdb50ec.ctex into res://android/build/src/main/assets/.godot/imported/default.png-5deb285bd13c348feafa8c05dcdb50ec.ctex
+Saving project files from res://sprites/eyes/default.png.import into res://android/build/src/main/assets/sprites/eyes/default.png.import
+Saving project files from res://.godot/imported/neutral.png-6cabd057d7b6d1ded22b2a16914a0af4.ctex into res://android/build/src/main/assets/.godot/imported/neutral.png-6cabd057d7b6d1ded22b2a16914a0af4.ctex
+Saving project files from res://sprites/eyes/neutral.png.import into res://android/build/src/main/assets/sprites/eyes/neutral.png.import
+Saving project files from res://.godot/imported/sad.png-95551f843b32c06071401795b4b49c99.ctex into res://android/build/src/main/assets/.godot/imported/sad.png-95551f843b32c06071401795b4b49c99.ctex
+Saving project files from res://sprites/eyes/sad.png.import into res://android/build/src/main/assets/sprites/eyes/sad.png.import
+Saving project files from res://.godot/imported/shock.png-ee1a2484ca1d9bcbc4929dea1369a992.ctex into res://android/build/src/main/assets/.godot/imported/shock.png-ee1a2484ca1d9bcbc4929dea1369a992.ctex
+Saving project files from res://sprites/eyes/shock.png.import into res://android/build/src/main/assets/sprites/eyes/shock.png.import
+Saving project files from res://.godot/imported/default.png-4c1bc6b40242ca85be1f65afb5860613.ctex into res://android/build/src/main/assets/.godot/imported/default.png-4c1bc6b40242ca85be1f65afb5860613.ctex
+Saving project files from res://sprites/face/default.png.import into res://android/build/src/main/assets/sprites/face/default.png.import
+Saving project files from res://.godot/imported/boots_basic.png-000bb9a65c73ad90757226ab080484b7.ctex into res://android/build/src/main/assets/.godot/imported/boots_basic.png-000bb9a65c73ad90757226ab080484b7.ctex
+Saving project files from res://sprites/feet/boots_basic.png.import into res://android/build/src/main/assets/sprites/feet/boots_basic.png.import
+Saving project files from res://.godot/imported/boots_fold.png-bf6d8f759808217761c1e5363fbf8ec2.ctex into res://android/build/src/main/assets/.godot/imported/boots_fold.png-bf6d8f759808217761c1e5363fbf8ec2.ctex
+Saving project files from res://sprites/feet/boots_fold.png.import into res://android/build/src/main/assets/sprites/feet/boots_fold.png.import
+Saving project files from res://.godot/imported/boots_rimmed.png-082dd6b2bfe21e160fd40676bb352c6b.ctex into res://android/build/src/main/assets/.godot/imported/boots_rimmed.png-082dd6b2bfe21e160fd40676bb352c6b.ctex
+Saving project files from res://sprites/feet/boots_rimmed.png.import into res://android/build/src/main/assets/sprites/feet/boots_rimmed.png.import
+Saving project files from res://.godot/imported/sandals.png-6d68760f7a77738f5dc59b61135e1501.ctex into res://android/build/src/main/assets/.godot/imported/sandals.png-6d68760f7a77738f5dc59b61135e1501.ctex
+Saving project files from res://sprites/feet/sandals.png.import into res://android/build/src/main/assets/sprites/feet/sandals.png.import
+Saving project files from res://.godot/imported/shoes.png-36d3487370993447cf2f27fa475248a2.ctex into res://android/build/src/main/assets/.godot/imported/shoes.png-36d3487370993447cf2f27fa475248a2.ctex
+Saving project files from res://sprites/feet/shoes.png.import into res://android/build/src/main/assets/sprites/feet/shoes.png.import
+Saving project files from res://.godot/imported/bob_black.png-bfc6091c5d84141d1e29a024c9c55d96.ctex into res://android/build/src/main/assets/.godot/imported/bob_black.png-bfc6091c5d84141d1e29a024c9c55d96.ctex
+Saving project files from res://sprites/hair/bob_black.png.import into res://android/build/src/main/assets/sprites/hair/bob_black.png.import
+Saving project files from res://.godot/imported/bob_blonde.png-acf1e1249f8d0a86ec21830ca1446872.ctex into res://android/build/src/main/assets/.godot/imported/bob_blonde.png-acf1e1249f8d0a86ec21830ca1446872.ctex
+Saving project files from res://sprites/hair/bob_blonde.png.import into res://android/build/src/main/assets/sprites/hair/bob_blonde.png.import
+Saving project files from res://.godot/imported/bob_chestnut.png-3f3554878628adbd6e997491e93dc549.ctex into res://android/build/src/main/assets/.godot/imported/bob_chestnut.png-3f3554878628adbd6e997491e93dc549.ctex
+Saving project files from res://sprites/hair/bob_chestnut.png.import into res://android/build/src/main/assets/sprites/hair/bob_chestnut.png.import
+Saving project files from res://.godot/imported/bob_dark_brown.png-f7998da1f69aa7890e3c16412b28abba.ctex into res://android/build/src/main/assets/.godot/imported/bob_dark_brown.png-f7998da1f69aa7890e3c16412b28abba.ctex
+Saving project files from res://sprites/hair/bob_dark_brown.png.import into res://android/build/src/main/assets/sprites/hair/bob_dark_brown.png.import
+Saving project files from res://.godot/imported/bob_gray.png-7f053867b02f0a3e49af45dba52b596c.ctex into res://android/build/src/main/assets/.godot/imported/bob_gray.png-7f053867b02f0a3e49af45dba52b596c.ctex
+Saving project files from res://sprites/hair/bob_gray.png.import into res://android/build/src/main/assets/sprites/hair/bob_gray.png.import
+Saving project files from res://.godot/imported/bob_platinum.png-bfc214823b87e3e6df83a43522c949df.ctex into res://android/build/src/main/assets/.godot/imported/bob_platinum.png-bfc214823b87e3e6df83a43522c949df.ctex
+Saving project files from res://sprites/hair/bob_platinum.png.import into res://android/build/src/main/assets/sprites/hair/bob_platinum.png.import
+Saving project files from res://.godot/imported/bob_redhead.png-b25d5e695c1925a7e6c8c1a4834ebfdc.ctex into res://android/build/src/main/assets/.godot/imported/bob_redhead.png-b25d5e695c1925a7e6c8c1a4834ebfdc.ctex
+Saving project files from res://sprites/hair/bob_redhead.png.import into res://android/build/src/main/assets/sprites/hair/bob_redhead.png.import
+Saving project files from res://.godot/imported/bob_white.png-646807213e22e4878686f9faa8d10e90.ctex into res://android/build/src/main/assets/.godot/imported/bob_white.png-646807213e22e4878686f9faa8d10e90.ctex
+Saving project files from res://sprites/hair/bob_white.png.import into res://android/build/src/main/assets/sprites/hair/bob_white.png.import
+Saving project files from res://.godot/imported/curly_long_black.png-f8a839d4904dcc547fa7c058c4c6161f.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_black.png-f8a839d4904dcc547fa7c058c4c6161f.ctex
+Saving project files from res://sprites/hair/curly_long_black.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_black.png.import
+Saving project files from res://.godot/imported/curly_long_blonde.png-6f3d346eb1fc66163a2eb44cb75bcafa.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_blonde.png-6f3d346eb1fc66163a2eb44cb75bcafa.ctex
+Saving project files from res://sprites/hair/curly_long_blonde.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_blonde.png.import
+Saving project files from res://.godot/imported/curly_long_chestnut.png-92a8229644c2c2ab23c16bcc79c51db2.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_chestnut.png-92a8229644c2c2ab23c16bcc79c51db2.ctex
+Saving project files from res://sprites/hair/curly_long_chestnut.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_chestnut.png.import
+Saving project files from res://.godot/imported/curly_long_dark_brown.png-593ad44b76d6bceacc49393280080022.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_dark_brown.png-593ad44b76d6bceacc49393280080022.ctex
+Saving project files from res://sprites/hair/curly_long_dark_brown.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_dark_brown.png.import
+Saving project files from res://.godot/imported/curly_long_gray.png-3c4d4379f016a3d6629c1b0e7efe9368.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_gray.png-3c4d4379f016a3d6629c1b0e7efe9368.ctex
+Saving project files from res://sprites/hair/curly_long_gray.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_gray.png.import
+Saving project files from res://.godot/imported/curly_long_platinum.png-d30ec06971f03e55ffc4a922fd6aad1c.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_platinum.png-d30ec06971f03e55ffc4a922fd6aad1c.ctex
+Saving project files from res://sprites/hair/curly_long_platinum.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_platinum.png.import
+Saving project files from res://.godot/imported/curly_long_redhead.png-f028fc398277c02b4785c5cd7fbffcf5.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_redhead.png-f028fc398277c02b4785c5cd7fbffcf5.ctex
+Saving project files from res://sprites/hair/curly_long_redhead.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_redhead.png.import
+Saving project files from res://.godot/imported/curly_long_white.png-c15836d0b838aa4e680c0d6bb98c142b.ctex into res://android/build/src/main/assets/.godot/imported/curly_long_white.png-c15836d0b838aa4e680c0d6bb98c142b.ctex
+Saving project files from res://sprites/hair/curly_long_white.png.import into res://android/build/src/main/assets/sprites/hair/curly_long_white.png.import
+Saving project files from res://.godot/imported/long_black.png-f9afb2e7521d3bc677d96cea7aeb7073.ctex into res://android/build/src/main/assets/.godot/imported/long_black.png-f9afb2e7521d3bc677d96cea7aeb7073.ctex
+Saving project files from res://sprites/hair/long_black.png.import into res://android/build/src/main/assets/sprites/hair/long_black.png.import
+Saving project files from res://.godot/imported/long_blonde.png-c634d582ee1822e903b07d8b4dc104bb.ctex into res://android/build/src/main/assets/.godot/imported/long_blonde.png-c634d582ee1822e903b07d8b4dc104bb.ctex
+Saving project files from res://sprites/hair/long_blonde.png.import into res://android/build/src/main/assets/sprites/hair/long_blonde.png.import
+Saving project files from res://.godot/imported/long_chestnut.png-8ade253be42c41f016f04e7850cffff2.ctex into res://android/build/src/main/assets/.godot/imported/long_chestnut.png-8ade253be42c41f016f04e7850cffff2.ctex
+Saving project files from res://sprites/hair/long_chestnut.png.import into res://android/build/src/main/assets/sprites/hair/long_chestnut.png.import
+Saving project files from res://.godot/imported/long_dark_brown.png-17a6738d338f1fac948eff5b8b5ed56e.ctex into res://android/build/src/main/assets/.godot/imported/long_dark_brown.png-17a6738d338f1fac948eff5b8b5ed56e.ctex
+Saving project files from res://sprites/hair/long_dark_brown.png.import into res://android/build/src/main/assets/sprites/hair/long_dark_brown.png.import
+Saving project files from res://.godot/imported/long_gray.png-4789f211615d8e4557d656def6cb897f.ctex into res://android/build/src/main/assets/.godot/imported/long_gray.png-4789f211615d8e4557d656def6cb897f.ctex
+Saving project files from res://sprites/hair/long_gray.png.import into res://android/build/src/main/assets/sprites/hair/long_gray.png.import
+Saving project files from res://.godot/imported/long_platinum.png-eb129f0f58227753d4f52b4c311db51f.ctex into res://android/build/src/main/assets/.godot/imported/long_platinum.png-eb129f0f58227753d4f52b4c311db51f.ctex
+Saving project files from res://sprites/hair/long_platinum.png.import into res://android/build/src/main/assets/sprites/hair/long_platinum.png.import
+Saving project files from res://.godot/imported/long_redhead.png-8f791fb3730bd1651adf6647b9f0d053.ctex into res://android/build/src/main/assets/.godot/imported/long_redhead.png-8f791fb3730bd1651adf6647b9f0d053.ctex
+Saving project files from res://sprites/hair/long_redhead.png.import into res://android/build/src/main/assets/sprites/hair/long_redhead.png.import
+Saving project files from res://.godot/imported/long_white.png-dc649129397f2a3b7738a9ada2404f82.ctex into res://android/build/src/main/assets/.godot/imported/long_white.png-dc649129397f2a3b7738a9ada2404f82.ctex
+Saving project files from res://sprites/hair/long_white.png.import into res://android/build/src/main/assets/sprites/hair/long_white.png.import
+Saving project files from res://.godot/imported/plain_black.png-1a49aa2dc4467dcab28eba3378e55efa.ctex into res://android/build/src/main/assets/.godot/imported/plain_black.png-1a49aa2dc4467dcab28eba3378e55efa.ctex
+Saving project files from res://sprites/hair/plain_black.png.import into res://android/build/src/main/assets/sprites/hair/plain_black.png.import
+Saving project files from res://.godot/imported/plain_blonde.png-e67e6ddd4400ea4164bbf9f32198fc53.ctex into res://android/build/src/main/assets/.godot/imported/plain_blonde.png-e67e6ddd4400ea4164bbf9f32198fc53.ctex
+Saving project files from res://sprites/hair/plain_blonde.png.import into res://android/build/src/main/assets/sprites/hair/plain_blonde.png.import
+Saving project files from res://.godot/imported/plain_chestnut.png-9d179ecb7945e9e09f4beba9db398790.ctex into res://android/build/src/main/assets/.godot/imported/plain_chestnut.png-9d179ecb7945e9e09f4beba9db398790.ctex
+Saving project files from res://sprites/hair/plain_chestnut.png.import into res://android/build/src/main/assets/sprites/hair/plain_chestnut.png.import
+Saving project files from res://.godot/imported/plain_dark_brown.png-21b4e945b7825bae71bfc28bbcc702cb.ctex into res://android/build/src/main/assets/.godot/imported/plain_dark_brown.png-21b4e945b7825bae71bfc28bbcc702cb.ctex
+Saving project files from res://sprites/hair/plain_dark_brown.png.import into res://android/build/src/main/assets/sprites/hair/plain_dark_brown.png.import
+Saving project files from res://.godot/imported/plain_gray.png-5b4106588286dc41f2447de68f97acea.ctex into res://android/build/src/main/assets/.godot/imported/plain_gray.png-5b4106588286dc41f2447de68f97acea.ctex
+Saving project files from res://sprites/hair/plain_gray.png.import into res://android/build/src/main/assets/sprites/hair/plain_gray.png.import
+Saving project files from res://.godot/imported/plain_platinum.png-24d11ec63ff05175f474a68fdf77e80c.ctex into res://android/build/src/main/assets/.godot/imported/plain_platinum.png-24d11ec63ff05175f474a68fdf77e80c.ctex
+Saving project files from res://sprites/hair/plain_platinum.png.import into res://android/build/src/main/assets/sprites/hair/plain_platinum.png.import
+Saving project files from res://.godot/imported/plain_redhead.png-a9eeea54dbf013c8feed7137d0961350.ctex into res://android/build/src/main/assets/.godot/imported/plain_redhead.png-a9eeea54dbf013c8feed7137d0961350.ctex
+Saving project files from res://sprites/hair/plain_redhead.png.import into res://android/build/src/main/assets/sprites/hair/plain_redhead.png.import
+Saving project files from res://.godot/imported/plain_white.png-7ac03cb098f89944270d12015e66a134.ctex into res://android/build/src/main/assets/.godot/imported/plain_white.png-7ac03cb098f89944270d12015e66a134.ctex
+Saving project files from res://sprites/hair/plain_white.png.import into res://android/build/src/main/assets/sprites/hair/plain_white.png.import
+Saving project files from res://.godot/imported/shorthawk_black.png-47cd21d9595f34d3e59ca19db09723f4.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_black.png-47cd21d9595f34d3e59ca19db09723f4.ctex
+Saving project files from res://sprites/hair/shorthawk_black.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_black.png.import
+Saving project files from res://.godot/imported/shorthawk_blonde.png-b42ee5d5299ce72a02b783eee1b8e5fa.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_blonde.png-b42ee5d5299ce72a02b783eee1b8e5fa.ctex
+Saving project files from res://sprites/hair/shorthawk_blonde.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_blonde.png.import
+Saving project files from res://.godot/imported/shorthawk_chestnut.png-fa66c80cf60289a9c753d9c71e10e715.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_chestnut.png-fa66c80cf60289a9c753d9c71e10e715.ctex
+Saving project files from res://sprites/hair/shorthawk_chestnut.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_chestnut.png.import
+Saving project files from res://.godot/imported/shorthawk_dark_brown.png-db25ba9cab0f75673bcbda7f4f92a09e.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_dark_brown.png-db25ba9cab0f75673bcbda7f4f92a09e.ctex
+Saving project files from res://sprites/hair/shorthawk_dark_brown.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_dark_brown.png.import
+Saving project files from res://.godot/imported/shorthawk_gray.png-69863857449fa77292aee73b2b8a0fb3.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_gray.png-69863857449fa77292aee73b2b8a0fb3.ctex
+Saving project files from res://sprites/hair/shorthawk_gray.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_gray.png.import
+Saving project files from res://.godot/imported/shorthawk_platinum.png-8673243808422275840f657733fa5843.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_platinum.png-8673243808422275840f657733fa5843.ctex
+Saving project files from res://sprites/hair/shorthawk_platinum.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_platinum.png.import
+Saving project files from res://.godot/imported/shorthawk_redhead.png-0b543377fc8af6ff553fab16db0d1d73.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_redhead.png-0b543377fc8af6ff553fab16db0d1d73.ctex
+Saving project files from res://sprites/hair/shorthawk_redhead.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_redhead.png.import
+Saving project files from res://.godot/imported/shorthawk_white.png-ae8a3d90f504b9ab4de27a5d0ba93e19.ctex into res://android/build/src/main/assets/.godot/imported/shorthawk_white.png-ae8a3d90f504b9ab4de27a5d0ba93e19.ctex
+Saving project files from res://sprites/hair/shorthawk_white.png.import into res://android/build/src/main/assets/sprites/hair/shorthawk_white.png.import
+Saving project files from res://.godot/imported/spiked_black.png-eca9bb1a185c3230f570a708ff45f439.ctex into res://android/build/src/main/assets/.godot/imported/spiked_black.png-eca9bb1a185c3230f570a708ff45f439.ctex
+Saving project files from res://sprites/hair/spiked_black.png.import into res://android/build/src/main/assets/sprites/hair/spiked_black.png.import
+Saving project files from res://.godot/imported/spiked_blonde.png-e5a79ee8ecfa0f8b65994c31a286923a.ctex into res://android/build/src/main/assets/.godot/imported/spiked_blonde.png-e5a79ee8ecfa0f8b65994c31a286923a.ctex
+Saving project files from res://sprites/hair/spiked_blonde.png.import into res://android/build/src/main/assets/sprites/hair/spiked_blonde.png.import
+Saving project files from res://.godot/imported/spiked_chestnut.png-eeacf5a8a4c494ba2f43dc87f6784caf.ctex into res://android/build/src/main/assets/.godot/imported/spiked_chestnut.png-eeacf5a8a4c494ba2f43dc87f6784caf.ctex
+Saving project files from res://sprites/hair/spiked_chestnut.png.import into res://android/build/src/main/assets/sprites/hair/spiked_chestnut.png.import
+Saving project files from res://.godot/imported/spiked_dark_brown.png-81bdddce6f8b862075c347165f8a8d97.ctex into res://android/build/src/main/assets/.godot/imported/spiked_dark_brown.png-81bdddce6f8b862075c347165f8a8d97.ctex
+Saving project files from res://sprites/hair/spiked_dark_brown.png.import into res://android/build/src/main/assets/sprites/hair/spiked_dark_brown.png.import
+Saving project files from res://.godot/imported/spiked_gray.png-aafcda423d5125b6bade026d34fc864a.ctex into res://android/build/src/main/assets/.godot/imported/spiked_gray.png-aafcda423d5125b6bade026d34fc864a.ctex
+Saving project files from res://sprites/hair/spiked_gray.png.import into res://android/build/src/main/assets/sprites/hair/spiked_gray.png.import
+Saving project files from res://.godot/imported/spiked_platinum.png-4f91e021a7dccee992e57d4af0cf529a.ctex into res://android/build/src/main/assets/.godot/imported/spiked_platinum.png-4f91e021a7dccee992e57d4af0cf529a.ctex
+Saving project files from res://sprites/hair/spiked_platinum.png.import into res://android/build/src/main/assets/sprites/hair/spiked_platinum.png.import
+Saving project files from res://.godot/imported/spiked_redhead.png-530df9c7e062b5265551e71d8ef23851.ctex into res://android/build/src/main/assets/.godot/imported/spiked_redhead.png-530df9c7e062b5265551e71d8ef23851.ctex
+Saving project files from res://sprites/hair/spiked_redhead.png.import into res://android/build/src/main/assets/sprites/hair/spiked_redhead.png.import
+Saving project files from res://.godot/imported/spiked_white.png-c4379eb8fe129886dd7a5abbecd77b55.ctex into res://android/build/src/main/assets/.godot/imported/spiked_white.png-c4379eb8fe129886dd7a5abbecd77b55.ctex
+Saving project files from res://sprites/hair/spiked_white.png.import into res://android/build/src/main/assets/sprites/hair/spiked_white.png.import
+Saving project files from res://.godot/imported/human_male.png-8108e439c92668c76dc270477f92873f.ctex into res://android/build/src/main/assets/.godot/imported/human_male.png-8108e439c92668c76dc270477f92873f.ctex
+Saving project files from res://sprites/head/human_male.png.import into res://android/build/src/main/assets/sprites/head/human_male.png.import
+Saving project files from res://.godot/imported/cuffed.png-754f3887c873718c1b7f326c22e9ec12.ctex into res://android/build/src/main/assets/.godot/imported/cuffed.png-754f3887c873718c1b7f326c22e9ec12.ctex
+Saving project files from res://sprites/legs/cuffed.png.import into res://android/build/src/main/assets/sprites/legs/cuffed.png.import
+Saving project files from res://.godot/imported/formal.png-afdc9e7195bd8938259c3f5a6e3df212.ctex into res://android/build/src/main/assets/.godot/imported/formal.png-afdc9e7195bd8938259c3f5a6e3df212.ctex
+Saving project files from res://sprites/legs/formal.png.import into res://android/build/src/main/assets/sprites/legs/formal.png.import
+Saving project files from res://.godot/imported/leggings.png-2cbceb5706c1d7a0295070732c1f57c0.ctex into res://android/build/src/main/assets/.godot/imported/leggings.png-2cbceb5706c1d7a0295070732c1f57c0.ctex
+Saving project files from res://sprites/legs/leggings.png.import into res://android/build/src/main/assets/sprites/legs/leggings.png.import
+Saving project files from res://.godot/imported/pantaloons.png-1b65febddbe0cd987a96f595e1f77afc.ctex into res://android/build/src/main/assets/.godot/imported/pantaloons.png-1b65febddbe0cd987a96f595e1f77afc.ctex
+Saving project files from res://sprites/legs/pantaloons.png.import into res://android/build/src/main/assets/sprites/legs/pantaloons.png.import
+Saving project files from res://.godot/imported/slacks.png-690ac50d50158c53903344a42f5f6ba9.ctex into res://android/build/src/main/assets/.godot/imported/slacks.png-690ac50d50158c53903344a42f5f6ba9.ctex
+Saving project files from res://sprites/legs/slacks.png.import into res://android/build/src/main/assets/sprites/legs/slacks.png.import
+Saving project files from res://.godot/imported/arming_sword_gold.png-b9a852ad95853a05587a824fb2ee8536.ctex into res://android/build/src/main/assets/.godot/imported/arming_sword_gold.png-b9a852ad95853a05587a824fb2ee8536.ctex
+Saving project files from res://sprites/weapons/arming_sword_gold.png.import into res://android/build/src/main/assets/sprites/weapons/arming_sword_gold.png.import
+Saving project files from res://.godot/imported/arming_sword_iron.png-3b8cc57da1c43c8f6ddf819936c76977.ctex into res://android/build/src/main/assets/.godot/imported/arming_sword_iron.png-3b8cc57da1c43c8f6ddf819936c76977.ctex
+Saving project files from res://sprites/weapons/arming_sword_iron.png.import into res://android/build/src/main/assets/sprites/weapons/arming_sword_iron.png.import
+Saving project files from res://.godot/imported/arming_sword_steel.png-3af49e0545c0579f7876b1730599f45d.ctex into res://android/build/src/main/assets/.godot/imported/arming_sword_steel.png-3af49e0545c0579f7876b1730599f45d.ctex
+Saving project files from res://sprites/weapons/arming_sword_steel.png.import into res://android/build/src/main/assets/sprites/weapons/arming_sword_steel.png.import
+Saving project files from res://src/Core/Extensions.cs into res://android/build/src/main/assets/src/Core/Extensions.cs
+Saving project files from res://src/Core/Global.cs into res://android/build/src/main/assets/src/Core/Global.cs
+Saving project files from res://src/Core/IInitializable.cs into res://android/build/src/main/assets/src/Core/IInitializable.cs
+Saving project files from res://src/Core/ImageUtils.cs into res://android/build/src/main/assets/src/Core/ImageUtils.cs
+Saving project files from res://src/Game/BattleScene.cs into res://android/build/src/main/assets/src/Game/BattleScene.cs
+Saving project files from res://src/Game/LayeredSprite.cs into res://android/build/src/main/assets/src/Game/LayeredSprite.cs
+Saving project files from res://src/Game/WorldScene.cs into res://android/build/src/main/assets/src/Game/WorldScene.cs
+Saving project files from res://src/Services/GodotDialogService.cs into res://android/build/src/main/assets/src/Services/GodotDialogService.cs
+Saving project files from res://src/Services/GodotDispatcherService.cs into res://android/build/src/main/assets/src/Services/GodotDispatcherService.cs
+Saving project files from res://src/Services/GodotFileSystemService.cs into res://android/build/src/main/assets/src/Services/GodotFileSystemService.cs
+Saving project files from res://src/Services/GodotNavigationService.cs into res://android/build/src/main/assets/src/Services/GodotNavigationService.cs
+Saving project files from res://src/Services/GodotSpriteCompositor.cs into res://android/build/src/main/assets/src/Services/GodotSpriteCompositor.cs
+Saving project files from res://src/Shaders/simple_2d.gdshader into res://android/build/src/main/assets/src/Shaders/simple_2d.gdshader
+Saving project files from res://src/Shaders/simple_rect.gdshader into res://android/build/src/main/assets/src/Shaders/simple_rect.gdshader
+Saving project files from res://src/UI/AlliesScene.cs into res://android/build/src/main/assets/src/UI/AlliesScene.cs
+Saving project files from res://src/UI/CharacterGenScene.cs into res://android/build/src/main/assets/src/UI/CharacterGenScene.cs
+Saving project files from res://src/UI/CharactersScene.cs into res://android/build/src/main/assets/src/UI/CharactersScene.cs
+Saving project files from res://src/UI/CreateUserScene.cs into res://android/build/src/main/assets/src/UI/CreateUserScene.cs
+Saving project files from res://src/UI/DeathmatchScene.cs into res://android/build/src/main/assets/src/UI/DeathmatchScene.cs
+Saving project files from res://src/UI/ForgeScene.cs into res://android/build/src/main/assets/src/UI/ForgeScene.cs
+Saving project files from res://src/UI/InventoryScene.cs into res://android/build/src/main/assets/src/UI/InventoryScene.cs
+Saving project files from res://src/UI/LoadUserScene.cs into res://android/build/src/main/assets/src/UI/LoadUserScene.cs
+Saving project files from res://src/UI/MainMenuScene.cs into res://android/build/src/main/assets/src/UI/MainMenuScene.cs
+Saving project files from res://src/UI/PauseMenu.cs into res://android/build/src/main/assets/src/UI/PauseMenu.cs
+Saving project files from res://src/UI/SettingsScene.cs into res://android/build/src/main/assets/src/UI/SettingsScene.cs
+Saving project files from res://src/UI/SplashScene.cs into res://android/build/src/main/assets/src/UI/SplashScene.cs
+Saving project files from res://src/UI/StudyScene.cs into res://android/build/src/main/assets/src/UI/StudyScene.cs
+Saving project files from res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex into res://android/build/src/main/assets/.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex
+Saving project files from res://icon.svg.import into res://android/build/src/main/assets/icon.svg.import
+Saving project files from res://scenes/AlliesScene.tscn.remap into res://android/build/src/main/assets/scenes/AlliesScene.tscn.remap
+Saving project files from res://scenes/BattleScene.tscn.remap into res://android/build/src/main/assets/scenes/BattleScene.tscn.remap
+Saving project files from res://scenes/CharacterGenScene.tscn.remap into res://android/build/src/main/assets/scenes/CharacterGenScene.tscn.remap
+Saving project files from res://scenes/CharactersScene.tscn.remap into res://android/build/src/main/assets/scenes/CharactersScene.tscn.remap
+Saving project files from res://scenes/CreateUserScene.tscn.remap into res://android/build/src/main/assets/scenes/CreateUserScene.tscn.remap
+Saving project files from res://scenes/DeathmatchScene.tscn.remap into res://android/build/src/main/assets/scenes/DeathmatchScene.tscn.remap
+Saving project files from res://scenes/ForgeScene.tscn.remap into res://android/build/src/main/assets/scenes/ForgeScene.tscn.remap
+Saving project files from res://scenes/InventoryScene.tscn.remap into res://android/build/src/main/assets/scenes/InventoryScene.tscn.remap
+Saving project files from res://scenes/LayeredSprite.tscn.remap into res://android/build/src/main/assets/scenes/LayeredSprite.tscn.remap
+Saving project files from res://scenes/LoadUserScene.tscn.remap into res://android/build/src/main/assets/scenes/LoadUserScene.tscn.remap
+Saving project files from res://scenes/MainMenuScene.tscn.remap into res://android/build/src/main/assets/scenes/MainMenuScene.tscn.remap
+Saving project files from res://scenes/PauseMenu.tscn.remap into res://android/build/src/main/assets/scenes/PauseMenu.tscn.remap
+Saving project files from res://scenes/SettingsScene.tscn.remap into res://android/build/src/main/assets/scenes/SettingsScene.tscn.remap
+Saving project files from res://scenes/SplashScene.tscn.remap into res://android/build/src/main/assets/scenes/SplashScene.tscn.remap
+Saving project files from res://scenes/StudyScene.tscn.remap into res://android/build/src/main/assets/scenes/StudyScene.tscn.remap
+Saving project files from res://scenes/WorldScene.tscn.remap into res://android/build/src/main/assets/scenes/WorldScene.tscn.remap
+Saving project files from res://.godot/global_script_class_cache.cfg into res://android/build/src/main/assets/.godot/global_script_class_cache.cfg
+Saving project files from res://icon.svg into res://android/build/src/main/assets/icon.svg
+Saving project files from res://.godot/uid_cache.bin into res://android/build/src/main/assets/.godot/uid_cache.bin
+Saving project files from res://project.binary into res://android/build/src/main/assets/project.binary
+Storing command line flags...
+Updating JAVA_HOME environment to C:/Program Files/Eclipse Adoptium/jdk-17.0.18.8-hotspot
+Updating ANDROID_HOME environment to C:\Program Files (x86)\Android\android-sdk\
+Build Android project using gradle command: 
+C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/android/build/gradlew.bat validateJavaVersion clean assembleMonoDebug -p C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/android/build -Paddons_directory=C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/addons -Pexport_package_name=com.risidian.darkness -Pexport_version_code=21 -Pexport_version_name=1.0.017 -Pexport_version_min_sdk=24 -Pexport_version_target_sdk=35 -Pexport_enabled_abis=arm64-v8a|x86_64 -Pplugins_local_binaries= -Pplugins_remote_binaries= -Pplugins_maven_repos= -Pperform_zipalign=true -Pperform_signing=true -Pcompress_native_libraries=false
+Thread exit status: 1
+[92m[ DONE ][39m [1mexport[22m
+[0m
+Failed to bind socket. Error: 3.
+Script docs haven't been properly loaded or regenerated, so don't save them to disk.
+EditorSettings: Save OK!
+Unloading: Disposing tracked instances...
+Unloading: Finished disposing tracked instances.
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Orphan StringName: Node (static: 3, total: 4)
+StringName: 1 unclaimed string names at exit.

@@ -15,6 +15,7 @@ public partial class SplashScene : Control
 
 	public override void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
 		_session = global.Services!.GetRequiredService<ISessionService>();

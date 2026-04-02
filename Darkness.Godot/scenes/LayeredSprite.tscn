@@ -1,6 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://layered_sprite_id"]
 
+[ext_resource type="Script" path="res://src/Game/LayeredSprite.cs" id="1_layer"]
+
 [node name="LayeredSprite" type="Node2D"]
+script = ExtResource("1_layer")
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
 centered = false

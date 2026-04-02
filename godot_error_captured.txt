@@ -1,0 +1,206 @@
+ERROR: Export: Building of Android project failed, check output for the error:
+
+
+> Configure project :
+WARNING: The option setting 'android.overridePathCheck=true' is experimental.
+The current default is 'false'.
+
+> Task :validateJavaVersion UP-TO-DATE
+> Task :clean
+> Task :assetPackInstallTime:clean UP-TO-DATE
+> Task :preBuild UP-TO-DATE
+> Task :preMonoDebugBuild UP-TO-DATE
+> Task :mergeMonoDebugNativeDebugMetadata NO-SOURCE
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :generateMonoDebugBuildConfig
+> Task :generateMonoDebugResValues
+> Task :checkMonoDebugAarMetadata
+> Task :mapMonoDebugSourceSetPaths
+> Task :generateMonoDebugResources
+> Task :mergeMonoDebugResources
+> Task :packageMonoDebugResources
+> Task :createMonoDebugCompatibleScreenManifests
+> Task :parseMonoDebugLocalResources
+> Task :extractDeepLinksMonoDebug
+
+> Task :processMonoDebugMainManifest
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\debug\AndroidManifest.xml:22:9-124 Warning:
+	meta-data#org.godotengine.rendering.method was tagged at AndroidManifest.xml:22 to replace another declaration but no other declaration present
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\debug\AndroidManifest.xml:23:9-123 Warning:
+	meta-data#org.godotengine.editor.version was tagged at AndroidManifest.xml:23 to replace another declaration but no other declaration present
+
+> Task :processMonoDebugManifest
+> Task :javaPreCompileMonoDebug
+> Task :mergeMonoDebugShaders
+> Task :compileMonoDebugShaders NO-SOURCE
+> Task :generateMonoDebugAssets UP-TO-DATE
+> Task :mergeMonoDebugAssets
+> Task :processMonoDebugManifestForPackage
+> Task :checkMonoDebugDuplicateClasses
+> Task :desugarMonoDebugFileDependencies
+> Task :processMonoDebugResources
+> Task :compressMonoDebugAssets
+> Task :mergeMonoDebugJniLibFolders
+> Task :compileMonoDebugKotlin NO-SOURCE
+
+> Task :compileMonoDebugJavaWithJavac FAILED
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:33: error: package org.godotengine.godot does not exist
+import org.godotengine.godot.Godot;
+                            ^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:34: error: package org.godotengine.godot does not exist
+import org.godotengine.godot.GodotActivity;
+                            ^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:46: error: cannot find symbol
+public class GodotApp extends GodotActivity {
+                              ^
+  symbol: class GodotActivity
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:88: error: cannot find symbol
+	public void onGodotForceQuit(Godot instance) {
+	                             ^
+  symbol:   class Godot
+  location: class GodotApp
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:60: error: cannot find symbol
+		Godot godot = getGodot();
+		^
+  symbol:   class Godot
+  location: class GodotApp
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:60: error: cannot find symbol
+		Godot godot = getGodot();
+		              ^
+  symbol:   method getGodot()
+  location: class GodotApp
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:68: error: method does not override or implement a method from a supertype
+	@Override
+	^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:70: error: incompatible types: GodotApp cannot be converted to Activity
+		SplashScreen.installSplashScreen(this);
+		                                 ^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:71: error: incompatible types: GodotApp cannot be converted to ComponentActivity
+		EdgeToEdge.enable(this);
+		                  ^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:72: error: cannot find symbol
+		super.onCreate(savedInstanceState);
+		^
+  symbol:   variable super
+  location: class GodotApp
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:75: error: method does not override or implement a method from a supertype
+	@Override
+	^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:77: error: cannot find symbol
+		super.onResume();
+		^
+  symbol:   variable super
+  location: class GodotApp
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:81: error: method does not override or implement a method from a supertype
+	@Override
+	^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:83: error: cannot find symbol
+		super.onGodotMainLoopStarted();
+		^
+  symbol:   variable super
+  location: class GodotApp
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:84: error: cannot find symbol
+		runOnUiThread(updateWindowAppearance);
+		^
+  symbol:   method runOnUiThread(Runnable)
+  location: class GodotApp
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:87: error: method does not override or implement a method from a supertype
+	@Override
+	^
+C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:92: error: cannot find symbol
+			super.onGodotForceQuit(instance);
+			^
+  symbol:   variable super
+  location: class GodotApp
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+17 errors
+[Incubating] Problems report is available at: file:///C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/android/build/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileMonoDebugJavaWithJavac'.
+> Compilation failed; see the compiler output below.
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:68: error: method does not override or implement a method from a supertype
+  	@Override
+  	^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:75: error: method does not override or implement a method from a supertype
+  	@Override
+  	^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:81: error: method does not override or implement a method from a supertype
+  	@Override
+  	^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:87: error: method does not override or implement a method from a supertype
+  	@Override
+  	^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:70: error: incompatible types: GodotApp cannot be converted to Activity
+  		SplashScreen.installSplashScreen(this);
+  		                                 ^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:71: error: incompatible types: GodotApp cannot be converted to ComponentActivity
+  		EdgeToEdge.enable(this);
+  		                  ^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:46: error: cannot find symbol
+  public class GodotApp extends GodotActivity {
+                                ^
+    symbol: class GodotActivity
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:33: error: package org.godotengine.godot does not exist
+  import org.godotengine.godot.Godot;
+                              ^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:34: error: package org.godotengine.godot does not exist
+  import org.godotengine.godot.GodotActivity;
+                              ^
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:60: error: cannot find symbol
+  		Godot godot = getGodot();
+  		              ^
+    symbol:   method getGodot()
+    location: class GodotApp
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:84: error: cannot find symbol
+  		runOnUiThread(updateWindowAppearance);
+  		^
+    symbol:   method runOnUiThread(Runnable)
+    location: class GodotApp
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:88: error: cannot find symbol
+  	public void onGodotForceQuit(Godot instance) {
+  	                             ^
+    symbol:   class Godot
+    location: class GodotApp
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:60: error: cannot find symbol
+  		Godot godot = getGodot();
+  		^
+    symbol:   class Godot
+    location: class GodotApp
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:72: error: cannot find symbol
+  		super.onCreate(savedInstanceState);
+  		^
+    symbol:   variable super
+    location: class GodotApp
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:77: error: cannot find symbol
+  		super.onResume();
+  		^
+    symbol:   variable super
+    location: class GodotApp
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:83: error: cannot find symbol
+  		super.onGodotMainLoopStarted();
+  		^
+    symbol:   variable super
+    location: class GodotApp
+  C:\Users\Mayce\Documents\GitHub\darkness\Darkness.Godot\android\build\src\main\java\com\godot\game\GodotApp.java:92: error: cannot find symbol
+  			super.onGodotForceQuit(instance);
+  			^
+    symbol:   variable super
+    location: class GodotApp
+  Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+  17 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+
+BUILD FAILED in 12s
+24 actionable tasks: 23 executed, 1 up-to-date
+
+   at: add_message (./editor/export/editor_export_platform.h:255)
+ERROR: Project export for preset "Android" failed.
+   at: _fs_changed (editor/editor_node.cpp:1348)
+ERROR: EditorSettings not instantiated yet when getting setting "export/android/shutdown_adb_on_exit".
+   at: _EDITOR_GET (editor/settings/editor_settings.cpp:1531)

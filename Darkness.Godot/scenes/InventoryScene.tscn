@@ -53,7 +53,8 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
 text = "BACK"

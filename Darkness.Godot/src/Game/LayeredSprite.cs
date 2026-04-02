@@ -14,6 +14,7 @@ public partial class LayeredSprite : Node2D
     
     public override void _Ready()
     {
+        if (!IsInsideTree()) return;
         var shader = GD.Load<Shader>("res://src/Shaders/simple_2d.gdshader");
         _simpleMaterial = new ShaderMaterial { Shader = shader };
 

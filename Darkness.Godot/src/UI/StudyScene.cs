@@ -22,6 +22,7 @@ public partial class StudyScene : Control
 
 	public override void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_characterService = global.Services!.GetRequiredService<ICharacterService>();
 		_session = global.Services!.GetRequiredService<ISessionService>();

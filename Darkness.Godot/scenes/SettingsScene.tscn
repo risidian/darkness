@@ -29,69 +29,77 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="CenterContainer" type="CenterContainer" parent="ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/CenterContainer"]
-custom_minimum_size = Vector2(400, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Title" type="Label" parent="VBoxContainer"]
+[node name="Title" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="MasterVol" type="VBoxContainer" parent="VBoxContainer"]
+[node name="MasterVol" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/MasterVol"]
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/MasterVol"]
 layout_mode = 2
 text = "Master Volume"
 
-[node name="Slider" type="HSlider" parent="VBoxContainer/MasterVol"]
+[node name="Slider" type="HSlider" parent="ScrollContainer/MarginContainer/VBoxContainer/MasterVol"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 
-[node name="MusicVol" type="VBoxContainer" parent="VBoxContainer"]
+[node name="MusicVol" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/MusicVol"]
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/MusicVol"]
 layout_mode = 2
 text = "Music Volume"
 
-[node name="Slider" type="HSlider" parent="VBoxContainer/MusicVol"]
+[node name="Slider" type="HSlider" parent="ScrollContainer/MarginContainer/VBoxContainer/MusicVol"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 
-[node name="SfxVol" type="VBoxContainer" parent="VBoxContainer"]
+[node name="SfxVol" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/SfxVol"]
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/SfxVol"]
 layout_mode = 2
 text = "SFX Volume"
 
-[node name="Slider" type="HSlider" parent="VBoxContainer/SfxVol"]
+[node name="Slider" type="HSlider" parent="ScrollContainer/MarginContainer/VBoxContainer/SfxVol"]
 layout_mode = 2
 max_value = 1.0
 step = 0.01
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Spacer" type="Control" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
 alignment = 1
 
-[node name="SaveButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(120, 50)
+[node name="SaveButton" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "SAVE"
 
-[node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(120, 50)
+[node name="CancelButton" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "CANCEL"

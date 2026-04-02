@@ -16,7 +16,7 @@ public class GodotFileSystemService : IFileSystemService
         
         GD.Print($"[FileSystem] Attempting to open asset: {path}");
 
-        if (!global::Godot.FileAccess.FileExists(path))
+        if (!global::Godot.FileAccess.FileExists(path) && !ResourceLoader.Exists(path))
         {
             GD.PrintErr($"[FileSystem] Asset NOT FOUND: {path}");
             throw new FileNotFoundException($"Could not find asset: {path}");

@@ -19,15 +19,16 @@ public partial class AlliesScene : Control
 
 	public override async void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_allyService = global.Services!.GetRequiredService<IAllyService>();
 		_session = global.Services!.GetRequiredService<ISessionService>();
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
 
-		_pendingList = GetNode<VBoxContainer>("VBoxContainer/PendingSection/PendingList");
-		_acceptedList = GetNode<VBoxContainer>("VBoxContainer/AcceptedSection/AcceptedList");
+		_pendingList = GetNode<VBoxContainer>("ScrollContainer/MarginContainer/VBoxContainer/PendingSection/PendingList");
+		_acceptedList = GetNode<VBoxContainer>("ScrollContainer/MarginContainer/VBoxContainer/AcceptedSection/AcceptedList");
 
-		GetNode<Button>("VBoxContainer/BackButton").Pressed += () => _navigation.GoBackAsync();
+		GetNode<Button>("ScrollContainer/MarginContainer/VBoxContainer/BackButton").Pressed += () => _navigation.GoBackAsync();
 
 		await RefreshAllies();
 	}
@@ -57,13 +58,20 @@ public partial class AlliesScene : Control
 	private void AddPendingAllyUI(Ally ally)
 	{
 		var hbox = new HBoxContainer();
-		hbox.AddChild(new Label { Text = ally.AllyUsername, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+		hbox.CustomMinimumSize = new Vector2(0, 100);
+		hbox.ThemeOverrideConstantsAdd("separation", 20);
+
+		var label = new Label { Text = ally.AllyUsername, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+		label.AddThemeFontSizeOverride("font_size", 28);
+		hbox.AddChild(label);
 		
-		var acceptBtn = new Button { Text = "Accept" };
+		var acceptBtn = new Button { Text = "ACCEPT", CustomMinimumSize = new Vector2(150, 0) };
+		acceptBtn.AddThemeFontSizeOverride("font_size", 24);
 		acceptBtn.Pressed += () => RespondToRequest(ally, true);
 		hbox.AddChild(acceptBtn);
 
-		var declineBtn = new Button { Text = "Decline" };
+		var declineBtn = new Button { Text = "DECLINE", CustomMinimumSize = new Vector2(150, 0) };
+		declineBtn.AddThemeFontSizeOverride("font_size", 24);
 		declineBtn.Pressed += () => RespondToRequest(ally, false);
 		hbox.AddChild(declineBtn);
 
@@ -72,7 +80,11 @@ public partial class AlliesScene : Control
 
 	private void AddAcceptedAllyUI(Ally ally)
 	{
-		var label = new Label { Text = ally.AllyUsername };
+		var label = new Label { 
+			Text = ally.AllyUsername,
+			CustomMinimumSize = new Vector2(0, 80)
+		};
+		label.AddThemeFontSizeOverride("font_size", 28);
 		_acceptedList.AddChild(label);
 	}
 

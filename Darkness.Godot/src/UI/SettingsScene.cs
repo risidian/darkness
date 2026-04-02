@@ -21,16 +21,16 @@ public partial class SettingsScene : Control
 		_settingsService = global.Services!.GetRequiredService<ISettingsService>();
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
 
-		_masterSlider = GetNode<HSlider>("VBoxContainer/MasterVol/Slider");
-		_musicSlider = GetNode<HSlider>("VBoxContainer/MusicVol/Slider");
-		_sfxSlider = GetNode<HSlider>("VBoxContainer/SfxVol/Slider");
+		_masterSlider = GetNode<HSlider>("ScrollContainer/MarginContainer/VBoxContainer/MasterVol/Slider");
+		_musicSlider = GetNode<HSlider>("ScrollContainer/MarginContainer/VBoxContainer/MusicVol/Slider");
+		_sfxSlider = GetNode<HSlider>("ScrollContainer/MarginContainer/VBoxContainer/SfxVol/Slider");
 
 		_masterSlider.Value = _settingsService.MasterVolume;
 		_musicSlider.Value = _settingsService.MusicVolume;
 		_sfxSlider.Value = _settingsService.SfxVolume;
 
-		GetNode<Button>("VBoxContainer/HBoxContainer/SaveButton").Pressed += OnSavePressed;
-		GetNode<Button>("VBoxContainer/HBoxContainer/CancelButton").Pressed += OnCancelPressed;
+		GetNode<Button>("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveButton").Pressed += OnSavePressed;
+		GetNode<Button>("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/CancelButton").Pressed += OnCancelPressed;
 	}
 
 	private async void OnSavePressed()

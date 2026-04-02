@@ -29,8 +29,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="EncounterList" type="ItemList" parent="HSplitContainer"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="DetailsArea" type="VBoxContainer" parent="HSplitContainer"]
 layout_mode = 2
@@ -40,28 +41,32 @@ alignment = 1
 
 [node name="Title" type="Label" parent="HSplitContainer/DetailsArea"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 48
 text = "DEATHMATCH MODE"
 horizontal_alignment = 1
 
 [node name="EncounterName" type="Label" parent="HSplitContainer/DetailsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Select an encounter"
 horizontal_alignment = 1
 
 [node name="ReqLevel" type="Label" parent="HSplitContainer/DetailsArea"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Required Level: TBD"
 horizontal_alignment = 1
 
 [node name="StartButton" type="Button" parent="HSplitContainer/DetailsArea"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
 text = "START BATTLE"
 
 [node name="BackButton" type="Button" parent="HSplitContainer/DetailsArea"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
 text = "BACK"

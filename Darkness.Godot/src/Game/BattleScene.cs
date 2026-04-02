@@ -47,6 +47,7 @@ public partial class BattleScene : Control, IInitializable
 
 	public override async void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		var sp = global.Services!;
 		_navigation = sp.GetRequiredService<INavigationService>();
@@ -64,7 +65,7 @@ public partial class BattleScene : Control, IInitializable
 		GetNode<Button>("ActionsArea/Attack1").Pressed += () => ExecuteAttack(0);
 		GetNode<Button>("ActionsArea/Attack2").Pressed += () => ExecuteAttack(1);
 		GetNode<Button>("ActionsArea/Attack3").Pressed += () => ExecuteAttack(2);
-		GetNode<Button>("MenuButton").Pressed += () => _pauseMenu.Toggle();
+		GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
 
 		SetupBattle();
 		await UpdateSprites();

@@ -29,45 +29,54 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 20
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
-[node name="Title" type="Label" parent="VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Title" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "ALLIES"
 horizontal_alignment = 1
 
-[node name="PendingSection" type="VBoxContainer" parent="VBoxContainer"]
+[node name="PendingSection" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="VBoxContainer/PendingSection"]
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/PendingSection"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "Pending Requests"
 
-[node name="PendingList" type="VBoxContainer" parent="VBoxContainer/PendingSection"]
+[node name="PendingList" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/PendingSection"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 15
 
-[node name="AcceptedSection" type="VBoxContainer" parent="VBoxContainer"]
+[node name="AcceptedSection" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="VBoxContainer/AcceptedSection"]
+[node name="Label" type="Label" parent="ScrollContainer/MarginContainer/VBoxContainer/AcceptedSection"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "My Allies"
 
-[node name="AcceptedList" type="VBoxContainer" parent="VBoxContainer/AcceptedSection"]
+[node name="AcceptedList" type="VBoxContainer" parent="ScrollContainer/MarginContainer/VBoxContainer/AcceptedSection"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 15
 
-[node name="BackButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
+[node name="BackButton" type="Button" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
 text = "BACK"

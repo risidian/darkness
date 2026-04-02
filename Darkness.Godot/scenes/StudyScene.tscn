@@ -27,29 +27,30 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -250.0
-offset_right = 250.0
-offset_bottom = 250.0
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 300.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 20
 
 [node name="CharName" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 48
 text = "CHARACTER NAME"
 horizontal_alignment = 1
 
 [node name="Points" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 32
 text = "Attribute Points: 0"
 horizontal_alignment = 1
 
 [node name="StatsGrid" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 15
 
 [node name="Strength" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
 layout_mode = 2
@@ -57,11 +58,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Strength"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
 text = "Strength: 10"
 
 [node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Strength"]
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "+"
 
 [node name="Dexterity" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
@@ -70,11 +73,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Dexterity"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
 text = "Dexterity: 10"
 
 [node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Dexterity"]
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "+"
 
 [node name="Constitution" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
@@ -83,11 +88,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Constitution"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
 text = "Constitution: 10"
 
 [node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Constitution"]
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "+"
 
 [node name="Intelligence" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
@@ -96,11 +103,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Intelligence"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
 text = "Intelligence: 10"
 
 [node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Intelligence"]
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "+"
 
 [node name="Wisdom" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
@@ -109,11 +118,13 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Wisdom"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
 text = "Wisdom: 10"
 
 [node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Wisdom"]
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "+"
 
 [node name="Charisma" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
@@ -122,14 +133,17 @@ layout_mode = 2
 [node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Charisma"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
 text = "Charisma: 10"
 
 [node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Charisma"]
-custom_minimum_size = Vector2(40, 40)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "+"
 
 [node name="BackButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "BACK"

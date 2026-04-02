@@ -23,6 +23,7 @@ public partial class DeathmatchScene : Control
 
 	public override async void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_deathmatchService = global.Services!.GetRequiredService<IDeathmatchService>();
 		_navigation = global.Services!.GetRequiredService<INavigationService>();

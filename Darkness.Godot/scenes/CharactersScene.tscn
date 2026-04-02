@@ -50,13 +50,13 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
 [node name="NewButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "NEW CHARACTER"
 
 [node name="BackButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "SWITCH USER"

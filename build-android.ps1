@@ -11,18 +11,31 @@ if (!(Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir
 }
 
-# 2. Auto-increment version/code in export_presets.cfg
+# 2. Auto-increment version/code and version/name in export_presets.cfg
 if (Test-Path $PresetsPath) {
     $Content = Get-Content $PresetsPath -Raw
+    
+    # Increment version/code (Integer)
     if ($Content -match '(?m)^version/code=(\d+)') {
         $OldCode = [int]$Matches[1]
         $NewCode = $OldCode + 1
         $Content = $Content -replace "(?m)^version/code=\d+", "version/code=$NewCode"
-        $Content | Set-Content $PresetsPath -NoNewline
         Write-Host "--- Incremented Version Code to: $NewCode ---" -ForegroundColor Yellow
-    } else {
-        Write-Host "--- Version Code not found in presets ---" -ForegroundColor Gray
     }
+
+    # Increment version/name (String e.g. "1.0.19" -> "1.0.20")
+    if ($Content -match '(?m)^version/name="(\d+)\.(\d+)\.(\d+)"') {
+        $Major = $Matches[1]
+        $Minor = $Matches[2]
+        $Patch = [int]$Matches[3] + 1
+        $NewName = "$Major.$Minor.$Patch"
+        $Content = $Content -replace '(?m)^version/name=".*"', "version/name=`"$NewName`""
+        Write-Host "--- Incremented Version Name to: $NewName ---" -ForegroundColor Yellow
+    }
+
+    $Content | Set-Content $PresetsPath -NoNewline
+} else {
+    Write-Host "--- export_presets.cfg not found at $PresetsPath ---" -ForegroundColor Gray
 }
 
 Write-Host "--- Building C# Project for Android ---" -ForegroundColor Cyan
