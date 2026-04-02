@@ -25,8 +25,8 @@ if (Test-Path $PresetsPath) {
     }
 }
 
-Write-Host "--- Building C# Project ---" -ForegroundColor Cyan
-dotnet build "$ProjectDir/$ProjectDir.csproj"
+Write-Host "--- Building C# Project for Android ---" -ForegroundColor Cyan
+dotnet build "$ProjectDir/$ProjectDir.csproj" -r android-arm64 --self-contained false
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "C# Build Failed!"

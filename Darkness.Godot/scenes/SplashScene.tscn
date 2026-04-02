@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://splash_scene_uid"]
+[gd_scene format=3 uid="uid://cei61e8t5r6st"]
 
-[ext_resource type="Script" path="res://src/UI/SplashScene.cs" id="1_splash"]
+[ext_resource type="Script" uid="uid://bj775g6ddj5ri" path="res://src/UI/SplashScene.cs" id="1_splash"]
 
-[node name="SplashScene" type="Control"]
+[node name="SplashScene" type="Control" unique_id=493545644]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_splash")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1060782910]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=200266601]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -36,19 +36,19 @@ grow_vertical = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="Title" type="Label" parent="VBoxContainer"]
+[node name="Title" type="Label" parent="VBoxContainer" unique_id=1236479898]
 layout_mode = 2
 theme_override_font_sizes/font_size = 72
-text = "DARKNESS"
+text = "DARKNESS RPG"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="VBoxContainer"]
+[node name="Subtitle" type="Label" parent="VBoxContainer" unique_id=1338303025]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Press Any Key to Start"
+text = "Tap to begin your descent"
 horizontal_alignment = 1
 
-[node name="LoadingLabel" type="Label" parent="VBoxContainer"]
+[node name="LoadingLabel" type="Label" parent="VBoxContainer" unique_id=68427549]
 visible = false
 layout_mode = 2
 text = "Initializing Services..."
