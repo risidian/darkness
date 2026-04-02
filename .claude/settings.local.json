@@ -25,7 +25,10 @@
       "Bash(find '/c/Program Files/dotnet' -name *sqlite*)",
       "Bash(find Darkness.Godot/android -name *.gradle -o -name *.gradle.kts)",
       "Bash(xargs grep:*)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(find \"C:\\\\Users\\\\Mayce\\\\Documents\\\\GitHub\\\\darkness\" -name \"*.cs\" -type f -exec grep -l \"SQLite\\\\|sqlite\" {})",
+      "Bash(dotnet restore:*)",
+      "Bash(git:*)"
     ]
   }
 }

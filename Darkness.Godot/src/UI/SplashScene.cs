@@ -19,6 +19,14 @@ public partial class SplashScene : Control
 		_navigation = global.Services!.GetRequiredService<INavigationService>();
 		_session = global.Services!.GetRequiredService<ISessionService>();
 		_dialog = global.Services!.GetRequiredService<IDialogService>();
+
+		// Apply simple shader to Background
+		var bg = GetNode<ColorRect>("ColorRect");
+		if (bg != null)
+		{
+			var shader = GD.Load<Shader>("res://src/Shaders/simple_rect.gdshader");
+			bg.Material = new ShaderMaterial { Shader = shader };
+		}
 	}
 
 	public override void _Input(InputEvent @event)

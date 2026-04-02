@@ -21,9 +21,9 @@ The project has been successfully migrated from a fragmented **.NET MAUI + MonoG
 - **`IInitializable`**: Interface for scenes to receive complex data (Encounters, Snapshots) during transitions.
 
 ### Game Loop & Assets
-- **Sprite Generation**: Uses `SpriteCompositor` (SkiaSharp) to generate 576x256 LPC-compliant sprite sheets at runtime.
+- **Sprite Generation**: Uses `GodotSpriteCompositor` (Godot-native) to generate 576x256 LPC-compliant sprite sheets at runtime using `Image` alpha blending.
 - **Animation**: `ImageUtils.CreateSpriteFrames()` slices dynamic sheets into Godot `SpriteFrames` for `AnimatedSprite2D`.
-- **FileSystem**: `GodotFileSystemService` uses `global::Godot.FileAccess.GetFileAsBytes()` to safely load `res://` assets on Android.
+- **FileSystem**: `GodotFileSystemService` uses `ResourceLoader.Load<Texture2D>()` to safely load remapped `res://` assets on Android, ensuring format conversion to PNG-compatible RGBA8.
 
 ## 3. Game Flow & Scenes
 The current navigation flow is strictly enforced:

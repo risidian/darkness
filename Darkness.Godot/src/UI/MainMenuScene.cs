@@ -26,6 +26,14 @@ public partial class MainMenuScene : Control
 		_dialogService = global.Services!.GetRequiredService<IDialogService>();
 		_settingsService = global.Services!.GetRequiredService<ISettingsService>();
 
+		// Apply simple shader to Background
+		var bg = GetNode<ColorRect>("ColorRect");
+		if (bg != null)
+		{
+			var shader = GD.Load<Shader>("res://src/Shaders/simple_rect.gdshader");
+			bg.Material = new ShaderMaterial { Shader = shader };
+		}
+
 		GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/StoryButton").Pressed += () => _navigation.NavigateToAsync("WorldPage");
 		GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/BattleButton").Pressed += () => _navigation.NavigateToAsync("DeathmatchPage");
 		GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/PvpButton").Pressed += OnPvpPressed;

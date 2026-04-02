@@ -22,6 +22,53 @@ public class GodotFileSystemService : IFileSystemService
             throw new FileNotFoundException($"Could not find asset: {path}");
         }
 
+        // Check if it's an image that might be remapped
+        if (path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || 
+            path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+            path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                // ResourceLoader is the correct way to get images from res:// in exported builds
+                // because it handles remapping (.ctex) automatically.
+                var tex = ResourceLoader.Load<Texture2D>(path);
+                if (tex != null)
+                {
+                    var img = tex.GetImage();
+                    
+                    // ON ANDROID: Textures are often VRAM compressed (ETC2/ASTC).
+                    // SavePngToBuffer() will FAIL on compressed formats.
+                    if (img.IsCompressed())
+                    {
+                        img.Decompress();
+                    }
+                    
+                    // Ensure we are in a standard format for saving
+                    if (img.GetFormat() != Image.Format.Rgba8)
+                    {
+                        img.Convert(Image.Format.Rgba8);
+                    }
+
+                    byte[] pngBytes = img.SavePngToBuffer();
+                    
+                    if (pngBytes == null || pngBytes.Length == 0)
+                    {
+                        GD.PrintErr($"[FileSystem] SavePngToBuffer returned EMPTY for {path}. Format: {img.GetFormat()}");
+                    }
+                    else
+                    {
+                        GD.Print($"[FileSystem] Loaded image via ResourceLoader: {path} ({pngBytes.Length} bytes, Format: {img.GetFormat()})");
+                        return Task.FromResult<Stream>(new MemoryStream(pngBytes));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                GD.PrintErr($"[FileSystem] ResourceLoader FAILED for {path}: {ex.Message}");
+            }
+        }
+
+        // Fallback for non-images or if ResourceLoader failed
         byte[] bytes = global::Godot.FileAccess.GetFileAsBytes(path);
         if (bytes == null || bytes.Length == 0)
         {
@@ -29,7 +76,7 @@ public class GodotFileSystemService : IFileSystemService
             throw new IOException($"Failed to read bytes from asset: {path}");
         }
 
-        GD.Print($"[FileSystem] Successfully read {bytes.Length} bytes from {path}");
+        GD.Print($"[FileSystem] Successfully read {bytes.Length} bytes from {path} (Fallback/Non-Image)");
         return Task.FromResult<Stream>(new MemoryStream(bytes));
     }
 }

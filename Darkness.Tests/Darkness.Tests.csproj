@@ -11,7 +11,6 @@
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="SkiaSharp" Version="3.116.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
   </ItemGroup>
@@ -29,6 +28,7 @@
     <Compile Remove="Input\InputManagerTests.cs" />
     <Compile Remove="Scenes\BattleSceneTests.cs" />
     <Compile Remove="Scenes\SceneDisposalTests.cs" />
+    <Compile Remove="Services\SpriteCompositorTests.cs" />
   </ItemGroup>
 
 </Project>

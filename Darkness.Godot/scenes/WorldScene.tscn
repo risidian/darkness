@@ -1,7 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://c6l7x4y4y4y4y"]
 
 [ext_resource type="Script" path="res://src/Game/WorldScene.cs" id="1_x4y4y"]
-[ext_resource type="PackedScene" uid="uid://pause_menu_uid" path="res://scenes/PauseMenu.tscn" id="2_pause"]
+[ext_resource type="PackedScene" uid="uid://layered_sprite_id" path="res://scenes/LayeredSprite.tscn" id="2_layered"]
+[ext_resource type="PackedScene" uid="uid://pause_menu_uid" path="res://scenes/PauseMenu.tscn" id="3_pause"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x1y1y"]
 size = Vector2(64, 64)
@@ -23,7 +24,8 @@ color = Color(0, 0.411765, 0.580392, 1)
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(200, 300)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Player"]
+[node name="Sprite" parent="Player" instance=ExtResource("2_layered")]
+position = Vector2(-64, -64)
 scale = Vector2(2, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
@@ -32,7 +34,8 @@ shape = SubResource("RectangleShape2D_x1y1y")
 [node name="NPC" type="Area2D" parent="."]
 position = Vector2(400, 200)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="NPC"]
+[node name="Sprite" parent="NPC" instance=ExtResource("2_layered")]
+position = Vector2(-64, -64)
 scale = Vector2(2, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NPC"]
@@ -102,5 +105,5 @@ theme_override_font_sizes/font_size = 16
 text = "[PRESS SPACE TO CONTINUE]"
 horizontal_alignment = 2
 
-[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("2_pause")]
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("3_pause")]
 visible = false

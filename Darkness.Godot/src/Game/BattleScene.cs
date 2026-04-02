@@ -97,67 +97,36 @@ public partial class BattleScene : Control, IInitializable
 		foreach (Node child in _partyContainer.GetChildren()) child.QueueFree();
 		foreach (Node child in _enemyContainer.GetChildren()) child.QueueFree();
 
+		var layeredSpriteScene = GD.Load<PackedScene>("res://scenes/LayeredSprite.tscn");
+
 		foreach (var character in _party)
 		{
-			var sprite = new AnimatedSprite2D { Scale = new Vector2(2, 2) };
+			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
+			sprite.Scale = new Vector2(2, 2);
 			_partyContainer.AddChild(sprite);
-			sprite.SpriteFrames = await LoadCharacterFrames(character);
+			await sprite.SetupCharacter(character, _catalog, _fileSystem);
 			sprite.Play("idle_right");
 		}
 
 		foreach (var enemy in _enemies)
 		{
-			var sprite = new AnimatedSprite2D { Scale = new Vector2(2, 2) };
+			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
+			sprite.Scale = new Vector2(2, 2);
 			_enemyContainer.AddChild(sprite);
+			
 			var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-			sprite.SpriteFrames = await LoadCharacterFrames(new Character {
+			await sprite.SetupCharacter(new Character {
 				SkinColor = knightAppearance.SkinColor,
 				HairStyle = knightAppearance.HairStyle,
 				HairColor = knightAppearance.HairColor,
 				ArmorType = knightAppearance.ArmorType,
-				WeaponType = knightAppearance.WeaponType
-			});
+				WeaponType = knightAppearance.WeaponType,
+				Feet = knightAppearance.Feet,
+				Arms = knightAppearance.Arms,
+				Legs = knightAppearance.Legs
+			}, _catalog, _fileSystem);
 			sprite.Play("idle_left");
 		}
-	}
-
-	private async Task<SpriteFrames?> LoadCharacterFrames(Character c)
-	{
-		var appearance = new CharacterAppearance
-		{
-			SkinColor = c.SkinColor,
-			Face = c.Face ?? "Default",
-			Eyes = c.Eyes ?? "Default",
-			HairStyle = c.HairStyle,
-			HairColor = c.HairColor,
-			ArmorType = c.ArmorType,
-			WeaponType = c.WeaponType,
-			Head = "Human Male"
-		};
-
-		try
-		{
-			var layers = _catalog.GetLayersForAppearance(appearance);
-			var streams = new List<System.IO.Stream>();
-			foreach (var layer in layers)
-			{
-				var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
-				streams.Add(stream);
-			}
-
-			if (streams.Count > 0)
-			{
-				var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
-				return ImageUtils.CreateSpriteFrames(sheetBytes, 64, 64);
-			}
-			
-			foreach (var s in streams) s.Dispose();
-		}
-		catch (System.Exception ex)
-		{
-			GD.PrintErr($"[BattleScene] Failed to load frames: {ex.Message}");
-		}
-		return null;
 	}
 
 	private void ExecuteAttack(int enemyIndex)

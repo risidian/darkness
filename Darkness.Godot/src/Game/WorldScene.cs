@@ -18,8 +18,8 @@ public partial class WorldScene : Node2D, IInitializable
 	private IFileSystemService _fileSystem;
 
 	private CharacterBody2D _player;
-	private AnimatedSprite2D _playerSprite;
-	private AnimatedSprite2D _npcSprite;
+	private LayeredSprite _playerSprite;
+	private LayeredSprite _npcSprite;
 	private PanelContainer _dialogueBox;
 	private PauseMenu _pauseMenu;
 	private Label _nameLabel;
@@ -48,9 +48,15 @@ public partial class WorldScene : Node2D, IInitializable
 		_catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
 		_fileSystem = sp.GetRequiredService<IFileSystemService>();
 
+		// Apply simple shader to Backgrounds
+		var bgShader = GD.Load<Shader>("res://src/Shaders/simple_rect.gdshader");
+		var bgMat = new ShaderMaterial { Shader = bgShader };
+		GetNode<ColorRect>("Background").Material = bgMat;
+		GetNode<ColorRect>("Water").Material = bgMat;
+
 		_player = GetNode<CharacterBody2D>("Player");
-		_playerSprite = GetNode<AnimatedSprite2D>("Player/Sprite");
-		_npcSprite = GetNode<AnimatedSprite2D>("NPC/Sprite");
+		_playerSprite = GetNode<LayeredSprite>("Player/Sprite");
+		_npcSprite = GetNode<LayeredSprite>("NPC/Sprite");
 		
 		_dialogueBox = GetNode<PanelContainer>("CanvasLayer/DialogueBox");
 		_pauseMenu = GetNode<PauseMenu>("CanvasLayer/PauseMenu");
@@ -74,58 +80,22 @@ public partial class WorldScene : Node2D, IInitializable
 	{
 		if (_session.CurrentCharacter != null)
 		{
-			_playerSprite.SpriteFrames = await LoadCharacterFrames(_session.CurrentCharacter);
+			await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
 			_playerSprite.Play("idle_down");
 		}
 
 		var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-		_npcSprite.SpriteFrames = await LoadCharacterFrames(new Character { 
+		await _npcSprite.SetupCharacter(new Character { 
 			SkinColor = knightAppearance.SkinColor,
 			HairStyle = knightAppearance.HairStyle,
 			HairColor = knightAppearance.HairColor,
 			ArmorType = knightAppearance.ArmorType,
-			WeaponType = knightAppearance.WeaponType
-		});
+			WeaponType = knightAppearance.WeaponType,
+			Feet = knightAppearance.Feet,
+			Arms = knightAppearance.Arms,
+			Legs = knightAppearance.Legs
+		}, _catalog, _fileSystem);
 		_npcSprite.Play("idle_down");
-	}
-
-	private async Task<SpriteFrames?> LoadCharacterFrames(Character c)
-	{
-		var appearance = new CharacterAppearance
-		{
-			SkinColor = c.SkinColor,
-			Face = c.Face ?? "Default",
-			Eyes = c.Eyes ?? "Default",
-			HairStyle = c.HairStyle,
-			HairColor = c.HairColor,
-			ArmorType = c.ArmorType,
-			WeaponType = c.WeaponType,
-			Head = "Human Male"
-		};
-
-		try
-		{
-			var layers = _catalog.GetLayersForAppearance(appearance);
-			var streams = new List<System.IO.Stream>();
-			foreach (var layer in layers)
-			{
-				var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
-				streams.Add(stream);
-			}
-
-			if (streams.Count > 0)
-			{
-				var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
-				return ImageUtils.CreateSpriteFrames(sheetBytes, 64, 64);
-			}
-			
-			foreach (var s in streams) s.Dispose();
-		}
-		catch (System.Exception ex)
-		{
-			GD.PrintErr($"[WorldScene] Failed to load frames: {ex.Message}");
-		}
-		return null;
 	}
 
 	public override void _Process(double delta)

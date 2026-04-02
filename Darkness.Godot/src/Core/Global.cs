@@ -36,7 +36,7 @@ public partial class Global : Node
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IRewardService, RewardService>();
             services.AddSingleton<ICombatService, CombatEngine>();
-            services.AddSingleton<ISpriteCompositor, SpriteCompositor>();
+            services.AddSingleton<ISpriteCompositor, GodotSpriteCompositor>();
             services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
             services.AddSingleton<StoryController>();
