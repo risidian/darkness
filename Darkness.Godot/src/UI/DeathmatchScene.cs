@@ -10,13 +10,13 @@ namespace Darkness.Godot.UI;
 
 public partial class DeathmatchScene : Control
 {
-	private IDeathmatchService _deathmatchService;
-	private INavigationService _navigation;
+	private IDeathmatchService _deathmatchService = null!;
+	private INavigationService _navigation = null!;
 
-	private ItemList _encounterList;
-	private Label _nameLabel;
-	private Label _reqLevelLabel;
-	private Button _startButton;
+	private ItemList _encounterList = null!;
+	private Label _nameLabel = null!;
+	private Label _reqLevelLabel = null!;
+	private Button _startButton = null!;
 
 	private List<DeathmatchEncounter> _encounters = new();
 	private DeathmatchEncounter? _selectedEncounter;

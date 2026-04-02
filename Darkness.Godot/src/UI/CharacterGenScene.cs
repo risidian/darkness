@@ -10,26 +10,26 @@ namespace Darkness.Godot.UI;
 
 public partial class CharacterGenScene : Control
 {
-	private INavigationService _navigation;
-	private ISpriteCompositor _compositor;
-	private ISpriteLayerCatalog _catalog;
-	private ICharacterService _characterService;
-	private ISessionService _session;
-	private IFileSystemService _fileSystem;
+	private INavigationService _navigation = null!;
+	private ISpriteCompositor _compositor = null!;
+	private ISpriteLayerCatalog _catalog = null!;
+	private ICharacterService _characterService = null!;
+	private ISessionService _session = null!;
+	private IFileSystemService _fileSystem = null!;
 
-	private TextureRect _spritePreview;
-	private LineEdit _nameEdit;
-	private OptionButton _classOption;
-	private OptionButton _skinOption;
-	private OptionButton _hairStyleOption;
-	private OptionButton _hairColorOption;
-	private OptionButton _faceOption;
-	private OptionButton _eyesOption;
-	private OptionButton _legsOption;
-	private OptionButton _feetOption;
-	private OptionButton _armsOption;
-	private OptionButton _armorOption;
-	private OptionButton _weaponOption;
+	private TextureRect _spritePreview = null!;
+	private LineEdit _nameEdit = null!;
+	private OptionButton _classOption = null!;
+	private OptionButton _skinOption = null!;
+	private OptionButton _hairStyleOption = null!;
+	private OptionButton _hairColorOption = null!;
+	private OptionButton _faceOption = null!;
+	private OptionButton _eyesOption = null!;
+	private OptionButton _legsOption = null!;
+	private OptionButton _feetOption = null!;
+	private OptionButton _armsOption = null!;
+	private OptionButton _armorOption = null!;
+	private OptionButton _weaponOption = null!;
 
 	private byte[]? _previewBytes;
 

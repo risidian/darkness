@@ -8,9 +8,9 @@ namespace Darkness.Godot.UI;
 
 public partial class SplashScene : Control
 {
-	private INavigationService _navigation;
-	private ISessionService _session;
-	private IDialogService _dialog;
+	private INavigationService _navigation = null!;
+	private ISessionService _session = null!;
+	private IDialogService _dialog = null!;
 	private bool _isInitialized;
 
 	public override void _Ready()

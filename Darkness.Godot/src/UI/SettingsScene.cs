@@ -8,15 +8,16 @@ namespace Darkness.Godot.UI;
 
 public partial class SettingsScene : Control
 {
-	private ISettingsService _settingsService;
-	private INavigationService _navigation;
+	private ISettingsService _settingsService = null!;
+	private INavigationService _navigation = null!;
 
-	private HSlider _masterSlider;
-	private HSlider _musicSlider;
-	private HSlider _sfxSlider;
+	private HSlider _masterSlider = null!;
+	private HSlider _musicSlider = null!;
+	private HSlider _sfxSlider = null!;
 
 	public override void _Ready()
 	{
+		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		_settingsService = global.Services!.GetRequiredService<ISettingsService>();
 		_navigation = global.Services!.GetRequiredService<INavigationService>();

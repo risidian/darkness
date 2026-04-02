@@ -11,19 +11,19 @@ namespace Darkness.Godot.Game;
 
 public partial class WorldScene : Node2D, IInitializable
 {
-	private INavigationService _navigation;
-	private ISessionService _session;
-	private ISpriteCompositor _compositor;
-	private ISpriteLayerCatalog _catalog;
-	private IFileSystemService _fileSystem;
+	private INavigationService _navigation = null!;
+	private ISessionService _session = null!;
+	private ISpriteCompositor _compositor = null!;
+	private ISpriteLayerCatalog _catalog = null!;
+	private IFileSystemService _fileSystem = null!;
 
-	private CharacterBody2D _player;
-	private LayeredSprite _playerSprite;
-	private LayeredSprite _npcSprite;
-	private PanelContainer _dialogueBox;
-	private PauseMenu _pauseMenu;
-	private Label _nameLabel;
-	private Label _textLabel;
+	private CharacterBody2D _player = null!;
+	private LayeredSprite _playerSprite = null!;
+	private LayeredSprite _npcSprite = null!;
+	private PanelContainer _dialogueBox = null!;
+	private PauseMenu _pauseMenu = null!;
+	private Label _nameLabel = null!;
+	private Label _textLabel = null!;
 
 	private float _moveSpeed = 300f;
 	private string[] _dialogue = new[] {

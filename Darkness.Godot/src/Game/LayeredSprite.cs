@@ -10,7 +10,7 @@ namespace Darkness.Godot.Game;
 public partial class LayeredSprite : Node2D
 {
     private Dictionary<string, AnimatedSprite2D> _layers = new();
-    private ShaderMaterial _simpleMaterial;
+    private ShaderMaterial _simpleMaterial = null!;
     
     public override void _Ready()
     {

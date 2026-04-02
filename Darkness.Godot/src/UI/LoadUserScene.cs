@@ -9,18 +9,18 @@ namespace Darkness.Godot.UI;
 
 public partial class LoadUserScene : Control
 {
-    private INavigationService _navigation;
-    private IUserService _userService;
-    private ISessionService _session;
-    private VBoxContainer _userList;
+    private INavigationService _navigation = null!;
+    private IUserService _userService = null!;
+    private ISessionService _session = null!;
+    private VBoxContainer _userList = null!;
 
     public override void _Ready()
     {
         if (!IsInsideTree()) return;
         var global = GetNode<Global>("/root/Global");
-        _navigation = global.Services.GetRequiredService<INavigationService>();
-        _userService = global.Services.GetRequiredService<IUserService>();
-        _session = global.Services.GetRequiredService<ISessionService>();
+        _navigation = global.Services!.GetRequiredService<INavigationService>();
+        _userService = global.Services!.GetRequiredService<IUserService>();
+        _session = global.Services!.GetRequiredService<ISessionService>();
 
         _userList = GetNode<VBoxContainer>("VBoxContainer/ScrollContainer/UserList");
         GetNode<Button>("VBoxContainer/CreateButton").Pressed += OnCreatePressed;

@@ -7,7 +7,7 @@ namespace Darkness.Godot.UI;
 
 public partial class PauseMenu : CanvasLayer
 {
-	private INavigationService _navigation;
+	private INavigationService _navigation = null!;
 
 	public override void _Ready()
 	{

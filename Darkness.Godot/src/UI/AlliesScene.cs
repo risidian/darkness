@@ -10,12 +10,12 @@ namespace Darkness.Godot.UI;
 
 public partial class AlliesScene : Control
 {
-	private IAllyService _allyService;
-	private ISessionService _session;
-	private INavigationService _navigation;
+	private IAllyService _allyService = null!;
+	private ISessionService _session = null!;
+	private INavigationService _navigation = null!;
 
-	private VBoxContainer _pendingList;
-	private VBoxContainer _acceptedList;
+	private VBoxContainer _pendingList = null!;
+	private VBoxContainer _acceptedList = null!;
 
 	public override async void _Ready()
 	{
@@ -59,7 +59,7 @@ public partial class AlliesScene : Control
 	{
 		var hbox = new HBoxContainer();
 		hbox.CustomMinimumSize = new Vector2(0, 100);
-		hbox.ThemeOverrideConstantsAdd("separation", 20);
+		hbox.AddThemeConstantOverride("separation", 20);
 
 		var label = new Label { Text = ally.AllyUsername, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 		label.AddThemeFontSizeOverride("font_size", 28);

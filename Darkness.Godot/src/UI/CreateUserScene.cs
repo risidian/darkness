@@ -8,10 +8,10 @@ namespace Darkness.Godot.UI;
 
 public partial class CreateUserScene : Control
 {
-    private INavigationService _navigation;
-    private IUserService _userService;
-    private ISessionService _session;
-    private LineEdit _usernameEdit;
+    private INavigationService _navigation = null!;
+    private IUserService _userService = null!;
+    private ISessionService _session = null!;
+    private LineEdit _usernameEdit = null!;
 
     public override void _Ready()
     {

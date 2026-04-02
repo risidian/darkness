@@ -9,12 +9,12 @@ namespace Darkness.Godot.UI;
 
 public partial class MainMenuScene : Control
 {
-	private INavigationService _navigation;
-	private IRewardService _rewardService;
-	private ISessionService _session;
-	private ICharacterService _characterService;
-	private IDialogService _dialogService;
-	private ISettingsService _settingsService;
+	private INavigationService _navigation = null!;
+	private IRewardService _rewardService = null!;
+	private ISessionService _session = null!;
+	private ICharacterService _characterService = null!;
+	private IDialogService _dialogService = null!;
+	private ISettingsService _settingsService = null!;
 
 	public override async void _Ready()
 	{

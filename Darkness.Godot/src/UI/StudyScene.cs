@@ -10,13 +10,13 @@ namespace Darkness.Godot.UI;
 
 public partial class StudyScene : Control
 {
-	private ICharacterService _characterService;
-	private ISessionService _session;
-	private INavigationService _navigation;
+	private ICharacterService _characterService = null!;
+	private ISessionService _session = null!;
+	private INavigationService _navigation = null!;
 
 	private Character? _character;
-	private Label _charNameLabel;
-	private Label _pointsLabel;
+	private Label _charNameLabel = null!;
+	private Label _pointsLabel = null!;
 
 	private Dictionary<string, (Label Label, Button Button)> _statControls = new();
 

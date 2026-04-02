@@ -9,10 +9,10 @@ namespace Darkness.Godot.UI;
 
 public partial class CharactersScene : Control
 {
-    private INavigationService _navigation;
-    private ICharacterService _characterService;
-    private ISessionService _session;
-    private VBoxContainer _characterList;
+    private INavigationService _navigation = null!;
+    private ICharacterService _characterService = null!;
+    private ISessionService _session = null!;
+    private VBoxContainer _characterList = null!;
 
     public override void _Ready()
     {
@@ -57,7 +57,7 @@ public partial class CharactersScene : Control
                 {
                     var hbox = new HBoxContainer();
                     hbox.CustomMinimumSize = new Vector2(0, 100);
-                    hbox.ThemeOverrideConstantsAdd("separation", 20);
+                    hbox.AddThemeConstantOverride("separation", 20);
 
                     var tex = ImageUtils.ByteArrayToTexture(character.Thumbnail);
                     if (tex != null)

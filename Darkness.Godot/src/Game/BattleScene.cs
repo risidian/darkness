@@ -12,17 +12,17 @@ namespace Darkness.Godot.Game;
 
 public partial class BattleScene : Control, IInitializable
 {
-	private INavigationService _navigation;
-	private ISessionService _session;
-	private ICombatService _combat;
-	private ISpriteCompositor _compositor;
-	private ISpriteLayerCatalog _catalog;
-	private IFileSystemService _fileSystem;
-	private RichTextLabel _combatLog;
-	private PauseMenu _pauseMenu;
+	private INavigationService _navigation = null!;
+	private ISessionService _session = null!;
+	private ICombatService _combat = null!;
+	private ISpriteCompositor _compositor = null!;
+	private ISpriteLayerCatalog _catalog = null!;
+	private IFileSystemService _fileSystem = null!;
+	private RichTextLabel _combatLog = null!;
+	private PauseMenu _pauseMenu = null!;
 
-	private HBoxContainer _partyContainer;
-	private HBoxContainer _enemyContainer;
+	private HBoxContainer _partyContainer = null!;
+	private HBoxContainer _enemyContainer = null!;
 
 	private List<Character> _party = new();
 	private List<Enemy> _enemies = new();

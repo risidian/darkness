@@ -10,9 +10,9 @@ namespace Darkness.Godot.UI;
 
 public partial class InventoryScene : Control
 {
-	private ISessionService _session;
-	private INavigationService _navigation;
-	private VBoxContainer _itemList;
+	private ISessionService _session = null!;
+	private INavigationService _navigation = null!;
+	private VBoxContainer _itemList = null!;
 
 	public override void _Ready()
 	{
@@ -42,7 +42,7 @@ public partial class InventoryScene : Control
 		{
 			var hbox = new HBoxContainer();
 			hbox.CustomMinimumSize = new Vector2(0, 80);
-			hbox.ThemeOverrideConstantsAdd("separation", 20);
+			hbox.AddThemeConstantOverride("separation", 20);
 
 			var label = new Label { Text = item, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			label.AddThemeFontSizeOverride("font_size", 24);

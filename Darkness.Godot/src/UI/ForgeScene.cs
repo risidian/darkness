@@ -10,18 +10,18 @@ namespace Darkness.Godot.UI;
 
 public partial class ForgeScene : Control
 {
-	private ICraftingService _craftingService;
-	private ISessionService _session;
-	private ICharacterService _characterService;
-	private INavigationService _navigation;
-	private IDialogService _dialogService;
+	private ICraftingService _craftingService = null!;
+	private ISessionService _session = null!;
+	private ICharacterService _characterService = null!;
+	private INavigationService _navigation = null!;
+	private IDialogService _dialogService = null!;
 
-	private ItemList _recipeList;
-	private Label _titleLabel;
-	private Label _descLabel;
-	private Label _materialsLabel;
-	private Label _statsLabel;
-	private Button _forgeButton;
+	private ItemList _recipeList = null!;
+	private Label _titleLabel = null!;
+	private Label _descLabel = null!;
+	private Label _materialsLabel = null!;
+	private Label _statsLabel = null!;
+	private Button _forgeButton = null!;
 
 	private List<Recipe> _recipes = new();
 	private Recipe? _selectedRecipe;
