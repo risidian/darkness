@@ -245,7 +245,8 @@ __pycache__/
 .godot/
 *.import
 export_presets.cfg.bak
-android/
+android/build/
+android/.gradle/
 
 # Unified Build Artifacts
 [Bb]in/
