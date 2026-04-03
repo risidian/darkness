@@ -41,7 +41,15 @@
       "BackgroundKey": "forest",
       "Rewards": []
     },
-    "DialogueKey": "beat_1_intro"
+    "DialogueKey": "beat_1_intro",
+    "Dialogue": {
+      "Speaker": "Old Man",
+      "Lines": [
+        "Welcome to the Shore of Camelot, Wanderer.",
+        "The path to the castle is blocked by shadows.",
+        "You'll find only hounds and darkness to the east."
+      ]
+    }
   },
   {
     "Id": "beat_2",
@@ -66,7 +74,15 @@
       "BackgroundKey": "dark_castle",
       "Rewards": []
     },
-    "DialogueKey": "beat_2_intro"
+    "DialogueKey": "beat_2_intro",
+    "Dialogue": {
+      "Speaker": "Dark Warrior",
+      "Lines": [
+        "You dare approach the gates of Camelot?",
+        "Your journey ends here, mortal.",
+        "The shadow consumes all."
+      ]
+    }
   },
   {
     "Id": "beat_3",
@@ -90,6 +106,14 @@
       "BackgroundKey": "dark_castle",
       "Rewards": []
     },
-    "DialogueKey": "beat_3_intro"
+    "DialogueKey": "beat_3_intro",
+    "Dialogue": {
+      "Speaker": "The Sorcerer",
+      "Lines": [
+        "The Dark Warrior was only the beginning.",
+        "I have woven the shadows into a cage for you.",
+        "Let us see if your spirit is truly unbreakable."
+      ]
+    }
   }
 ]
