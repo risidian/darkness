@@ -15,12 +15,12 @@
 		{
 		  "Text": "[Fight] I will slay the hounds.",
 		  "NextQuestId": "beat_1_combat",
-		  "MoralityImpact": -5
+		  "MoralityImpact": 5
 		},
 		{
 		  "Text": "[Sneak] I will find another way.",
-		  "NextQuestId": "beat_1_sneak",
-		  "MoralityImpact": 5
+		  "NextQuestId": "beat_1_sneak_dialogue",
+		  "MoralityImpact": -5
 		}
 	  ]
 	}
@@ -32,10 +32,10 @@
 	"Prerequisites": ["beat_1"],	"Encounter": {
 	  "Enemies": [
 		{
-		  "Name": "Undead Dog A",
+		  "Name": "Hell Hound 1",
 		  "Level": 1,
-		  "MaxHP": 400,
-		  "CurrentHP": 400,
+		  "MaxHP": 50,
+		  "CurrentHP": 50,
 		  "Attack": 12,
 		  "Defense": 5,
 		  "Speed": 12,
@@ -44,8 +44,8 @@
 		{
 		  "Name": "Undead Dog B",
 		  "Level": 1,
-		  "MaxHP": 400,
-		  "CurrentHP": 400,
+		  "MaxHP": 50,
+		  "CurrentHP": 50,
 		  "Attack": 12,
 		  "Defense": 5,
 		  "Speed": 12,
@@ -54,8 +54,8 @@
 		{
 		  "Name": "Undead Dog C",
 		  "Level": 1,
-		  "MaxHP": 400,
-		  "CurrentHP": 400,
+		  "MaxHP": 50,
+		  "CurrentHP": 50,
 		  "Attack": 12,
 		  "Defense": 5,
 		  "Speed": 12,
@@ -68,16 +68,23 @@
 	}
   },
   {
-	"Id": "beat_1_sneak",
+	"Id": "beat_1_sneak_dialogue",
 	"Title": "The Hidden Path",
 	"IsMainStory": true,
-	"Prerequisites": ["beat_1"],	"Dialogue": {
+	"Prerequisites": ["beat_1"],
+	"Dialogue": {
 	  "Speaker": "Old Man",
 	  "Lines": [
 		"Wise choice. The shadows are thickest near the main road.",
 		"Follow the riverbed, but beware the Creek Monster."
 	  ]
-	},
+	}
+  },
+  {
+	"Id": "beat_1_sneak_combat",
+	"Title": "The Creek Monster",
+	"IsMainStory": true,
+	"Prerequisites": ["beat_1_sneak_dialogue"],
 	"Encounter": {
 	  "Enemies": [
 		{
@@ -89,7 +96,7 @@
 		  "Defense": 8,
 		  "Speed": 10,
 		  "SpriteKey": "hound",
-		  "MoralityImpact": -2
+		  "MoralityImpact": 2
 		}
 	  ],
 	  "SurvivalTurns": null,
