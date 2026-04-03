@@ -10,5 +10,6 @@ namespace Darkness.Core.Models
         public List<string> Prerequisites { get; set; } = new();
         public EncounterData? Encounter { get; set; }
         public string? DialogueKey { get; set; }
+        public DialogueData? Dialogue { get; set; }
     }
 }
