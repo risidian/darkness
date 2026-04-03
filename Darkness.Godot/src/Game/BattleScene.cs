@@ -288,6 +288,16 @@ public partial class BattleScene : Control, IInitializable
 			if (target.CurrentHP <= 0)
 			{
 				_combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
+				
+				// Apply morality impact
+				if (target.MoralityImpact != 0 && _party.Count > 0)
+				{
+					_party[0].Morality += target.MoralityImpact;
+					string color = target.MoralityImpact > 0 ? "cyan" : "purple";
+					string sign = target.MoralityImpact > 0 ? "+" : "";
+					_combatLog.AppendText($"\n[color={color}]Morality changed {sign}{target.MoralityImpact} (Total: {_party[0].Morality})[/color]");
+				}
+				
 				_enemies.Remove(target);
 				await UpdateSprites();
 			}

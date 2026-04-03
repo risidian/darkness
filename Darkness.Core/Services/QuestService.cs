@@ -60,6 +60,8 @@ public class QuestService : IQuestService
         return _quests.FirstOrDefault(q => 
             q.IsMainStory && 
             !character.CompletedQuestIds.Contains(q.Id) && 
-            q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p)));
+            q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p)) &&
+            (!q.RequiredMoralityMin.HasValue || character.Morality >= q.RequiredMoralityMin.Value) &&
+            (!q.RequiredMoralityMax.HasValue || character.Morality <= q.RequiredMoralityMax.Value));
     }
 }

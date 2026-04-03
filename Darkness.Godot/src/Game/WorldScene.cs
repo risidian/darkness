@@ -311,6 +311,13 @@ public partial class WorldScene : Node2D, IInitializable
 			// 2. Mark the chosen path as "completed" so it meets its own prerequisite
 			// This effectively "unlocks" the chosen path.
 			_questService.CompleteQuest(_session.CurrentCharacter, choice.NextQuestId);
+
+			// Apply morality
+			if (choice.MoralityImpact != 0)
+			{
+				_session.CurrentCharacter.Morality += choice.MoralityImpact;
+				GD.Print($"[Morality] Changed by {choice.MoralityImpact}. New Total: {_session.CurrentCharacter.Morality}");
+			}
 		}
 
 		// 3. Hide dialogue box and end conversation
