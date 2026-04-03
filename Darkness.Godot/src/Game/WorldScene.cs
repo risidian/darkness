@@ -104,28 +104,6 @@ public partial class WorldScene : Node2D, IInitializable
 		await UpdateSprites();
 	}
 
-	private async Task UpdateSprites()
-	{
-		if (_session.CurrentCharacter != null)
-		{
-			await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
-			_playerSprite.Play("idle_down");
-		}
-
-		var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-		await _npcSprite.SetupCharacter(new Character { 
-			SkinColor = knightAppearance.SkinColor,
-			HairStyle = knightAppearance.HairStyle,
-			HairColor = knightAppearance.HairColor,
-			ArmorType = knightAppearance.ArmorType,
-			WeaponType = knightAppearance.WeaponType,
-			Feet = knightAppearance.Feet,
-			Arms = knightAppearance.Arms,
-			Legs = knightAppearance.Legs
-		}, _catalog, _fileSystem);
-		_npcSprite.Play("idle_down");
-	}
-
 	public override void _Process(double delta)
 	{
 		if (!IsInsideTree()) return;
@@ -181,7 +159,8 @@ public partial class WorldScene : Node2D, IInitializable
 		}
 
 		// This trigger should now check for pending quests from dialogue choices
-		if (_pendingNextQuestId == null && _player.GlobalPosition.X > 1200)
+		// It should be called even if _pendingNextQuestId is set, to initiate the pending quest.
+		if (_player.GlobalPosition.X > 1200)
 		{
 			TriggerEncounter();
 		}
@@ -336,84 +315,68 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private async void TriggerEncounter()
 	{
-		// If already triggered, dialogue is active, or choices are pending, do nothing.
-		if (_isEncounterTriggered || _currentDialogueIndex >= 0 || !string.IsNullOrEmpty(_pendingNextQuestId)) 
+		// Prevent re-triggering if an encounter is already in progress or dialogue is active.
+		// If a choice was made and a quest is pending, we SHOULD proceed to trigger it.
+		if (_isEncounterTriggered || _currentDialogueIndex >= 0) 
 		{
-			// If a choice was made and we are pending a quest, this means the player has walked east *after* making a choice.
-			// We should now trigger that pending quest.
-			if (!string.IsNullOrEmpty(_pendingNextQuestId))
-			{
-				GD.Print($"[WorldScene] Triggering pending quest: {_pendingNextQuestId}");
-				var nextQuest = _questService.GetQuestById(_pendingNextQuestId);
-				_pendingNextQuestId = null; // Reset after checking
-
-				if (nextQuest != null)
-				{
-					// If the chosen quest has an encounter, navigate to battle
-					if (nextQuest.Encounter != null)
-					{
-						await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = nextQuest.Encounter });
-						_isEncounterTriggered = true; // Mark as triggered to prevent re-triggering immediately
-						return; // Stop further encounter checks
-					}
-					// If the chosen quest has dialogue, we might need a more complex flow.
-					// For now, we assume choices leading to dialogue will be handled by NPC interaction or other triggers.
-					// This part might need refinement for immediate dialogue transitions.
-				}
-				else
-				{
-					GD.PrintErr($"[WorldScene] Pending quest ID '{_pendingNextQuestId}' not found!");
-				}
-			}
-			// If not pending a choice quest, and already triggered, do nothing.
-			else if (_isEncounterTriggered)
-			{
-				return;
-			}
-			// If not pending a choice quest and not triggered, proceed to check location/main story.
+			GD.Print($"[WorldScene] TriggerEncounter blocked: Encountered={_isEncounterTriggered}, Dialogue={_currentDialogueIndex >= 0}");
+			return;
 		}
 
-		// If no pending choice-driven quest, proceed with location-based or next main story quest.
-		var locationQuest = _questService.GetQuestByLocation("SandyShore_East");
-		GD.Print($"[WorldScene] Checking location 'SandyShore_East'. Found: {locationQuest?.Title ?? "None"}");
+		QuestNode? questToTrigger = null;
 
-		if (locationQuest != null)
+		// 1. Check if a choice was made that leads to a specific quest.
+		if (!string.IsNullOrEmpty(_pendingNextQuestId))
 		{
-			// If a location-based quest is found AND it's not completed and has an encounter
-			if (!IsQuestCompleted(locationQuest.Id) && locationQuest.Encounter != null)
+			GD.Print($"[WorldScene] Checking pending quest ID: {_pendingNextQuestId}");
+			questToTrigger = _questService.GetQuestById(_pendingNextQuestId);
+			GD.Print($"[WorldScene] Pending quest '{_pendingNextQuestId}' found: {questToTrigger?.Title ?? "None"}");
+			_pendingNextQuestId = null; // Reset after checking
+		}
+
+		// 2. If no pending choice-driven quest, use location-based or next main story quest.
+		if (questToTrigger == null)
+		{
+			questToTrigger = _questService.GetQuestByLocation("SandyShore_East");
+			GD.Print($"[WorldScene] No pending quest. Checking location 'SandyShore_East'. Found: {questToTrigger?.Title ?? "None"}");
+
+			if (questToTrigger == null && _session.CurrentCharacter != null)
 			{
-				await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = locationQuest.Encounter });
-				_isEncounterTriggered = true;
-				return;
+				questToTrigger = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
+				GD.Print($"[WorldScene] No location quest found. Falling back to next main story quest: {questToTrigger?.Title ?? "None"}");
 			}
 		}
 
-		// Fallback to next available main story quest if no immediate trigger found
-		if (_session.CurrentCharacter != null)
+		// 3. Trigger the determined quest.
+		if (questToTrigger != null)
 		{
-			var nextMainStoryQuest = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
-			if (nextMainStoryQuest != null)
+			GD.Print($"[WorldScene] Triggering quest: {questToTrigger.Title} (ID: {questToTrigger.Id})");
+			if (questToTrigger.Encounter != null)
 			{
-				GD.Print($"[WorldScene] Falling back to next main story quest: {nextMainStoryQuest.Title ?? "None"}");
-				// If this next main story quest has an encounter, trigger it.
-				if (nextMainStoryQuest.Encounter != null)
-				{
-					await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = nextMainStoryQuest.Encounter });
-					_isEncounterTriggered = true;
-					return;
-				}
-				// If it's dialogue, it might be started via NPC interaction or other triggers.
+				await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = questToTrigger.Encounter });
+				_isEncounterTriggered = true; // Mark as triggered to prevent re-triggering immediately by player movement
 			}
-		}
-
-		// If no encounter is triggered, reset the flag
-		if (!_isEncounterTriggered)
-		{
-			// Player is just walking around, no immediate encounter to trigger.
+			else if (questToTrigger.Dialogue != null && questToTrigger.Dialogue.Lines.Count > 0)
+			{
+				// If the chosen quest is dialogue, we need to initiate it.
+				// This might involve starting a new dialogue sequence. For now, we'll log it.
+				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' has dialogue but no immediate encounter. Requires NPC interaction or separate trigger.");
+				// If we want immediate dialogue after choice, we'd need to call StartDialogue or similar here.
+				// For now, we assume dialogue is NPC-initiated.
+				_isEncounterTriggered = true; // Mark as triggered to prevent further triggers for now.
+			}
+			else
+			{
+				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' found, but has no encounter or dialogue to trigger immediately.");
+				// If it's a quest that's just marked complete, but no immediate event, reset flag.
+				_isEncounterTriggered = false; 
+			}
 		}
 		else
 		{
-			// Encounter was triggered, so the flag remains true until reset.
+			GD.Print("[WorldScene] No quest found to trigger.");
+			// If no encounter is found, reset the flag.
+			_isEncounterTriggered = false;
 		}
 	}
 	
