@@ -28,6 +28,8 @@ public partial class BattleScene : Control, IInitializable
 	private List<Enemy> _enemies = new();
 	private List<LayeredSprite> _partySprites = new();
 	private List<LayeredSprite> _enemySprites = new();
+	private List<StatusBar> _partyHealthBars = new();
+	private List<StatusBar> _enemyHealthBars = new();
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
@@ -94,37 +96,55 @@ public partial class BattleScene : Control, IInitializable
 		foreach (Node child in _enemyContainer.GetChildren()) child.QueueFree();
 		_partySprites.Clear();
 		_enemySprites.Clear();
+		_partyHealthBars.Clear();
+		_enemyHealthBars.Clear();
 
 		var layeredSpriteScene = GD.Load<PackedScene>("res://scenes/LayeredSprite.tscn");
+		var statusBarScene = GD.Load<PackedScene>("res://scenes/StatusBar.tscn");
 
 		foreach (var character in _party)
 		{
-			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
-			sprite.Hide();
+			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
+			_partyContainer.AddChild(wrapper);
+
+			// Add Status Bar
+			var hpBar = statusBarScene.Instantiate<StatusBar>();
+			wrapper.AddChild(hpBar);
+			hpBar.Setup(character.Name, character.CurrentHP, character.MaxHP, StatusType.HP);
+			_partyHealthBars.Add(hpBar);
+
+			// Sprite Area
+			var spriteContainer = new Control { CustomMinimumSize = new Vector2(200, 120) };
+			wrapper.AddChild(spriteContainer);
 			
-			var wrapper = new Control { CustomMinimumSize = new Vector2(200, 120) };
-			wrapper.AddChild(sprite);
+			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
+			spriteContainer.AddChild(sprite);
 			sprite.Position = new Vector2(100, 60);
 			sprite.Scale = new Vector2(2.5f, 2.5f);
-
-			_partyContainer.AddChild(wrapper);
 			_partySprites.Add(sprite);
 
 			await sprite.SetupCharacter(character, _catalog, _fileSystem);
-			sprite.Play("idle_right"); // LPC sheets use rows for direction
-			sprite.Show();
+			sprite.Play("idle_right");
 		}
 
 		foreach (var enemy in _enemies)
 		{
-			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
-			sprite.Hide();
-
-			var wrapper = new Control { CustomMinimumSize = new Vector2(200, 120) };
-			wrapper.AddChild(sprite);
-			sprite.Position = new Vector2(100, 60);
-
+			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
 			_enemyContainer.AddChild(wrapper);
+
+			// Add Status Bar
+			var hpBar = statusBarScene.Instantiate<StatusBar>();
+			wrapper.AddChild(hpBar);
+			hpBar.Setup(enemy.Name, enemy.CurrentHP, enemy.MaxHP, StatusType.HP);
+			_enemyHealthBars.Add(hpBar);
+
+			// Sprite Area
+			var spriteContainer = new Control { CustomMinimumSize = new Vector2(200, 120) };
+			wrapper.AddChild(spriteContainer);
+
+			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
+			spriteContainer.AddChild(sprite);
+			sprite.Position = new Vector2(100, 60);
 			_enemySprites.Add(sprite);
 
 			if (enemy.Name.ToLower().Contains("hound"))
@@ -154,7 +174,6 @@ public partial class BattleScene : Control, IInitializable
 				}, _catalog, _fileSystem);
 				sprite.Play("idle_left");
 			}
-			sprite.Show();
 		}
 		GD.Print("[BattleScene] UpdateSprites complete.");
 	}
