@@ -11,10 +11,31 @@ public partial class LayeredSprite : Node2D
 {
     private Dictionary<string, AnimatedSprite2D> _layers = new();
     private ShaderMaterial _simpleMaterial = null!;
+    private bool _flipH = false;
+
+    public bool FlipH
+    {
+        get => _flipH;
+        set
+        {
+            _flipH = value;
+            foreach (var sprite in _layers.Values)
+            {
+                sprite.FlipH = _flipH;
+            }
+        }
+    }
     
     public override void _Ready()
     {
         if (!IsInsideTree()) return;
+        EnsureLayers();
+    }
+
+    private void EnsureLayers()
+    {
+        if (_layers.Count > 0) return;
+
         var shader = GD.Load<Shader>("res://src/Shaders/simple_2d.gdshader");
         _simpleMaterial = new ShaderMaterial { Shader = shader };
 
@@ -23,7 +44,6 @@ public partial class LayeredSprite : Node2D
             if (child is AnimatedSprite2D sprite)
             {
                 _layers[sprite.Name] = sprite;
-                // Force a simple material to avoid emulator uniform limits
                 sprite.Material = _simpleMaterial;
             }
         }
@@ -31,6 +51,16 @@ public partial class LayeredSprite : Node2D
 
     public async Task SetupCharacter(Character c, ISpriteLayerCatalog catalog, IFileSystemService fileSystem)
     {
+        // Removed IsInsideTree guard - setup should always run
+        EnsureLayers();
+
+        // Total clear of all possible parts
+        foreach (var layer in _layers.Values)
+        {
+            layer.SpriteFrames = null;
+            layer.Hide();
+        }
+
         var appearance = new CharacterAppearance
         {
             SkinColor = c.SkinColor,
@@ -48,13 +78,6 @@ public partial class LayeredSprite : Node2D
 
         var layerDefs = catalog.GetLayersForAppearance(appearance);
         
-        // Clear old frames
-        foreach (var layer in _layers.Values)
-        {
-            layer.SpriteFrames = null;
-            layer.Hide();
-        }
-
         foreach (var def in layerDefs)
         {
             // Map the Z-order or Path to a specific node
@@ -63,8 +86,78 @@ public partial class LayeredSprite : Node2D
             {
                 var frames = await LoadFrames(def.ResourcePath, fileSystem);
                 sprite.SpriteFrames = frames;
+                sprite.FlipH = _flipH;
                 sprite.Show();
             }
+        }
+    }
+
+    public async Task SetupMonster(string monsterType, IFileSystemService fileSystem)
+    {
+        // Removed IsInsideTree guard - setup should always run
+        EnsureLayers();
+        GD.Print($"[LayeredSprite] SetupMonster started for: {monsterType}");
+        
+        // Total clear of all possible parts (Body, Head, Armor, etc.)
+        foreach (var layer in _layers.Values)
+        {
+            layer.SpriteFrames = null;
+            layer.Hide();
+        }
+
+        if (!_layers.TryGetValue("Body", out var bodySprite)) 
+        {
+            GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
+            return;
+        }
+
+        var frames = new SpriteFrames();
+        if (frames.HasAnimation("default")) frames.RemoveAnimation("default");
+
+        string basePath = $"sprites/monsters/{monsterType.ToLower()}/";
+        GD.Print($"[LayeredSprite] Base path: {basePath}");
+
+        // Try to load common animations
+        await LoadIfExists(frames, "idle", basePath + "idle.png", fileSystem);
+        await LoadIfExists(frames, "walk", basePath + "walk.png", fileSystem);
+        await LoadIfExists(frames, "run", basePath + "run.png", fileSystem);
+        await LoadIfExists(frames, "jump", basePath + "jump.png", fileSystem);
+
+        GD.Print($"[LayeredSprite] Loaded {frames.GetAnimationNames().Length} animations.");
+
+        bodySprite.SpriteFrames = frames;
+        bodySprite.FlipH = _flipH;
+        bodySprite.Show();
+        
+        if (frames.HasAnimation("idle"))
+        {
+            bodySprite.Play("idle");
+        }
+    }
+
+    private async Task LoadIfExists(SpriteFrames frames, string animName, string path, IFileSystemService fileSystem)
+    {
+        try
+        {
+            GD.Print($"[LayeredSprite] Attempting to load: {path}");
+            var stream = await fileSystem.OpenAppPackageFileAsync(path);
+            using var ms = new System.IO.MemoryStream();
+            await stream.CopyToAsync(ms);
+            var data = ms.ToArray();
+            
+            var img = new Image();
+            img.LoadPngFromBuffer(data);
+            int frameH = img.GetHeight();
+            
+            // Heuristic for hound sprites: they are 64px wide even if only 32px tall
+            int frameW = (frameH <= 48) ? 64 : frameH;
+            
+            GD.Print($"[LayeredSprite] Successfully read {data.Length} bytes for {animName}. Detected Frame Size: {frameW}x{frameH}");
+            ImageUtils.AddAnimationFromBytes(frames, animName, data, frameW, frameH);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[LayeredSprite] Failed to load {animName} from {path}: {ex.Message}");
         }
     }
 
@@ -94,6 +187,7 @@ public partial class LayeredSprite : Node2D
 
     public void Play(string animation)
     {
+        if (!GodotObject.IsInstanceValid(this) || !IsInsideTree()) return;
         foreach (var sprite in _layers.Values)
         {
             if (sprite.Visible && sprite.SpriteFrames != null && sprite.SpriteFrames.HasAnimation(animation))

@@ -22,10 +22,12 @@ public partial class BattleScene : Control, IInitializable
 	private PauseMenu _pauseMenu = null!;
 
 	private HBoxContainer _partyContainer = null!;
-	private HBoxContainer _enemyContainer = null!;
+	private VBoxContainer _enemyContainer = null!;
 
 	private List<Character> _party = new();
 	private List<Enemy> _enemies = new();
+	private List<LayeredSprite> _partySprites = new();
+	private List<LayeredSprite> _enemySprites = new();
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
@@ -47,7 +49,6 @@ public partial class BattleScene : Control, IInitializable
 
 	public override async void _Ready()
 	{
-		if (!IsInsideTree()) return;
 		var global = GetNode<Global>("/root/Global");
 		var sp = global.Services!;
 		_navigation = sp.GetRequiredService<INavigationService>();
@@ -60,7 +61,7 @@ public partial class BattleScene : Control, IInitializable
 		_combatLog = GetNode<RichTextLabel>("CombatLog");
 		_pauseMenu = GetNode<PauseMenu>("PauseMenu");
 		_partyContainer = GetNode<HBoxContainer>("CombatArea/PartyContainer");
-		_enemyContainer = GetNode<HBoxContainer>("CombatArea/EnemyContainer");
+		_enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
 
 		GetNode<Button>("ActionsArea/Attack1").Pressed += () => ExecuteAttack(0);
 		GetNode<Button>("ActionsArea/Attack2").Pressed += () => ExecuteAttack(1);
@@ -69,14 +70,6 @@ public partial class BattleScene : Control, IInitializable
 
 		SetupBattle();
 		await UpdateSprites();
-	}
-
-	public override void _Input(InputEvent @event)
-	{
-		if (Input.IsActionJustPressed("ui_cancel"))
-		{
-			_pauseMenu.Toggle();
-		}
 	}
 
 	private void SetupBattle()
@@ -88,65 +81,138 @@ public partial class BattleScene : Control, IInitializable
 
 		if (_enemies.Count == 0)
 		{
-			_enemies.Add(new Enemy { Name = "Hound", MaxHP = 50, CurrentHP = 50, Defense = 5 });
-			_enemies.Add(new Enemy { Name = "Shadow", MaxHP = 75, CurrentHP = 75, Defense = 8 });
+			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5 });
+			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5 });
+			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5 });
 		}
 	}
 
 	private async Task UpdateSprites()
 	{
+		GD.Print($"[BattleScene] UpdateSprites started. Party: {_party.Count}, Enemies: {_enemies.Count}");
 		foreach (Node child in _partyContainer.GetChildren()) child.QueueFree();
 		foreach (Node child in _enemyContainer.GetChildren()) child.QueueFree();
+		_partySprites.Clear();
+		_enemySprites.Clear();
 
 		var layeredSpriteScene = GD.Load<PackedScene>("res://scenes/LayeredSprite.tscn");
 
 		foreach (var character in _party)
 		{
 			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
-			sprite.Scale = new Vector2(2, 2);
-			_partyContainer.AddChild(sprite);
+			sprite.Hide();
+			
+			var wrapper = new Control { CustomMinimumSize = new Vector2(200, 120) };
+			wrapper.AddChild(sprite);
+			sprite.Position = new Vector2(100, 60);
+			sprite.Scale = new Vector2(2.5f, 2.5f);
+
+			_partyContainer.AddChild(wrapper);
+			_partySprites.Add(sprite);
+
 			await sprite.SetupCharacter(character, _catalog, _fileSystem);
-			sprite.Play("idle_right");
+			sprite.Play("idle_right"); // LPC sheets use rows for direction
+			sprite.Show();
 		}
 
 		foreach (var enemy in _enemies)
 		{
 			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
-			sprite.Scale = new Vector2(2, 2);
-			_enemyContainer.AddChild(sprite);
-			
-			var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-			await sprite.SetupCharacter(new Character {
-				SkinColor = knightAppearance.SkinColor,
-				HairStyle = knightAppearance.HairStyle,
-				HairColor = knightAppearance.HairColor,
-				ArmorType = knightAppearance.ArmorType,
-				WeaponType = knightAppearance.WeaponType,
-				Feet = knightAppearance.Feet,
-				Arms = knightAppearance.Arms,
-				Legs = knightAppearance.Legs
-			}, _catalog, _fileSystem);
-			sprite.Play("idle_left");
+			sprite.Hide();
+
+			var wrapper = new Control { CustomMinimumSize = new Vector2(200, 120) };
+			wrapper.AddChild(sprite);
+			sprite.Position = new Vector2(100, 60);
+
+			_enemyContainer.AddChild(wrapper);
+			_enemySprites.Add(sprite);
+
+			if (enemy.Name.ToLower().Contains("hound"))
+			{
+				sprite.Scale = new Vector2(2.5f, 2.5f);
+				await sprite.SetupMonster("hound", _fileSystem);
+				sprite.Play("idle");
+				
+				// Hounds face LEFT by default in your PNGs.
+				// Enemies are on the right, so they should face LEFT to see the player.
+				// Therefore, FlipH should be FALSE.
+				sprite.FlipH = false; 
+			}
+			else
+			{
+				sprite.Scale = new Vector2(2.5f, 2.5f);
+				var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
+				await sprite.SetupCharacter(new Character {
+					SkinColor = knightAppearance.SkinColor,
+					HairStyle = knightAppearance.HairStyle,
+					HairColor = knightAppearance.HairColor,
+					ArmorType = knightAppearance.ArmorType,
+					WeaponType = knightAppearance.WeaponType,
+					Feet = knightAppearance.Feet,
+					Arms = knightAppearance.Arms,
+					Legs = knightAppearance.Legs
+				}, _catalog, _fileSystem);
+				sprite.Play("idle_left");
+			}
+			sprite.Show();
 		}
+		GD.Print("[BattleScene] UpdateSprites complete.");
 	}
 
-	private void ExecuteAttack(int enemyIndex)
+	private async void ExecuteAttack(int enemyIndex)
 	{
-		if (enemyIndex >= _enemies.Count || _party.Count == 0) return;
+		if (_enemies.Count == 0 || _party.Count == 0) return;
+		
+		int actualIndex = enemyIndex < _enemies.Count ? enemyIndex : 0;
 
 		var attacker = _party[0];
-		var target = _enemies[enemyIndex];
+		var target = _enemies[actualIndex];
+		var attackerSprite = _partySprites[0];
+		var targetSprite = _enemySprites[actualIndex];
 
+		// Safety check for disposed objects
+		if (!GodotObject.IsInstanceValid(attackerSprite) || !GodotObject.IsInstanceValid(targetSprite)) return;
+
+		attackerSprite.Play("walk_right");
+		
 		int damage = _combat.CalculateDamage(attacker, target);
 		target.CurrentHP -= damage;
 
 		_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] attacks {target.Name} for {damage} damage!");
 
+		await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+		if (GodotObject.IsInstanceValid(attackerSprite))
+			attackerSprite.Play("idle_right");
+
 		if (target.CurrentHP <= 0)
 		{
 			_combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
-			_enemies.RemoveAt(enemyIndex);
-			UpdateSprites().FireAndForget();
+			_enemies.RemoveAt(actualIndex);
+			await UpdateSprites();
+		}
+		else
+		{
+			await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+			if (!GodotObject.IsInstanceValid(targetSprite) || !GodotObject.IsInstanceValid(attackerSprite)) return;
+			
+			if (target.Name.ToLower().Contains("hound"))
+				targetSprite.Play("jump");
+			else
+				targetSprite.Play("walk_left");
+
+			int enemyDamage = 5; 
+			attacker.CurrentHP -= enemyDamage;
+			_combatLog.AppendText($"\n[color=orange]{target.Name}[/color] bites back for {enemyDamage} damage!");
+
+			await ToSignal(GetTree().CreateTimer(0.8), "timeout");
+			
+			if (GodotObject.IsInstanceValid(targetSprite))
+			{
+				if (target.Name.ToLower().Contains("hound"))
+					targetSprite.Play("idle");
+				else
+					targetSprite.Play("idle_left");
+			}
 		}
 
 		if (_enemies.Count == 0)

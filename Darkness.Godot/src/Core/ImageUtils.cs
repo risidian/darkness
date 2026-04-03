@@ -77,4 +77,40 @@ public static class ImageUtils
 
         return frames;
     }
+
+    public static void AddAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW, int frameH, double speed = 10.0, bool loop = true)
+    {
+        var tex = ByteArrayToTexture(data);
+        if (tex == null) 
+        {
+            GD.PrintErr($"[ImageUtils] Failed to create texture for {animName}");
+            return;
+        }
+
+        if (frames.HasAnimation(animName)) frames.RemoveAnimation(animName);
+        frames.AddAnimation(animName);
+        frames.SetAnimationSpeed(animName, speed);
+        frames.SetAnimationLoop(animName, loop);
+
+        int cols = (int)(tex.GetSize().X / frameW);
+        int rows = (int)(tex.GetSize().Y / frameH);
+        GD.Print($"[ImageUtils] Slicing {animName}: {tex.GetSize().X}x{tex.GetSize().Y} into {cols}x{rows} frames of {frameW}x{frameH}");
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < cols; c++)
+            {
+                var atlas = new AtlasTexture { Atlas = tex, Region = new Rect2(c * frameW, r * frameH, frameW, frameH) };
+                frames.AddFrame(animName, atlas);
+            }
+        }
+        GD.Print($"[ImageUtils] Added {frames.GetFrameCount(animName)} frames to {animName}");
+    }
+
+    private static int row; // This was a typo in my thought process, corrected above.
+
+    public static void AddStaticAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW, int frameH)
+    {
+        AddAnimationFromBytes(frames, animName, data, frameW, frameH, 1.0, false);
+    }
 }
