@@ -53,10 +53,11 @@ public partial class BattleScene : Control, IInitializable
 						Name = e.Name, 
 						MaxHP = e.MaxHP, 
 						CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
-						Defense = e.Defense > 0 ? e.Defense : 5
+						Defense = e.Defense > 0 ? e.Defense : 5,
+						SpriteKey = e.SpriteKey ?? "knight"
 					};
 					_enemies.Add(enemy);
-					_originalEnemies.Add(new Enemy { Name = enemy.Name, MaxHP = enemy.MaxHP, CurrentHP = enemy.MaxHP, Defense = enemy.Defense });
+					_originalEnemies.Add(new Enemy { Name = enemy.Name, MaxHP = enemy.MaxHP, CurrentHP = enemy.MaxHP, Defense = enemy.Defense, SpriteKey = enemy.SpriteKey });
 				}
 			}
 		}
@@ -126,13 +127,13 @@ public partial class BattleScene : Control, IInitializable
 
 		if (_enemies.Count == 0)
 		{
-			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5 });
-			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5 });
-			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5 });
+			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, SpriteKey = "hound" });
+			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
+			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
 			
 			foreach(var e in _enemies)
 			{
-				_originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense });
+				_originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
 			}
 		}
 	}
@@ -143,7 +144,7 @@ public partial class BattleScene : Control, IInitializable
 		_enemies.Clear();
 		foreach(var e in _originalEnemies)
 		{
-			_enemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense });
+			_enemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
 		}
 		
 		if (_party.Count > 0)
@@ -221,7 +222,7 @@ public partial class BattleScene : Control, IInitializable
 			sprite.Position = new Vector2(100, 60);
 			_enemySprites.Add(sprite);
 
-			if (enemy.Name.ToLower().Contains("hound"))
+			if (enemy.SpriteKey == "hound")
 			{
 				sprite.Scale = new Vector2(2.5f, 2.5f);
 				await sprite.SetupMonster("hound", _fileSystem);
@@ -296,7 +297,7 @@ public partial class BattleScene : Control, IInitializable
 				if (!IsInsideTree()) return;
 				if (!GodotObject.IsInstanceValid(targetSprite) || !GodotObject.IsInstanceValid(attackerSprite)) return;
 				
-				if (target.Name.ToLower().Contains("hound"))
+				if (target.SpriteKey == "hound")
 					targetSprite.Play("jump");
 				else
 					targetSprite.Play("walk_left");
@@ -312,7 +313,7 @@ public partial class BattleScene : Control, IInitializable
 				
 				if (GodotObject.IsInstanceValid(targetSprite))
 				{
-					if (target.Name.ToLower().Contains("hound"))
+					if (target.SpriteKey == "hound")
 						targetSprite.Play("idle");
 					else
 						targetSprite.Play("idle_left");
