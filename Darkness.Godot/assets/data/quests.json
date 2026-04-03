@@ -29,8 +29,7 @@
 	"Id": "beat_1_combat",
 	"Title": "The Hound Master",
 	"IsMainStory": true,
-	"Prerequisites": ["beat_1", "beat_1_combat"],
-	"Encounter": {
+	"Prerequisites": ["beat_1"],	"Encounter": {
 	  "Enemies": [
 		{
 		  "Name": "Undead Dog A",
@@ -72,8 +71,7 @@
 	"Id": "beat_1_sneak",
 	"Title": "The Hidden Path",
 	"IsMainStory": true,
-	"Prerequisites": ["beat_1", "beat_1_sneak"],
-	"Dialogue": {
+	"Prerequisites": ["beat_1"],	"Dialogue": {
 	  "Speaker": "Old Man",
 	  "Lines": [
 		"Wise choice. The shadows are thickest near the main road.",
