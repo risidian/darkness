@@ -48,8 +48,16 @@ public class QuestService : IQuestService
 
     public QuestNode? GetQuestByLocation(string locationKey)
     {
-        // Simple mapping for demo
-        if (locationKey == "SandyShore_East") return _quests.FirstOrDefault(q => q.Id == "main_1");
+        // Mapping for SandyShore_East to the first beat for demo
+        if (locationKey == "SandyShore_East") return _quests.FirstOrDefault(q => q.Id == "beat_1");
         return null;
+    }
+
+    public QuestNode? GetNextAvailableMainStoryQuest(Character character)
+    {
+        return _quests.FirstOrDefault(q => 
+            q.IsMainStory && 
+            !character.CompletedQuestIds.Contains(q.Id) && 
+            q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p)));
     }
 }

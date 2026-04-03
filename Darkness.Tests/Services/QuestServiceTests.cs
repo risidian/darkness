@@ -20,8 +20,8 @@ public class QuestServiceTests
         // Setup mock quest data
         var quests = new List<QuestNode>
         {
-            new QuestNode { Id = "main_1", Title = "The Beginning", IsMainStory = true, Prerequisites = new List<string>() },
-            new QuestNode { Id = "side_1", Title = "A Small Favor", IsMainStory = false, Prerequisites = new List<string> { "main_1" } }
+            new QuestNode { Id = "beat_1", Title = "The Beginning", IsMainStory = true, Prerequisites = new List<string>() },
+            new QuestNode { Id = "side_1", Title = "A Small Favor", IsMainStory = false, Prerequisites = new List<string> { "beat_1" } }
         };
         
         string json = JsonSerializer.Serialize(quests);
@@ -41,7 +41,7 @@ public class QuestServiceTests
 
         // Assert
         Assert.Single(availableQuests);
-        Assert.Equal("main_1", availableQuests[0].Id);
+        Assert.Equal("beat_1", availableQuests[0].Id);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class QuestServiceTests
     {
         // Arrange
         var character = new Character { Name = "Test" };
-        _questService.CompleteQuest(character, "main_1");
+        _questService.CompleteQuest(character, "beat_1");
 
         // Act
         var availableQuests = _questService.GetAvailableQuests(character);
@@ -63,7 +63,7 @@ public class QuestServiceTests
     public void GetQuestById_ShouldReturnCorrectQuest()
     {
         // Act
-        var quest = _questService.GetQuestById("main_1");
+        var quest = _questService.GetQuestById("beat_1");
 
         // Assert
         Assert.NotNull(quest);
@@ -78,7 +78,7 @@ public class QuestServiceTests
 
         // Assert
         Assert.NotNull(quest);
-        Assert.Equal("main_1", quest.Id);
+        Assert.Equal("beat_1", quest.Id);
     }
 
     [Fact]
@@ -88,9 +88,9 @@ public class QuestServiceTests
         var character = new Character { Name = "Test" };
 
         // Act
-        _questService.CompleteQuest(character, "main_1");
+        _questService.CompleteQuest(character, "beat_1");
 
         // Assert
-        Assert.Contains("main_1", character.CompletedQuestIds);
+        Assert.Contains("beat_1", character.CompletedQuestIds);
     }
 }

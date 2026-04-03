@@ -9,4 +9,5 @@ public interface IQuestService
     QuestNode? GetQuestById(string id);
     void CompleteQuest(Character character, string questId);
     QuestNode? GetQuestByLocation(string locationKey);
+    QuestNode? GetNextAvailableMainStoryQuest(Character character);
 }

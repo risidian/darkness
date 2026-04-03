@@ -13,6 +13,7 @@ public partial class WorldScene : Node2D, IInitializable
 {
 	private INavigationService _navigation = null!;
 	private ISessionService _session = null!;
+	private IQuestService _questService = null!;
 	private ISpriteCompositor _compositor = null!;
 	private ISpriteLayerCatalog _catalog = null!;
 	private IFileSystemService _fileSystem = null!;
@@ -25,6 +26,7 @@ public partial class WorldScene : Node2D, IInitializable
 	private Label _nameLabel = null!;
 	private Label _textLabel = null!;
 
+	private bool _isEncounterTriggered = false;
 	private float _moveSpeed = 300f;
 	private string[] _dialogue = new[] {
 		"Welcome to the Shore of Camelot, Wanderer.",
@@ -64,6 +66,7 @@ public partial class WorldScene : Node2D, IInitializable
 		var sp = global.Services!;
 		_navigation = sp.GetRequiredService<INavigationService>();
 		_session = sp.GetRequiredService<ISessionService>();
+		_questService = sp.GetRequiredService<IQuestService>();
 		_compositor = sp.GetRequiredService<ISpriteCompositor>();
 		_catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
 		_fileSystem = sp.GetRequiredService<IFileSystemService>();
@@ -229,10 +232,19 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private async void TriggerEncounter()
 	{
+		if (_isEncounterTriggered) return;
+		_isEncounterTriggered = true;
+
 		GD.Print("[WorldScene] Encounter Triggered! Checking for quest-driven battle.");
 		
-		var questService = GetNode<Global>("/root/Global").Services!.GetRequiredService<IQuestService>();
-		var quest = questService.GetQuestByLocation("SandyShore_East");
+		var quest = _questService.GetQuestByLocation("SandyShore_East");
+		
+		// Fallback to next available main story quest if no location quest found
+		if (quest == null && _session.CurrentCharacter != null)
+		{
+			quest = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
+			GD.Print($"[WorldScene] No location quest found. Falling back to next main story quest: {quest?.Title ?? "None"}");
+		}
 		
 		if (quest?.Encounter != null)
 		{
