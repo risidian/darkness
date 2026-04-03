@@ -37,6 +37,7 @@ public partial class WorldScene : Node2D, IInitializable
 	private VBoxContainer _choicesContainer = null!;
 	private List<DialogueChoice> _currentChoices = new();
 	private QuestNode? _currentDialogueQuest = null;
+	private string? _pendingNextQuestId = null; // Stores the ID of the quest chosen by the player
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
@@ -179,7 +180,8 @@ public partial class WorldScene : Node2D, IInitializable
 			_playerSprite.Play("idle_" + _lastDirection);
 		}
 
-		if (_player.GlobalPosition.X > 1200)
+		// This trigger should now check for pending quests from dialogue choices
+		if (_pendingNextQuestId == null && _player.GlobalPosition.X > 1200)
 		{
 			TriggerEncounter();
 		}
@@ -206,6 +208,7 @@ public partial class WorldScene : Node2D, IInitializable
 		
 		_currentChoices.Clear();
 		_currentDialogueQuest = null;
+		_pendingNextQuestId = null; // Reset pending quest on new dialogue
 
 		// Load dynamic dialogue from quest if available
 		var quest = _session.CurrentCharacter != null ? _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter) : null;
@@ -308,9 +311,9 @@ public partial class WorldScene : Node2D, IInitializable
 		{
 			_questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
 			
-			// 2. Mark the chosen path as "completed" so it meets its own prerequisite
-			// This effectively "unlocks" the chosen path.
-			_questService.CompleteQuest(_session.CurrentCharacter, choice.NextQuestId);
+			// 2. Store the NextQuestId to be triggered later. Do NOT complete it yet.
+			_pendingNextQuestId = choice.NextQuestId;
+			GD.Print($"[WorldScene] Choice selected: '{choice.Text}'. Next quest ID pending: {_pendingNextQuestId ?? "None"}");
 
 			// Apply morality
 			if (choice.MoralityImpact != 0)
@@ -333,27 +336,90 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private async void TriggerEncounter()
 	{
-		if (_isEncounterTriggered) return;
-		_isEncounterTriggered = true;
+		// If already triggered, dialogue is active, or choices are pending, do nothing.
+		if (_isEncounterTriggered || _currentDialogueIndex >= 0 || !string.IsNullOrEmpty(_pendingNextQuestId)) 
+		{
+			// If a choice was made and we are pending a quest, this means the player has walked east *after* making a choice.
+			// We should now trigger that pending quest.
+			if (!string.IsNullOrEmpty(_pendingNextQuestId))
+			{
+				GD.Print($"[WorldScene] Triggering pending quest: {_pendingNextQuestId}");
+				var nextQuest = _questService.GetQuestById(_pendingNextQuestId);
+				_pendingNextQuestId = null; // Reset after checking
 
-		GD.Print("[WorldScene] Encounter Triggered! Checking for quest-driven battle.");
-		
-		var quest = _questService.GetQuestByLocation("SandyShore_East");
-		
-		// Fallback to next available main story quest if no location quest found
-		if (quest == null && _session.CurrentCharacter != null)
-		{
-			quest = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
-			GD.Print($"[WorldScene] No location quest found. Falling back to next main story quest: {quest?.Title ?? "None"}");
+				if (nextQuest != null)
+				{
+					// If the chosen quest has an encounter, navigate to battle
+					if (nextQuest.Encounter != null)
+					{
+						await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = nextQuest.Encounter });
+						_isEncounterTriggered = true; // Mark as triggered to prevent re-triggering immediately
+						return; // Stop further encounter checks
+					}
+					// If the chosen quest has dialogue, we might need a more complex flow.
+					// For now, we assume choices leading to dialogue will be handled by NPC interaction or other triggers.
+					// This part might need refinement for immediate dialogue transitions.
+				}
+				else
+				{
+					GD.PrintErr($"[WorldScene] Pending quest ID '{_pendingNextQuestId}' not found!");
+				}
+			}
+			// If not pending a choice quest, and already triggered, do nothing.
+			else if (_isEncounterTriggered)
+			{
+				return;
+			}
+			// If not pending a choice quest and not triggered, proceed to check location/main story.
 		}
-		
-		if (quest?.Encounter != null)
+
+		// If no pending choice-driven quest, proceed with location-based or next main story quest.
+		var locationQuest = _questService.GetQuestByLocation("SandyShore_East");
+		GD.Print($"[WorldScene] Checking location 'SandyShore_East'. Found: {locationQuest?.Title ?? "None"}");
+
+		if (locationQuest != null)
 		{
-			await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = quest.Encounter });
+			// If a location-based quest is found AND it's not completed and has an encounter
+			if (!IsQuestCompleted(locationQuest.Id) && locationQuest.Encounter != null)
+			{
+				await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = locationQuest.Encounter });
+				_isEncounterTriggered = true;
+				return;
+			}
+		}
+
+		// Fallback to next available main story quest if no immediate trigger found
+		if (_session.CurrentCharacter != null)
+		{
+			var nextMainStoryQuest = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
+			if (nextMainStoryQuest != null)
+			{
+				GD.Print($"[WorldScene] Falling back to next main story quest: {nextMainStoryQuest.Title ?? "None"}");
+				// If this next main story quest has an encounter, trigger it.
+				if (nextMainStoryQuest.Encounter != null)
+				{
+					await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = nextMainStoryQuest.Encounter });
+					_isEncounterTriggered = true;
+					return;
+				}
+				// If it's dialogue, it might be started via NPC interaction or other triggers.
+			}
+		}
+
+		// If no encounter is triggered, reset the flag
+		if (!_isEncounterTriggered)
+		{
+			// Player is just walking around, no immediate encounter to trigger.
 		}
 		else
 		{
-			await _navigation.NavigateToAsync(Routes.Battle);
+			// Encounter was triggered, so the flag remains true until reset.
 		}
+	}
+	
+	// Helper to check if a quest is completed (for TriggerEncounter logic)
+	private bool IsQuestCompleted(string questId)
+	{
+		return _session.CurrentCharacter != null && _session.CurrentCharacter.CompletedQuestIds.Contains(questId);
 	}
 }
