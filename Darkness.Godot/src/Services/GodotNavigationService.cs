@@ -1,4 +1,5 @@
 using Darkness.Core.Interfaces;
+using Darkness.Core.Models;
 using Darkness.Godot.Core;
 using Godot;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,28 @@ public class GodotNavigationService : INavigationService
             {
                 initializable.Initialize(parameters);
             }
+        }
+    }
+
+    public async Task NavigateToAsync<T>(string route, T parameters) where T : NavigationArgs
+    {
+        GD.Print($"[Navigation] Navigating to {route} with typed args {typeof(T).Name}");
+        
+        // Use existing logic for scene change
+        string sceneName = route.Replace("Page", "Scene");
+        string path = $"res://scenes/{sceneName}.tscn";
+        
+        var error = _global.GetTree().ChangeSceneToFile(path);
+        if (error != Error.Ok) return;
+
+        await _global.ToSignal(_global.GetTree(), "process_frame");
+        
+        var root = _global.GetTree().CurrentScene;
+        if (root is IInitializable initializable)
+        {
+            // Wrap typed args in a dict for IInitializable compatibility
+            var dict = new Dictionary<string, object> { { "Args", parameters } };
+            initializable.Initialize(dict);
         }
     }
 

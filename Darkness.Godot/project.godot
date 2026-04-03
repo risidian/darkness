@@ -29,6 +29,10 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="Darkness.Godot"
 
+[editor]
+
+movie_writer/movie_file="C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/movie.avi"
+
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true

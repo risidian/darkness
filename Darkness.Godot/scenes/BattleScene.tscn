@@ -73,6 +73,7 @@ grow_horizontal = 2
 grow_vertical = 0
 bbcode_enabled = true
 text = "A battle begins!"
+scroll_following = true
 
 [node name="ActionsArea" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -127,3 +128,65 @@ text = "MENU"
 
 [node name="PauseMenu" parent="." instance=ExtResource("2_pause")]
 visible = false
+
+[node name="EndBattlePanel" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.784314)
+
+[node name="CenterContainer" type="CenterContainer" parent="EndBattlePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="EndBattlePanel/CenterContainer"]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EndBattlePanel/CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="EndBattlePanel/CenterContainer/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 36
+text = "VICTORY ACHIEVED"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="EndBattlePanel/CenterContainer/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "The enemies have been defeated!"
+horizontal_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="EndBattlePanel/CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="RetryButton" type="Button" parent="EndBattlePanel/CenterContainer/PanelContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "RETRY"
+
+[node name="OkButton" type="Button" parent="EndBattlePanel/CenterContainer/PanelContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "RETURN TO HUB"

@@ -55,18 +55,31 @@ public partial class StatusBar : VBoxContainer
     {
         if (_progressBar == null) _Ready();
         
-        _progressBar.MaxValue = max;
-        _progressBar.Value = current;
-        _valueLabel.Text = $"{current} / {max}";
+        int safeMax = Math.Max(1, max);
+        int displayCurrent = Math.Max(0, current);
 
-        // Simple color pulse if low health
-        if (Type == StatusType.HP && (float)current / max < 0.25f)
+        _progressBar.MaxValue = safeMax;
+        _progressBar.Value = displayCurrent;
+        _valueLabel.Text = $"{displayCurrent} / {safeMax}";
+
+        // Dynamic coloring for HP
+        if (Type == StatusType.HP)
         {
-            _nameLabel.SelfModulate = Colors.Red;
+            float ratio = (float)displayCurrent / safeMax;
+            Color statusColor = ratio switch
+            {
+                < 0.20f => Colors.Red,
+                < 0.50f => Colors.Yellow,
+                _ => Colors.White
+            };
+
+            _nameLabel.SelfModulate = statusColor;
+            _valueLabel.SelfModulate = statusColor;
         }
         else
         {
             _nameLabel.SelfModulate = Colors.White;
+            _valueLabel.SelfModulate = Colors.White;
         }
     }
 }

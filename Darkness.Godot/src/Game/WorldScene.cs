@@ -229,7 +229,18 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private async void TriggerEncounter()
 	{
-		GD.Print("[WorldScene] Encounter Triggered! Navigating to Battle.");
-		await _navigation.NavigateToAsync("BattlePage");
+		GD.Print("[WorldScene] Encounter Triggered! Checking for quest-driven battle.");
+		
+		var questService = GetNode<Global>("/root/Global").Services!.GetRequiredService<IQuestService>();
+		var quest = questService.GetQuestByLocation("SandyShore_East");
+		
+		if (quest?.Encounter != null)
+		{
+			await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = quest.Encounter });
+		}
+		else
+		{
+			await _navigation.NavigateToAsync(Routes.Battle);
+		}
 	}
 }

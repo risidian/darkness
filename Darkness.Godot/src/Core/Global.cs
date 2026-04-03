@@ -33,6 +33,7 @@ public partial class Global : Node
             services.AddSingleton<ICraftingService, CraftingService>();
             services.AddSingleton<IDeathmatchService, DeathmatchService>();
             services.AddSingleton<IAllyService, AllyService>();
+            services.AddSingleton<IQuestService, QuestService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IRewardService, RewardService>();
             services.AddSingleton<ICombatService, CombatEngine>();

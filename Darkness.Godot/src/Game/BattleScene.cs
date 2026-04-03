@@ -20,31 +20,62 @@ public partial class BattleScene : Control, IInitializable
 	private IFileSystemService _fileSystem = null!;
 	private RichTextLabel _combatLog = null!;
 	private PauseMenu _pauseMenu = null!;
+	private Control _endBattlePanel = null!;
+	private Label _endBattleTitle = null!;
+	private Label _endBattleMessage = null!;
+	private Button _retryButton = null!;
 
 	private HBoxContainer _partyContainer = null!;
 	private VBoxContainer _enemyContainer = null!;
 
 	private List<Character> _party = new();
 	private List<Enemy> _enemies = new();
+	private List<Enemy> _originalEnemies = new(); // For retry
 	private List<LayeredSprite> _partySprites = new();
 	private List<LayeredSprite> _enemySprites = new();
 	private List<StatusBar> _partyHealthBars = new();
 	private List<StatusBar> _enemyHealthBars = new();
+	private bool _isProcessingTurn = false;
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
-		if (parameters.ContainsKey("Encounter") && parameters["Encounter"] is DeathmatchEncounter encounter)
+		if (parameters.ContainsKey("Args") && parameters["Args"] is BattleArgs args)
+		{
+			if (args.Encounter != null)
+			{
+				_enemies.Clear();
+				_originalEnemies.Clear();
+				foreach (var e in args.Encounter.Enemies)
+				{
+					// Deep copy for independent state tracking
+					var enemy = new Enemy 
+					{ 
+						Name = e.Name, 
+						MaxHP = e.MaxHP, 
+						CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
+						Defense = e.Defense > 0 ? e.Defense : 5
+					};
+					_enemies.Add(enemy);
+					_originalEnemies.Add(new Enemy { Name = enemy.Name, MaxHP = enemy.MaxHP, CurrentHP = enemy.MaxHP, Defense = enemy.Defense });
+				}
+			}
+		}
+		// Backward compatibility for old DeathmatchEncounter
+		else if (parameters.ContainsKey("Encounter") && parameters["Encounter"] is DeathmatchEncounter encounter)
 		{
 			_enemies.Clear();
+			_originalEnemies.Clear();
 			foreach (var e in encounter.Enemies)
 			{
-				_enemies.Add(new Enemy 
+				var enemy = new Enemy 
 				{ 
 					Name = e.Name, 
 					MaxHP = e.MaxHP, 
 					CurrentHP = e.MaxHP,
 					Defense = 5
-				});
+				};
+				_enemies.Add(enemy);
+				_originalEnemies.Add(new Enemy { Name = enemy.Name, MaxHP = enemy.MaxHP, CurrentHP = enemy.MaxHP, Defense = enemy.Defense });
 			}
 		}
 	}
@@ -62,6 +93,11 @@ public partial class BattleScene : Control, IInitializable
 
 		_combatLog = GetNode<RichTextLabel>("CombatLog");
 		_pauseMenu = GetNode<PauseMenu>("PauseMenu");
+		_endBattlePanel = GetNode<Control>("EndBattlePanel");
+		_endBattleTitle = GetNode<Label>("%Title");
+		_endBattleMessage = GetNode<Label>("%Message");
+		_retryButton = GetNode<Button>("%RetryButton");
+		
 		_partyContainer = GetNode<HBoxContainer>("CombatArea/PartyContainer");
 		_enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
 
@@ -69,6 +105,8 @@ public partial class BattleScene : Control, IInitializable
 		GetNode<Button>("ActionsArea/Attack2").Pressed += () => ExecuteAttack(1);
 		GetNode<Button>("ActionsArea/Attack3").Pressed += () => ExecuteAttack(2);
 		GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
+		GetNode<Button>("%OkButton").Pressed += () => _navigation.NavigateToAsync("MainMenuPage");
+		_retryButton.Pressed += () => RetryBattle();
 
 		SetupBattle();
 		await UpdateSprites();
@@ -76,9 +114,14 @@ public partial class BattleScene : Control, IInitializable
 
 	private void SetupBattle()
 	{
-		if (_session.CurrentCharacter != null)
+		if (_party.Count == 0 && _session.CurrentCharacter != null)
 		{
-			_party.Add(_session.CurrentCharacter);
+			var pc = _session.CurrentCharacter;
+			// Safety: Ensure player has health for the battle to function
+			if (pc.MaxHP <= 0) pc.MaxHP = 100;
+			if (pc.CurrentHP <= 0) pc.CurrentHP = pc.MaxHP;
+			
+			_party.Add(pc);
 		}
 
 		if (_enemies.Count == 0)
@@ -86,14 +129,43 @@ public partial class BattleScene : Control, IInitializable
 			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5 });
 			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5 });
 			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5 });
+			
+			foreach(var e in _enemies)
+			{
+				_originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense });
+			}
 		}
+	}
+
+	private void RetryBattle()
+	{
+		_endBattlePanel.Hide();
+		_enemies.Clear();
+		foreach(var e in _originalEnemies)
+		{
+			_enemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense });
+		}
+		
+		if (_party.Count > 0)
+		{
+			_party[0].CurrentHP = _party[0].MaxHP;
+		}
+		
+		_combatLog.Clear();
+		_combatLog.AppendText("Retrying battle...");
+		_ = UpdateSprites(); // Use discard for fire-and-forget task
 	}
 
 	private async Task UpdateSprites()
 	{
-		GD.Print($"[BattleScene] UpdateSprites started. Party: {_party.Count}, Enemies: {_enemies.Count}");
+		if (!IsInsideTree()) return;
+
+		GD.Print($"[BattleScene] Updating combatants (P:{_party.Count} E:{_enemies.Count})");
+		
+		// Clear containers safely
 		foreach (Node child in _partyContainer.GetChildren()) child.QueueFree();
 		foreach (Node child in _enemyContainer.GetChildren()) child.QueueFree();
+		
 		_partySprites.Clear();
 		_enemySprites.Clear();
 		_partyHealthBars.Clear();
@@ -104,6 +176,7 @@ public partial class BattleScene : Control, IInitializable
 
 		foreach (var character in _party)
 		{
+			if (!IsInsideTree()) return;
 			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
 			_partyContainer.AddChild(wrapper);
 
@@ -124,11 +197,12 @@ public partial class BattleScene : Control, IInitializable
 			_partySprites.Add(sprite);
 
 			await sprite.SetupCharacter(character, _catalog, _fileSystem);
-			sprite.Play("idle_right");
+			if (IsInsideTree()) sprite.Play("idle_right");
 		}
 
 		foreach (var enemy in _enemies)
 		{
+			if (!IsInsideTree()) return;
 			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
 			_enemyContainer.AddChild(wrapper);
 
@@ -151,12 +225,11 @@ public partial class BattleScene : Control, IInitializable
 			{
 				sprite.Scale = new Vector2(2.5f, 2.5f);
 				await sprite.SetupMonster("hound", _fileSystem);
-				sprite.Play("idle");
-				
-				// Hounds face LEFT by default in your PNGs.
-				// Enemies are on the right, so they should face LEFT to see the player.
-				// Therefore, FlipH should be FALSE.
-				sprite.FlipH = false; 
+				if (IsInsideTree())
+				{
+					sprite.Play("idle");
+					sprite.FlipH = false; 
+				}
 			}
 			else
 			{
@@ -172,78 +245,114 @@ public partial class BattleScene : Control, IInitializable
 					Arms = knightAppearance.Arms,
 					Legs = knightAppearance.Legs
 				}, _catalog, _fileSystem);
-				sprite.Play("idle_left");
+				if (IsInsideTree()) sprite.Play("idle_left");
 			}
 		}
-		GD.Print("[BattleScene] UpdateSprites complete.");
 	}
 
 	private async void ExecuteAttack(int enemyIndex)
 	{
-		if (_enemies.Count == 0 || _party.Count == 0) return;
-		
-		int actualIndex = enemyIndex < _enemies.Count ? enemyIndex : 0;
+		if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
+		if (_partySprites.Count == 0 || _enemySprites.Count == 0) return;
 
+		int actualIndex = enemyIndex < _enemies.Count ? enemyIndex : 0;
 		var attacker = _party[0];
 		var target = _enemies[actualIndex];
-		var attackerSprite = _partySprites[0];
-		var targetSprite = _enemySprites[actualIndex];
-
-		// Safety check for disposed objects
-		if (!GodotObject.IsInstanceValid(attackerSprite) || !GodotObject.IsInstanceValid(targetSprite)) return;
-
-		attackerSprite.Play("walk_right");
 		
-		int damage = _combat.CalculateDamage(attacker, target);
-		target.CurrentHP -= damage;
+		if (target.CurrentHP <= 0 || attacker.CurrentHP <= 0) return;
 
-		_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] attacks {target.Name} for {damage} damage!");
-
-		await ToSignal(GetTree().CreateTimer(0.5), "timeout");
-		if (GodotObject.IsInstanceValid(attackerSprite))
-			attackerSprite.Play("idle_right");
-
-		if (target.CurrentHP <= 0)
+		_isProcessingTurn = true;
+		
+		try 
 		{
-			_combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
-			_enemies.RemoveAt(actualIndex);
-			await UpdateSprites();
-		}
-		else
-		{
+			var attackerSprite = _partySprites[0];
+			var targetSprite = _enemySprites[actualIndex];
+
+			if (!GodotObject.IsInstanceValid(attackerSprite) || !GodotObject.IsInstanceValid(targetSprite)) return;
+
+			attackerSprite.Play("walk_right");
+			
+			int damage = _combat.CalculateDamage(attacker, target);
+			target.CurrentHP -= damage;
+			if (actualIndex < _enemyHealthBars.Count)
+				_enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
+
+			_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] attacks {target.Name} for {damage} damage!");
+
 			await ToSignal(GetTree().CreateTimer(0.5), "timeout");
-			if (!GodotObject.IsInstanceValid(targetSprite) || !GodotObject.IsInstanceValid(attackerSprite)) return;
-			
-			if (target.Name.ToLower().Contains("hound"))
-				targetSprite.Play("jump");
-			else
-				targetSprite.Play("walk_left");
+			if (!IsInsideTree()) return;
+			if (GodotObject.IsInstanceValid(attackerSprite))
+				attackerSprite.Play("idle_right");
 
-			int enemyDamage = 5; 
-			attacker.CurrentHP -= enemyDamage;
-			_combatLog.AppendText($"\n[color=orange]{target.Name}[/color] bites back for {enemyDamage} damage!");
-
-			await ToSignal(GetTree().CreateTimer(0.8), "timeout");
-			
-			if (GodotObject.IsInstanceValid(targetSprite))
+			if (target.CurrentHP <= 0)
 			{
+				_combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
+				_enemies.Remove(target);
+				await UpdateSprites();
+			}
+			else
+			{
+				await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+				if (!IsInsideTree()) return;
+				if (!GodotObject.IsInstanceValid(targetSprite) || !GodotObject.IsInstanceValid(attackerSprite)) return;
+				
 				if (target.Name.ToLower().Contains("hound"))
-					targetSprite.Play("idle");
+					targetSprite.Play("jump");
 				else
-					targetSprite.Play("idle_left");
+					targetSprite.Play("walk_left");
+
+				int enemyDamage = 5; 
+				attacker.CurrentHP -= enemyDamage;
+				if (_partyHealthBars.Count > 0)
+					_partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
+				_combatLog.AppendText($"\n[color=orange]{target.Name}[/color] bites back for {enemyDamage} damage!");
+
+				await ToSignal(GetTree().CreateTimer(0.8), "timeout");
+				if (!IsInsideTree()) return;
+				
+				if (GodotObject.IsInstanceValid(targetSprite))
+				{
+					if (target.Name.ToLower().Contains("hound"))
+						targetSprite.Play("idle");
+					else
+						targetSprite.Play("idle_left");
+				}
+
+				if (attacker.CurrentHP <= 0)
+				{
+					Defeat();
+					return;
+				}
+			}
+
+			if (_enemies.Count == 0)
+			{
+				Victory();
 			}
 		}
-
-		if (_enemies.Count == 0)
+		finally 
 		{
-			Victory();
+			_isProcessingTurn = false;
 		}
 	}
 
-	private async void Victory()
+	private void Victory()
 	{
 		_combatLog.AppendText("\n[color=yellow]VICTORY![/color]");
-		await ToSignal(GetTree().CreateTimer(2.0), "timeout");
-		await _navigation.NavigateToAsync("MainMenuPage");
+		_endBattleTitle.Text = "VICTORY ACHIEVED";
+		_endBattleTitle.Set("theme_override_colors/font_color", Colors.Gold);
+		_endBattleMessage.Text = "All enemies have been defeated!";
+		_retryButton.Hide();
+		_endBattlePanel.Show();
+	}
+
+	private void Defeat()
+	{
+		_combatLog.AppendText("\n[color=red]DEFEAT...[/color]");
+		_endBattleTitle.Text = "BATTLE FAILED";
+		_endBattleTitle.Set("theme_override_colors/font_color", Colors.Red);
+		_endBattleMessage.Text = "Your party has been defeated in combat.";
+		_retryButton.Show();
+		_endBattlePanel.Show();
 	}
 }
