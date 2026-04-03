@@ -104,28 +104,6 @@ public partial class WorldScene : Node2D, IInitializable
 		await UpdateSprites();
 	}
 
-	private async Task UpdateSprites()
-	{
-		if (_session.CurrentCharacter != null)
-		{
-			await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
-			_playerSprite.Play("idle_down");
-		}
-
-		var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-		await _npcSprite.SetupCharacter(new Character { 
-			SkinColor = knightAppearance.SkinColor,
-			HairStyle = knightAppearance.HairStyle,
-			HairColor = knightAppearance.HairColor,
-			ArmorType = knightAppearance.ArmorType,
-			WeaponType = knightAppearance.WeaponType,
-			Feet = knightAppearance.Feet,
-			Arms = knightAppearance.Arms,
-			Legs = knightAppearance.Legs
-		}, _catalog, _fileSystem);
-		_npcSprite.Play("idle_down");
-	}
-
 	public override void _Process(double delta)
 	{
 		if (!IsInsideTree()) return;
@@ -203,6 +181,7 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private void StartDialogue()
 	{
+		GD.Print("StartDialogue called.");
 		_targetPosition = null;
 		_player.Velocity = Vector2.Zero;
 		_playerSprite.Play("idle_" + _lastDirection);
@@ -222,6 +201,7 @@ public partial class WorldScene : Node2D, IInitializable
 			{
 				_currentChoices = new List<DialogueChoice>(quest.Dialogue.Choices);
 			}
+			GD.Print($"[WorldScene] Loaded dialogue for quest: {quest.Title} (ID: {quest.Id}). Speaker: {_speakerName}, Lines: {_dialogue.Count}, Choices: {_currentChoices.Count}");
 		}
 		else
 		{
@@ -232,6 +212,7 @@ public partial class WorldScene : Node2D, IInitializable
 				"The path to the castle is blocked by shadows.",
 				"You'll find only hounds and darkness to the east."
 			};
+			GD.Print($"[WorldScene] No quest dialogue found. Using fallback dialogue. Lines: {_dialogue.Count}");
 		}
 
 		if (_dialogue.Count > 0)
@@ -245,6 +226,11 @@ public partial class WorldScene : Node2D, IInitializable
 			
 			UpdateDialogueUI();
 		}
+		else
+		{
+			GD.Print("[WorldScene] No dialogue lines to display. Hiding dialogue box.");
+			_dialogueBox.Hide();
+		}
 	}
 
 	private void NextDialogue()
@@ -252,18 +238,21 @@ public partial class WorldScene : Node2D, IInitializable
 		// If we are showing choices, tapping should not advance or close the dialogue
 		if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
 		{
+			GD.Print("[WorldScene] Last line of dialogue with choices, tap does nothing.");
 			return;
 		}
 
 		_currentDialogueIndex++;
 		if (_currentDialogueIndex >= _dialogue.Count)
 		{
+			GD.Print("[WorldScene] End of dialogue reached.");
 			_currentDialogueIndex = -1;
 			_dialogueBox.Hide();
 
 			// If there were no choices, mark the dialogue quest as complete when finished
 			if (_currentChoices.Count == 0 && _currentDialogueQuest != null && _session.CurrentCharacter != null)
 			{
+				GD.Print($"[WorldScene] Completing quest: {_currentDialogueQuest.Id} (no choices)");
 				_questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
 			}
 		}
@@ -289,6 +278,7 @@ public partial class WorldScene : Node2D, IInitializable
 		// If we are at the last line and have choices, show them
 		if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
 		{
+			GD.Print($"[WorldScene] Showing {_currentChoices.Count} choices.");
 			prompt.Hide(); // Hide "TAP TO CONTINUE"
 			
 			foreach (var choice in _currentChoices)
@@ -307,9 +297,12 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private void OnChoiceSelected(DialogueChoice choice)
 	{
+		GD.Print($"[WorldScene] Choice selected: '{choice.Text}' (NextQuestId: {choice.NextQuestId}, MoralityImpact: {choice.MoralityImpact})");
+		
 		// 1. Mark the current dialogue quest as complete
 		if (_currentDialogueQuest != null && _session.CurrentCharacter != null)
 		{
+			GD.Print($"[WorldScene] Completing current dialogue quest: {_currentDialogueQuest.Id}");
 			_questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
 			
 			// 2. Store the NextQuestId to be triggered later. Do NOT complete it yet.
@@ -337,6 +330,8 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private async void TriggerEncounter()
 	{
+		GD.Print($"[WorldScene] TriggerEncounter called. _isEncounterTriggered: {_isEncounterTriggered}, _currentDialogueIndex: {_currentDialogueIndex}, _pendingNextQuestId: {_pendingNextQuestId ?? "null"}");
+
 		// Prevent re-triggering if an encounter is already in progress or dialogue is active.
 		// If a choice was made and a quest is pending, we SHOULD proceed to trigger it.
 		if (_isEncounterTriggered || _currentDialogueIndex >= 0) 
@@ -375,6 +370,7 @@ public partial class WorldScene : Node2D, IInitializable
 			GD.Print($"[WorldScene] Triggering quest: {questToTrigger.Title} (ID: {questToTrigger.Id})");
 			if (questToTrigger.Encounter != null)
 			{
+				GD.Print($"[WorldScene] Navigating to BattleScene with encounter from quest '{questToTrigger.Title}'.");
 				await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = questToTrigger.Encounter });
 				_isEncounterTriggered = true; // Mark as triggered to prevent re-triggering immediately by player movement
 			}
