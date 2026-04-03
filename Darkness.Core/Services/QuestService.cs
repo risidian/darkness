@@ -35,7 +35,9 @@ public class QuestService : IQuestService
     {
         return _quests.Where(q => 
             !character.CompletedQuestIds.Contains(q.Id) && 
-            q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p))).ToList();
+            q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p)) &&
+            (!q.RequiredMoralityMin.HasValue || character.Morality >= q.RequiredMoralityMin.Value) &&
+            (!q.RequiredMoralityMax.HasValue || character.Morality <= q.RequiredMoralityMax.Value)).ToList();
     }
 
     public QuestNode? GetQuestById(string id) => _quests.FirstOrDefault(q => q.Id == id);

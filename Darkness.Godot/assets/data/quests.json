@@ -14,11 +14,13 @@
 	  "Choices": [
 		{
 		  "Text": "[Fight] I will slay the hounds.",
-		  "NextQuestId": "beat_1_combat"
+		  "NextQuestId": "beat_1_combat",
+		  "MoralityImpact": -5
 		},
 		{
 		  "Text": "[Sneak] I will find another way.",
-		  "NextQuestId": "beat_1_sneak"
+		  "NextQuestId": "beat_1_sneak",
+		  "MoralityImpact": 5
 		}
 	  ]
 	}
@@ -88,7 +90,8 @@
 		  "Attack": 15,
 		  "Defense": 8,
 		  "Speed": 10,
-		  "SpriteKey": "hound"
+		  "SpriteKey": "hound",
+		  "MoralityImpact": -2
 		}
 	  ],
 	  "SurvivalTurns": null,
