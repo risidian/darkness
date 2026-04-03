@@ -34,6 +34,10 @@ public partial class WorldScene : Node2D, IInitializable
 	private string _lastDirection = "down";
 	private Vector2? _targetPosition = null;
 
+	private VBoxContainer _choicesContainer = null!;
+	private List<DialogueChoice> _currentChoices = new();
+	private QuestNode? _currentDialogueQuest = null;
+
 	public void Initialize(IDictionary<string, object> parameters)
 	{
 	}
@@ -82,6 +86,9 @@ public partial class WorldScene : Node2D, IInitializable
 		_pauseMenu = GetNode<PauseMenu>("CanvasLayer/PauseMenu");
 		_nameLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/NameLabel");
 		_textLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/TextLabel");
+
+		_choicesContainer = new VBoxContainer();
+		GetNode<VBoxContainer>("CanvasLayer/DialogueBox/VBoxContainer").AddChild(_choicesContainer);
 
 		GetNode<Button>("CanvasLayer/TopMenu/ForgeButton").Pressed += () => _navigation.NavigateToAsync("ForgePage");
 		GetNode<Button>("CanvasLayer/TopMenu/StudyButton").Pressed += () => _navigation.NavigateToAsync("StudyPage");
@@ -197,12 +204,20 @@ public partial class WorldScene : Node2D, IInitializable
 		_player.Velocity = Vector2.Zero;
 		_playerSprite.Play("idle_" + _lastDirection);
 		
+		_currentChoices.Clear();
+		_currentDialogueQuest = null;
+
 		// Load dynamic dialogue from quest if available
 		var quest = _session.CurrentCharacter != null ? _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter) : null;
 		if (quest?.Dialogue != null && quest.Dialogue.Lines.Count > 0)
 		{
+			_currentDialogueQuest = quest;
 			_speakerName = quest.Dialogue.Speaker;
 			_dialogue = new List<string>(quest.Dialogue.Lines);
+			if (quest.Dialogue.Choices != null)
+			{
+				_currentChoices = new List<DialogueChoice>(quest.Dialogue.Choices);
+			}
 		}
 		else
 		{
@@ -230,11 +245,23 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private void NextDialogue()
 	{
+		// If we are showing choices, tapping should not advance or close the dialogue
+		if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
+		{
+			return;
+		}
+
 		_currentDialogueIndex++;
 		if (_currentDialogueIndex >= _dialogue.Count)
 		{
 			_currentDialogueIndex = -1;
 			_dialogueBox.Hide();
+
+			// If there were no choices, mark the dialogue quest as complete when finished
+			if (_currentChoices.Count == 0 && _currentDialogueQuest != null && _session.CurrentCharacter != null)
+			{
+				_questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
+			}
 		}
 		else
 		{
@@ -246,6 +273,55 @@ public partial class WorldScene : Node2D, IInitializable
 	{
 		_nameLabel.Text = _speakerName;
 		_textLabel.Text = _dialogue[_currentDialogueIndex];
+		
+		var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+		
+		// Clear existing buttons
+		foreach (Node child in _choicesContainer.GetChildren())
+		{
+			child.QueueFree();
+		}
+
+		// If we are at the last line and have choices, show them
+		if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
+		{
+			prompt.Hide(); // Hide "TAP TO CONTINUE"
+			
+			foreach (var choice in _currentChoices)
+			{
+				var btn = new Button { Text = choice.Text };
+				btn.Pressed += () => OnChoiceSelected(choice);
+				_choicesContainer.AddChild(btn);
+			}
+		}
+		else
+		{
+			prompt.Show(); // Show "TAP TO CONTINUE"
+			prompt.Text = "[TAP TO CONTINUE]";
+		}
+	}
+
+	private void OnChoiceSelected(DialogueChoice choice)
+	{
+		// 1. Mark the current dialogue quest as complete
+		if (_currentDialogueQuest != null && _session.CurrentCharacter != null)
+		{
+			_questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
+			
+			// 2. Mark the chosen path as "completed" so it meets its own prerequisite
+			// This effectively "unlocks" the chosen path.
+			_questService.CompleteQuest(_session.CurrentCharacter, choice.NextQuestId);
+		}
+
+		// 3. Hide dialogue box and end conversation
+		_currentDialogueIndex = -1;
+		_dialogueBox.Hide();
+		
+		// Clear buttons
+		foreach (Node child in _choicesContainer.GetChildren())
+		{
+			child.QueueFree();
+		}
 	}
 
 	private async void TriggerEncounter()
