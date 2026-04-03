@@ -28,11 +28,8 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private bool _isEncounterTriggered = false;
 	private float _moveSpeed = 300f;
-	private string[] _dialogue = new[] {
-		"Welcome to the Shore of Camelot, Wanderer.",
-		"The path to the castle is blocked by shadows.",
-		"You'll find only hounds and darkness to the east."
-	};
+	private List<string> _dialogue = new();
+	private string _speakerName = "Old Man";
 	private int _currentDialogueIndex = -1;
 	private string _lastDirection = "down";
 	private Vector2? _targetPosition = null;
@@ -200,6 +197,24 @@ public partial class WorldScene : Node2D, IInitializable
 		_player.Velocity = Vector2.Zero;
 		_playerSprite.Play("idle_" + _lastDirection);
 		
+		// Load dynamic dialogue from quest if available
+		var quest = _session.CurrentCharacter != null ? _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter) : null;
+		if (quest?.Dialogue != null)
+		{
+			_speakerName = quest.Dialogue.Speaker;
+			_dialogue = new List<string>(quest.Dialogue.Lines);
+		}
+		else
+		{
+			// Fallback hardcoded dialogue
+			_speakerName = "Old Man";
+			_dialogue = new List<string> {
+				"Welcome to the Shore of Camelot, Wanderer.",
+				"The path to the castle is blocked by shadows.",
+				"You'll find only hounds and darkness to the east."
+			};
+		}
+
 		_currentDialogueIndex = 0;
 		_dialogueBox.Show();
 		
@@ -213,7 +228,7 @@ public partial class WorldScene : Node2D, IInitializable
 	private void NextDialogue()
 	{
 		_currentDialogueIndex++;
-		if (_currentDialogueIndex >= _dialogue.Length)
+		if (_currentDialogueIndex >= _dialogue.Count)
 		{
 			_currentDialogueIndex = -1;
 			_dialogueBox.Hide();
@@ -226,7 +241,7 @@ public partial class WorldScene : Node2D, IInitializable
 
 	private void UpdateDialogueUI()
 	{
-		_nameLabel.Text = "Old Man";
+		_nameLabel.Text = _speakerName;
 		_textLabel.Text = _dialogue[_currentDialogueIndex];
 	}
 
