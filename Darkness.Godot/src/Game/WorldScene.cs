@@ -43,7 +43,7 @@ public partial class WorldScene : Node2D, IInitializable
 	{
 	}
 
-	public override void _Input(InputEvent @event)
+	public override void _UnhandledInput(InputEvent @event)
 	{
 		bool isClickOrTouch = (@event is InputEventScreenTouch touch && touch.Pressed) || 
 		                      (@event is InputEventMouseButton mouse && mouse.Pressed && mouse.ButtonIndex == MouseButton.Left);
