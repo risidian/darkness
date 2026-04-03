@@ -104,6 +104,28 @@ public partial class WorldScene : Node2D, IInitializable
 		await UpdateSprites();
 	}
 
+	private async Task UpdateSprites()
+	{
+		if (_session.CurrentCharacter != null)
+		{
+			await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
+			_playerSprite.Play("idle_down");
+		}
+
+		var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
+		await _npcSprite.SetupCharacter(new Character { 
+			SkinColor = knightAppearance.SkinColor,
+			HairStyle = knightAppearance.HairStyle,
+			HairColor = knightAppearance.HairColor,
+			ArmorType = knightAppearance.ArmorType,
+			WeaponType = knightAppearance.WeaponType,
+			Feet = knightAppearance.Feet,
+			Arms = knightAppearance.Arms,
+			Legs = knightAppearance.Legs
+		}, _catalog, _fileSystem);
+		_npcSprite.Play("idle_down");
+	}
+
 	public override void _Process(double delta)
 	{
 		if (!IsInsideTree()) return;
