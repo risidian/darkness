@@ -271,3 +271,6 @@ export_presets.cfg.bak
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Worktrees
+.worktrees/
