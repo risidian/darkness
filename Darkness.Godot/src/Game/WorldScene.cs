@@ -199,7 +199,7 @@ public partial class WorldScene : Node2D, IInitializable
 		
 		// Load dynamic dialogue from quest if available
 		var quest = _session.CurrentCharacter != null ? _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter) : null;
-		if (quest?.Dialogue != null)
+		if (quest?.Dialogue != null && quest.Dialogue.Lines.Count > 0)
 		{
 			_speakerName = quest.Dialogue.Speaker;
 			_dialogue = new List<string>(quest.Dialogue.Lines);
@@ -215,14 +215,17 @@ public partial class WorldScene : Node2D, IInitializable
 			};
 		}
 
-		_currentDialogueIndex = 0;
-		_dialogueBox.Show();
-		
-		// Update prompt for mobile/touch
-		var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
-		prompt.Text = "[TAP TO CONTINUE]";
-		
-		UpdateDialogueUI();
+		if (_dialogue.Count > 0)
+		{
+			_currentDialogueIndex = 0;
+			_dialogueBox.Show();
+			
+			// Update prompt for mobile/touch
+			var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+			prompt.Text = "[TAP TO CONTINUE]";
+			
+			UpdateDialogueUI();
+		}
 	}
 
 	private void NextDialogue()
