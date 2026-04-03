@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Darkness.Core.Interfaces;
-using Darkness.Core.Logic;
 using Darkness.Core.Models;
 
 namespace Darkness.Core.ViewModels
@@ -12,10 +11,11 @@ namespace Darkness.Core.ViewModels
         private readonly ISessionService _sessionService;
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
-        private readonly StoryController _storyController;
+        private readonly IQuestService _questService;
 
         private Character? _currentPlayer;
         private List<Character> _party = new();
+        private string? _currentQuestId;
 
         [ObservableProperty]
         private object? _gameInstance;
@@ -34,18 +34,22 @@ namespace Darkness.Core.ViewModels
             ISessionService sessionService,
             INavigationService navigationService,
             IDialogService dialogService,
-            StoryController storyController)
+            IQuestService questService)
         {
             _characterService = characterService;
             _sessionService = sessionService;
             _navigationService = navigationService;
             _dialogService = dialogService;
-            _storyController = storyController;
+            _questService = questService;
         }
 
         public (List<Enemy> Enemies, int? SurvivalTurns, List<Character> AdditionalPartyMembers) GetEncounter()
         {
-            return _storyController.GetEncounterForBeat(_storyController.CurrentBeat);
+            if (string.IsNullOrEmpty(_currentQuestId)) return (new(), null, new());
+            var quest = _questService.GetQuestById(_currentQuestId);
+            if (quest?.Encounter == null) return (new(), null, new());
+            
+            return (quest.Encounter.Enemies, quest.Encounter.SurvivalTurns, quest.Encounter.AdditionalPartyMembers);
         }
 
         public List<Character> GetParty()
@@ -53,7 +57,7 @@ namespace Darkness.Core.ViewModels
             return _party;
         }
 
-        public void Initialize(int storyBeat)
+        public void Initialize(string questId)
         {
             // TODO: Load from session once character selection is wired up
             _currentPlayer = new Character
@@ -73,17 +77,18 @@ namespace Darkness.Core.ViewModels
             };
 
             _party = new List<Character> { _currentPlayer };
-            _storyController.SetBeat(storyBeat);
+            _currentQuestId = questId;
 
             SetupBattle();
         }
 
         private void SetupBattle()
         {
-            var encounter = _storyController.GetEncounterForBeat(_storyController.CurrentBeat);
-            var enemies = encounter.Enemies;
+            if (string.IsNullOrEmpty(_currentQuestId)) return;
+            var quest = _questService.GetQuestById(_currentQuestId);
+            var encounter = quest?.Encounter;
 
-            if (enemies == null || enemies.Count == 0)
+            if (encounter == null || encounter.Enemies == null || encounter.Enemies.Count == 0)
             {
                 StatusText = "No enemies encountered. The path is clear.";
                 IsContinueVisible = true;
@@ -98,7 +103,7 @@ namespace Darkness.Core.ViewModels
                 }
             }
 
-            StatusText = $"Story Beat {_storyController.CurrentBeat}: Encountered {enemies[0].Name}!";
+            StatusText = $"Quest: {quest!.Title}\nEncountered {encounter.Enemies[0].Name}!";
             if (encounter.SurvivalTurns.HasValue)
             {
                 StatusText += $" Survive for {encounter.SurvivalTurns} turns!";

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 
@@ -7,34 +8,27 @@ namespace Darkness.Core.Services;
 
 public class QuestService : IQuestService
 {
-    private readonly List<QuestNode> _quests = new();
+    private readonly IFileSystemService _fileSystem;
+    private List<QuestNode> _quests = new();
 
-    public QuestService()
+    public QuestService(IFileSystemService fileSystem)
     {
-        // Sample Story Beat 1
-        _quests.Add(new QuestNode 
-        { 
-            Id = "main_1", 
-            Title = "The Beginning", 
-            IsMainStory = true,
-            Encounter = new EncounterData 
-            {
-                Enemies = new List<Enemy> { new Enemy { Name = "Shadow Minion", MaxHP = 50, CurrentHP = 50, Attack = 10 } }
-            }
-        });
+        _fileSystem = fileSystem;
+        LoadQuests();
+    }
 
-        // Sample Side Quest 1
-        _quests.Add(new QuestNode 
-        { 
-            Id = "side_1", 
-            Title = "Creek Monster", 
-            IsMainStory = false,
-            Prerequisites = new List<string> { "main_1" },
-            Encounter = new EncounterData 
-            {
-                Enemies = new List<Enemy> { new Enemy { Name = "Water Drake", MaxHP = 120, CurrentHP = 120, Attack = 25 } }
-            }
-        });
+    private void LoadQuests()
+    {
+        try 
+        {
+            string json = _fileSystem.ReadAllText("assets/data/quests.json");
+            _quests = JsonSerializer.Deserialize<List<QuestNode>>(json) ?? new();
+        }
+        catch (System.Exception ex)
+        {
+            // Fallback or log error
+            System.Console.WriteLine($"[QuestService] Failed to load quests: {ex.Message}");
+        }
     }
 
     public List<QuestNode> GetAvailableQuests(Character character)

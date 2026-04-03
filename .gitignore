@@ -242,11 +242,18 @@ __pycache__/
 *.pyc
 
 # Godot-specific ignores
-.godot/
-*.import
+**/.godot/
+**/*.import
+**/*.uid
+**/*.pck
+**/*.pck.remap
+**/*.scn.remap
+**/*.tscn.remap
+**/*.res.remap
+**/*.tres.remap
 export_presets.cfg.bak
-android/build/
-android/.gradle/
+**/android/build/
+**/android/.gradle/
 
 # Unified Build Artifacts
 [Bb]in/

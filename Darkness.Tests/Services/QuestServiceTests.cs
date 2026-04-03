@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using System.Text.Json;
+using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using Darkness.Core.Services;
+using Moq;
 using Xunit;
 
 namespace Darkness.Tests.Services;
@@ -8,10 +11,23 @@ namespace Darkness.Tests.Services;
 public class QuestServiceTests
 {
     private readonly QuestService _questService;
+    private readonly Mock<IFileSystemService> _mockFileSystem;
 
     public QuestServiceTests()
     {
-        _questService = new QuestService();
+        _mockFileSystem = new Mock<IFileSystemService>();
+        
+        // Setup mock quest data
+        var quests = new List<QuestNode>
+        {
+            new QuestNode { Id = "main_1", Title = "The Beginning", IsMainStory = true, Prerequisites = new List<string>() },
+            new QuestNode { Id = "side_1", Title = "A Small Favor", IsMainStory = false, Prerequisites = new List<string> { "main_1" } }
+        };
+        
+        string json = JsonSerializer.Serialize(quests);
+        _mockFileSystem.Setup(f => f.ReadAllText("assets/data/quests.json")).Returns(json);
+
+        _questService = new QuestService(_mockFileSystem.Object);
     }
 
     [Fact]

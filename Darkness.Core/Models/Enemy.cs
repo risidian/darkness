@@ -33,5 +33,6 @@ namespace Darkness.Core.Models
         public int GoldReward { get; set; }
 
         public bool IsInvincible { get; set; } = false;
+        public string SpriteKey { get; set; } = "knight";
     }
 }

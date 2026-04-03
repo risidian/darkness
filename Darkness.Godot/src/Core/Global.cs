@@ -40,7 +40,6 @@ public partial class Global : Node
             services.AddSingleton<ISpriteCompositor, GodotSpriteCompositor>();
             services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
-            services.AddSingleton<StoryController>();
 
             Services = services.BuildServiceProvider();
             GD.Print("[Global] DI Container initialized.");

@@ -79,4 +79,16 @@ public class GodotFileSystemService : IFileSystemService
         GD.Print($"[FileSystem] Successfully read {bytes.Length} bytes from {path} (Fallback/Non-Image)");
         return Task.FromResult<Stream>(new MemoryStream(bytes));
     }
+
+    public string ReadAllText(string filename)
+    {
+        string path = filename.StartsWith("res://") ? filename : $"res://{filename}";
+        if (global::Godot.FileAccess.FileExists(path))
+        {
+            using var file = global::Godot.FileAccess.Open(path, global::Godot.FileAccess.ModeFlags.Read);
+            return file.GetAsText();
+        }
+        
+        throw new FileNotFoundException($"Could not find file: {path}");
+    }
 }

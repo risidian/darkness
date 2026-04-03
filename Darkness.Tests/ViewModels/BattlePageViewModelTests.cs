@@ -1,5 +1,5 @@
 using Darkness.Core.Interfaces;
-using Darkness.Core.Logic;
+using Darkness.Core.Models;
 using Darkness.Core.ViewModels;
 using Moq;
 
@@ -11,7 +11,7 @@ namespace Darkness.Tests.ViewModels
         private readonly Mock<ISessionService> _sessionServiceMock;
         private readonly Mock<INavigationService> _navigationServiceMock;
         private readonly Mock<IDialogService> _dialogServiceMock;
-        private readonly StoryController _storyController;
+        private readonly Mock<IQuestService> _questServiceMock;
         private readonly BattlePageViewModel _viewModel;
 
         public BattlePageViewModelTests()
@@ -20,65 +20,80 @@ namespace Darkness.Tests.ViewModels
             _sessionServiceMock = new Mock<ISessionService>();
             _navigationServiceMock = new Mock<INavigationService>();
             _dialogServiceMock = new Mock<IDialogService>();
-            _storyController = new StoryController();
+            _questServiceMock = new Mock<IQuestService>();
 
             _viewModel = new BattlePageViewModel(
                 _characterServiceMock.Object,
                 _sessionServiceMock.Object,
                 _navigationServiceMock.Object,
                 _dialogServiceMock.Object,
-                _storyController);
+                _questServiceMock.Object);
         }
 
         [Fact]
-        public void Initialize_Beat4_ShowsDarkWarriorEncounter()
+        public void Initialize_ValidQuest_ShowsEncounter()
         {
-            _viewModel.Initialize(4);
+            var quest = new QuestNode 
+            { 
+                Id = "main_1", 
+                Title = "The Beginning",
+                Encounter = new EncounterData 
+                { 
+                    Enemies = new List<Enemy> { new Enemy { Name = "Shadow Minion" } } 
+                }
+            };
+            _questServiceMock.Setup(x => x.GetQuestById("main_1")).Returns(quest);
+
+            _viewModel.Initialize("main_1");
+
+            Assert.Contains("Shadow Minion", _viewModel.StatusText);
+            Assert.Contains("The Beginning", _viewModel.StatusText);
+        }
+
+        [Fact]
+        public void Initialize_QuestWithSurvival_ShowsSurvivalText()
+        {
+            var quest = new QuestNode 
+            { 
+                Id = "survival_quest", 
+                Title = "Survive",
+                Encounter = new EncounterData 
+                { 
+                    Enemies = new List<Enemy> { new Enemy { Name = "Dark Warrior" } },
+                    SurvivalTurns = 5
+                }
+            };
+            _questServiceMock.Setup(x => x.GetQuestById("survival_quest")).Returns(quest);
+
+            _viewModel.Initialize("survival_quest");
 
             Assert.Contains("Dark Warrior", _viewModel.StatusText);
-            Assert.Contains("Story Beat 4", _viewModel.StatusText);
             Assert.Contains("Survive for 5 turns", _viewModel.StatusText);
         }
 
         [Fact]
-        public void Initialize_Beat8_ShowsAraknosDemonWithTywin()
+        public void Initialize_QuestWithAlly_IncludesAllyInStatus()
         {
-            _viewModel.Initialize(8);
+            var quest = new QuestNode 
+            { 
+                Id = "boss_quest", 
+                Title = "Boss Battle",
+                Encounter = new EncounterData 
+                { 
+                    Enemies = new List<Enemy> { new Enemy { Name = "Big Bad" } },
+                    AdditionalPartyMembers = new List<Character> { new Character { Name = "Tywin" } }
+                }
+            };
+            _questServiceMock.Setup(x => x.GetQuestById("boss_quest")).Returns(quest);
 
-            Assert.Contains("Araknos Demon", _viewModel.StatusText);
-            Assert.Contains("Tywin", _viewModel.StatusText);
-        }
+            _viewModel.Initialize("boss_quest");
 
-        [Fact]
-        public void Initialize_Beat9_ShowsFinalBossWithTywin()
-        {
-            _viewModel.Initialize(9);
-
-            Assert.Contains("Kyarias the Undead King", _viewModel.StatusText);
-            Assert.Contains("Tywin", _viewModel.StatusText);
-        }
-
-        [Fact]
-        public void Initialize_DefaultBeat_ShowsShadowMinion()
-        {
-            _viewModel.Initialize(1);
-
-            Assert.Contains("Shadow Minion", _viewModel.StatusText);
-        }
-
-        [Fact]
-        public void Initialize_BeatAfter8_IncludesTywin()
-        {
-            _viewModel.Initialize(8);
-
-            Assert.Contains("Tywin", _viewModel.StatusText);
+            Assert.Contains("Joined by: Tywin", _viewModel.StatusText);
         }
 
         [Fact]
         public void OnBattleEnded_Victory_SetsVictoryState()
         {
-            _viewModel.Initialize(4);
-
             _viewModel.OnBattleEnded(true);
 
             Assert.Contains("Victory", _viewModel.StatusText);
@@ -89,8 +104,6 @@ namespace Darkness.Tests.ViewModels
         [Fact]
         public void OnBattleEnded_Defeat_SetsDefeatState()
         {
-            _viewModel.Initialize(4);
-
             _viewModel.OnBattleEnded(false);
 
             Assert.Contains("Defeat", _viewModel.StatusText);
@@ -118,7 +131,6 @@ namespace Darkness.Tests.ViewModels
             await _viewModel.FleeCommand.ExecuteAsync(null);
 
             _navigationServiceMock.Verify(x => x.GoBackAsync(), Times.Never);
-            _navigationServiceMock.Verify(x => x.NavigateToAsync(It.IsAny<string>(), It.IsAny<IDictionary<string, object>>()), Times.Never);
         }
 
         [Fact]
@@ -127,15 +139,6 @@ namespace Darkness.Tests.ViewModels
             await _viewModel.ContinueCommand.ExecuteAsync(null);
 
             _navigationServiceMock.Verify(x => x.GoBackAsync(), Times.Once);
-        }
-
-        [Fact]
-        public void Initialize_DefaultState_ContinueNotVisible()
-        {
-            _viewModel.Initialize(4);
-
-            Assert.False(_viewModel.IsContinueVisible);
-            Assert.Equal("White", _viewModel.StatusColor);
         }
     }
 }

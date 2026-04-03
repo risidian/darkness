@@ -8,5 +8,6 @@ namespace Darkness.Core.Models
         public int? SurvivalTurns { get; set; }
         public string? BackgroundKey { get; set; }
         public List<Item> Rewards { get; set; } = new();
+        public List<Character> AdditionalPartyMembers { get; set; } = new();
     }
 }
