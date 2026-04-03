@@ -1,119 +1,164 @@
 [
   {
-    "Id": "beat_1",
-    "Title": "First Combat",
-    "IsMainStory": true,
-    "Prerequisites": [],
-    "Encounter": {
-      "Enemies": [
-        {
-          "Name": "Undead Dog A",
-          "Level": 1,
-          "MaxHP": 40,
-          "CurrentHP": 40,
-          "Attack": 12,
-          "Defense": 5,
-          "Speed": 12,
-          "SpriteKey": "hound"
-        },
-        {
-          "Name": "Undead Dog B",
-          "Level": 1,
-          "MaxHP": 40,
-          "CurrentHP": 40,
-          "Attack": 12,
-          "Defense": 5,
-          "Speed": 12,
-          "SpriteKey": "hound"
-        },
-        {
-          "Name": "Undead Dog C",
-          "Level": 1,
-          "MaxHP": 40,
-          "CurrentHP": 40,
-          "Attack": 12,
-          "Defense": 5,
-          "Speed": 12,
-          "SpriteKey": "hound"
-        }
-      ],
-      "SurvivalTurns": null,
-      "BackgroundKey": "forest",
-      "Rewards": []
-    },
-    "DialogueKey": "beat_1_intro",
-    "Dialogue": {
-      "Speaker": "Old Man",
-      "Lines": [
-        "Welcome to the Shore of Camelot, Wanderer.",
-        "The path to the castle is blocked by shadows.",
-        "You'll find only hounds and darkness to the east."
-      ]
-    }
+	"Id": "beat_1",
+	"Title": "The Awakening",
+	"IsMainStory": true,
+	"Prerequisites": [],
+	"Dialogue": {
+	  "Speaker": "Old Man",
+	  "Lines": [
+		"Welcome to the Shore of Camelot, Wanderer.",
+		"The path to the castle is blocked by shadows.",
+		"You must choose your path carefully."
+	  ],
+	  "Choices": [
+		{
+		  "Text": "[Fight] I will slay the hounds.",
+		  "NextQuestId": "beat_1_combat"
+		},
+		{
+		  "Text": "[Sneak] I will find another way.",
+		  "NextQuestId": "beat_1_sneak"
+		}
+	  ]
+	}
   },
   {
-    "Id": "beat_2",
-    "Title": "Dark Warrior",
-    "IsMainStory": true,
-    "Prerequisites": ["beat_1"],
-    "Encounter": {
-      "Enemies": [
-        {
-          "Name": "Dark Warrior",
-          "Level": 20,
-          "MaxHP": 9999,
-          "CurrentHP": 9999,
-          "Attack": 50,
-          "Defense": 100,
-          "Speed": 30,
-          "IsInvincible": true,
-          "SpriteKey": "knight"
-        }
-      ],
-      "SurvivalTurns": 5,
-      "BackgroundKey": "dark_castle",
-      "Rewards": []
-    },
-    "DialogueKey": "beat_2_intro",
-    "Dialogue": {
-      "Speaker": "Dark Warrior",
-      "Lines": [
-        "You dare approach the gates of Camelot?",
-        "Your journey ends here, mortal.",
+	"Id": "beat_1_combat",
+	"Title": "The Hound Master",
+	"IsMainStory": true,
+	"Prerequisites": ["beat_1", "beat_1_combat"],
+	"Encounter": {
+	  "Enemies": [
+		{
+		  "Name": "Undead Dog A",
+		  "Level": 1,
+		  "MaxHP": 400,
+		  "CurrentHP": 400,
+		  "Attack": 12,
+		  "Defense": 5,
+		  "Speed": 12,
+		  "SpriteKey": "hound"
+		},
+		{
+		  "Name": "Undead Dog B",
+		  "Level": 1,
+		  "MaxHP": 400,
+		  "CurrentHP": 400,
+		  "Attack": 12,
+		  "Defense": 5,
+		  "Speed": 12,
+		  "SpriteKey": "hound"
+		},
+		{
+		  "Name": "Undead Dog C",
+		  "Level": 1,
+		  "MaxHP": 400,
+		  "CurrentHP": 400,
+		  "Attack": 12,
+		  "Defense": 5,
+		  "Speed": 12,
+		  "SpriteKey": "hound"
+		}
+	  ],
+	  "SurvivalTurns": null,
+	  "BackgroundKey": "forest",
+	  "Rewards": []
+	}
+  },
+  {
+	"Id": "beat_1_sneak",
+	"Title": "The Hidden Path",
+	"IsMainStory": true,
+	"Prerequisites": ["beat_1", "beat_1_sneak"],
+	"Dialogue": {
+	  "Speaker": "Old Man",
+	  "Lines": [
+		"Wise choice. The shadows are thickest near the main road.",
+		"Follow the riverbed, but beware the Creek Monster."
+	  ]
+	},
+	"Encounter": {
+	  "Enemies": [
+		{
+		  "Name": "Creek Monster",
+		  "Level": 1,
+		  "MaxHP": 800,
+		  "CurrentHP": 800,
+		  "Attack": 15,
+		  "Defense": 8,
+		  "Speed": 10,
+		  "SpriteKey": "hound"
+		}
+	  ],
+	  "SurvivalTurns": null,
+	  "BackgroundKey": "riverbed",
+	  "Rewards": []
+	}
+  },
+  {
+	"Id": "beat_2",
+	"Title": "Dark Warrior",
+	"IsMainStory": true,
+	"Prerequisites": ["beat_1"],
+	"Encounter": {
+	  "Enemies": [
+		{
+		  "Name": "Dark Warrior",
+		  "Level": 20,
+		  "MaxHP": 9999,
+		  "CurrentHP": 9999,
+		  "Attack": 50,
+		  "Defense": 100,
+		  "Speed": 30,
+		  "IsInvincible": true,
+		  "SpriteKey": "knight"
+		}
+	  ],
+	  "SurvivalTurns": 5,
+	  "BackgroundKey": "dark_castle",
+	  "Rewards": []
+	},
+	"DialogueKey": "beat_2_intro",
+	"Dialogue": {
+	  "Speaker": "Dark Warrior",
+	  "Lines": [
+		"You dare approach the gates of Camelot?",
+		"Your journey ends here, mortal.",
         "The shadow consumes all."
-      ]
-    }
+	  ]
+	}
   },
   {
-    "Id": "beat_3",
-    "Title": "The Sorcerer",
-    "IsMainStory": true,
-    "Prerequisites": ["beat_2"],
-    "Encounter": {
-      "Enemies": [
-        {
-          "Name": "Sorcerer",
-          "Level": 8,
-          "MaxHP": 120,
-          "CurrentHP": 120,
-          "Attack": 35,
-          "Defense": 8,
-          "Speed": 20,
-          "SpriteKey": "knight"
-        }
-      ],
-      "SurvivalTurns": null,
-      "BackgroundKey": "dark_castle",
-      "Rewards": []
-    },
-    "DialogueKey": "beat_3_intro",
-    "Dialogue": {
-      "Speaker": "The Sorcerer",
-      "Lines": [
-        "The Dark Warrior was only the beginning.",
-        "I have woven the shadows into a cage for you.",
+	"Id": "beat_3",
+	"Title": "The Sorcerer",
+	"IsMainStory": true,
+	"Prerequisites": ["beat_2"],
+	"Encounter": {
+	  "Enemies": [
+		{
+		  "Name": "Sorcerer",
+		  "Level": 8,
+		  "MaxHP": 120,
+		  "CurrentHP": 120,
+		  "Attack": 35,
+		  "Defense": 8,
+		  "Speed": 20,
+		  "SpriteKey": "knight"
+		}
+	  ],
+	  "SurvivalTurns": null,
+	  "BackgroundKey": "dark_castle",
+	  "Rewards": []
+	},
+	"DialogueKey": "beat_3_intro",
+	"Dialogue": {
+	  "Speaker": "The Sorcerer",
+	  "Lines": [
+		"The Dark Warrior was only the beginning.",
+		"I have woven the shadows into a cage for you.",
         "Let us see if your spirit is truly unbreakable."
-      ]
-    }
+	  ]
+	}
   }
 ]
