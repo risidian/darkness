@@ -348,6 +348,41 @@ public partial class WorldScene : Node2D, IInitializable
 		{
 			child.QueueFree();
 		}
+
+		// 4. If the chosen next quest is purely dialogue, start it immediately
+		if (!string.IsNullOrEmpty(_pendingNextQuestId))
+		{
+			var nextQuest = _questService.GetQuestById(_pendingNextQuestId);
+			if (nextQuest?.Dialogue != null && nextQuest.Dialogue.Lines.Count > 0)
+			{
+				GD.Print($"[WorldScene] Next quest '{nextQuest.Title}' has dialogue. Starting immediately.");
+				_pendingNextQuestId = null; // Clear pending since we are handling it now
+				
+				_currentDialogueQuest = nextQuest;
+				_speakerName = nextQuest.Dialogue.Speaker;
+				_dialogue = new List<string>(nextQuest.Dialogue.Lines);
+				if (nextQuest.Dialogue.Choices != null)
+				{
+					_currentChoices = new List<DialogueChoice>(nextQuest.Dialogue.Choices);
+				}
+				else
+				{
+					_currentChoices.Clear();
+				}
+				
+				_currentDialogueIndex = 0;
+				_dialogueBox.Show();
+				
+				var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+				prompt.Text = "[TAP TO CONTINUE]";
+				
+				UpdateDialogueUI();
+			}
+			else
+			{
+				GD.Print($"[WorldScene] Next quest has no immediate dialogue. Leaving as pending for movement trigger.");
+			}
+		}
 	}
 
 	private async void TriggerEncounter()
