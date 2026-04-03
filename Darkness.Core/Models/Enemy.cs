@@ -34,5 +34,6 @@ namespace Darkness.Core.Models
 
         public bool IsInvincible { get; set; } = false;
         public string SpriteKey { get; set; } = "knight";
+        public int MoralityImpact { get; set; } = 0;
     }
 }

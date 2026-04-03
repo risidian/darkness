@@ -4,5 +4,6 @@ namespace Darkness.Core.Models
     {
         public string Text { get; set; } = string.Empty;
         public string NextQuestId { get; set; } = string.Empty;
+        public int MoralityImpact { get; set; } = 0;
     }
 }

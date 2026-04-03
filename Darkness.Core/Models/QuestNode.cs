@@ -11,5 +11,7 @@ namespace Darkness.Core.Models
         public EncounterData? Encounter { get; set; }
         public string? DialogueKey { get; set; }
         public DialogueData? Dialogue { get; set; }
+        public int? RequiredMoralityMin { get; set; }
+        public int? RequiredMoralityMax { get; set; }
     }
 }
