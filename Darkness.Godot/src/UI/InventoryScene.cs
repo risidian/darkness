@@ -42,11 +42,18 @@ public partial class InventoryScene : Control
 		if (_session.CurrentCharacter == null) return;
 		if (_session.CurrentCharacter.Inventory.Count > 0) return;
 
-		// Add starter equipment for testing Task 4
+		// Add starter equipment with ArmorClass restrictions
+		// ArmorClass: 0=Cloth, 1=Leather, 2=Plate
 		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Dagger (Steel)", Type = "Weapon", AttackBonus = 5 });
 		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Recurve Bow", Type = "Weapon", AttackBonus = 6 });
 		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Mage Wand", Type = "Weapon", AttackBonus = 4 });
-		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Plate (Steel)", Type = "Armor", DefenseBonus = 10 });
+		
+		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Mage Robes (Blue)", Type = "Armor", DefenseBonus = 2, ArmorClass = 0 });
+		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Leather", Type = "Armor", DefenseBonus = 5, ArmorClass = 1 });
+		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Plate (Steel)", Type = "Armor", DefenseBonus = 10, ArmorClass = 2 });
+		
+		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Crusader", Type = "Shield", DefenseBonus = 5 });
+		_session.CurrentCharacter.Inventory.Add(new Item { Name = "Spartan", Type = "Shield", DefenseBonus = 7 });
 	}
 
 	private void LoadInventory()
@@ -61,8 +68,13 @@ public partial class InventoryScene : Control
 			hbox.CustomMinimumSize = new Vector2(0, 80);
 			hbox.AddThemeConstantOverride("separation", 20);
 
-			var isEquipped = item.Type == "Weapon" ? _session.CurrentCharacter.WeaponType == item.Name : _session.CurrentCharacter.ArmorType == item.Name;
+			bool isEquipped = false;
+			if (item.Type == "Weapon") isEquipped = _session.CurrentCharacter.WeaponType == item.Name;
+			else if (item.Type == "Armor") isEquipped = _session.CurrentCharacter.ArmorType == item.Name;
+			else if (item.Type == "Shield") isEquipped = _session.CurrentCharacter.ShieldType == item.Name;
+
 			var labelText = isEquipped ? $"{item.Name} (EQUIPPED)" : item.Name;
+			if (item.Type == "Armor") labelText += $" [AC: {item.ArmorClass}]";
 
 			var label = new Label { Text = labelText, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			label.AddThemeFontSizeOverride("font_size", 24);
@@ -70,7 +82,19 @@ public partial class InventoryScene : Control
 			
 			var equipBtn = new Button { Text = isEquipped ? "UNEQUIP" : "EQUIP", CustomMinimumSize = new Vector2(180, 0) };
 			equipBtn.AddThemeFontSizeOverride("font_size", 20);
-			equipBtn.Pressed += () => OnEquipPressed(item);
+			
+			// Disable if character doesn't have required ArmorClass proficiency
+			if (!isEquipped && item.Type == "Armor" && item.ArmorClass > _session.CurrentCharacter.ArmorClass)
+			{
+				equipBtn.Disabled = true;
+				equipBtn.Text = "LOCKED";
+				label.Modulate = new Color(0.5f, 0.5f, 0.5f);
+			}
+			else
+			{
+				equipBtn.Pressed += () => OnEquipPressed(item);
+			}
+			
 			hbox.AddChild(equipBtn);
 			
 			_itemList.AddChild(hbox);
@@ -94,6 +118,13 @@ public partial class InventoryScene : Control
 				_session.CurrentCharacter.ArmorType = "None";
 			else
 				_session.CurrentCharacter.ArmorType = item.Name;
+		}
+		else if (item.Type == "Shield")
+		{
+			if (_session.CurrentCharacter.ShieldType == item.Name)
+				_session.CurrentCharacter.ShieldType = "None";
+			else
+				_session.CurrentCharacter.ShieldType = item.Name;
 		}
 
 		await RegenerateFullSheet();
@@ -119,25 +150,14 @@ public partial class InventoryScene : Control
 			Arms = c.Arms,
 			ArmorType = c.ArmorType,
 			WeaponType = c.WeaponType,
+			ShieldType = c.ShieldType,
 			Head = "Human Male"
 		};
 
 		try
 		{
-			var layers = _catalog.GetLayersForAppearance(appearance);
-			var streams = new List<System.IO.Stream>();
-			foreach (var layer in layers)
-			{
-				var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
-				streams.Add(stream);
-			}
-
-			if (streams.Count > 0)
-			{
-				c.FullSpriteSheet = _compositor.CompositeLayers(streams, 1536, 2112);
-			}
-
-			foreach (var s in streams) s.Dispose();
+			var basePaths = _catalog.GetLayerBasePaths(appearance);
+			c.FullSpriteSheet = await _compositor.CompositeFullSheet(basePaths, _fileSystem);
 		}
 		catch (System.Exception ex)
 		{

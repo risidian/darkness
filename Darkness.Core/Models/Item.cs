@@ -20,5 +20,6 @@ namespace Darkness.Core.Models
         public int IntelligenceBonus { get; set; }
         public int DefenseBonus { get; set; }
         public int AttackBonus { get; set; }
+        public int ArmorClass { get; set; }
     }
 }

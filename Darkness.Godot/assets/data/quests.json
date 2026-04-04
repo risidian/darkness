@@ -19,42 +19,33 @@
 		},
 		{
 		  "Text": "[Sneak] I will find another way.",
-		  "NextQuestId": "beat_1_stealth",
+		  "NextQuestId": "beat_1_stealth_dialogue",
 		  "MoralityImpact": -5
 		}
-		]
-		}
-		},
-		{
-		"Id": "beat_1_stealth",
-		"Title": "The Shadows of Camelot",
-		"IsMainStory": true,
-		"Prerequisites": ["beat_1"],
-		"Dialogue": {
-		"Speaker": "Old Man",
-		"Lines": [
-		"Wise choice. The shadows are thickest near the main road.",
-		"Follow the riverbed, but move quietly."
-		]
-		}
-		},
-		{
-		"Id": "beat_1_sneak_dialogue",
-		"Title": "The Hidden Path",
+	  ]
+	}
+  },
+  {
+	"Id": "beat_1_combat_dialogue",
+	"Title": "The Path of Steel",
 	"IsMainStory": true,
 	"Prerequisites": ["beat_1"],
 	"Dialogue": {
 	  "Speaker": "Old Man",
 	  "Lines": [
-		"Brave choice. Head to the east, best of luck to you."
+		"Brave choice. Head to the east, best of luck to you.",
+		"The hounds are relentless, but your blade is sharp."
 	  ]
-	}
+	},
+	"NextQuestId": "beat_1_combat"
   },
   {
 	"Id": "beat_1_combat",
 	"Title": "The Hound Master",
 	"IsMainStory": true,
-	"Prerequisites": ["beat_1_combat_dialogue"],	"Encounter": {
+	"Prerequisites": ["beat_1_combat_dialogue"],
+	"Location": "SandyShore_East",
+	"Encounter": {
 	  "Enemies": [
 		{
 		  "Name": "Hell Hound 1",
@@ -93,30 +84,38 @@
 	}
   },
   {
-	"Id": "beat_1_sneak_dialogue",
-	"Title": "The Hidden Path",
+	"Id": "beat_1_stealth_dialogue",
+	"Title": "The Shadows of Camelot",
 	"IsMainStory": true,
 	"Prerequisites": ["beat_1"],
 	"Dialogue": {
 	  "Speaker": "Old Man",
 	  "Lines": [
 		"Wise choice. The shadows are thickest near the main road.",
-		"Follow the riverbed, but beware the Creek Monster."
+		"Follow the riverbed to the east, but move quietly."
 	  ]
-	}
+	},
+	"NextQuestId": "beat_1_stealth"
+  },
+  {
+	"Id": "beat_1_stealth",
+	"Title": "The Hidden Path",
+	"IsMainStory": true,
+	"Prerequisites": ["beat_1_stealth_dialogue"],
+	"Location": "SandyShore_East"
   },
   {
 	"Id": "beat_1_sneak_combat",
-	"Title": "The Creek Monster",
+	"Title": "The Creek Monster", 
 	"IsMainStory": true,
-	"Prerequisites": ["beat_1_sneak_dialogue"],
+	"Prerequisites": ["beat_1_stealth"],
 	"Encounter": {
 	  "Enemies": [
 		{
 		  "Name": "Creek Monster",
-		  "Level": 1,
-		  "MaxHP": 800,
-		  "CurrentHP": 800,
+		  "Level": 3,
+		  "MaxHP": 300,
+		  "CurrentHP": 300,
 		  "Attack": 15,
 		  "Defense": 8,
 		  "Speed": 10,

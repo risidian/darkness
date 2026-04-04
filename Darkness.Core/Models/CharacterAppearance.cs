@@ -13,5 +13,6 @@ namespace Darkness.Core.Models
         public string Legs { get; set; } = "Slacks";
         public string ArmorType { get; set; } = "Leather";
         public string WeaponType { get; set; } = "Arming Sword (Steel)";
+        public string ShieldType { get; set; } = "None";
     }
 }

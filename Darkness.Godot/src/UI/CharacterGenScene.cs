@@ -30,6 +30,7 @@ public partial class CharacterGenScene : Control
 	private OptionButton _armsOption = null!;
 	private OptionButton _armorOption = null!;
 	private OptionButton _weaponOption = null!;
+	private OptionButton _shieldOption = null!;
 
 	private byte[]? _previewBytes;
 
@@ -59,6 +60,7 @@ public partial class CharacterGenScene : Control
 		_armsOption = GetNode<OptionButton>(container + "ArmsOption");
 		_armorOption = GetNode<OptionButton>(container + "ArmorOption");
 		_weaponOption = GetNode<OptionButton>(container + "WeaponOption");
+		_shieldOption = GetNode<OptionButton>(container + "ShieldOption");
 
 		SetupOptions();
 
@@ -73,6 +75,7 @@ public partial class CharacterGenScene : Control
 		_armsOption.ItemSelected += (_) => UpdatePreview();
 		_armorOption.ItemSelected += (_) => UpdatePreview();
 		_weaponOption.ItemSelected += (_) => UpdatePreview();
+		_shieldOption.ItemSelected += (_) => UpdatePreview();
 
 		GetNode<Button>(container + "CreateButton").Pressed += OnCreatePressed;
 		GetNode<Button>(container + "BackButton").Pressed += () => _navigation.GoBackAsync();
@@ -93,6 +96,7 @@ public partial class CharacterGenScene : Control
 		Populate(_armsOption, _catalog.ArmsTypes);
 		Populate(_armorOption, _catalog.ArmorTypes);
 		Populate(_weaponOption, _catalog.WeaponTypes);
+		Populate(_shieldOption, _catalog.ShieldTypes);
 	}
 
 	private void Populate(OptionButton node, List<string> items)
@@ -114,6 +118,7 @@ public partial class CharacterGenScene : Control
 		
 		SelectByText(_armorOption, defaults.ArmorType);
 		SelectByText(_weaponOption, defaults.WeaponType);
+		SelectByText(_shieldOption, defaults.ShieldType);
 		SelectByText(_legsOption, defaults.Legs);
 		SelectByText(_feetOption, defaults.Feet);
 		SelectByText(_armsOption, defaults.Arms);
@@ -173,6 +178,7 @@ public partial class CharacterGenScene : Control
 			Arms = _armsOption.GetItemText(_armsOption.Selected),
 			ArmorType = _armorOption.GetItemText(_armorOption.Selected),
 			WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
+			ShieldType = _shieldOption.GetItemText(_shieldOption.Selected),
 			Head = "Human Male"
 		};
 	}
@@ -210,6 +216,7 @@ public partial class CharacterGenScene : Control
 			Arms = appearance.Arms,
 			ArmorType = appearance.ArmorType,
 			WeaponType = appearance.WeaponType,
+			ShieldType = appearance.ShieldType,
 			Thumbnail = _previewBytes,
 			Level = 1
 		};
@@ -217,12 +224,8 @@ public partial class CharacterGenScene : Control
 		// Generate Full Sprite Sheet
 		try
 		{
-			var streams = await LoadLayerStreams(appearance);
-			if (streams.Count > 0)
-			{
-				character.FullSpriteSheet = _compositor.CompositeLayers(streams, 1536, 2112);
-			}
-			foreach (var s in streams) s.Dispose();
+			var basePaths = _catalog.GetLayerBasePaths(appearance);
+			character.FullSpriteSheet = await _compositor.CompositeFullSheet(basePaths, _fileSystem);
 		}
 		catch (System.Exception ex)
 		{
@@ -243,11 +246,11 @@ public partial class CharacterGenScene : Control
 	{
 		switch (cls)
 		{
-			case "Knight": c.Strength = 12; c.Constitution = 14; break;
-			case "Warrior": c.Strength = 15; c.Constitution = 14; break;
-			case "Mage": c.Intelligence = 15; c.Wisdom = 14; break;
-			case "Rogue": c.Dexterity = 15; c.Strength = 12; break;
-			case "Cleric": c.Wisdom = 15; c.Constitution = 14; break;
+			case "Knight": c.Strength = 12; c.Constitution = 14; c.ArmorClass = 2; break;
+			case "Warrior": c.Strength = 15; c.Constitution = 14; c.ArmorClass = 2; break;
+			case "Mage": c.Intelligence = 15; c.Wisdom = 14; c.ArmorClass = 0; break;
+			case "Rogue": c.Dexterity = 15; c.Strength = 12; c.ArmorClass = 1; break;
+			case "Cleric": c.Wisdom = 15; c.Constitution = 14; c.ArmorClass = 2; break;
 		}
 		c.MaxHP = c.Constitution * 10;
 		c.CurrentHP = c.MaxHP;

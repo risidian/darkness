@@ -21,7 +21,8 @@ public class QuestServiceTests
         var quests = new List<QuestNode>
         {
             new QuestNode { Id = "beat_1", Title = "The Beginning", IsMainStory = true, Prerequisites = new List<string>() },
-            new QuestNode { Id = "side_1", Title = "A Small Favor", IsMainStory = false, Prerequisites = new List<string> { "beat_1" } }
+            new QuestNode { Id = "side_1", Title = "A Small Favor", IsMainStory = false, Prerequisites = new List<string> { "beat_1" } },
+            new QuestNode { Id = "loc_1", Title = "Location Quest", Location = "TestLoc", Prerequisites = new List<string>() }
         };
         
         string json = JsonSerializer.Serialize(quests);
@@ -40,8 +41,7 @@ public class QuestServiceTests
         var availableQuests = _questService.GetAvailableQuests(character);
 
         // Assert
-        Assert.Single(availableQuests);
-        Assert.Equal("beat_1", availableQuests[0].Id);
+        Assert.Contains(availableQuests, q => q.Id == "beat_1");
     }
 
     [Fact]
@@ -55,8 +55,7 @@ public class QuestServiceTests
         var availableQuests = _questService.GetAvailableQuests(character);
 
         // Assert
-        Assert.Single(availableQuests);
-        Assert.Equal("side_1", availableQuests[0].Id);
+        Assert.Contains(availableQuests, q => q.Id == "side_1");
     }
 
     [Fact]
@@ -71,14 +70,17 @@ public class QuestServiceTests
     }
 
     [Fact]
-    public void GetQuestByLocation_ShouldReturnMainQuest_ForSandyShoreEast()
+    public void GetQuestByLocation_ShouldReturnQuest_WhenPrerequisitesMet()
     {
+        // Arrange
+        var character = new Character { Name = "Test" };
+
         // Act
-        var quest = _questService.GetQuestByLocation("SandyShore_East");
+        var quest = _questService.GetQuestByLocation(character, "TestLoc");
 
         // Assert
         Assert.NotNull(quest);
-        Assert.Equal("beat_1", quest.Id);
+        Assert.Equal("loc_1", quest.Id);
     }
 
     [Fact]

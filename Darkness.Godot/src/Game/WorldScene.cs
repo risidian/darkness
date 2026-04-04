@@ -41,6 +41,22 @@ public partial class WorldScene : Node2D, IInitializable
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
+		if (parameters.ContainsKey("StealthOutcome") && _session.CurrentCharacter != null)
+		{
+			string outcome = parameters["StealthOutcome"].ToString() ?? "Failure";
+			if (outcome == "Success")
+			{
+				GD.Print("[WorldScene] Stealth successful. Skipping encounter.");
+				_questService.CompleteQuest(_session.CurrentCharacter, "beat_1_stealth");
+				_isEncounterTriggered = true; // Prevent immediate re-trigger
+			}
+			else
+			{
+				GD.Print("[WorldScene] Stealth failed. Triggering monster battle.");
+				_pendingNextQuestId = "beat_1_sneak_combat";
+				_isEncounterTriggered = false; // Allow trigger logic to run in Process
+			}
+		}
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -409,12 +425,12 @@ public partial class WorldScene : Node2D, IInitializable
 		}
 
 		// 2. If no pending choice-driven quest, use location-based or next main story quest.
-		if (questToTrigger == null)
+		if (questToTrigger == null && _session.CurrentCharacter != null)
 		{
-			questToTrigger = _questService.GetQuestByLocation("SandyShore_East");
+			questToTrigger = _questService.GetQuestByLocation(_session.CurrentCharacter, "SandyShore_East");
 			GD.Print($"[WorldScene] No pending quest. Checking location 'SandyShore_East'. Found: {questToTrigger?.Title ?? "None"}");
 
-			if (questToTrigger == null && _session.CurrentCharacter != null)
+			if (questToTrigger == null)
 			{
 				questToTrigger = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
 				GD.Print($"[WorldScene] No location quest found. Falling back to next main story quest: {questToTrigger?.Title ?? "None"}");
@@ -429,21 +445,23 @@ public partial class WorldScene : Node2D, IInitializable
 			{
 				GD.Print($"[WorldScene] Navigating to BattleScene with encounter from quest '{questToTrigger.Title}'.");
 				await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = questToTrigger.Encounter });
-				_isEncounterTriggered = true; // Mark as triggered to prevent re-triggering immediately by player movement
+				_isEncounterTriggered = true; 
+			}
+			else if (questToTrigger.Id == "beat_1_stealth")
+			{
+				GD.Print($"[WorldScene] Navigating to StealthScene for quest '{questToTrigger.Title}'.");
+				await _navigation.NavigateToAsync(Routes.Stealth);
+				_isEncounterTriggered = true;
 			}
 			else if (questToTrigger.Dialogue != null && questToTrigger.Dialogue.Lines.Count > 0)
 			{
-				// If the chosen quest is dialogue, we need to initiate it.
-				// This might involve starting a new dialogue sequence. For now, we'll log it.
-				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' has dialogue but no immediate encounter. Requires NPC interaction or separate trigger.");
-				// If we want immediate dialogue after choice, we'd need to call StartDialogue or similar here.
-				// For now, we assume dialogue is NPC-initiated.
-				_isEncounterTriggered = true; // Mark as triggered to prevent further triggers for now.
+				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' has dialogue. Initiating.");
+				_isEncounterTriggered = true;
+				StartDialogue(); // Start dialogue sequence for the next part of the story
 			}
 			else
 			{
-				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' found, but has no encounter or dialogue to trigger immediately.");
-				// If it's a quest that's just marked complete, but no immediate event, reset flag.
+				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' found, but no encounter or dialogue to trigger immediately.");
 				_isEncounterTriggered = false; 
 			}
 		}

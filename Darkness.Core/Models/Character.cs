@@ -17,6 +17,7 @@ namespace Darkness.Core.Models
         public string Legs { get; set; } = "Slacks";
         public string ArmorType { get; set; } = "Leather";
         public string WeaponType { get; set; } = "Arming Sword (Steel)";
+        public string ShieldType { get; set; } = "None";
 
         // Base Stats
         public int Strength { get; set; }
@@ -36,6 +37,7 @@ namespace Darkness.Core.Models
         public int Evasion { get; set; }
         public int Defense { get; set; }
         public int MagicDefense { get; set; }
+        public int ArmorClass { get; set; }
 
         public int Level { get; set; }
         public int Experience { get; set; }
