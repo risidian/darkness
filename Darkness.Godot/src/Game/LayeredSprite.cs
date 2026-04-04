@@ -135,6 +135,37 @@ public partial class LayeredSprite : Node2D
         }
     }
 
+    public async Task SetupFullSheet(string path, IFileSystemService fileSystem)
+    {
+        EnsureLayers();
+
+        // Total clear of all possible parts
+        foreach (var layer in _layers.Values)
+        {
+            layer.SpriteFrames = null;
+            layer.Hide();
+        }
+
+        if (!_layers.TryGetValue("Body", out var bodySprite))
+        {
+            GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
+            return;
+        }
+
+        var frames = await LoadFrames(path, fileSystem);
+        if (frames != null)
+        {
+            bodySprite.SpriteFrames = frames;
+            bodySprite.FlipH = _flipH;
+            bodySprite.Show();
+
+            if (frames.HasAnimation("idle_down"))
+            {
+                bodySprite.Play("idle_down");
+            }
+        }
+    }
+
     private async Task LoadIfExists(SpriteFrames frames, string animName, string path, IFileSystemService fileSystem)
     {
         try
