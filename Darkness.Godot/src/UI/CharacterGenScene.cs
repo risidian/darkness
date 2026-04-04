@@ -135,30 +135,11 @@ public partial class CharacterGenScene : Control
 
 	private async void UpdatePreview()
 	{
-		var appearance = new CharacterAppearance
-		{
-			SkinColor = _skinOption.GetItemText(_skinOption.Selected),
-			Face = _faceOption.GetItemText(_faceOption.Selected),
-			Eyes = _eyesOption.GetItemText(_eyesOption.Selected),
-			HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
-			HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected),
-			Legs = _legsOption.GetItemText(_legsOption.Selected),
-			Feet = _feetOption.GetItemText(_feetOption.Selected),
-			Arms = _armsOption.GetItemText(_armsOption.Selected),
-			ArmorType = _armorOption.GetItemText(_armorOption.Selected),
-			WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
-			Head = "Human Male"
-		};
+		var appearance = GetCurrentAppearance();
 
 		try
 		{
-			var layers = _catalog.GetLayersForAppearance(appearance);
-			var streams = new List<System.IO.Stream>();
-			foreach (var layer in layers)
-			{
-				var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
-				streams.Add(stream);
-			}
+			var streams = await LoadLayerStreams(appearance);
 
 			if (streams.Count > 0)
 			{
@@ -178,15 +159,10 @@ public partial class CharacterGenScene : Control
 		}
 	}
 
-	private async void OnCreatePressed()
+	private CharacterAppearance GetCurrentAppearance()
 	{
-		if (string.IsNullOrWhiteSpace(_nameEdit.Text) || _session.CurrentUser == null) return;
-
-		var character = new Character
+		return new CharacterAppearance
 		{
-			UserId = _session.CurrentUser.Id,
-			Name = _nameEdit.Text,
-			Class = _classOption.GetItemText(_classOption.Selected),
 			SkinColor = _skinOption.GetItemText(_skinOption.Selected),
 			Face = _faceOption.GetItemText(_faceOption.Selected),
 			Eyes = _eyesOption.GetItemText(_eyesOption.Selected),
@@ -197,9 +173,61 @@ public partial class CharacterGenScene : Control
 			Arms = _armsOption.GetItemText(_armsOption.Selected),
 			ArmorType = _armorOption.GetItemText(_armorOption.Selected),
 			WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
+			Head = "Human Male"
+		};
+	}
+
+	private async Task<List<System.IO.Stream>> LoadLayerStreams(CharacterAppearance appearance)
+	{
+		var layers = _catalog.GetLayersForAppearance(appearance);
+		var streams = new List<System.IO.Stream>();
+		foreach (var layer in layers)
+		{
+			var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
+			streams.Add(stream);
+		}
+		return streams;
+	}
+
+	private async void OnCreatePressed()
+	{
+		if (string.IsNullOrWhiteSpace(_nameEdit.Text) || _session.CurrentUser == null) return;
+
+		var appearance = GetCurrentAppearance();
+		
+		var character = new Character
+		{
+			UserId = _session.CurrentUser.Id,
+			Name = _nameEdit.Text,
+			Class = _classOption.GetItemText(_classOption.Selected),
+			SkinColor = appearance.SkinColor,
+			Face = appearance.Face,
+			Eyes = appearance.Eyes,
+			HairStyle = appearance.HairStyle,
+			HairColor = appearance.HairColor,
+			Legs = appearance.Legs,
+			Feet = appearance.Feet,
+			Arms = appearance.Arms,
+			ArmorType = appearance.ArmorType,
+			WeaponType = appearance.WeaponType,
 			Thumbnail = _previewBytes,
 			Level = 1
 		};
+
+		// Generate Full Sprite Sheet
+		try
+		{
+			var streams = await LoadLayerStreams(appearance);
+			if (streams.Count > 0)
+			{
+				character.FullSpriteSheet = _compositor.CompositeLayers(streams, 1536, 2112);
+			}
+			foreach (var s in streams) s.Dispose();
+		}
+		catch (System.Exception ex)
+		{
+			GD.PrintErr($"[CharacterGen] Failed to generate full sheet: {ex.Message}");
+		}
 
 		SetStats(character, character.Class);
 
