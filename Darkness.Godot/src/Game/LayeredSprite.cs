@@ -54,6 +54,12 @@ public partial class LayeredSprite : Node2D
         // Removed IsInsideTree guard - setup should always run
         EnsureLayers();
 
+        if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
+        {
+            await SetupFromBytes(c.FullSpriteSheet);
+            return;
+        }
+
         // Total clear of all possible parts
         foreach (var layer in _layers.Values)
         {
@@ -88,6 +94,37 @@ public partial class LayeredSprite : Node2D
                 sprite.SpriteFrames = frames;
                 sprite.FlipH = _flipH;
                 sprite.Show();
+            }
+        }
+    }
+
+    public async Task SetupFromBytes(byte[] data)
+    {
+        EnsureLayers();
+
+        // Total clear of all possible parts
+        foreach (var layer in _layers.Values)
+        {
+            layer.SpriteFrames = null;
+            layer.Hide();
+        }
+
+        if (!_layers.TryGetValue("Body", out var bodySprite))
+        {
+            GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
+            return;
+        }
+
+        var frames = ImageUtils.CreateSpriteFrames(data, 64, 64);
+        if (frames != null)
+        {
+            bodySprite.SpriteFrames = frames;
+            bodySprite.FlipH = _flipH;
+            bodySprite.Show();
+
+            if (frames.HasAnimation("idle_down"))
+            {
+                bodySprite.Play("idle_down");
             }
         }
     }
