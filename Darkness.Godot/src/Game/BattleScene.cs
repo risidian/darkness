@@ -124,18 +124,18 @@ public partial class BattleScene : Control, IInitializable
 			
 			_party.Add(pc);
 		}
+        if (_enemies.Count == 0)
+        {
+			GD.PrintErr("No enemies provided in BattleArgs. Using default test enemies.");
+            _enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, SpriteKey = "hound" });
+            _enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
+            _enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
 
-		if (_enemies.Count == 0)
-		{
-			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, SpriteKey = "hound" });
-			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
-			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
-			
-			foreach(var e in _enemies)
-			{
-				_originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
-			}
-		}
+            foreach (var e in _enemies)
+            {
+                _originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
+            }
+        }
 	}
 
 	private void RetryBattle()
@@ -179,6 +179,7 @@ public partial class BattleScene : Control, IInitializable
 		{
 			if (!IsInsideTree()) return;
 			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
+			wrapper.AddThemeConstantOverride("separation", -10); // Pull sprite up significantly
 			_partyContainer.AddChild(wrapper);
 
 			// Add Status Bar
@@ -193,7 +194,8 @@ public partial class BattleScene : Control, IInitializable
 			
 			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
 			spriteContainer.AddChild(sprite);
-			sprite.Position = new Vector2(100, 60);
+			// Since centered=false, (20, -10) centers the 160px sprite in 200px width and moves it up
+			sprite.Position = new Vector2(20, -10); 
 			sprite.Scale = new Vector2(2.5f, 2.5f);
 			_partySprites.Add(sprite);
 
@@ -205,6 +207,7 @@ public partial class BattleScene : Control, IInitializable
 		{
 			if (!IsInsideTree()) return;
 			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
+			wrapper.AddThemeConstantOverride("separation", -10);
 			_enemyContainer.AddChild(wrapper);
 
 			// Add Status Bar
@@ -219,7 +222,7 @@ public partial class BattleScene : Control, IInitializable
 
 			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
 			spriteContainer.AddChild(sprite);
-			sprite.Position = new Vector2(100, 60);
+			sprite.Position = new Vector2(30, -10);
 			_enemySprites.Add(sprite);
 
 			if (enemy.SpriteKey == "hound")

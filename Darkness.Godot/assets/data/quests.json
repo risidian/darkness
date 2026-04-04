@@ -110,7 +110,7 @@
 	"IsMainStory": true,
 	"Prerequisites": ["beat_1_stealth"],
 	"Encounter": {
-	  "Enemies": [
+	  "Enemies": [  
 		{
 		  "Name": "Creek Monster",
 		  "Level": 3,
