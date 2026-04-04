@@ -42,6 +42,7 @@ namespace Darkness.Core.Models
         public int AttributePoints { get; set; } = 5;
         public byte[]? Thumbnail { get; set; }
         public byte[]? FullSpriteSheet { get; set; }
+        public List<Item> Inventory { get; set; } = new();
         public List<string> CompletedQuestIds { get; set; } = new();
         public int Morality { get; set; } = 0;
 
