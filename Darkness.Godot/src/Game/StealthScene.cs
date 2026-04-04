@@ -156,18 +156,19 @@ public partial class StealthScene : Control, IInitializable
         if (_sliderTween != null && _sliderTween.IsValid())
             _sliderTween.Kill();
 
+        var parameters = new Dictionary<string, object> { { "StealthOutcome", success ? "Success" : "Failure" } };
+
         if (success)
         {
             _statusLabel.Text = "Area cleared! Moving forward...";
             await ToSignal(GetTree().CreateTimer(1.5), "timeout");
-            await _navigation.NavigateToAsync(_successScene);
+            await _navigation.NavigateToAsync(Routes.World, parameters);
         }
         else
         {
             _statusLabel.Text = "Enemies alerted! Prepare for battle!";
             await ToSignal(GetTree().CreateTimer(1.5), "timeout");
-            // In a real scenario, we might pass BattleArgs here
-            await _navigation.NavigateToAsync(_failureScene);
+            await _navigation.NavigateToAsync(Routes.World, parameters);
         }
     }
 }
