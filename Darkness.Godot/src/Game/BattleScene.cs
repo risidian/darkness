@@ -165,9 +165,9 @@ public partial class BattleScene : Control, IInitializable
 
 		if (_enemies.Count == 0)
 		{
-			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, SpriteKey = "hound" });
-			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
-			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
+			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, Attack = 10,Accuracy = 100, SpriteKey = "hound" });
+			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5,Attack = 8, Accuracy = 80, SpriteKey = "hound" });
+			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5,Attack = 8, Accuracy = 80, SpriteKey = "hound" });
 			
 			foreach(var e in _enemies)
 			{
