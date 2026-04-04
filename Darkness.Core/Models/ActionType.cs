@@ -7,5 +7,7 @@ public enum ActionType
     Thrust,
     Block,
     Shoot,
-    Cast
+    Cast,
+    Punch,
+    Kick
 }

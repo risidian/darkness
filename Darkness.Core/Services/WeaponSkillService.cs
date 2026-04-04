@@ -28,16 +28,36 @@ public class WeaponSkillService : IWeaponSkillService
             skills.Add(new Skill { Name = "Vitals", Description = "Targets a weak point in armor. (0.8x Dmg, 50% Armor Pen)", DamageMultiplier = 0.8f, ArmorPenetration = 0.5f, AssociatedAction = ActionType.Thrust });
             skills.Add(new Skill { Name = "Parry", Description = "Attempts to deflect an incoming blow. (25% Block)", SkillType = "Defensive", BlockReduction = 0.25f, AssociatedAction = ActionType.Block });
         }
-        else // Default Sword/Axe
+        else if (weaponType.Contains("Axe"))
+        {
+            skills.Add(new Skill { Name = "Cleave", Description = "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)", DamageMultiplier = 1.2f, AccuracyModifier = -10, AssociatedAction = ActionType.Slash });
+            skills.Add(new Skill { Name = "Overhead Strike", Description = "A precise armor-piercing jab. (0.9x Dmg, 30% Armor Pen)", DamageMultiplier = 0.9f, ArmorPenetration = 0.3f, AssociatedAction = ActionType.Thrust });
+
+            string blockName = shieldType != "None" ? "Shield Block" : "Brace";
+            float blockVal = shieldType != "None" ? 0.6f : 0.2f;
+            string blockDesc = shieldType != "None" ? $"Uses shield to negate most damage. ({blockVal * 100}% Block)" : $"Braces for impact with the weapon. ({blockVal * 100}% Block)";
+
+            skills.Add(new Skill { Name = blockName, Description = blockDesc, SkillType = "Defensive", BlockReduction = blockVal, AssociatedAction = ActionType.Block });
+        }
+
+        else if (weaponType.Contains("Sword"))
         {
             skills.Add(new Skill { Name = "Slash", Description = "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)", DamageMultiplier = 1.2f, AccuracyModifier = -10, AssociatedAction = ActionType.Slash });
             skills.Add(new Skill { Name = "Thrust", Description = "A precise armor-piercing jab. (0.9x Dmg, 30% Armor Pen)", DamageMultiplier = 0.9f, ArmorPenetration = 0.3f, AssociatedAction = ActionType.Thrust });
-            
-            string blockName = shieldType != "None" ? "Shield Block" : "Brace";
+
+            string blockName = shieldType != "None" ? "Shield Block" : "Deflect";
             float blockVal = shieldType != "None" ? 0.6f : 0.2f;
-            string blockDesc = shieldType != "None" ? $"Uses shield to negate most damage. ({blockVal*100}% Block)" : $"Braces for impact with the weapon. ({blockVal*100}% Block)";
-            
+            string blockDesc = shieldType != "None" ? $"Uses shield to negate most damage. ({blockVal * 100}% Block)" : $"Braces for impact with the weapon. ({blockVal * 100}% Block)";
+
             skills.Add(new Skill { Name = blockName, Description = blockDesc, SkillType = "Defensive", BlockReduction = blockVal, AssociatedAction = ActionType.Block });
+        }
+        else
+        {
+            //GD.Error($"Unknown weapon type: {weaponType}. Defaulting to basic skills.");
+            //Assume you have no weapon so fight with your fists 
+            skills.Add(new Skill { Name = "Punch", Description = "A basic unarmed strike. (0.5x Dmg)", DamageMultiplier = 0.5f, AssociatedAction = ActionType.Punch });
+            skills.Add(new Skill { Name = "Kick", Description = "A strong unarmed strike. (0.8x Dmg, -10 Accuracy)", DamageMultiplier = 0.8f, AccuracyModifier = -10, AssociatedAction = ActionType.Kick });
+            skills.Add(new Skill { Name = "Block", Description = "Attempts to block incoming attacks. (10% Block)", SkillType = "Defensive", BlockReduction = 0.1f, AssociatedAction = ActionType.Block });
         }
 
         return skills;
