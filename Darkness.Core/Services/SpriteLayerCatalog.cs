@@ -17,8 +17,8 @@ namespace Darkness.Core.Services
         private const int ZHair = 120;
         private const int ZWeapon = 140;
 
-        public List<string> HairStyles { get; } = new() { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob" };
-        public List<string> HairColors { get; } = new() { "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut" };
+        public List<string> HairStyles { get; } = new() { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob", "Afro" };
+        public List<string> HairColors { get; } = new() { "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut", "Blue", "Green", "Purple" };
         public List<string> SkinColors { get; } = new() { "Light", "Amber", "Olive", "Taupe", "Bronze", "Brown", "Black" };
         public List<string> FaceTypes { get; } = new() { "Default" };
         public List<string> EyeTypes { get; } = new() { "Default", "Neutral", "Anger", "Sad", "Shock" };
@@ -27,7 +27,7 @@ namespace Darkness.Core.Services
         public List<string> ArmsTypes { get; } = new() { "Gloves", "None" };
         public List<string> LegsTypes { get; } = new() { "Slacks", "Leggings", "Formal", "Cuffed", "Pantaloons", "None" };
         public List<string> ArmorTypes { get; } = new() { "Plate (Steel)", "Plate (Iron)", "Plate (Gold)", "Leather", "Leather (Black)", "Leather (Brown)", "Longsleeve (White)", "Longsleeve (Blue)", "Longsleeve (Brown)" };
-        public List<string> WeaponTypes { get; } = new() { "Arming Sword (Steel)", "Arming Sword (Iron)", "Arming Sword (Gold)", "None" };
+        public List<string> WeaponTypes { get; } = new() { "Arming Sword (Steel)", "Arming Sword (Iron)", "Arming Sword (Gold)", "Dagger (Steel)", "Recurve Bow", "Mage Wand", "None" };
 
         // Maps display name → file name fragment
         private static readonly Dictionary<string, string> HairStyleFileMap = new()
@@ -38,6 +38,7 @@ namespace Darkness.Core.Services
             ["Shorthawk"] = "shorthawk",
             ["Spiked"] = "spiked",
             ["Bob"] = "bob",
+            ["Afro"] = "afro",
         };
 
         private static readonly Dictionary<string, string> HairColorFileMap = new()
@@ -50,6 +51,9 @@ namespace Darkness.Core.Services
             ["Gray"] = "gray",
             ["Platinum"] = "platinum",
             ["Chestnut"] = "chestnut",
+            ["Blue"] = "blue",
+            ["Green"] = "green",
+            ["Purple"] = "purple",
         };
 
         private static readonly Dictionary<string, string> SkinColorFileMap = new()
@@ -126,6 +130,9 @@ namespace Darkness.Core.Services
             ["Arming Sword (Steel)"] = "arming_sword_steel",
             ["Arming Sword (Iron)"] = "arming_sword_iron",
             ["Arming Sword (Gold)"] = "arming_sword_gold",
+            ["Dagger (Steel)"] = "dagger",
+            ["Recurve Bow"] = "recurve_bow",
+            ["Mage Wand"] = "wand",
             ["None"] = "",
         };
 
@@ -145,32 +152,40 @@ namespace Darkness.Core.Services
 
             var layers = new List<SpriteLayerDefinition>
             {
-                new($"sprites/body/{skinFile}.png", ZBody),
-                new($"sprites/head/{headFile}.png", ZHead),
-                new($"sprites/face/{faceFile}.png", ZFace),
-                new($"sprites/eyes/{eyeFile}.png", ZEyes),
-                new($"sprites/hair/{hairStyleFile}_{hairColorFile}.png", ZHair),
-                new($"sprites/armor/{armorFile}.png", ZArmor),
+                new($"assets/sprites/full/body/walk.png", ZBody),
+                new($"assets/sprites/full/body/walk.png", ZHead),
+                new($"assets/sprites/full/body/walk.png", ZFace),
+                new($"assets/sprites/full/body/walk.png", ZEyes),
+                new($"assets/sprites/full/body/walk.png", ZHair),
+                new($"assets/sprites/full/body/walk.png", ZArmor),
             };
 
             if (!string.IsNullOrEmpty(feetFile))
             {
-                layers.Add(new($"sprites/feet/{feetFile}.png", ZFeet));
+                layers.Add(new($"assets/sprites/full/body/walk.png", ZFeet));
             }
 
             if (!string.IsNullOrEmpty(armsFile))
             {
-                layers.Add(new($"sprites/arms/{armsFile}.png", ZArms));
+                layers.Add(new($"assets/sprites/full/body/walk.png", ZArms));
             }
 
             if (!string.IsNullOrEmpty(legsFile))
             {
-                layers.Add(new($"sprites/legs/{legsFile}.png", ZLegs));
+                layers.Add(new($"assets/sprites/full/body/walk.png", ZLegs));
             }
 
             if (!string.IsNullOrEmpty(weaponFile))
             {
-                layers.Add(new($"sprites/weapons/{weaponFile}.png", ZWeapon));
+                // Simple mapping for now
+                if (weaponFile == "wand")
+                    layers.Add(new($"assets/sprites/full/weapons/magic/wand/male/slash/wand.png", ZWeapon));
+                else if (weaponFile == "recurve_bow")
+                    layers.Add(new($"assets/sprites/full/weapons/ranged/bow/male/shoot/recurve_bow.png", ZWeapon));
+                else if (weaponFile == "dagger")
+                    layers.Add(new($"assets/sprites/full/weapons/sword/dagger/male/slash/dagger.png", ZWeapon));
+                else
+                    layers.Add(new($"assets/sprites/full/body/walk.png", ZWeapon));
             }
 
             layers.Sort((a, b) => a.ZOrder.CompareTo(b.ZOrder));
@@ -192,14 +207,14 @@ namespace Darkness.Core.Services
                     break;
                 case "Mage":
                     appearance.ArmorType = "Longsleeve (Blue)";
-                    appearance.WeaponType = "None";
+                    appearance.WeaponType = "Mage Wand";
                     appearance.Feet = "Sandals";
                     appearance.Arms = "None";
                     appearance.Legs = "Formal";
                     break;
                 case "Rogue":
                     appearance.ArmorType = "Leather (Black)";
-                    appearance.WeaponType = "Arming Sword (Iron)";
+                    appearance.WeaponType = "Dagger (Steel)";
                     appearance.Feet = "Boots (Fold)";
                     appearance.Arms = "Gloves";
                     appearance.Legs = "Leggings";
