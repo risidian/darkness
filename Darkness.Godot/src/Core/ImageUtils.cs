@@ -40,42 +40,88 @@ public static class ImageUtils
         var frames = new SpriteFrames();
         if (frames.HasAnimation("default")) frames.RemoveAnimation("default");
 
-        // LPC Layout (576x256):
-        // Row 0: Walk Up (9 frames)
-        // Row 1: Walk Left (9 frames)
-        // Row 2: Walk Down (9 frames)
-        // Row 3: Walk Right (9 frames)
-        string[] anims = { "walk_up", "walk_left", "walk_down", "walk_right" };
+        float height = tex.GetSize().Y;
+        bool isFullLpc = height >= 1344;
 
-        for (int row = 0; row < 4; row++)
+        if (isFullLpc)
         {
-            string animName = anims[row];
-            frames.AddAnimation(animName);
-            frames.SetAnimationSpeed(animName, 12.0);
-            frames.SetAnimationLoop(animName, true);
+            // Spellcast (7 frames)
+            AddLpcRow(frames, tex, "spellcast_up", 0, 7, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "spellcast_left", 1, 7, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "spellcast_down", 2, 7, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "spellcast_right", 3, 7, frameWidth, frameHeight);
 
-            for (int col = 0; col < 9; col++)
-            {
-                var atlas = new AtlasTexture();
-                atlas.Atlas = tex;
-                atlas.Region = new Rect2(col * frameWidth, row * frameHeight, frameWidth, frameHeight);
-                frames.AddFrame(animName, atlas);
-            }
+            // Thrust (8 frames)
+            AddLpcRow(frames, tex, "thrust_up", 4, 8, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "thrust_left", 5, 8, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "thrust_down", 6, 8, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "thrust_right", 7, 8, frameWidth, frameHeight);
+
+            // Walk (9 frames)
+            AddLpcRow(frames, tex, "walk_up", 8, 9, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "walk_left", 9, 9, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "walk_down", 10, 9, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "walk_right", 11, 9, frameWidth, frameHeight);
+
+            // Slash (6 frames)
+            AddLpcRow(frames, tex, "slash_up", 12, 6, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "slash_left", 13, 6, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "slash_down", 14, 6, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "slash_right", 15, 6, frameWidth, frameHeight);
+
+            // Shoot (13 frames)
+            AddLpcRow(frames, tex, "shoot_up", 16, 13, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "shoot_left", 17, 13, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "shoot_down", 18, 13, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "shoot_right", 19, 13, frameWidth, frameHeight);
+
+            // Hurt (6 frames)
+            AddLpcRow(frames, tex, "hurt", 20, 6, frameWidth, frameHeight, 12.0, false);
+
+            // Idles from Walk cycle
+            AddSingleFrame(frames, tex, "idle_up", 8, 0, frameWidth, frameHeight);
+            AddSingleFrame(frames, tex, "idle_left", 9, 0, frameWidth, frameHeight);
+            AddSingleFrame(frames, tex, "idle_down", 10, 0, frameWidth, frameHeight);
+            AddSingleFrame(frames, tex, "idle_right", 11, 0, frameWidth, frameHeight);
         }
-
-        // Add idle animations (frame 0 of each walk cycle)
-        string[] idles = { "idle_up", "idle_left", "idle_down", "idle_right" };
-        for (int i = 0; i < 4; i++)
+        else
         {
-            frames.AddAnimation(idles[i]);
-            frames.SetAnimationLoop(idles[i], false);
-            var atlas = new AtlasTexture();
-            atlas.Atlas = tex;
-            atlas.Region = new Rect2(0, i * frameHeight, frameWidth, frameHeight);
-            frames.AddFrame(idles[i], atlas);
+            // Cropped LPC Layout (usually just walk)
+            AddLpcRow(frames, tex, "walk_up", 0, 9, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "walk_left", 1, 9, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "walk_down", 2, 9, frameWidth, frameHeight);
+            AddLpcRow(frames, tex, "walk_right", 3, 9, frameWidth, frameHeight);
+
+            AddSingleFrame(frames, tex, "idle_up", 0, 0, frameWidth, frameHeight);
+            AddSingleFrame(frames, tex, "idle_left", 1, 0, frameWidth, frameHeight);
+            AddSingleFrame(frames, tex, "idle_down", 2, 0, frameWidth, frameHeight);
+            AddSingleFrame(frames, tex, "idle_right", 3, 0, frameWidth, frameHeight);
         }
 
         return frames;
+    }
+
+    private static void AddLpcRow(SpriteFrames frames, Texture2D tex, string animName, int row, int count, int frameW, int frameH, double speed = 12.0, bool loop = true)
+    {
+        if (frames.HasAnimation(animName)) frames.RemoveAnimation(animName);
+        frames.AddAnimation(animName);
+        frames.SetAnimationSpeed(animName, speed);
+        frames.SetAnimationLoop(animName, loop);
+
+        for (int col = 0; col < count; col++)
+        {
+            var atlas = new AtlasTexture { Atlas = tex, Region = new Rect2(col * frameW, row * frameH, frameW, frameH) };
+            frames.AddFrame(animName, atlas);
+        }
+    }
+
+    private static void AddSingleFrame(SpriteFrames frames, Texture2D tex, string animName, int row, int col, int frameW, int frameH)
+    {
+        if (frames.HasAnimation(animName)) frames.RemoveAnimation(animName);
+        frames.AddAnimation(animName);
+        frames.SetAnimationLoop(animName, false);
+        var atlas = new AtlasTexture { Atlas = tex, Region = new Rect2(col * frameW, row * frameH, frameW, frameH) };
+        frames.AddFrame(animName, atlas);
     }
 
     public static void AddAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW, int frameH, double speed = 10.0, bool loop = true)
