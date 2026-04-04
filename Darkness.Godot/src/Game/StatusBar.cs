@@ -82,4 +82,18 @@ public partial class StatusBar : VBoxContainer
             _valueLabel.SelfModulate = Colors.White;
         }
     }
+
+    public void SetHighlighted(bool highlighted)
+    {
+        if (highlighted)
+        {
+            _nameLabel.AddThemeColorOverride("font_outline_color", Colors.RoyalBlue);
+            _nameLabel.AddThemeConstantOverride("outline_size", 8);
+        }
+        else
+        {
+            _nameLabel.RemoveThemeColorOverride("font_outline_color");
+            _nameLabel.RemoveThemeConstantOverride("outline_size");
+        }
+    }
 }
