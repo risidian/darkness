@@ -18,6 +18,7 @@ public partial class BattleScene : Control, IInitializable
 	private ISpriteCompositor _compositor = null!;
 	private ISpriteLayerCatalog _catalog = null!;
 	private IFileSystemService _fileSystem = null!;
+    private IWeaponSkillService _weaponSkillService = null!;
 	private RichTextLabel _combatLog = null!;
 	private PauseMenu _pauseMenu = null!;
 	private Control _endBattlePanel = null!;
@@ -38,22 +39,7 @@ public partial class BattleScene : Control, IInitializable
 	private bool _isProcessingTurn = false;
 	private int _selectedEnemyIndex = 0;
 
-	private void OnEnemyTapped(int index)
-	{
-		if (index >= _enemies.Count) return;
-		
-		// Clear previous highlight
-		if (_selectedEnemyIndex < _enemyHealthBars.Count)
-			_enemyHealthBars[_selectedEnemyIndex].SetHighlighted(false);
-			
-		_selectedEnemyIndex = index;
-		
-		// Set new highlight
-		if (_selectedEnemyIndex < _enemyHealthBars.Count)
-			_enemyHealthBars[_selectedEnemyIndex].SetHighlighted(true);
-			
-		GD.Print($"[Battle] Target selected: {_enemies[_selectedEnemyIndex].Name}");
-	}
+    private List<Skill> _currentWeaponSkills = new();
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
@@ -72,7 +58,8 @@ public partial class BattleScene : Control, IInitializable
 						MaxHP = e.MaxHP, 
 						CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
 						Defense = e.Defense > 0 ? e.Defense : 5,
-						SpriteKey = e.SpriteKey ?? "knight"
+						SpriteKey = e.SpriteKey ?? "knight",
+						MoralityImpact = e.MoralityImpact
 					};
 					_enemies.Add(enemy);
 					_originalEnemies.Add(new Enemy { Name = enemy.Name, MaxHP = enemy.MaxHP, CurrentHP = enemy.MaxHP, Defense = enemy.Defense, SpriteKey = enemy.SpriteKey });
@@ -109,6 +96,7 @@ public partial class BattleScene : Control, IInitializable
 		_compositor = sp.GetRequiredService<ISpriteCompositor>();
 		_catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
 		_fileSystem = sp.GetRequiredService<IFileSystemService>();
+        _weaponSkillService = sp.GetRequiredService<IWeaponSkillService>();
 
 		_combatLog = GetNode<RichTextLabel>("CombatLog");
 		_pauseMenu = GetNode<PauseMenu>("PauseMenu");
@@ -120,47 +108,78 @@ public partial class BattleScene : Control, IInitializable
 		_partyContainer = GetNode<HBoxContainer>("CombatArea/PartyContainer");
 		_enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
 
-		GetNode<Button>("ActionsArea/Attack1").Pressed += () => ExecuteAttack("Basic Attack");
-		GetNode<Button>("ActionsArea/Attack2").Pressed += () => ExecuteAttack("Skill A");
-		GetNode<Button>("ActionsArea/Attack3").Pressed += () => ExecuteAttack("Skill B");
 		GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
 		GetNode<Button>("%OkButton").Pressed += () => _navigation.NavigateToAsync("MainMenuPage");
 		_retryButton.Pressed += () => RetryBattle();
 
 		SetupBattle();
+        SetupWeaponSkills();
 		await UpdateSprites();
 	}
+
+    private void SetupWeaponSkills()
+    {
+        if (_session.CurrentCharacter == null) return;
+        var character = _session.CurrentCharacter;
+        
+        _currentWeaponSkills = _weaponSkillService.GetSkillsForWeapon(character.WeaponType ?? "None", character.ShieldType ?? "None");
+        
+        var buttons = new[] {
+            GetNode<Button>("ActionsArea/Attack1"),
+            GetNode<Button>("ActionsArea/Attack2"),
+            GetNode<Button>("ActionsArea/Attack3")
+        };
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (i < _currentWeaponSkills.Count)
+            {
+                var skill = _currentWeaponSkills[i];
+                buttons[i].Text = skill.Name.ToUpper();
+                buttons[i].TooltipText = skill.Description;
+                
+                // Clear existing connections if any (though usually fine on _Ready)
+                foreach (var connection in buttons[i].GetSignalConnectionList("pressed"))
+                    buttons[i].Disconnect("pressed", connection["callable"].AsCallable());
+                
+                buttons[i].Pressed += () => ExecuteWeaponSkill(skill);
+                buttons[i].Show();
+            }
+            else
+            {
+                buttons[i].Hide();
+            }
+        }
+    }
 
 	private void SetupBattle()
 	{
 		if (_party.Count == 0 && _session.CurrentCharacter != null)
 		{
 			var pc = _session.CurrentCharacter;
-			// Safety: Ensure player has health for the battle to function
 			if (pc.MaxHP <= 0) pc.MaxHP = 100;
 			if (pc.CurrentHP <= 0) pc.CurrentHP = pc.MaxHP;
-			
+			pc.IsBlocking = false;
 			_party.Add(pc);
 		}
-        if (_enemies.Count == 0)
-        {
-			GD.PrintErr("No enemies provided in BattleArgs. Using default test enemies.");
-            _enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, SpriteKey = "hound" });
-            _enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
-            _enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
 
-            foreach (var e in _enemies)
-            {
-                _originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
-            }
-        }
+		if (_enemies.Count == 0)
+		{
+			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, SpriteKey = "hound" });
+			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
+			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5, SpriteKey = "hound" });
+			
+			foreach(var e in _enemies)
+			{
+				_originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
+			}
+		}
 	}
 
 	private void RetryBattle()
 	{
 		_endBattlePanel.Hide();
 		_enemies.Clear();
-		_selectedEnemyIndex = 0; // Reset target
 		foreach(var e in _originalEnemies)
 		{
 			_enemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
@@ -169,20 +188,34 @@ public partial class BattleScene : Control, IInitializable
 		if (_party.Count > 0)
 		{
 			_party[0].CurrentHP = _party[0].MaxHP;
+			_party[0].IsBlocking = false;
 		}
 		
 		_combatLog.Clear();
 		_combatLog.AppendText("Retrying battle...");
-		_ = UpdateSprites(); // Use discard for fire-and-forget task
+		_selectedEnemyIndex = 0;
+		_ = UpdateSprites();
+	}
+
+	private void OnEnemyTapped(int index)
+	{
+		if (index >= _enemies.Count) return;
+		
+		if (_selectedEnemyIndex < _enemyHealthBars.Count)
+			_enemyHealthBars[_selectedEnemyIndex].SetHighlighted(false);
+			
+		_selectedEnemyIndex = index;
+		
+		if (_selectedEnemyIndex < _enemyHealthBars.Count)
+			_enemyHealthBars[_selectedEnemyIndex].SetHighlighted(true);
+			
+		GD.Print($"[Battle] Target selected: {_enemies[_selectedEnemyIndex].Name}");
 	}
 
 	private async Task UpdateSprites()
 	{
 		if (!IsInsideTree()) return;
 
-		GD.Print($"[BattleScene] Updating combatants (P:{_party.Count} E:{_enemies.Count})");
-		
-		// Clear containers safely
 		foreach (Node child in _partyContainer.GetChildren()) child.QueueFree();
 		foreach (Node child in _enemyContainer.GetChildren()) child.QueueFree();
 		
@@ -191,98 +224,71 @@ public partial class BattleScene : Control, IInitializable
 		_partyHealthBars.Clear();
 		_enemyHealthBars.Clear();
 
-		// Ensure selection is valid
-		if (_selectedEnemyIndex >= _enemies.Count && _enemies.Count > 0)
-			_selectedEnemyIndex = _enemies.Count - 1;
-
 		var layeredSpriteScene = GD.Load<PackedScene>("res://scenes/LayeredSprite.tscn");
 		var statusBarScene = GD.Load<PackedScene>("res://scenes/StatusBar.tscn");
 
 		foreach (var character in _party)
 		{
-			if (!IsInsideTree()) return;
 			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
-			wrapper.AddThemeConstantOverride("separation", -10); // Pull sprite up significantly
+			wrapper.AddThemeConstantOverride("separation", -30);
 			_partyContainer.AddChild(wrapper);
 
-			// Add Status Bar
 			var hpBar = statusBarScene.Instantiate<StatusBar>();
 			wrapper.AddChild(hpBar);
 			hpBar.Setup(character.Name, character.CurrentHP, character.MaxHP, StatusType.HP);
 			_partyHealthBars.Add(hpBar);
 
-			// Sprite Area
 			var spriteContainer = new Control { CustomMinimumSize = new Vector2(200, 120) };
 			wrapper.AddChild(spriteContainer);
 			
 			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
 			spriteContainer.AddChild(sprite);
-			// Since centered=false, (20, -10) centers the 160px sprite in 200px width and moves it up
 			sprite.Position = new Vector2(20, -10); 
 			sprite.Scale = new Vector2(2.5f, 2.5f);
 			_partySprites.Add(sprite);
 
 			await sprite.SetupCharacter(character, _catalog, _fileSystem);
-			if (IsInsideTree()) sprite.Play("idle_right");
+			sprite.Play("idle_right");
 		}
 
 		for (int i = 0; i < _enemies.Count; i++)
 		{
 			var enemy = _enemies[i];
-			if (!IsInsideTree()) return;
 			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
-			wrapper.AddThemeConstantOverride("separation", -10);
+			wrapper.AddThemeConstantOverride("separation", -30);
 			_enemyContainer.AddChild(wrapper);
 
-			// Add Status Bar
 			var hpBar = statusBarScene.Instantiate<StatusBar>();
 			wrapper.AddChild(hpBar);
 			hpBar.Setup(enemy.Name, enemy.CurrentHP, enemy.MaxHP, StatusType.HP);
 			_enemyHealthBars.Add(hpBar);
 
-			// Sprite Area
 			var spriteContainer = new Control { CustomMinimumSize = new Vector2(200, 120) };
-			wrapper.AddChild(spriteContainer);
-
-			// Click/Touch targeting
-			int index = i; // Local copy for closure
 			spriteContainer.MouseFilter = Control.MouseFilterEnum.Stop;
+			int index = i;
 			spriteContainer.GuiInput += (@event) => {
-				if (@event is InputEventMouseButton mouse && mouse.Pressed && mouse.ButtonIndex == MouseButton.Left)
-					OnEnemyTapped(index);
-				else if (@event is InputEventScreenTouch touch && touch.Pressed)
+				if ((@event is InputEventMouseButton m && m.Pressed && m.ButtonIndex == MouseButton.Left) ||
+				    (@event is InputEventScreenTouch t && t.Pressed))
 					OnEnemyTapped(index);
 			};
-
-			// Default selection highlight
-			if (i == _selectedEnemyIndex && i < _enemyHealthBars.Count) 
-				_enemyHealthBars[i].SetHighlighted(true);
+			wrapper.AddChild(spriteContainer);
 
 			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
 			spriteContainer.AddChild(sprite);
-			sprite.Position = new Vector2(30, -10);
+			sprite.Position = new Vector2(20, -10);
 			_enemySprites.Add(sprite);
 
 			if (enemy.SpriteKey == "hound")
 			{
 				sprite.Scale = new Vector2(2.5f, 2.5f);
 				await sprite.SetupMonster("hound", _fileSystem);
-				if (IsInsideTree())
-				{
-					sprite.Play("idle");
-					sprite.FlipH = false; 
-				}
+				sprite.Play("idle");
 			}
 			else if (enemy.SpriteKey.StartsWith("bosses/"))
 			{
 				sprite.Scale = new Vector2(2.5f, 2.5f);
-				// Bosses are full LPC sheets located in assets/sprites/bosses/
-				await sprite.SetupFullSheet("assets/sprites/" + enemy.SpriteKey, _fileSystem);
-				if (IsInsideTree())
-				{
-					sprite.Play("idle_left");
-					sprite.FlipH = false;
-				}
+				await sprite.SetupFullSheet("assets/sprites/" + enemy.SpriteKey + ".png", _fileSystem);
+				sprite.Play("idle_left");
 			}
 			else
 			{
@@ -290,103 +296,97 @@ public partial class BattleScene : Control, IInitializable
 				var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
 				await sprite.SetupCharacter(new Character {
 					SkinColor = knightAppearance.SkinColor,
-					HairStyle = knightAppearance.HairStyle,
-					HairColor = knightAppearance.HairColor,
+					Head = "Human Male",
 					ArmorType = knightAppearance.ArmorType,
 					WeaponType = knightAppearance.WeaponType,
-					Feet = knightAppearance.Feet,
-					Arms = knightAppearance.Arms,
-					Legs = knightAppearance.Legs
+					Legs = knightAppearance.Legs,
+					Feet = knightAppearance.Feet
 				}, _catalog, _fileSystem);
-				if (IsInsideTree()) sprite.Play("idle_left");
+				sprite.Play("idle_left");
 			}
+
+			if (i == _selectedEnemyIndex) hpBar.SetHighlighted(true);
 		}
 	}
 
-	private async void ExecuteAttack(string skillType)
+	private async void ExecuteWeaponSkill(Skill skill)
 	{
 		if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
-		if (_partySprites.Count == 0 || _enemySprites.Count == 0) return;
-
-		int actualIndex = _selectedEnemyIndex;
-		if (actualIndex >= _enemies.Count) actualIndex = 0;
 		
+		int actualIndex = _selectedEnemyIndex < _enemies.Count ? _selectedEnemyIndex : 0;
 		var attacker = _party[0];
 		var target = _enemies[actualIndex];
 		
 		if (target.CurrentHP <= 0 || attacker.CurrentHP <= 0) return;
 
 		_isProcessingTurn = true;
-		
+		attacker.IsBlocking = false;
+
 		try 
 		{
 			var attackerSprite = _partySprites[0];
 			var targetSprite = _enemySprites[actualIndex];
 
-			if (!GodotObject.IsInstanceValid(attackerSprite) || !GodotObject.IsInstanceValid(targetSprite)) return;
+			if (skill.SkillType == "Defensive")
+			{
+				attacker.IsBlocking = true;
+				_combatLog.AppendText($"\n[color=cyan]{attacker.Name}[/color] uses [b]{skill.Name}[/b]!");
+				_combatLog.AppendText($"\n{skill.Description}");
+				await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+			}
+			else
+			{
+				// Attack Logic
+				string attackAnim = skill.AssociatedAction switch {
+                    ActionType.Slash => "slash_right",
+                    ActionType.Thrust => "thrust_right",
+                    ActionType.Cast => "spellcast_right",
+                    ActionType.Shoot => "bow_right",
+                    _ => "walk_right"
+                };
+                
+				if (!attackerSprite.HasAnimation(attackAnim)) 
+                {
+                    if (skill.SkillType == "Magical") attackAnim = "spellcast_right";
+                    else attackAnim = "walk_right";
+                }
 
-			// Determine best animation
-			string attackAnim = "walk_right";
-			if (attackerSprite.HasAnimation("slash_right")) attackAnim = "slash_right";
-			else if (attackerSprite.HasAnimation("spellcast_right")) attackAnim = "spellcast_right";
-			else if (attackerSprite.HasAnimation("thrust_right")) attackAnim = "thrust_right";
-
-			// Lunge Tween
-			var originalPos = attackerSprite.Position;
-			var lungePos = originalPos + new Vector2(50, 0);
-			var tween = GetTree().CreateTween();
-			tween.TweenProperty(attackerSprite, "position", lungePos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-			
-			attackerSprite.Play(attackAnim);
-			
-			int damage = _combat.CalculateDamage(attacker, target);
-			target.CurrentHP -= damage;
-			if (actualIndex < _enemyHealthBars.Count)
+				var originalPos = attackerSprite.Position;
+				var lungePos = originalPos + new Vector2(50, 0);
+				var tween = GetTree().CreateTween();
+				tween.TweenProperty(attackerSprite, "position", lungePos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+				
+				attackerSprite.Play(attackAnim);
+				
+				int damage = _combat.CalculateDamage(attacker, target, skill: skill);
+				target.CurrentHP -= damage;
 				_enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
 
-			_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] attacks {target.Name} with {skillType} for {damage} damage!");
+				_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {damage} damage!");
 
-			await ToSignal(tween, "finished");
-			await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+				await ToSignal(tween, "finished");
+				await ToSignal(GetTree().CreateTimer(0.2), "timeout");
 
-			// Return Tween
-			var returnTween = GetTree().CreateTween();
-			returnTween.TweenProperty(attackerSprite, "position", originalPos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-			await ToSignal(returnTween, "finished");
-
-			if (!IsInsideTree()) return;
-			if (GodotObject.IsInstanceValid(attackerSprite))
+				var returnTween = GetTree().CreateTween();
+				returnTween.TweenProperty(attackerSprite, "position", originalPos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+				await ToSignal(returnTween, "finished");
 				attackerSprite.Play("idle_right");
+			}
 
 			if (target.CurrentHP <= 0)
 			{
 				_combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
-				
-				// Apply morality impact
-				if (target.MoralityImpact != 0 && _party.Count > 0)
-				{
-					_party[0].Morality += target.MoralityImpact;
-					string color = target.MoralityImpact > 0 ? "cyan" : "purple";
-					string sign = target.MoralityImpact > 0 ? "+" : "";
-					_combatLog.AppendText($"\n[color={color}]Morality changed {sign}{target.MoralityImpact} (Total: {_party[0].Morality})[/color]");
-				}
-				
+				if (target.MoralityImpact != 0) _party[0].Morality += target.MoralityImpact;
 				_enemies.Remove(target);
+				_selectedEnemyIndex = 0;
 				await UpdateSprites();
 			}
-			else
+			else if (attacker.CurrentHP > 0)
 			{
+				// Enemy Turn
 				await ToSignal(GetTree().CreateTimer(0.3), "timeout");
-				if (!IsInsideTree()) return;
-				if (!GodotObject.IsInstanceValid(targetSprite) || !GodotObject.IsInstanceValid(attackerSprite)) return;
 				
-				// Enemy Counter-Attack
-				string enemyAnim = "walk_left";
-				if (target.SpriteKey == "hound") enemyAnim = "jump";
-				else if (targetSprite.HasAnimation("slash_left")) enemyAnim = "slash_left";
-				else if (targetSprite.HasAnimation("spellcast_left")) enemyAnim = "spellcast_left";
-
-				// Enemy Lunge
+				string enemyAnim = target.SpriteKey == "hound" ? "jump" : (targetSprite.HasAnimation("slash_left") ? "slash_left" : "walk_left");
 				var eOriginalPos = targetSprite.Position;
 				var eLungePos = eOriginalPos + new Vector2(-50, 0);
 				var eTween = GetTree().CreateTween();
@@ -394,29 +394,20 @@ public partial class BattleScene : Control, IInitializable
 
 				targetSprite.Play(enemyAnim);
 
-				int enemyDamage = 5; 
+				int enemyDamage = _combat.CalculateDamage(target, attacker);
 				attacker.CurrentHP -= enemyDamage;
-				if (_partyHealthBars.Count > 0)
-					_partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
-				_combatLog.AppendText($"\n[color=orange]{target.Name}[/color] bites back for {enemyDamage} damage!");
+				_partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
+				
+				string defendMsg = attacker.IsBlocking ? " (Blocked!)" : "";
+				_combatLog.AppendText($"\n[color=orange]{target.Name}[/color] attacks for {enemyDamage} damage!{defendMsg}");
 
 				await ToSignal(eTween, "finished");
 				await ToSignal(GetTree().CreateTimer(0.2), "timeout");
 
-				// Enemy Return
 				var eReturnTween = GetTree().CreateTween();
 				eReturnTween.TweenProperty(targetSprite, "position", eOriginalPos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
 				await ToSignal(eReturnTween, "finished");
-
-				if (!IsInsideTree()) return;
-				
-				if (GodotObject.IsInstanceValid(targetSprite))
-				{
-					if (target.SpriteKey == "hound")
-						targetSprite.Play("idle");
-					else
-						targetSprite.Play("idle_left");
-				}
+				targetSprite.Play(target.SpriteKey == "hound" ? "idle" : "idle_left");
 
 				if (attacker.CurrentHP <= 0)
 				{
@@ -425,14 +416,12 @@ public partial class BattleScene : Control, IInitializable
 				}
 			}
 
-			if (_enemies.Count == 0)
-			{
-				Victory();
-			}
+			if (_enemies.Count == 0) Victory();
 		}
 		finally 
 		{
 			_isProcessingTurn = false;
+			attacker.IsBlocking = false; 
 		}
 	}
 

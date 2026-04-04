@@ -47,6 +47,7 @@ namespace Darkness.Core.Models
         public List<Item> Inventory { get; set; } = new();
         public List<string> CompletedQuestIds { get; set; } = new();
         public int Morality { get; set; } = 0;
+        public bool IsBlocking { get; set; } = false;
 
         public CharacterSnapshot ToSnapshot() => new CharacterSnapshot(
             Name, Class, CurrentHP, MaxHP, Level, Thumbnail, HairColor, HairStyle, SkinColor

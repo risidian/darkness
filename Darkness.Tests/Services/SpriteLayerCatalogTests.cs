@@ -83,8 +83,8 @@ namespace Darkness.Tests.Services
 
         [Theory]
         [InlineData("Warrior", "Plate (Steel)", "Arming Sword (Steel)")]
-        [InlineData("Mage", "Longsleeve (Blue)", "None")]
-        [InlineData("Rogue", "Leather (Black)", "Arming Sword (Iron)")]
+        [InlineData("Mage", "Mage Robes (Blue)", "Mage Wand")]
+        [InlineData("Rogue", "Leather (Black)", "Dagger (Steel)")]
         public void GetDefaultAppearanceForClass_ReturnsCorrectEquipment(string className, string expectedArmor, string expectedWeapon)
         {
             var appearance = _catalog.GetDefaultAppearanceForClass(className);
@@ -117,7 +117,7 @@ namespace Darkness.Tests.Services
             Assert.Contains("Blonde", _catalog.HairColors);
             Assert.Contains("Dark Brown", _catalog.HairColors);
             Assert.Contains("Redhead", _catalog.HairColors);
-            Assert.Equal(8, _catalog.HairColors.Count);
+            Assert.Equal(11, _catalog.HairColors.Count);
         }
     }
 }
