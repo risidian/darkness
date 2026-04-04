@@ -242,13 +242,36 @@ public partial class CharacterGenScene : Control
 	{
 		switch (cls)
 		{
-			case "Knight": c.Strength = 12; c.Constitution = 14; c.ArmorClass = 2; break;
-			case "Warrior": c.Strength = 15; c.Constitution = 14; c.ArmorClass = 2; break;
-			case "Mage": c.Intelligence = 15; c.Wisdom = 14; c.ArmorClass = 0; break;
-			case "Rogue": c.Dexterity = 15; c.Strength = 12; c.ArmorClass = 1; break;
-			case "Cleric": c.Wisdom = 15; c.Constitution = 14; c.ArmorClass = 2; break;
+			case "Knight": 
+                c.Strength = 12; c.Dexterity = 10; c.Constitution = 14; 
+                c.Intelligence = 8; c.Wisdom = 10; c.Charisma = 12;
+                c.ArmorClass = 2; break;
+			case "Warrior": 
+                c.Strength = 15; c.Dexterity = 12; c.Constitution = 14;
+                c.Intelligence = 8; c.Wisdom = 8; c.Charisma = 10;
+                c.ArmorClass = 2; break;
+			case "Mage": 
+                c.Strength = 8; c.Dexterity = 10; c.Constitution = 10;
+                c.Intelligence = 15; c.Wisdom = 14; c.Charisma = 12;
+                c.ArmorClass = 0; break;
+			case "Rogue": 
+                c.Strength = 12; c.Dexterity = 15; c.Constitution = 10;
+                c.Intelligence = 10; c.Wisdom = 8; c.Charisma = 12;
+                c.ArmorClass = 1; break;
+			case "Cleric": 
+                c.Strength = 10; c.Dexterity = 8; c.Constitution = 14;
+                c.Intelligence = 10; c.Wisdom = 15; c.Charisma = 12;
+                c.ArmorClass = 2; break;
 		}
-		c.MaxHP = c.Constitution * 10;
+
+        c.MaxHP = c.Constitution * 10;
 		c.CurrentHP = c.MaxHP;
+        c.Mana = c.Wisdom * 5;
+        c.Stamina = c.Constitution * 5;
+        c.Speed = c.Dexterity;
+        c.Accuracy = 80 + c.Dexterity / 2;
+        c.Evasion = c.Dexterity / 2;
+        c.Defense = c.Constitution / 2;
+        c.MagicDefense = c.Wisdom / 2;
 	}
 }

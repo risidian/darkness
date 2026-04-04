@@ -57,12 +57,26 @@ public partial class BattleScene : Control, IInitializable
 						Name = e.Name, 
 						MaxHP = e.MaxHP, 
 						CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
+						Attack = e.Attack > 0 ? e.Attack : 10,
 						Defense = e.Defense > 0 ? e.Defense : 5,
+						Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
+						Speed = e.Speed > 0 ? e.Speed : 10,
 						SpriteKey = e.SpriteKey ?? "knight",
 						MoralityImpact = e.MoralityImpact
 					};
 					_enemies.Add(enemy);
-					_originalEnemies.Add(new Enemy { Name = enemy.Name, MaxHP = enemy.MaxHP, CurrentHP = enemy.MaxHP, Defense = enemy.Defense, SpriteKey = enemy.SpriteKey });
+					_originalEnemies.Add(new Enemy 
+					{ 
+						Name = enemy.Name, 
+						MaxHP = enemy.MaxHP, 
+						CurrentHP = enemy.MaxHP, 
+						Attack = enemy.Attack,
+						Defense = enemy.Defense, 
+						Accuracy = enemy.Accuracy,
+						Speed = enemy.Speed,
+						SpriteKey = enemy.SpriteKey,
+						MoralityImpact = enemy.MoralityImpact
+					});
 				}
 			}
 		}
@@ -78,10 +92,22 @@ public partial class BattleScene : Control, IInitializable
 					Name = e.Name, 
 					MaxHP = e.MaxHP, 
 					CurrentHP = e.MaxHP,
-					Defense = 5
+					Attack = e.Attack > 0 ? e.Attack : 10,
+					Defense = e.Defense > 0 ? e.Defense : 5,
+					Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
+					SpriteKey = e.SpriteKey ?? "knight"
 				};
 				_enemies.Add(enemy);
-				_originalEnemies.Add(new Enemy { Name = enemy.Name, MaxHP = enemy.MaxHP, CurrentHP = enemy.MaxHP, Defense = enemy.Defense });
+				_originalEnemies.Add(new Enemy 
+				{ 
+					Name = enemy.Name, 
+					MaxHP = enemy.MaxHP, 
+					CurrentHP = enemy.MaxHP, 
+					Attack = enemy.Attack,
+					Defense = enemy.Defense,
+					Accuracy = enemy.Accuracy,
+					SpriteKey = enemy.SpriteKey 
+				});
 			}
 		}
 	}
@@ -165,13 +191,25 @@ public partial class BattleScene : Control, IInitializable
 
 		if (_enemies.Count == 0)
 		{
-			_enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, Attack = 10,Accuracy = 100, SpriteKey = "hound" });
+			GD.PrintErr("[BattleScene] No enemies provided in parameters, using default Hellhound encounter.");
+            _enemies.Add(new Enemy { Name = "Hellhound Alpha", MaxHP = 60, CurrentHP = 60, Defense = 5, Attack = 10,Accuracy = 100, SpriteKey = "hound" });
 			_enemies.Add(new Enemy { Name = "Hellhound Beta", MaxHP = 50, CurrentHP = 50, Defense = 5,Attack = 8, Accuracy = 80, SpriteKey = "hound" });
 			_enemies.Add(new Enemy { Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5,Attack = 8, Accuracy = 80, SpriteKey = "hound" });
 			
 			foreach(var e in _enemies)
 			{
-				_originalEnemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
+				_originalEnemies.Add(new Enemy 
+                { 
+                    Name = e.Name, 
+                    MaxHP = e.MaxHP, 
+                    CurrentHP = e.MaxHP, 
+                    Attack = e.Attack,
+                    Defense = e.Defense, 
+                    Accuracy = e.Accuracy,
+                    Speed = e.Speed,
+                    SpriteKey = e.SpriteKey,
+                    MoralityImpact = e.MoralityImpact
+                });
 			}
 		}
 	}

@@ -52,7 +52,7 @@
 		  "Level": 1,
 		  "MaxHP": 50,
 		  "CurrentHP": 50,
-		  "Attack": 12,
+		  "Attack": 7,
 		  "Defense": 5,
 		  "Speed": 12,
 		  "SpriteKey": "hound"
@@ -62,7 +62,7 @@
 		  "Level": 1,
 		  "MaxHP": 50,
 		  "CurrentHP": 50,
-		  "Attack": 12,
+		  "Attack": 6,
 		  "Defense": 5,
 		  "Speed": 12,
 		  "SpriteKey": "hound"
@@ -72,7 +72,7 @@
 		  "Level": 1,
 		  "MaxHP": 50,
 		  "CurrentHP": 50,
-		  "Attack": 12,
+		  "Attack": 6,
 		  "Defense": 5,
 		  "Speed": 12,
 		  "SpriteKey": "hound"
