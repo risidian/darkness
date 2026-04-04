@@ -4,6 +4,7 @@ using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace Darkness.Godot.Game;
 
@@ -49,23 +50,31 @@ public partial class LayeredSprite : Node2D
         }
     }
 
-    public async Task SetupCharacter(Character c, ISpriteLayerCatalog catalog, IFileSystemService fileSystem)
+    public void ResetLayers()
     {
-        // Removed IsInsideTree guard - setup should always run
         EnsureLayers();
-
-        if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
-        {
-            await SetupFromBytes(c.FullSpriteSheet);
-            return;
-        }
-
-        // Total clear of all possible parts
         foreach (var layer in _layers.Values)
         {
             layer.SpriteFrames = null;
             layer.Hide();
+            layer.Frame = 0;
+            layer.Stop();
         }
+    }
+
+    public async Task SetupCharacter(Character c, ISpriteLayerCatalog catalog, IFileSystemService fileSystem)
+    {
+        EnsureLayers();
+
+        if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
+        {
+            GD.Print($"[LayeredSprite] Using FullSpriteSheet for {c.Name} ({c.FullSpriteSheet.Length} bytes)");
+            await SetupFromBytes(c.FullSpriteSheet);
+            return;
+        }
+
+        GD.Print($"[LayeredSprite] Falling back to individual layers for {c.Name}");
+        ResetLayers();
 
         var appearance = new CharacterAppearance
         {
@@ -79,35 +88,35 @@ public partial class LayeredSprite : Node2D
             Feet = c.Feet,
             Arms = c.Arms,
             Legs = c.Legs,
-            Head = "Human Male"
+            Head = c.Head ?? "Human Male",
+            ShieldType = c.ShieldType ?? "None"
         };
 
         var layerDefs = catalog.GetLayersForAppearance(appearance);
+        GD.Print($"[LayeredSprite] Setting up {layerDefs.Count} individual layers for fallback.");
         
         foreach (var def in layerDefs)
         {
-            // Map the Z-order or Path to a specific node
             var nodeName = GetNodeNameForPath(def.ResourcePath);
             if (_layers.TryGetValue(nodeName, out var sprite))
             {
+                GD.Print($"[LayeredSprite] Loading fallback layer: {nodeName} from {def.ResourcePath}");
                 var frames = await LoadFrames(def.ResourcePath, fileSystem);
                 sprite.SpriteFrames = frames;
                 sprite.FlipH = _flipH;
                 sprite.Show();
+            }
+            else
+            {
+                GD.PrintErr($"[LayeredSprite] No node found for layer: {nodeName} ({def.ResourcePath})");
             }
         }
     }
 
     public async Task SetupFromBytes(byte[] data)
     {
-        EnsureLayers();
-
-        // Total clear of all possible parts
-        foreach (var layer in _layers.Values)
-        {
-            layer.SpriteFrames = null;
-            layer.Hide();
-        }
+        GD.Print($"[LayeredSprite] SetupFromBytes called with {data.Length} bytes.");
+        ResetLayers();
 
         if (!_layers.TryGetValue("Body", out var bodySprite))
         {
@@ -118,6 +127,7 @@ public partial class LayeredSprite : Node2D
         var frames = ImageUtils.CreateSpriteFrames(data, 64, 64);
         if (frames != null)
         {
+            GD.Print($"[LayeredSprite] Created SpriteFrames from bytes. Animations: {string.Join(", ", frames.GetAnimationNames())}");
             bodySprite.SpriteFrames = frames;
             bodySprite.FlipH = _flipH;
             bodySprite.Show();
@@ -127,21 +137,17 @@ public partial class LayeredSprite : Node2D
                 bodySprite.Play("idle_down");
             }
         }
+        else
+        {
+            GD.PrintErr("[LayeredSprite] Failed to create SpriteFrames from bytes.");
+        }
     }
 
     public async Task SetupMonster(string monsterType, IFileSystemService fileSystem)
     {
-        // Removed IsInsideTree guard - setup should always run
-        EnsureLayers();
+        ResetLayers();
         GD.Print($"[LayeredSprite] SetupMonster started for: {monsterType}");
         
-        // Total clear of all possible parts (Body, Head, Armor, etc.)
-        foreach (var layer in _layers.Values)
-        {
-            layer.SpriteFrames = null;
-            layer.Hide();
-        }
-
         if (!_layers.TryGetValue("Body", out var bodySprite)) 
         {
             GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
@@ -174,14 +180,7 @@ public partial class LayeredSprite : Node2D
 
     public async Task SetupFullSheet(string path, IFileSystemService fileSystem)
     {
-        EnsureLayers();
-
-        // Total clear of all possible parts
-        foreach (var layer in _layers.Values)
-        {
-            layer.SpriteFrames = null;
-            layer.Hide();
-        }
+        ResetLayers();
 
         if (!_layers.TryGetValue("Body", out var bodySprite))
         {
@@ -231,16 +230,17 @@ public partial class LayeredSprite : Node2D
 
     private string GetNodeNameForPath(string path)
     {
-        if (path.Contains("/body/")) return "Body";
-        if (path.Contains("/head/")) return "Head";
-        if (path.Contains("/face/")) return "Face";
-        if (path.Contains("/eyes/")) return "Eyes";
-        if (path.Contains("/hair/")) return "Hair";
-        if (path.Contains("/armor/")) return "Armor";
-        if (path.Contains("/feet/")) return "Feet";
-        if (path.Contains("/legs/")) return "Legs";
-        if (path.Contains("/arms/")) return "Arms";
-        if (path.Contains("/weapons/")) return "Weapon";
+        var lowerPath = path.ToLower();
+        if (lowerPath.Contains("body/")) return "Body";
+        if (lowerPath.Contains("head/")) return "Head";
+        if (lowerPath.Contains("face/")) return "Face";
+        if (lowerPath.Contains("eyes/")) return "Eyes";
+        if (lowerPath.Contains("hair/")) return "Hair";
+        if (lowerPath.Contains("armor/") || lowerPath.Contains("torso/")) return "Armor";
+        if (lowerPath.Contains("feet/")) return "Feet";
+        if (lowerPath.Contains("legs/")) return "Legs";
+        if (lowerPath.Contains("arms/")) return "Arms";
+        if (lowerPath.Contains("weapons/") || lowerPath.Contains("weapon/")) return "Weapon";
         return "Body";
     }
 

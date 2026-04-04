@@ -56,7 +56,7 @@
 		  "Defense": 5,
 		  "Speed": 12,
 		  "SpriteKey": "hound"
-		},
+		},  
 		{
 		  "Name": "Undead Dog B",
 		  "Level": 1,

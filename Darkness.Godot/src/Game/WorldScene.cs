@@ -130,6 +130,7 @@ public partial class WorldScene : Node2D, IInitializable
 
 		var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
 		await _npcSprite.SetupCharacter(new Character { 
+            Name = "Old Man",
 			SkinColor = knightAppearance.SkinColor,
 			HairStyle = knightAppearance.HairStyle,
 			HairColor = knightAppearance.HairColor,
@@ -137,7 +138,9 @@ public partial class WorldScene : Node2D, IInitializable
 			WeaponType = knightAppearance.WeaponType,
 			Feet = knightAppearance.Feet,
 			Arms = knightAppearance.Arms,
-			Legs = knightAppearance.Legs
+			Legs = knightAppearance.Legs,
+            Head = "Human Male",
+            Face = "Default"
 		}, _catalog, _fileSystem);
 		_npcSprite.Play("idle_down");
 	}

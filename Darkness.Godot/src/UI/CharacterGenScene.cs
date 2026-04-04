@@ -21,6 +21,7 @@ public partial class CharacterGenScene : Control
 	private LineEdit _nameEdit = null!;
 	private OptionButton _classOption = null!;
 	private OptionButton _skinOption = null!;
+	private OptionButton _headOption = null!;
 	private OptionButton _hairStyleOption = null!;
 	private OptionButton _hairColorOption = null!;
 	private OptionButton _faceOption = null!;
@@ -51,6 +52,7 @@ public partial class CharacterGenScene : Control
 		_nameEdit = GetNode<LineEdit>(container + "NameEdit");
 		_classOption = GetNode<OptionButton>(container + "ClassOption");
 		_skinOption = GetNode<OptionButton>(container + "SkinOption");
+		_headOption = GetNode<OptionButton>(container + "HeadOption");
 		_hairStyleOption = GetNode<OptionButton>(container + "HairStyleOption");
 		_hairColorOption = GetNode<OptionButton>(container + "HairColorOption");
 		_faceOption = GetNode<OptionButton>(container + "FaceOption");
@@ -66,6 +68,7 @@ public partial class CharacterGenScene : Control
 
 		_classOption.ItemSelected += (_) => OnClassChanged();
 		_skinOption.ItemSelected += (_) => UpdatePreview();
+		_headOption.ItemSelected += (_) => UpdatePreview();
 		_hairStyleOption.ItemSelected += (_) => UpdatePreview();
 		_hairColorOption.ItemSelected += (_) => UpdatePreview();
 		_faceOption.ItemSelected += (_) => UpdatePreview();
@@ -87,6 +90,7 @@ public partial class CharacterGenScene : Control
 	{
 		Populate(_classOption, new[] { "Knight", "Rogue", "Mage", "Warrior", "Cleric" });
 		Populate(_skinOption, _catalog.SkinColors);
+		Populate(_headOption, _catalog.HeadTypes);
 		Populate(_hairStyleOption, _catalog.HairStyles);
 		Populate(_hairColorOption, _catalog.HairColors);
 		Populate(_faceOption, _catalog.FaceTypes);
@@ -122,6 +126,8 @@ public partial class CharacterGenScene : Control
 		SelectByText(_legsOption, defaults.Legs);
 		SelectByText(_feetOption, defaults.Feet);
 		SelectByText(_armsOption, defaults.Arms);
+		SelectByText(_headOption, defaults.Head);
+		SelectByText(_faceOption, defaults.Face);
 		
 		UpdatePreview();
 	}
@@ -144,19 +150,18 @@ public partial class CharacterGenScene : Control
 
 		try
 		{
-			var streams = await LoadLayerStreams(appearance);
+			var stitchLayers = _catalog.GetStitchLayers(appearance);
+			var previewFrameBytes = await _compositor.CompositePreviewFrame(stitchLayers, _fileSystem);
 
-			if (streams.Count > 0)
+			if (previewFrameBytes != null && previewFrameBytes.Length > 0)
 			{
-				var sheetBytes = _compositor.CompositeLayers(streams, 576, 256);
-				_previewBytes = _compositor.ExtractFrame(sheetBytes, 0, 2 * 64, 64, 64, 4);
+				// Scale it by 4 for the UI portrait.
+				_previewBytes = _compositor.ExtractFrame(previewFrameBytes, 0, 0, 64, 64, 4);
 
 				var img = new Image();
 				img.LoadPngFromBuffer(_previewBytes);
 				_spritePreview.Texture = ImageTexture.CreateFromImage(img);
 			}
-			
-			foreach (var s in streams) s.Dispose();
 		}
 		catch (System.Exception ex)
 		{
@@ -179,20 +184,8 @@ public partial class CharacterGenScene : Control
 			ArmorType = _armorOption.GetItemText(_armorOption.Selected),
 			WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
 			ShieldType = _shieldOption.GetItemText(_shieldOption.Selected),
-			Head = "Human Male"
+			Head = _headOption.GetItemText(_headOption.Selected)
 		};
-	}
-
-	private async Task<List<System.IO.Stream>> LoadLayerStreams(CharacterAppearance appearance)
-	{
-		var layers = _catalog.GetLayersForAppearance(appearance);
-		var streams = new List<System.IO.Stream>();
-		foreach (var layer in layers)
-		{
-			var stream = await _fileSystem.OpenAppPackageFileAsync(layer.ResourcePath);
-			streams.Add(stream);
-		}
-		return streams;
 	}
 
 	private async void OnCreatePressed()
@@ -207,6 +200,7 @@ public partial class CharacterGenScene : Control
 			Name = _nameEdit.Text,
 			Class = _classOption.GetItemText(_classOption.Selected),
 			SkinColor = appearance.SkinColor,
+			Head = appearance.Head,
 			Face = appearance.Face,
 			Eyes = appearance.Eyes,
 			HairStyle = appearance.HairStyle,
@@ -224,8 +218,10 @@ public partial class CharacterGenScene : Control
 		// Generate Full Sprite Sheet
 		try
 		{
-			var basePaths = _catalog.GetLayerBasePaths(appearance);
-			character.FullSpriteSheet = await _compositor.CompositeFullSheet(basePaths, _fileSystem);
+			var stitchLayers = _catalog.GetStitchLayers(appearance);
+			GD.Print($"[CharacterGen] Stitching {stitchLayers.Count} layers for {character.Name}...");
+			character.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
+			GD.Print($"[CharacterGen] Full sheet generated: {character.FullSpriteSheet?.Length ?? 0} bytes");
 		}
 		catch (System.Exception ex)
 		{

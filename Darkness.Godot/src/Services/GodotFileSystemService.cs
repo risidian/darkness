@@ -13,12 +13,11 @@ public class GodotFileSystemService : IFileSystemService
     {
         // Godot assets are prefixed with "res://"
         string path = filename.StartsWith("res://") ? filename : $"res://{filename}";
-        
-        GD.Print($"[FileSystem] Attempting to open asset: {path}");
 
         if (!global::Godot.FileAccess.FileExists(path) && !ResourceLoader.Exists(path))
         {
-            GD.PrintErr($"[FileSystem] Asset NOT FOUND: {path}");
+            // Do not GD.PrintErr here, as callers like SpriteCompositor use this exception 
+            // gracefully as a fallback mechanism for missing animation layers.
             throw new FileNotFoundException($"Could not find asset: {path}");
         }
 

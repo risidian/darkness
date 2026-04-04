@@ -5,7 +5,7 @@ namespace Darkness.Core.Interfaces
     public interface ISpriteLayerCatalog
     {
         List<SpriteLayerDefinition> GetLayersForAppearance(CharacterAppearance appearance);
-        List<string> GetLayerBasePaths(CharacterAppearance appearance);
+        List<StitchLayer> GetStitchLayers(CharacterAppearance appearance);
         CharacterAppearance GetDefaultAppearanceForClass(string className);
         List<string> HairStyles { get; }
         List<string> HairColors { get; }

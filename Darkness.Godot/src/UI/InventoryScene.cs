@@ -176,8 +176,8 @@ public partial class InventoryScene : Control
 
 		try
 		{
-			var basePaths = _catalog.GetLayerBasePaths(appearance);
-			c.FullSpriteSheet = await _compositor.CompositeFullSheet(basePaths, _fileSystem);
+			var stitchLayers = _catalog.GetStitchLayers(appearance);
+			c.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
 		}
 		catch (System.Exception ex)
 		{

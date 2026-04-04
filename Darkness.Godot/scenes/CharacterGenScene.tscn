@@ -95,6 +95,16 @@ custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
+[node name="HeadLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Gender/Base"
+
+[node name="HeadOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
 [node name="HairStyleLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
