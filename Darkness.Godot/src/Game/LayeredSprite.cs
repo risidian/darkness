@@ -227,4 +227,14 @@ public partial class LayeredSprite : Node2D
             }
         }
     }
+
+    public bool HasAnimation(string animation)
+    {
+        // We check the Body layer as the primary indicator for animation existence
+        if (_layers.TryGetValue("Body", out var bodySprite))
+        {
+            return bodySprite.SpriteFrames != null && bodySprite.SpriteFrames.HasAnimation(animation);
+        }
+        return false;
+    }
 }

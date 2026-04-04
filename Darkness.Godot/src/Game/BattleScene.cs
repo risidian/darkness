@@ -232,6 +232,17 @@ public partial class BattleScene : Control, IInitializable
 					sprite.FlipH = false; 
 				}
 			}
+			else if (enemy.SpriteKey.StartsWith("bosses/"))
+			{
+				sprite.Scale = new Vector2(2.5f, 2.5f);
+				// Bosses are full LPC sheets located in assets/sprites/bosses/
+				await sprite.SetupFullSheet("assets/sprites/" + enemy.SpriteKey, _fileSystem);
+				if (IsInsideTree())
+				{
+					sprite.Play("idle_left");
+					sprite.FlipH = false;
+				}
+			}
 			else
 			{
 				sprite.Scale = new Vector2(2.5f, 2.5f);
@@ -271,7 +282,19 @@ public partial class BattleScene : Control, IInitializable
 
 			if (!GodotObject.IsInstanceValid(attackerSprite) || !GodotObject.IsInstanceValid(targetSprite)) return;
 
-			attackerSprite.Play("walk_right");
+			// Determine best animation
+			string attackAnim = "walk_right";
+			if (attackerSprite.HasAnimation("slash_right")) attackAnim = "slash_right";
+			else if (attackerSprite.HasAnimation("spellcast_right")) attackAnim = "spellcast_right";
+			else if (attackerSprite.HasAnimation("thrust_right")) attackAnim = "thrust_right";
+
+			// Lunge Tween
+			var originalPos = attackerSprite.Position;
+			var lungePos = originalPos + new Vector2(50, 0);
+			var tween = GetTree().CreateTween();
+			tween.TweenProperty(attackerSprite, "position", lungePos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+			
+			attackerSprite.Play(attackAnim);
 			
 			int damage = _combat.CalculateDamage(attacker, target);
 			target.CurrentHP -= damage;
@@ -280,7 +303,14 @@ public partial class BattleScene : Control, IInitializable
 
 			_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] attacks {target.Name} for {damage} damage!");
 
-			await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+			await ToSignal(tween, "finished");
+			await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+
+			// Return Tween
+			var returnTween = GetTree().CreateTween();
+			returnTween.TweenProperty(attackerSprite, "position", originalPos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+			await ToSignal(returnTween, "finished");
+
 			if (!IsInsideTree()) return;
 			if (GodotObject.IsInstanceValid(attackerSprite))
 				attackerSprite.Play("idle_right");
@@ -303,14 +333,23 @@ public partial class BattleScene : Control, IInitializable
 			}
 			else
 			{
-				await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+				await ToSignal(GetTree().CreateTimer(0.3), "timeout");
 				if (!IsInsideTree()) return;
 				if (!GodotObject.IsInstanceValid(targetSprite) || !GodotObject.IsInstanceValid(attackerSprite)) return;
 				
-				if (target.SpriteKey == "hound")
-					targetSprite.Play("jump");
-				else
-					targetSprite.Play("walk_left");
+				// Enemy Counter-Attack
+				string enemyAnim = "walk_left";
+				if (target.SpriteKey == "hound") enemyAnim = "jump";
+				else if (targetSprite.HasAnimation("slash_left")) enemyAnim = "slash_left";
+				else if (targetSprite.HasAnimation("spellcast_left")) enemyAnim = "spellcast_left";
+
+				// Enemy Lunge
+				var eOriginalPos = targetSprite.Position;
+				var eLungePos = eOriginalPos + new Vector2(-50, 0);
+				var eTween = GetTree().CreateTween();
+				eTween.TweenProperty(targetSprite, "position", eLungePos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+
+				targetSprite.Play(enemyAnim);
 
 				int enemyDamage = 5; 
 				attacker.CurrentHP -= enemyDamage;
@@ -318,7 +357,14 @@ public partial class BattleScene : Control, IInitializable
 					_partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
 				_combatLog.AppendText($"\n[color=orange]{target.Name}[/color] bites back for {enemyDamage} damage!");
 
-				await ToSignal(GetTree().CreateTimer(0.8), "timeout");
+				await ToSignal(eTween, "finished");
+				await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+
+				// Enemy Return
+				var eReturnTween = GetTree().CreateTween();
+				eReturnTween.TweenProperty(targetSprite, "position", eOriginalPos, 0.15f).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+				await ToSignal(eReturnTween, "finished");
+
 				if (!IsInsideTree()) return;
 				
 				if (GodotObject.IsInstanceValid(targetSprite))
