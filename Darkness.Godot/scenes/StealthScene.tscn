@@ -1,0 +1,131 @@
+[gd_scene load_steps=2 format=3 uid="uid://stealth_scene_uid"]
+
+[ext_resource type="Script" path="res://src/Game/StealthScene.cs" id="1_stealth"]
+
+[node name="StealthScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_stealth")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0588235, 0.0588235, 0.0588235, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(600, 500)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="Title" type="Label" parent="CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "STEALTH CHALLENGE"
+horizontal_alignment = 1
+
+[node name="ProgressArea" type="VBoxContainer" parent="CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="CenterContainer/PanelContainer/VBoxContainer/ProgressArea"]
+layout_mode = 2
+text = "Sneak Progress"
+
+[node name="StealthProgress" type="ProgressBar" parent="CenterContainer/PanelContainer/VBoxContainer/ProgressArea"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+max_value = 5.0
+step = 1.0
+
+[node name="Label2" type="Label" parent="CenterContainer/PanelContainer/VBoxContainer/ProgressArea"]
+layout_mode = 2
+text = "Detection Level"
+
+[node name="DetectionLevel" type="ProgressBar" parent="CenterContainer/PanelContainer/VBoxContainer/ProgressArea"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+max_value = 3.0
+step = 1.0
+
+[node name="TimingArea" type="VBoxContainer" parent="CenterContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TimingBar" type="Control" parent="CenterContainer/PanelContainer/VBoxContainer/TimingArea"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="BarBackground" type="ColorRect" parent="CenterContainer/PanelContainer/VBoxContainer/TimingArea/TimingBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="TargetZone" type="ColorRect" parent="CenterContainer/PanelContainer/VBoxContainer/TimingArea/TimingBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -30.0
+offset_right = 50.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.588235, 0, 1)
+
+[node name="Slider" type="ColorRect" parent="CenterContainer/PanelContainer/VBoxContainer/TimingArea/TimingBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 10.0
+grow_vertical = 2
+color = Color(1, 1, 1, 1)
+
+[node name="StatusLabel" type="Label" parent="CenterContainer/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Press Sneak in the green zone!"
+horizontal_alignment = 1
+
+[node name="SneakButton" type="Button" parent="CenterContainer/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
+text = "SNEAK"
