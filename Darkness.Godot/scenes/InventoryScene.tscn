@@ -42,12 +42,21 @@ theme_override_font_sizes/font_size = 48
 text = "INVENTORY"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+split_offset = 300
+
+[node name="PreviewArea" type="Control" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="BackpackArea" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 horizontal_scroll_mode = 0
 
-[node name="ItemList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="ItemList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/BackpackArea"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10

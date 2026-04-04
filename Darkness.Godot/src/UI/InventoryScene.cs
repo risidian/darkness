@@ -5,6 +5,7 @@ using Darkness.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Darkness.Godot.Game;
 
 namespace Darkness.Godot.UI;
 
@@ -17,6 +18,7 @@ public partial class InventoryScene : Control
 	private ICharacterService _characterService = null!;
 	private IFileSystemService _fileSystem = null!;
 	private VBoxContainer _itemList = null!;
+	private LayeredSprite _charSprite = null!;
 
 	public override void _Ready()
 	{
@@ -30,11 +32,28 @@ public partial class InventoryScene : Control
 		_characterService = sp.GetRequiredService<ICharacterService>();
 		_fileSystem = sp.GetRequiredService<IFileSystemService>();
 
-		_itemList = GetNode<VBoxContainer>("MarginContainer/VBoxContainer/ScrollContainer/ItemList");
+		_itemList = GetNode<VBoxContainer>("MarginContainer/VBoxContainer/HSplitContainer/BackpackArea/ItemList");
 		GetNode<Button>("MarginContainer/VBoxContainer/BackButton").Pressed += () => _navigation.GoBackAsync();
+
+		var previewContainer = GetNode<Control>("MarginContainer/VBoxContainer/HSplitContainer/PreviewArea");
+		var layeredSpriteScene = GD.Load<PackedScene>("res://scenes/LayeredSprite.tscn");
+		_charSprite = layeredSpriteScene.Instantiate<LayeredSprite>();
+		previewContainer.AddChild(_charSprite);
+		_charSprite.Position = new Vector2(150, 200);
+		_charSprite.Scale = new Vector2(4, 4);
 
 		EnsureInventory();
 		LoadInventory();
+		UpdateCharacterPreview();
+	}
+
+	private async void UpdateCharacterPreview()
+	{
+		if (_session.CurrentCharacter != null)
+		{
+			await _charSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
+			_charSprite.Play("idle_down");
+		}
 	}
 
 	private void EnsureInventory()
@@ -131,6 +150,7 @@ public partial class InventoryScene : Control
 		await _characterService.SaveCharacterAsync(_session.CurrentCharacter);
 		
 		LoadInventory();
+		UpdateCharacterPreview();
 	}
 
 	private async Task RegenerateFullSheet()
