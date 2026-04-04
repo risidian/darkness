@@ -124,7 +124,7 @@
 	"Encounter": {
 	  "Enemies": [
 		{
-		  "Name": "Dark Warrior",
+		  "Name": "Balgathor",
 		  "Level": 20,
 		  "MaxHP": 9999,
 		  "CurrentHP": 9999,
@@ -132,7 +132,7 @@
 		  "Defense": 100,
 		  "Speed": 30,
 		  "IsInvincible": true,
-		  "SpriteKey": "knight"
+		  "SpriteKey": "bosses/Balgathor"
 		}
 	  ],
 	  "SurvivalTurns": 5,
@@ -157,14 +157,14 @@
 	"Encounter": {
 	  "Enemies": [
 		{
-		  "Name": "Sorcerer",
+		  "Name": "Risidian",
 		  "Level": 8,
 		  "MaxHP": 120,
 		  "CurrentHP": 120,
 		  "Attack": 35,
 		  "Defense": 8,
 		  "Speed": 20,
-		  "SpriteKey": "knight"
+		  "SpriteKey": "bosses/Risidian"
 		}
 	  ],
 	  "SurvivalTurns": null,
