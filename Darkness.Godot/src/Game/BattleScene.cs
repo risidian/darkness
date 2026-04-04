@@ -36,6 +36,24 @@ public partial class BattleScene : Control, IInitializable
 	private List<StatusBar> _partyHealthBars = new();
 	private List<StatusBar> _enemyHealthBars = new();
 	private bool _isProcessingTurn = false;
+	private int _selectedEnemyIndex = 0;
+
+	private void OnEnemyTapped(int index)
+	{
+		if (index >= _enemies.Count) return;
+		
+		// Clear previous highlight
+		if (_selectedEnemyIndex < _enemyHealthBars.Count)
+			_enemyHealthBars[_selectedEnemyIndex].SetHighlighted(false);
+			
+		_selectedEnemyIndex = index;
+		
+		// Set new highlight
+		if (_selectedEnemyIndex < _enemyHealthBars.Count)
+			_enemyHealthBars[_selectedEnemyIndex].SetHighlighted(true);
+			
+		GD.Print($"[Battle] Target selected: {_enemies[_selectedEnemyIndex].Name}");
+	}
 
 	public void Initialize(IDictionary<string, object> parameters)
 	{
@@ -102,9 +120,9 @@ public partial class BattleScene : Control, IInitializable
 		_partyContainer = GetNode<HBoxContainer>("CombatArea/PartyContainer");
 		_enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
 
-		GetNode<Button>("ActionsArea/Attack1").Pressed += () => ExecuteAttack(0);
-		GetNode<Button>("ActionsArea/Attack2").Pressed += () => ExecuteAttack(1);
-		GetNode<Button>("ActionsArea/Attack3").Pressed += () => ExecuteAttack(2);
+		GetNode<Button>("ActionsArea/Attack1").Pressed += () => ExecuteAttack("Basic Attack");
+		GetNode<Button>("ActionsArea/Attack2").Pressed += () => ExecuteAttack("Skill A");
+		GetNode<Button>("ActionsArea/Attack3").Pressed += () => ExecuteAttack("Skill B");
 		GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
 		GetNode<Button>("%OkButton").Pressed += () => _navigation.NavigateToAsync("MainMenuPage");
 		_retryButton.Pressed += () => RetryBattle();
@@ -142,6 +160,7 @@ public partial class BattleScene : Control, IInitializable
 	{
 		_endBattlePanel.Hide();
 		_enemies.Clear();
+		_selectedEnemyIndex = 0; // Reset target
 		foreach(var e in _originalEnemies)
 		{
 			_enemies.Add(new Enemy { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
@@ -171,6 +190,10 @@ public partial class BattleScene : Control, IInitializable
 		_enemySprites.Clear();
 		_partyHealthBars.Clear();
 		_enemyHealthBars.Clear();
+
+		// Ensure selection is valid
+		if (_selectedEnemyIndex >= _enemies.Count && _enemies.Count > 0)
+			_selectedEnemyIndex = _enemies.Count - 1;
 
 		var layeredSpriteScene = GD.Load<PackedScene>("res://scenes/LayeredSprite.tscn");
 		var statusBarScene = GD.Load<PackedScene>("res://scenes/StatusBar.tscn");
@@ -203,8 +226,9 @@ public partial class BattleScene : Control, IInitializable
 			if (IsInsideTree()) sprite.Play("idle_right");
 		}
 
-		foreach (var enemy in _enemies)
+		for (int i = 0; i < _enemies.Count; i++)
 		{
+			var enemy = _enemies[i];
 			if (!IsInsideTree()) return;
 			var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
 			wrapper.AddThemeConstantOverride("separation", -10);
@@ -219,6 +243,20 @@ public partial class BattleScene : Control, IInitializable
 			// Sprite Area
 			var spriteContainer = new Control { CustomMinimumSize = new Vector2(200, 120) };
 			wrapper.AddChild(spriteContainer);
+
+			// Click/Touch targeting
+			int index = i; // Local copy for closure
+			spriteContainer.MouseFilter = Control.MouseFilterEnum.Stop;
+			spriteContainer.GuiInput += (@event) => {
+				if (@event is InputEventMouseButton mouse && mouse.Pressed && mouse.ButtonIndex == MouseButton.Left)
+					OnEnemyTapped(index);
+				else if (@event is InputEventScreenTouch touch && touch.Pressed)
+					OnEnemyTapped(index);
+			};
+
+			// Default selection highlight
+			if (i == _selectedEnemyIndex && i < _enemyHealthBars.Count) 
+				_enemyHealthBars[i].SetHighlighted(true);
 
 			var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
 			spriteContainer.AddChild(sprite);
@@ -265,12 +303,14 @@ public partial class BattleScene : Control, IInitializable
 		}
 	}
 
-	private async void ExecuteAttack(int enemyIndex)
+	private async void ExecuteAttack(string skillType)
 	{
 		if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
 		if (_partySprites.Count == 0 || _enemySprites.Count == 0) return;
 
-		int actualIndex = enemyIndex < _enemies.Count ? enemyIndex : 0;
+		int actualIndex = _selectedEnemyIndex;
+		if (actualIndex >= _enemies.Count) actualIndex = 0;
+		
 		var attacker = _party[0];
 		var target = _enemies[actualIndex];
 		
@@ -304,7 +344,7 @@ public partial class BattleScene : Control, IInitializable
 			if (actualIndex < _enemyHealthBars.Count)
 				_enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
 
-			_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] attacks {target.Name} for {damage} damage!");
+			_combatLog.AppendText($"\n[color=red]{attacker.Name}[/color] attacks {target.Name} with {skillType} for {damage} damage!");
 
 			await ToSignal(tween, "finished");
 			await ToSignal(GetTree().CreateTimer(0.2), "timeout");
