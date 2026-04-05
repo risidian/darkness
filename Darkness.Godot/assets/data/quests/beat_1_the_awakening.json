@@ -1,0 +1,74 @@
+{
+  "Id": "beat_1",
+  "Title": "The Awakening",
+  "IsMainStory": true,
+  "SortOrder": 1,
+  "Prerequisites": [],
+  "Steps": [
+    {
+      "Id": "beat_1_intro",
+      "Type": "branch",
+      "Dialogue": {
+        "Speaker": "Old Man",
+        "Lines": [
+          "Welcome to the Shore of Camelot, Wanderer.",
+          "The path to the castle is blocked by shadows.",
+          "You must choose your path carefully."
+        ]
+      },
+      "Branch": {
+        "Options": [
+          { "Text": "[Fight] I will slay the hounds.", "NextStepId": "beat_1_combat_dialogue", "MoralityImpact": 5 },
+          { "Text": "[Sneak] I will find another way.", "NextStepId": "beat_1_stealth_dialogue", "MoralityImpact": -5 }
+        ]
+      }
+    },
+    {
+      "Id": "beat_1_combat_dialogue",
+      "Type": "dialogue",
+      "NextStepId": "beat_1_combat",
+      "Dialogue": {
+        "Speaker": "Old Man",
+        "Lines": ["Brave choice. Head to the east, best of luck to you.", "The hounds are relentless, but your blade is sharp."]
+      }
+    },
+    {
+      "Id": "beat_1_combat",
+      "Type": "combat",
+      "Location": { "LocationKey": "SandyShore_East" },
+      "Combat": {
+        "Enemies": [
+          { "Name": "Hell Hound 1", "Level": 1, "MaxHP": 50, "CurrentHP": 50, "Attack": 7, "Defense": 5, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
+          { "Name": "Undead Dog B", "Level": 1, "MaxHP": 50, "CurrentHP": 50, "Attack": 6, "Defense": 5, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
+          { "Name": "Undead Dog C", "Level": 1, "MaxHP": 50, "CurrentHP": 50, "Attack": 6, "Defense": 5, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 }
+        ],
+        "BackgroundKey": "forest"
+      }
+    },
+    {
+      "Id": "beat_1_stealth_dialogue",
+      "Type": "dialogue",
+      "NextStepId": "beat_1_stealth",
+      "Dialogue": {
+        "Speaker": "Old Man",
+        "Lines": ["Wise choice. The shadows are thickest near the main road.", "Follow the riverbed to the east, but move quietly."]
+      }
+    },
+    {
+      "Id": "beat_1_stealth",
+      "Type": "location",
+      "NextStepId": "beat_1_sneak_combat",
+      "Location": { "LocationKey": "SandyShore_East", "SceneKey": "stealth" }
+    },
+    {
+      "Id": "beat_1_sneak_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Creek Monster", "Level": 3, "MaxHP": 300, "CurrentHP": 300, "Attack": 15, "Defense": 8, "Speed": 10, "SpriteKey": "hound", "MoralityImpact": 2, "ExperienceReward": 100 }
+        ],
+        "BackgroundKey": "riverbed"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "Id": "beat_3",
+  "Title": "The Sorcerer",
+  "IsMainStory": true,
+  "SortOrder": 3,
+  "Prerequisites": ["beat_2"],
+  "Steps": [
+    {
+      "Id": "beat_3_dialogue",
+      "Type": "dialogue",
+      "NextStepId": "beat_3_combat",
+      "Dialogue": {
+        "Speaker": "The Sorcerer",
+        "Lines": ["The Dark Warrior was only the beginning.", "I have woven the shadows into a cage for you.", "Let us see if your spirit is truly unbreakable."]
+      }
+    },
+    {
+      "Id": "beat_3_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Risidian", "Level": 8, "MaxHP": 120, "CurrentHP": 120, "Attack": 35, "Defense": 8, "Speed": 20, "SpriteKey": "bosses/Risidian", "ExperienceReward": 300 }
+        ],
+        "BackgroundKey": "dark_castle"
+      }
+    }
+  ]
+}

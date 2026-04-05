@@ -1,0 +1,29 @@
+{
+  "Id": "beat_2",
+  "Title": "Dark Warrior",
+  "IsMainStory": true,
+  "SortOrder": 2,
+  "Prerequisites": ["beat_1"],
+  "Steps": [
+    {
+      "Id": "beat_2_dialogue",
+      "Type": "dialogue",
+      "NextStepId": "beat_2_combat",
+      "Dialogue": {
+        "Speaker": "Dark Warrior",
+        "Lines": ["You dare approach the gates of Camelot?", "Your journey ends here, mortal.", "The shadow consumes all."]
+      }
+    },
+    {
+      "Id": "beat_2_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Balgathor", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 500 }
+        ],
+        "SurvivalTurns": 5,
+        "BackgroundKey": "dark_castle"
+      }
+    }
+  ]
+}
