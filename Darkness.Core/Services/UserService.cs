@@ -49,7 +49,7 @@ namespace Darkness.Core.Services
 
         public Task<User?> GetUserAsync(string username, string password)
         {
-            return Task.Run(async () =>
+            return Task.Run<User?>(async () =>
             {
                 await InitializeAsync();
                 using var db = OpenDb();
@@ -60,7 +60,7 @@ namespace Darkness.Core.Services
 
         public Task<User?> GetUserByIdAsync(int userId)
         {
-            return Task.Run(async () =>
+            return Task.Run<User?>(async () =>
             {
                 await InitializeAsync();
                 using var db = OpenDb();

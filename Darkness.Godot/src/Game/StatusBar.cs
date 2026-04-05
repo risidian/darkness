@@ -51,8 +51,8 @@ public partial class StatusBar : VBoxContainer
     {
         Type = type;
         if (_nameLabel == null) _Ready(); // Ensure nodes are ready if called early
-
-        _nameLabel.Text = unitName;
+        
+        _nameLabel!.Text = unitName;
         UpdateValue(current, max);
         UpdateTheme();
     }
@@ -64,9 +64,9 @@ public partial class StatusBar : VBoxContainer
         int safeMax = Math.Max(1, max);
         int displayCurrent = Math.Max(0, current);
 
-        _progressBar.MaxValue = safeMax;
+        _progressBar!.MaxValue = safeMax;
         _progressBar.Value = displayCurrent;
-        _valueLabel.Text = $"{displayCurrent} / {safeMax}";
+        _valueLabel!.Text = $"{displayCurrent} / {safeMax}";
 
         // Dynamic coloring for HP
         if (Type == StatusType.HP)

@@ -156,14 +156,10 @@ public static class ImageUtils
                 frames.AddFrame(animName, atlas);
             }
         }
-
         GD.Print($"[ImageUtils] Added {frames.GetFrameCount(animName)} frames to {animName}");
     }
 
-    private static int row; // This was a typo in my thought process, corrected above.
-
-    public static void AddStaticAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW,
-        int frameH)
+    public static void AddStaticAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW, int frameH)
     {
         AddAnimationFromBytes(frames, animName, data, frameW, frameH, 1.0, false);
     }
