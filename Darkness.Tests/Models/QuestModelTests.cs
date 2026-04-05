@@ -7,53 +7,77 @@ namespace Darkness.Tests.Models
     public class QuestModelTests
     {
         [Fact]
-        public void EncounterData_CanBeInstantiated()
+        public void CombatData_CanBeInstantiated()
         {
-            var encounter = new EncounterData
+            var combat = new CombatData
             {
                 SurvivalTurns = 5,
                 BackgroundKey = "forest_night",
-                Enemies = new List<Enemy> { new Enemy { Name = "Wolf" } },
-                Rewards = new List<Item> { new Item { Name = "Wolf Pelt" } }
+                Enemies = new List<EnemySpawn> { new EnemySpawn { Name = "Wolf", MaxHP = 30 } },
+                Rewards = new List<RewardData> { new RewardData { ItemName = "Wolf Pelt", Quantity = 1 } }
             };
 
-            Assert.Equal(5, encounter.SurvivalTurns);
-            Assert.Equal("forest_night", encounter.BackgroundKey);
-            Assert.Single(encounter.Enemies);
-            Assert.Single(encounter.Rewards);
+            Assert.Equal(5, combat.SurvivalTurns);
+            Assert.Equal("forest_night", combat.BackgroundKey);
+            Assert.Single(combat.Enemies);
+            Assert.Single(combat.Rewards!);
         }
 
         [Fact]
-        public void QuestNode_CanBeInstantiated()
+        public void QuestChain_CanBeInstantiated()
         {
-            var node = new QuestNode
+            var chain = new QuestChain
             {
                 Id = "quest_01",
                 Title = "The First Step",
                 IsMainStory = true,
                 Prerequisites = new List<string> { "intro" },
-                Encounter = new EncounterData(),
-                DialogueKey = "quest_01_dialog"
+                Steps = new List<QuestStep>
+                {
+                    new QuestStep
+                    {
+                        Id = "step_1",
+                        Type = "combat",
+                        Combat = new CombatData()
+                    }
+                }
             };
 
-            Assert.Equal("quest_01", node.Id);
-            Assert.Equal("The First Step", node.Title);
-            Assert.True(node.IsMainStory);
-            Assert.Single(node.Prerequisites);
-            Assert.NotNull(node.Encounter);
-            Assert.Equal("quest_01_dialog", node.DialogueKey);
+            Assert.Equal("quest_01", chain.Id);
+            Assert.Equal("The First Step", chain.Title);
+            Assert.True(chain.IsMainStory);
+            Assert.Single(chain.Prerequisites);
+            Assert.Single(chain.Steps);
+            Assert.NotNull(chain.Steps[0].Combat);
         }
 
         [Fact]
-        public void Character_HasCompletedQuestIds()
+        public void QuestStep_HasDialogueAndBranch()
         {
-            var character = new Character
+            var step = new QuestStep
             {
-                CompletedQuestIds = new List<string> { "quest_01" }
+                Id = "step_dialogue",
+                Type = "dialogue",
+                Dialogue = new DialogueData
+                {
+                    Speaker = "Old Man",
+                    Lines = new List<string> { "Hello there." }
+                },
+                Branch = new BranchData
+                {
+                    Options = new List<BranchOption>
+                    {
+                        new BranchOption { Text = "Fight", NextStepId = "step_combat", MoralityImpact = -5 }
+                    }
+                }
             };
 
-            Assert.Single(character.CompletedQuestIds);
-            Assert.Equal("quest_01", character.CompletedQuestIds[0]);
+            Assert.Equal("dialogue", step.Type);
+            Assert.NotNull(step.Dialogue);
+            Assert.Single(step.Dialogue.Lines);
+            Assert.NotNull(step.Branch);
+            Assert.Single(step.Branch.Options);
+            Assert.Equal(-5, step.Branch.Options[0].MoralityImpact);
         }
     }
 }

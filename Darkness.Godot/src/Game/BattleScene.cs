@@ -5,6 +5,7 @@ using Darkness.Core.Models;
 using Darkness.Core.Logic;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Darkness.Godot.UI;
 
@@ -19,12 +20,16 @@ public partial class BattleScene : Control, IInitializable
     private ISpriteLayerCatalog _catalog = null!;
     private IFileSystemService _fileSystem = null!;
     private IWeaponSkillService _weaponSkillService = null!;
+    private ILevelingService _leveling = null!;
+    private IQuestService _questService = null!;
     private RichTextLabel _combatLog = null!;
     private PauseMenu _pauseMenu = null!;
     private Control _endBattlePanel = null!;
     private Label _endBattleTitle = null!;
     private Label _endBattleMessage = null!;
     private Button _retryButton = null!;
+    private string? _questChainId;
+    private string? _questStepId;
 
     private HBoxContainer _partyContainer = null!;
     private VBoxContainer _enemyContainer = null!;
@@ -45,37 +50,51 @@ public partial class BattleScene : Control, IInitializable
     {
         if (parameters.ContainsKey("Args") && parameters["Args"] is BattleArgs args)
         {
-            if (args.Encounter != null)
+            _questChainId = args.QuestChainId;
+            _questStepId = args.QuestStepId;
+
+            if (args.Combat != null)
             {
+                var combat = args.Combat;
                 _enemies.Clear();
                 _originalEnemies.Clear();
-                foreach (var e in args.Encounter.Enemies)
+                var enemies = combat.Enemies.Select(e => new Enemy
                 {
-                    // Deep copy for independent state tracking
-                    var enemy = new Enemy
-                    {
-                        Name = e.Name,
-                        MaxHP = e.MaxHP,
-                        CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
-                        Attack = e.Attack > 0 ? e.Attack : 10,
-                        Defense = e.Defense > 0 ? e.Defense : 5,
-                        Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
-                        Speed = e.Speed > 0 ? e.Speed : 10,
-                        SpriteKey = e.SpriteKey ?? "knight",
-                        MoralityImpact = e.MoralityImpact
-                    };
+                    Name = e.Name,
+                    Level = e.Level,
+                    MaxHP = e.MaxHP,
+                    CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
+                    Attack = e.Attack > 0 ? e.Attack : 10,
+                    Defense = e.Defense > 0 ? e.Defense : 5,
+                    Speed = e.Speed > 0 ? e.Speed : 10,
+                    Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
+                    Evasion = e.Evasion,
+                    SpriteKey = e.SpriteKey ?? "knight",
+                    IsInvincible = e.IsInvincible,
+                    MoralityImpact = e.MoralityImpact,
+                    ExperienceReward = e.ExperienceReward,
+                    GoldReward = e.GoldReward
+                }).ToList();
+
+                foreach (var enemy in enemies)
+                {
                     _enemies.Add(enemy);
                     _originalEnemies.Add(new Enemy
                     {
                         Name = enemy.Name,
+                        Level = enemy.Level,
                         MaxHP = enemy.MaxHP,
                         CurrentHP = enemy.MaxHP,
                         Attack = enemy.Attack,
                         Defense = enemy.Defense,
                         Accuracy = enemy.Accuracy,
                         Speed = enemy.Speed,
+                        Evasion = enemy.Evasion,
                         SpriteKey = enemy.SpriteKey,
-                        MoralityImpact = enemy.MoralityImpact
+                        IsInvincible = enemy.IsInvincible,
+                        MoralityImpact = enemy.MoralityImpact,
+                        ExperienceReward = enemy.ExperienceReward,
+                        GoldReward = enemy.GoldReward
                     });
                 }
             }
@@ -123,6 +142,8 @@ public partial class BattleScene : Control, IInitializable
         _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
         _weaponSkillService = sp.GetRequiredService<IWeaponSkillService>();
+        _leveling = sp.GetRequiredService<ILevelingService>();
+        _questService = sp.GetRequiredService<IQuestService>();
 
         _combatLog = GetNode<RichTextLabel>("CombatLog");
         _pauseMenu = GetNode<PauseMenu>("PauseMenu");
@@ -135,7 +156,12 @@ public partial class BattleScene : Control, IInitializable
         _enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
 
         GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
-        GetNode<Button>("%OkButton").Pressed += () => _navigation.NavigateToAsync("MainMenuPage");
+        GetNode<Button>("%OkButton").Pressed += async () =>
+        {
+            if (_questChainId != null)
+                _questService.AdvanceStep(_session.CurrentCharacter!, _questChainId);
+            await _navigation.NavigateToAsync("WorldScene");
+        };
         _retryButton.Pressed += () => RetryBattle();
 
         SetupBattle();
@@ -494,7 +520,20 @@ public partial class BattleScene : Control, IInitializable
         _combatLog.AppendText("\n[color=yellow]VICTORY![/color]");
         _endBattleTitle.Text = "VICTORY ACHIEVED";
         _endBattleTitle.Set("theme_override_colors/font_color", Colors.Gold);
-        _endBattleMessage.Text = "All enemies have been defeated!";
+
+        var character = _session.CurrentCharacter;
+        int totalXp = _originalEnemies.Sum(e => e.ExperienceReward);
+        string victoryMsg = "All enemies have been defeated!";
+
+        if (character != null && totalXp > 0)
+        {
+            var result = _leveling.AwardExperience(character, totalXp);
+            victoryMsg += $"\n+{result.XpAwarded} XP";
+            if (result.DidLevelUp)
+                victoryMsg += $"\nLevel Up! You are now level {result.NewLevel}!";
+        }
+
+        _endBattleMessage.Text = victoryMsg;
         _retryButton.Hide();
         _endBattlePanel.Show();
     }

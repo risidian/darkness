@@ -33,16 +33,16 @@ public partial class StealthScene : Control, IInitializable
 
     [Export] public float SliderPosition { get; set; } = 0f; // 0 to 1
 
-    private string _successScene = "WorldScene";
-    private string _failureScene = "BattleScene";
+    private string? _questChainId;
+    private string? _questStepId;
 
     public void Initialize(IDictionary<string, object> parameters)
     {
-        if (parameters.ContainsKey("SuccessScene"))
-            _successScene = parameters["SuccessScene"].ToString() ?? "WorldScene";
-
-        if (parameters.ContainsKey("FailureScene"))
-            _failureScene = parameters["FailureScene"].ToString() ?? "BattleScene";
+        if (parameters.ContainsKey("Args") && parameters["Args"] is StealthArgs args)
+        {
+            _questChainId = args.QuestChainId;
+            _questStepId = args.QuestStepId;
+        }
     }
 
     public override void _Ready()
@@ -155,7 +155,12 @@ public partial class StealthScene : Control, IInitializable
         if (_sliderTween != null && _sliderTween.IsValid())
             _sliderTween.Kill();
 
-        var parameters = new Dictionary<string, object> { { "StealthOutcome", success ? "Success" : "Failure" } };
+        var parameters = new Dictionary<string, object>
+        {
+            ["StealthOutcome"] = success ? "Success" : "Failure"
+        };
+        if (_questChainId != null) parameters["QuestChainId"] = _questChainId;
+        if (_questStepId != null) parameters["QuestStepId"] = _questStepId;
 
         if (success)
         {
