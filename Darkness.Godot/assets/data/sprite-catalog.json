@@ -422,7 +422,7 @@
     },
     {
       "Id": 8,
-      "Category": "SkinColor",
+      "Category": "Skin",
       "DisplayName": "Light",
       "AssetPath": "",
       "FileNameTemplate": "",
@@ -433,7 +433,7 @@
     },
     {
       "Id": 9,
-      "Category": "SkinColor",
+      "Category": "Skin",
       "DisplayName": "Amber",
       "AssetPath": "",
       "FileNameTemplate": "",
@@ -444,7 +444,7 @@
     },
     {
       "Id": 10,
-      "Category": "SkinColor",
+      "Category": "Skin",
       "DisplayName": "Olive",
       "AssetPath": "",
       "FileNameTemplate": "",
@@ -455,7 +455,7 @@
     },
     {
       "Id": 11,
-      "Category": "SkinColor",
+      "Category": "Skin",
       "DisplayName": "Taupe",
       "AssetPath": "",
       "FileNameTemplate": "",
@@ -466,7 +466,7 @@
     },
     {
       "Id": 12,
-      "Category": "SkinColor",
+      "Category": "Skin",
       "DisplayName": "Bronze",
       "AssetPath": "",
       "FileNameTemplate": "",
@@ -477,7 +477,7 @@
     },
     {
       "Id": 13,
-      "Category": "SkinColor",
+      "Category": "Skin",
       "DisplayName": "Brown",
       "AssetPath": "",
       "FileNameTemplate": "",
@@ -488,7 +488,7 @@
     },
     {
       "Id": 14,
-      "Category": "SkinColor",
+      "Category": "Skin",
       "DisplayName": "Black",
       "AssetPath": "",
       "FileNameTemplate": "",

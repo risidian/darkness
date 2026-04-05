@@ -47,18 +47,18 @@ namespace Darkness.Core.ViewModels
 
         [ObservableProperty] private byte[]? _previewImageBytes;
         public List<string> Classes { get; } = new() { "Knight", "Rogue", "Mage", "Warrior", "Cleric" };
-        public List<string> HairColors => _catalog.HairColors;
-        public List<string> SkinColors => _catalog.SkinColors;
-        public List<string> FaceTypes => _catalog.FaceTypes;
-        public List<string> EyeTypes => _catalog.EyeTypes;
-        public List<string> HeadTypes => _catalog.HeadTypes;
-        public List<string> FeetTypes => _catalog.FeetTypes;
-        public List<string> ArmsTypes => _catalog.ArmsTypes;
-        public List<string> LegsTypes => _catalog.LegsTypes;
-        public List<string> HairStyles => _catalog.HairStyles;
-        public List<string> ArmorTypes => _catalog.ArmorTypes;
-        public List<string> WeaponTypes => _catalog.WeaponTypes;
-        public List<string> ShieldTypes => _catalog.ShieldTypes;
+        public List<string> HairColors => _catalog.GetOptionNames("HairColor");
+        public List<string> SkinColors => _catalog.GetOptionNames("Skin");
+        public List<string> FaceTypes => _catalog.GetOptionNames("Face");
+        public List<string> EyeTypes => _catalog.GetOptionNames("Eyes");
+        public List<string> HeadTypes => _catalog.GetOptionNames("Head");
+        public List<string> FeetTypes => _catalog.GetOptionNames("Feet");
+        public List<string> ArmsTypes => _catalog.GetOptionNames("Arms");
+        public List<string> LegsTypes => _catalog.GetOptionNames("Legs");
+        public List<string> HairStyles => _catalog.GetOptionNames("Hair");
+        public List<string> ArmorTypes => _catalog.GetOptionNames("Armor");
+        public List<string> WeaponTypes => _catalog.GetOptionNames("Weapon");
+        public List<string> ShieldTypes => _catalog.GetOptionNames("Shield");
 
         public CharacterGenViewModel(
             ICharacterService characterService,

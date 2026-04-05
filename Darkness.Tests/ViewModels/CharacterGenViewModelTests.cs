@@ -27,18 +27,18 @@ namespace Darkness.Tests.ViewModels
             _compositorMock = new Mock<ISpriteCompositor>();
             _fileSystemMock = new Mock<IFileSystemService>();
 
-            _catalogMock.Setup(x => x.HairStyles).Returns(new List<string> { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob", "Afro" });
-            _catalogMock.Setup(x => x.HairColors).Returns(new List<string> { "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut", "Blue", "Green", "Purple" });
-            _catalogMock.Setup(x => x.SkinColors).Returns(new List<string> { "Light", "Amber", "Olive", "Taupe", "Bronze", "Brown", "Black" });
-            _catalogMock.Setup(x => x.FaceTypes).Returns(new List<string> { "Default", "Female" });
-            _catalogMock.Setup(x => x.EyeTypes).Returns(new List<string> { "Default", "Neutral", "Anger", "Sad", "Shock" });
-            _catalogMock.Setup(x => x.HeadTypes).Returns(new List<string> { "Human Male", "Human Female" });
-            _catalogMock.Setup(x => x.FeetTypes).Returns(new List<string> { "Boots (Basic)", "Boots (Fold)", "Boots (Rimmed)", "Shoes", "Sandals", "None" });
-            _catalogMock.Setup(x => x.ArmsTypes).Returns(new List<string> { "Gloves", "None" });
-            _catalogMock.Setup(x => x.LegsTypes).Returns(new List<string> { "Slacks", "Leggings", "Formal", "Cuffed", "Pantaloons", "None" });
-            _catalogMock.Setup(x => x.ArmorTypes).Returns(new List<string> { "Plate (Steel)", "Leather", "Longsleeve (Blue)" });
-            _catalogMock.Setup(x => x.WeaponTypes).Returns(new List<string> { "Arming Sword (Steel)", "None" });
-            _catalogMock.Setup(x => x.ShieldTypes).Returns(new List<string> { "Crusader", "Spartan", "None" });
+            _catalogMock.Setup(x => x.GetOptionNames("Hair")).Returns(new List<string> { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob", "Afro" });
+            _catalogMock.Setup(x => x.GetOptionNames("HairColor")).Returns(new List<string> { "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut", "Blue", "Green", "Purple" });
+            _catalogMock.Setup(x => x.GetOptionNames("Skin")).Returns(new List<string> { "Light", "Amber", "Olive", "Taupe", "Bronze", "Brown", "Black" });
+            _catalogMock.Setup(x => x.GetOptionNames("Face")).Returns(new List<string> { "Default", "Female" });
+            _catalogMock.Setup(x => x.GetOptionNames("Eyes")).Returns(new List<string> { "Default", "Neutral", "Anger", "Sad", "Shock" });
+            _catalogMock.Setup(x => x.GetOptionNames("Head")).Returns(new List<string> { "Human Male", "Human Female" });
+            _catalogMock.Setup(x => x.GetOptionNames("Feet")).Returns(new List<string> { "Boots (Basic)", "Boots (Fold)", "Boots (Rimmed)", "Shoes", "Sandals", "None" });
+            _catalogMock.Setup(x => x.GetOptionNames("Arms")).Returns(new List<string> { "Gloves", "None" });
+            _catalogMock.Setup(x => x.GetOptionNames("Legs")).Returns(new List<string> { "Slacks", "Leggings", "Formal", "Cuffed", "Pantaloons", "None" });
+            _catalogMock.Setup(x => x.GetOptionNames("Armor")).Returns(new List<string> { "Plate (Steel)", "Leather", "Longsleeve (Blue)" });
+            _catalogMock.Setup(x => x.GetOptionNames("Weapon")).Returns(new List<string> { "Arming Sword (Steel)", "None" });
+            _catalogMock.Setup(x => x.GetOptionNames("Shield")).Returns(new List<string> { "Crusader", "Spartan", "None" });
             _catalogMock.Setup(x => x.GetDefaultAppearanceForClass(It.IsAny<string>()))
                 .Returns<string>(cls => cls switch
                 {
@@ -46,8 +46,6 @@ namespace Darkness.Tests.ViewModels
                     "Rogue" => new CharacterAppearance { ArmorType = "Leather (Black)", WeaponType = "Arming Sword (Iron)", ShieldType = "None", Feet = "Boots (Fold)", Arms = "Gloves", Legs = "Leggings" },
                     _ => new CharacterAppearance { ArmorType = "Plate (Steel)", WeaponType = "Arming Sword (Steel)", ShieldType = "Crusader", Feet = "Boots (Basic)", Arms = "Gloves", Legs = "Slacks" },
                 });
-            _catalogMock.Setup(x => x.GetLayersForAppearance(It.IsAny<CharacterAppearance>()))
-                .Returns(new List<SpriteLayerDefinition>());
             _catalogMock.Setup(x => x.GetStitchLayers(It.IsAny<CharacterAppearance>()))
                 .Returns(new List<StitchLayer>());
 

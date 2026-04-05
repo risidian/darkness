@@ -92,25 +92,8 @@ public partial class LayeredSprite : Node2D
             ShieldType = c.ShieldType ?? "None"
         };
 
-        var layerDefs = catalog.GetLayersForAppearance(appearance);
-        GD.Print($"[LayeredSprite] Setting up {layerDefs.Count} individual layers for fallback.");
-
-        foreach (var def in layerDefs)
-        {
-            var nodeName = GetNodeNameForPath(def.ResourcePath);
-            if (_layers.TryGetValue(nodeName, out var sprite))
-            {
-                GD.Print($"[LayeredSprite] Loading fallback layer: {nodeName} from {def.ResourcePath}");
-                var frames = await LoadFrames(def.ResourcePath, fileSystem);
-                sprite.SpriteFrames = frames;
-                sprite.FlipH = _flipH;
-                sprite.Show();
-            }
-            else
-            {
-                GD.PrintErr($"[LayeredSprite] No node found for layer: {nodeName} ({def.ResourcePath})");
-            }
-        }
+        GD.PrintErr($"[LayeredSprite] No FullSpriteSheet for {c.Name} — individual layer fallback is no longer supported.");
+        await Task.CompletedTask;
     }
 
     public async Task SetupFromBytes(byte[] data)

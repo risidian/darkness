@@ -89,18 +89,18 @@ public partial class CharacterGenScene : Control
     private void SetupOptions()
     {
         Populate(_classOption, new[] { "Knight", "Rogue", "Mage", "Warrior", "Cleric" });
-        Populate(_skinOption, _catalog.SkinColors);
-        Populate(_headOption, _catalog.HeadTypes);
-        Populate(_hairStyleOption, _catalog.HairStyles);
-        Populate(_hairColorOption, _catalog.HairColors);
-        Populate(_faceOption, _catalog.FaceTypes);
-        Populate(_eyesOption, _catalog.EyeTypes);
-        Populate(_legsOption, _catalog.LegsTypes);
-        Populate(_feetOption, _catalog.FeetTypes);
-        Populate(_armsOption, _catalog.ArmsTypes);
-        Populate(_armorOption, _catalog.ArmorTypes);
-        Populate(_weaponOption, _catalog.WeaponTypes);
-        Populate(_shieldOption, _catalog.ShieldTypes);
+        Populate(_skinOption, _catalog.GetOptionNames("Skin"));
+        Populate(_headOption, _catalog.GetOptionNames("Head"));
+        Populate(_hairStyleOption, _catalog.GetOptionNames("Hair"));
+        Populate(_hairColorOption, _catalog.GetOptionNames("HairColor"));
+        Populate(_faceOption, _catalog.GetOptionNames("Face"));
+        Populate(_eyesOption, _catalog.GetOptionNames("Eyes"));
+        Populate(_legsOption, _catalog.GetOptionNames("Legs"));
+        Populate(_feetOption, _catalog.GetOptionNames("Feet"));
+        Populate(_armsOption, _catalog.GetOptionNames("Arms"));
+        Populate(_armorOption, _catalog.GetOptionNames("Armor"));
+        Populate(_weaponOption, _catalog.GetOptionNames("Weapon"));
+        Populate(_shieldOption, _catalog.GetOptionNames("Shield"));
     }
 
     private void Populate(OptionButton node, List<string> items)

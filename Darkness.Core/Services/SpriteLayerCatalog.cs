@@ -1,460 +1,150 @@
-using Darkness.Core.Interfaces;
-using Darkness.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkness.Core.Interfaces;
+using Darkness.Core.Models;
+using LiteDB;
 
-namespace Darkness.Core.Services
+namespace Darkness.Core.Services;
+
+public class SpriteLayerCatalog : ISpriteLayerCatalog
 {
-    public class SpriteLayerCatalog : ISpriteLayerCatalog
+    private readonly LiteDatabase _db;
+    private readonly Dictionary<string, CharacterAppearance>? _classDefaults;
+
+    public SpriteLayerCatalog(LiteDatabase db, IFileSystemService fileSystem)
     {
-        // Z-order from LPC sheet definitions
-        private const int ZBody = 10;
-        private const int ZFeet = 15;
-        private const int ZLegs = 40;
-        private const int ZArms = 55;
-        private const int ZArmor = 60;
-        private const int ZHead = 90;
-        private const int ZFace = 100;
-        private const int ZEyes = 105;
-        private const int ZHair = 120;
-        private const int ZShield = 130;
-        private const int ZWeapon = 140;
-
-        public List<string> HairStyles { get; } = new()
-            { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob", "Afro" };
-
-        public List<string> HairColors { get; } = new()
+        _db = db;
+        try
         {
-            "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut", "Blue", "Green",
-            "Purple"
-        };
-
-        public List<string> SkinColors { get; } =
-            new() { "Light", "Amber", "Olive", "Taupe", "Bronze", "Brown", "Black" };
-
-        public List<string> FaceTypes { get; } = new() { "Default", "Female" };
-        public List<string> EyeTypes { get; } = new() { "Default", "Neutral", "Anger", "Sad", "Shock" };
-        public List<string> HeadTypes { get; } = new() { "Human Male", "Human Female" };
-
-        public List<string> FeetTypes { get; } = new()
-            { "Boots (Basic)", "Boots (Fold)", "Boots (Rimmed)", "Shoes", "Sandals", "None" };
-
-        public List<string> ArmsTypes { get; } = new() { "Gloves", "None" };
-
-        public List<string> LegsTypes { get; } =
-            new() { "Slacks", "Leggings", "Formal", "Cuffed", "Pantaloons", "None" };
-
-        public List<string> ArmorTypes { get; } = new()
-        {
-            "Plate (Steel)", "Plate (Iron)", "Plate (Gold)", "Leather", "Leather (Black)", "Leather (Brown)",
-            "Mage Robes (Blue)", "Mage Robes (Red)", "Mage Robes (White)", "Longsleeve (White)", "Longsleeve (Blue)",
-            "Longsleeve (Brown)"
-        };
-
-        public List<string> WeaponTypes { get; } = new()
-        {
-            "Arming Sword (Steel)",
-            "Arming Sword (Iron)",
-            "Arming Sword (Gold)",
-            "Dagger (Steel)",
-            "Recurve Bow",
-            "Mage Wand",
-            "None"
-        };
-
-        public List<string> ShieldTypes { get; } = new() { "Crusader", "Spartan", "None" };
-
-        private static readonly Dictionary<string, string> HairStyleFileMap = new()
-        {
-            ["Long"] = "long",
-            ["Plain"] = "plain",
-            ["Curly Long"] = "curly_long",
-            ["Shorthawk"] = "shorthawk",
-            ["Spiked"] = "spiked",
-            ["Bob"] = "bob",
-            ["Afro"] = "afro",
-        };
-
-        private static readonly Dictionary<string, string> SkinColorHexMap = new()
-        {
-            ["Light"] = "#FFFFFF",
-            ["Amber"] = "#E0AC69",
-            ["Olive"] = "#C68642",
-            ["Taupe"] = "#8D5524",
-            ["Bronze"] = "#754C24",
-            ["Brown"] = "#4B3018",
-            ["Black"] = "#2D1B0F",
-        };
-
-        private static readonly Dictionary<string, string> HairColorHexMap = new()
-        {
-            ["Blonde"] = "#FFFFFF",
-            ["Black"] = "#090806",
-            ["Dark Brown"] = "#3B3024",
-            ["Redhead"] = "#A52A2A",
-            ["White"] = "#EAEAEA",
-            ["Gray"] = "#808080",
-            ["Platinum"] = "#E5E4E2",
-            ["Chestnut"] = "#954535",
-            ["Blue"] = "#0000FF",
-            ["Green"] = "#00FF00",
-            ["Purple"] = "#800080",
-        };
-
-        private static readonly Dictionary<string, string> ArmorFileMap = new()
-        {
-            ["Plate (Steel)"] = "plate/steel",
-            ["Plate (Iron)"] = "plate/iron",
-            ["Plate (Gold)"] = "plate/gold",
-            ["Leather"] = "leather/leather",
-            ["Leather (Black)"] = "leather/black",
-            ["Leather (Brown)"] = "leather/brown",
-            ["Mage Robes (Blue)"] = "robes/blue",
-            ["Mage Robes (Red)"] = "robes/red",
-            ["Mage Robes (White)"] = "robes/white",
-            // No dedicated longsleeve full-sprite assets exist — map to closest robe color
-            ["Longsleeve (White)"] = "robes/white",
-            ["Longsleeve (Blue)"] = "robes/blue",
-            ["Longsleeve (Brown)"] = "robes/brown",
-        };
-
-        // Only shoes/basic assets currently exist on disk for full stitch path
-        private static readonly Dictionary<string, string> FeetFileMap = new()
-        {
-            ["Boots (Basic)"] = "shoes/basic",
-            ["Boots (Fold)"] = "shoes/basic",
-            ["Boots (Rimmed)"] = "shoes/basic",
-            ["Shoes"] = "shoes/basic",
-            ["Sandals"] = "shoes/basic",
-            ["None"] = "",
-        };
-
-        private static readonly Dictionary<string, string> ArmsFileMap = new()
-        {
-            ["Gloves"] = "gloves",
-            ["None"] = "",
-        };
-
-        private static readonly Dictionary<string, string> LegsFileMap = new()
-        {
-            ["Slacks"] = "pants",
-            ["Leggings"] = "leggings",
-            ["Formal"] = "formal",
-            ["Cuffed"] = "cuffed",
-            ["Pantaloons"] = "pantaloons",
-            ["None"] = "",
-        };
-
-        private static readonly Dictionary<string, string> WeaponMaterialMap = new()
-        {
-            ["Arming Sword (Steel)"] = "steel",
-            ["Arming Sword (Iron)"] = "iron",
-            ["Arming Sword (Gold)"] = "gold",
-        };
-
-        private static readonly Dictionary<string, string> LegacyArmorFileMap = new()
-        {
-            ["Plate (Steel)"] = "plate_steel",
-            ["Plate (Iron)"] = "plate_iron",
-            ["Plate (Gold)"] = "plate_gold",
-            ["Leather"] = "leather_leather",
-            ["Leather (Black)"] = "leather_black",
-            ["Leather (Brown)"] = "leather_brown",
-            ["Mage Robes (Blue)"] = "blue",
-            ["Mage Robes (Red)"] = "red",
-            ["Mage Robes (White)"] = "white",
-            ["Longsleeve (White)"] = "longsleeve_white",
-            ["Longsleeve (Blue)"] = "longsleeve_blue",
-            ["Longsleeve (Brown)"] = "longsleeve_brown",
-        };
-
-        private static readonly Dictionary<string, string> LegacyFeetFileMap = new()
-        {
-            ["Boots (Basic)"] = "boots_basic",
-            ["Boots (Fold)"] = "boots_fold",
-            ["Boots (Rimmed)"] = "boots_rimmed",
-            ["Shoes"] = "shoes",
-            ["Sandals"] = "sandals",
-            ["None"] = "",
-        };
-
-        private static readonly Dictionary<string, string> LegacyLegsFileMap = new()
-        {
-            ["Slacks"] = "slacks",
-            ["Leggings"] = "leggings",
-            ["Formal"] = "formal",
-            ["Cuffed"] = "cuffed",
-            ["Pantaloons"] = "pantaloons",
-            ["None"] = "",
-        };
-
-        // Legs types that only have male assets on disk
-        private static readonly HashSet<string> MaleOnlyLegs = new() { "leggings", "cuffed", "pantaloons" };
-
-        // Robe colors that have their own subdirectory (color/{action}.png vs {action}/color.png)
-        private static readonly HashSet<string> RobeSubdirColors = new() { "blue", "red", "white" };
-
-        public List<SpriteLayerDefinition> GetLayersForAppearance(CharacterAppearance appearance)
-        {
-            var skin = appearance.SkinColor ?? "Light";
-            var hairStyle = (appearance.HairStyle ?? "Long").ToLower().Replace(" ", "_");
-            var hairColor = (appearance.HairColor ?? "Black").ToLower().Replace(" ", "_");
-            var head = appearance.Head ?? "Human Male";
-            var face = appearance.Face ?? "Default";
-            var eyes = appearance.Eyes ?? "Default";
-            var armor = appearance.ArmorType ?? "Leather";
-            var feet = appearance.Feet ?? "Boots (Basic)";
-            var arms = appearance.Arms ?? "None";
-            var legs = appearance.Legs ?? "Slacks";
-
-            var layers = new List<SpriteLayerDefinition>
+            var json = fileSystem.ReadAllText("assets/data/sprite-catalog.json");
+            var data = System.Text.Json.JsonSerializer.Deserialize<SeedWrapper>(json, new System.Text.Json.JsonSerializerOptions
             {
-                new($"sprites/body/{skin.ToLower()}.png", ZBody),
-                new($"sprites/head/human_{head.ToLower().Split(' ')[1]}.png", ZHead),
-                new($"sprites/face/{face.ToLower()}.png", ZFace),
-                new($"sprites/eyes/{eyes.ToLower()}.png", ZEyes),
-                new($"sprites/hair/{hairStyle}_{hairColor}.png", ZHair),
-            };
+                PropertyNameCaseInsensitive = true
+            });
+            _classDefaults = data?.ClassDefaults;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[SpriteLayerCatalog] WARN: Could not load class defaults — {ex.Message}");
+            _classDefaults = new();
+        }
+    }
 
-            if (armor.StartsWith("Mage Robes"))
-            {
-                var color = LegacyArmorFileMap.GetValueOrDefault(armor, "blue");
-                layers.Add(new($"sprites/armor/{color}.png", ZArmor));
-            }
-            else
-            {
-                string file = LegacyArmorFileMap.GetValueOrDefault(armor, "leather_leather");
-                layers.Add(new($"sprites/armor/{file}.png", ZArmor));
-            }
-
-            if (!string.IsNullOrEmpty(feet) && feet != "None")
-                layers.Add(new($"sprites/feet/{LegacyFeetFileMap.GetValueOrDefault(feet, "boots_basic")}.png", ZFeet));
-            if (!string.IsNullOrEmpty(arms) && arms != "None")
-                layers.Add(new($"sprites/arms/gloves.png", ZArms));
-            if (!string.IsNullOrEmpty(legs) && legs != "None")
-                layers.Add(new($"sprites/legs/{LegacyLegsFileMap.GetValueOrDefault(legs, "slacks")}.png", ZLegs));
-
-            var weapon = appearance.WeaponType ?? "None";
-            if (weapon != "None")
-            {
-                if (weapon.Contains("Wand"))
-                    layers.Add(new("sprites/weapons/mage_wand.png", ZWeapon));
-                else if (weapon.Contains("Bow"))
-                    layers.Add(new("sprites/weapons/recurve_bow.png", ZWeapon));
-                else if (weapon.Contains("Dagger"))
-                    layers.Add(new("sprites/weapons/dagger_steel.png", ZWeapon));
-                else if (weapon.Contains("Arming Sword"))
-                {
-                    string material = "steel";
-                    if (weapon.Contains("Gold")) material = "gold";
-                    else if (weapon.Contains("Iron")) material = "iron";
-                    layers.Add(new($"sprites/weapons/arming_sword_{material}.png", ZWeapon));
-                }
-            }
-
-            layers.Sort((a, b) => a.ZOrder.CompareTo(b.ZOrder));
-            return layers;
+    public List<string> GetOptionNames(string category)
+    {
+        if (category is "Armor" or "Weapon" or "Shield" or "Feet" or "Legs" or "Arms")
+        {
+            var col = _db.GetCollection<EquipmentSprite>("equipment_sprites");
+            var names = col.Find(s => s.Slot == category).Select(s => s.DisplayName).ToList();
+            if (category is "Weapon" or "Shield" or "Feet" or "Arms" or "Legs" && !names.Contains("None"))
+                names.Add("None");
+            return names;
         }
 
-        public List<StitchLayer> GetStitchLayers(CharacterAppearance appearance)
+        var optCol = _db.GetCollection<AppearanceOption>("appearance_options");
+        return optCol.Find(o => o.Category == category).Select(o => o.DisplayName).ToList();
+    }
+
+    public List<StitchLayer> GetStitchLayers(CharacterAppearance appearance)
+    {
+        var spriteCol = _db.GetCollection<EquipmentSprite>("equipment_sprites");
+        var optionCol = _db.GetCollection<AppearanceOption>("appearance_options");
+
+        var head = appearance.Head ?? "Human Male";
+        string gender = head.ToLower().Contains("female") ? "female" : "male";
+
+        var skinOpt = optionCol.FindOne(o => o.Category == "Skin" && o.DisplayName == (appearance.SkinColor ?? "Light"));
+        var hairColorOpt = optionCol.FindOne(o => o.Category == "HairColor" && o.DisplayName == (appearance.HairColor ?? "Black"));
+        string skinHex = skinOpt?.TintHex ?? "#FFFFFF";
+        string hairHex = hairColorOpt?.TintHex ?? "#FFFFFF";
+
+        var layers = new List<(StitchLayer Layer, int Z)>();
+
+        // Body (always present, tinted with skin color)
+        layers.Add((new StitchLayer($"assets/sprites/full/body/{gender}", "{action}.png", skinHex), 10));
+
+        // Head
+        var headOpt = optionCol.FindOne(o => o.Category == "Head" && o.DisplayName == head);
+        if (headOpt != null)
+            layers.Add((new StitchLayer($"assets/sprites/full/{headOpt.AssetPath}", headOpt.FileNameTemplate, skinHex), headOpt.ZOrder));
+
+        // Face
+        string faceKey = appearance.Face ?? "Default";
+        var faceOpt = optionCol.FindOne(o => o.Category == "Face" && o.DisplayName == faceKey);
+        if (faceOpt != null)
         {
-            var skinHex = SkinColorHexMap.GetValueOrDefault(appearance.SkinColor ?? "Light", "#FFFFFF");
-            var hairHex = HairColorHexMap.GetValueOrDefault(appearance.HairColor ?? "Black", "#FFFFFF");
-            var hairStyle = HairStyleFileMap.GetValueOrDefault(appearance.HairStyle ?? "Long", "long");
-            var head = appearance.Head ?? "Human Male";
-            var armor = appearance.ArmorType ?? "Leather";
-            var weapon = appearance.WeaponType ?? "None";
-            var shield = appearance.ShieldType ?? "None";
-            var feet = appearance.Feet ?? "Boots (Basic)";
-            var arms = appearance.Arms ?? "None";
-            var legs = appearance.Legs ?? "Slacks";
-
-            var layers = new List<(StitchLayer Layer, int Z)>();
-            string gender = head.ToLower().Contains("female") ? "female" : "male";
-
-            // Body
-            layers.Add((new StitchLayer($"assets/sprites/full/body/{gender}", "{action}.png", skinHex), ZBody));
-
-            // Head
-            layers.Add((new StitchLayer($"assets/sprites/full/head/human/{gender}", "{action}.png", skinHex), ZHead));
-
-            // Face
-            string faceGender = (appearance.Face == "Female") ? "female" : "male";
-            layers.Add((new StitchLayer($"assets/sprites/full/face/{faceGender}", "{action}.png", skinHex), ZFace));
-
-            // Eyes
-            string eyeExpr = (appearance.Eyes ?? "Default").ToLower();
-            layers.Add((new StitchLayer($"assets/sprites/full/eyes/human/adult/{eyeExpr}", "{action}/blue.png"),
-                ZEyes));
-
-            // Armor/Robes/Longsleeve
-            if (ArmorFileMap.TryGetValue(armor, out var armorInfo))
-            {
-                var parts = armorInfo.Split('/');
-                if (parts.Length == 2)
-                {
-                    if (parts[0] == "robes")
-                    {
-                        // Colors with dedicated subdirs: blue, red, white → robes/female/{color}/{action}.png
-                        // Colors at action level: brown, black, etc. → robes/female/{action}/{color}.png
-                        if (RobeSubdirColors.Contains(parts[1]))
-                        {
-                            layers.Add((new StitchLayer($"assets/sprites/full/torso/robes/female/{parts[1]}", "{action}.png"),
-                                ZArmor));
-                        }
-                        else
-                        {
-                            layers.Add((new StitchLayer("assets/sprites/full/torso/robes/female", $"{{action}}/{parts[1]}.png"),
-                                ZArmor));
-                        }
-                    }
-                    else
-                    {
-                        // Standard armor (plate, leather)
-                        layers.Add((
-                            new StitchLayer($"assets/sprites/full/armor/{parts[0]}/{gender}", $"{{action}}/{parts[1]}.png"),
-                            ZArmor));
-                    }
-                }
-            }
-
-            // Legs — fall back to male if female variant doesn't exist
-            if (legs != "None" && LegsFileMap.TryGetValue(legs, out var legsFile) && !string.IsNullOrEmpty(legsFile))
-            {
-                string legsGender = MaleOnlyLegs.Contains(legsFile) ? "male" : gender;
-                layers.Add((new StitchLayer($"assets/sprites/full/legs/{legsFile}/{legsGender}", "{action}/black.png"),
-                    ZLegs));
-            }
-
-            // Feet
-            if (feet != "None" && FeetFileMap.TryGetValue(feet, out var feetFile) && !string.IsNullOrEmpty(feetFile))
-            {
-                layers.Add((new StitchLayer($"assets/sprites/full/feet/{feetFile}/{gender}", "{action}/black.png"),
-                    ZFeet));
-            }
-
-            // Arms (Gloves)
-            if (arms != "None" && ArmsFileMap.TryGetValue(arms, out var armsFile) && !string.IsNullOrEmpty(armsFile))
-            {
-                layers.Add((new StitchLayer($"assets/sprites/full/arms/{armsFile}/{gender}", "{action}/black.png"),
-                    ZArms));
-            }
-
-            // Hair
-            layers.Add((new StitchLayer($"assets/sprites/full/hair/{hairStyle}/adult", "{action}/blonde.png", hairHex),
-                ZHair));
-
-            // Weapons
-            if (weapon != "None")
-            {
-                if (WeaponMaterialMap.TryGetValue(weapon, out var material))
-                {
-                    // Arming swords — universal/bg has per-action directories
-                    layers.Add((new StitchLayer("assets/sprites/full/weapons/sword/arming/universal/bg",
-                        $"{{action}}/{material}.png"), ZWeapon));
-                }
-                else if (weapon.Contains("Wand"))
-                {
-                    // Wand only has slash assets
-                    layers.Add((new StitchLayer($"assets/sprites/full/weapons/magic/wand/{gender}/slash", "wand.png"),
-                        ZWeapon));
-                }
-                else if (weapon.Contains("Bow"))
-                {
-                    // Bow only has walk assets for foreground
-                    layers.Add((
-                        new StitchLayer("assets/sprites/full/weapons/ranged/bow/normal/walk/foreground", "steel.png"),
-                        ZWeapon));
-                }
-                else if (weapon.Contains("Dagger"))
-                {
-                    // Dagger has per-action directories
-                    layers.Add((new StitchLayer("assets/sprites/full/weapons/sword/dagger", "{action}/dagger.png"),
-                        ZWeapon));
-                }
-            }
-
-            // Shield — bg has per-action directories
-            if (shield != "None" && !string.IsNullOrEmpty(shield))
-            {
-                var shieldKey = shield.ToLower();
-                layers.Add((
-                    new StitchLayer($"assets/sprites/full/shields/{shieldKey}/bg",
-                        $"{{action}}/{shieldKey}.png"), ZShield));
-            }
-
-            // Sort by Z and return just the layers
-            return layers.OrderBy(l => l.Z).Select(l => l.Layer).ToList();
+            string facePath = faceOpt.Gender == "gendered"
+                ? faceOpt.AssetPath.Replace("male", gender)
+                : faceOpt.AssetPath;
+            layers.Add((new StitchLayer($"assets/sprites/full/{facePath}", faceOpt.FileNameTemplate, skinHex), faceOpt.ZOrder));
         }
 
-        public CharacterAppearance GetDefaultAppearanceForClass(string className)
-        {
-            var appearance = new CharacterAppearance();
-            switch (className)
-            {
-                case "Warrior":
-                    appearance.ArmorType = "Plate (Steel)";
-                    appearance.WeaponType = "Arming Sword (Steel)";
-                    appearance.Feet = "Boots (Basic)";
-                    appearance.Arms = "Gloves";
-                    appearance.Legs = "Slacks";
-                    appearance.ShieldType = "Crusader";
-                    appearance.Head = "Human Male";
-                    appearance.Face = "Default";
-                    break;
-                case "Mage":
-                    appearance.ArmorType = "Mage Robes (Blue)";
-                    appearance.WeaponType = "Mage Wand";
-                    appearance.Feet = "Sandals";
-                    appearance.Arms = "None";
-                    appearance.Legs = "Formal";
-                    appearance.ShieldType = "None";
-                    appearance.Head = "Human Female";
-                    appearance.Face = "Female";
-                    break;
-                case "Rogue":
-                    appearance.ArmorType = "Leather (Black)";
-                    appearance.WeaponType = "Dagger (Steel)";
-                    appearance.Feet = "Boots (Fold)";
-                    appearance.Arms = "Gloves";
-                    appearance.Legs = "Leggings";
-                    appearance.ShieldType = "None";
-                    appearance.Head = "Human Male";
-                    appearance.Face = "Default";
-                    break;
-                case "Knight":
-                    appearance.ArmorType = "Plate (Steel)";
-                    appearance.WeaponType = "Arming Sword (Steel)";
-                    appearance.Feet = "Boots (Rimmed)";
-                    appearance.Arms = "Gloves";
-                    appearance.Legs = "Formal";
-                    appearance.ShieldType = "Spartan";
-                    appearance.Head = "Human Male";
-                    appearance.Face = "Default";
-                    break;
-                case "Cleric":
-                    appearance.ArmorType = "Longsleeve (White)";
-                    appearance.WeaponType = "Arming Sword (Iron)";
-                    appearance.Feet = "Shoes";
-                    appearance.Arms = "None";
-                    appearance.Legs = "Slacks";
-                    appearance.ShieldType = "Crusader";
-                    appearance.Head = "Human Female";
-                    appearance.Face = "Female";
-                    break;
-                default:
-                    appearance.ArmorType = "Leather";
-                    appearance.WeaponType = "Arming Sword (Steel)";
-                    appearance.Feet = "Boots (Basic)";
-                    appearance.Arms = "None";
-                    appearance.Legs = "Slacks";
-                    appearance.ShieldType = "None";
-                    appearance.Head = "Human Male";
-                    appearance.Face = "Default";
-                    break;
-            }
+        // Eyes
+        string eyeKey = appearance.Eyes ?? "Default";
+        var eyeOpt = optionCol.FindOne(o => o.Category == "Eyes" && o.DisplayName == eyeKey);
+        if (eyeOpt != null)
+            layers.Add((new StitchLayer($"assets/sprites/full/{eyeOpt.AssetPath}", eyeOpt.FileNameTemplate), eyeOpt.ZOrder));
 
+        // Hair
+        string hairKey = appearance.HairStyle ?? "Long";
+        var hairOpt = optionCol.FindOne(o => o.Category == "Hair" && o.DisplayName == hairKey);
+        if (hairOpt != null)
+            layers.Add((new StitchLayer($"assets/sprites/full/{hairOpt.AssetPath}", hairOpt.FileNameTemplate, hairHex), hairOpt.ZOrder));
+
+        // Equipment slots
+        AddEquipmentLayer(spriteCol, layers, "Armor", appearance.ArmorType ?? "Leather", gender);
+        AddEquipmentLayer(spriteCol, layers, "Feet", appearance.Feet ?? "Boots (Basic)", gender);
+        AddEquipmentLayer(spriteCol, layers, "Legs", appearance.Legs ?? "Slacks", gender);
+        AddEquipmentLayer(spriteCol, layers, "Arms", appearance.Arms ?? "None", gender);
+        AddEquipmentLayer(spriteCol, layers, "Weapon", appearance.WeaponType ?? "None", gender);
+        AddEquipmentLayer(spriteCol, layers, "Shield", appearance.ShieldType ?? "None", gender);
+
+        return layers.OrderBy(l => l.Z).Select(l => l.Layer).ToList();
+    }
+
+    private void AddEquipmentLayer(ILiteCollection<EquipmentSprite> col,
+        List<(StitchLayer Layer, int Z)> layers, string slot, string displayName, string gender)
+    {
+        if (displayName == "None") return;
+
+        var sprite = col.FindOne(s => s.Slot == slot && s.DisplayName == displayName);
+        if (sprite == null) return;
+
+        string resolvedGender = sprite.Gender switch
+        {
+            "gendered" => gender,
+            "universal" => "",
+            _ => sprite.FallbackGender ?? sprite.Gender
+        };
+
+        string path = string.IsNullOrEmpty(resolvedGender)
+            ? $"assets/sprites/full/{sprite.AssetPath}"
+            : $"assets/sprites/full/{sprite.AssetPath}/{resolvedGender}";
+
+        layers.Add((new StitchLayer(path, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder));
+    }
+
+    public CharacterAppearance GetDefaultAppearanceForClass(string className)
+    {
+        if (_classDefaults != null && _classDefaults.TryGetValue(className, out var appearance))
             return appearance;
-        }
+
+        return new CharacterAppearance
+        {
+            ArmorType = "Leather",
+            WeaponType = "Arming Sword (Steel)",
+            Feet = "Boots (Basic)",
+            Arms = "None",
+            Legs = "Slacks",
+            ShieldType = "None",
+            Head = "Human Male",
+            Face = "Default"
+        };
+    }
+
+    private class SeedWrapper
+    {
+        public Dictionary<string, CharacterAppearance>? ClassDefaults { get; set; }
     }
 }
