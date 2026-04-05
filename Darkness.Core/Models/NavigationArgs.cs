@@ -8,7 +8,15 @@ public abstract class NavigationArgs
 
 public class BattleArgs : NavigationArgs
 {
-    public EncounterData? Encounter { get; set; }
+    public CombatData? Combat { get; set; }
+    public string? QuestChainId { get; set; }
+    public string? QuestStepId { get; set; }
+}
+
+public class StealthArgs : NavigationArgs
+{
+    public string? QuestChainId { get; set; }
+    public string? QuestStepId { get; set; }
 }
 
 public class PvpArgs : NavigationArgs
