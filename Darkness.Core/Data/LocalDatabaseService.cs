@@ -28,6 +28,10 @@ namespace Darkness.Core.Data
             return Path.Combine(directory, filename);
         }
 
-        public LiteDatabase OpenDatabase() => new LiteDatabase(_dbPath);
+        public LiteDatabase OpenDatabase() 
+        {
+            var connectionString = $"Filename={_dbPath};Connection=direct";
+            return new LiteDatabase(connectionString);
+        }
     }
 }

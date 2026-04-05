@@ -67,7 +67,7 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
         // Head
         var headOpt = optionCol.FindOne(o => o.Category == "Head" && o.DisplayName == head);
         if (headOpt != null)
-            layers.Add((new StitchLayer($"assets/sprites/full/{headOpt.AssetPath}", headOpt.FileNameTemplate, skinHex), headOpt.ZOrder));
+            layers.Add((new StitchLayer(headOpt.AssetPath, headOpt.FileNameTemplate, skinHex), headOpt.ZOrder));
 
         // Face
         string faceKey = appearance.Face ?? "Default";
@@ -77,20 +77,20 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
             string facePath = faceOpt.Gender == "gendered"
                 ? faceOpt.AssetPath.Replace("male", gender)
                 : faceOpt.AssetPath;
-            layers.Add((new StitchLayer($"assets/sprites/full/{facePath}", faceOpt.FileNameTemplate, skinHex), faceOpt.ZOrder));
+            layers.Add((new StitchLayer(facePath, faceOpt.FileNameTemplate, skinHex), faceOpt.ZOrder));
         }
 
         // Eyes
         string eyeKey = appearance.Eyes ?? "Default";
         var eyeOpt = optionCol.FindOne(o => o.Category == "Eyes" && o.DisplayName == eyeKey);
         if (eyeOpt != null)
-            layers.Add((new StitchLayer($"assets/sprites/full/{eyeOpt.AssetPath}", eyeOpt.FileNameTemplate), eyeOpt.ZOrder));
+            layers.Add((new StitchLayer(eyeOpt.AssetPath, eyeOpt.FileNameTemplate), eyeOpt.ZOrder));
 
         // Hair
         string hairKey = appearance.HairStyle ?? "Long";
         var hairOpt = optionCol.FindOne(o => o.Category == "Hair" && o.DisplayName == hairKey);
         if (hairOpt != null)
-            layers.Add((new StitchLayer($"assets/sprites/full/{hairOpt.AssetPath}", hairOpt.FileNameTemplate, hairHex), hairOpt.ZOrder));
+            layers.Add((new StitchLayer(hairOpt.AssetPath, hairOpt.FileNameTemplate, hairHex), hairOpt.ZOrder));
 
         // Equipment slots
         AddEquipmentLayer(spriteCol, layers, "Armor", appearance.ArmorType ?? "Leather", gender);
@@ -118,11 +118,22 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
             _ => sprite.FallbackGender ?? sprite.Gender
         };
 
-        string path = string.IsNullOrEmpty(resolvedGender)
-            ? $"assets/sprites/full/{sprite.AssetPath}"
-            : $"assets/sprites/full/{sprite.AssetPath}/{resolvedGender}";
+        string basePath = string.IsNullOrEmpty(resolvedGender)
+            ? sprite.AssetPath
+            : $"{sprite.AssetPath}/{resolvedGender}";
 
-        layers.Add((new StitchLayer(path, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder));
+        // LPC weapons/shields have separate bg (behind body) and fg (in front of body) layers.
+        // If the asset path ends with /bg, add both bg and fg layers.
+        if (basePath.EndsWith("/bg"))
+        {
+            string fgPath = basePath[..^3] + "/fg";
+            layers.Add((new StitchLayer(basePath, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder));
+            layers.Add((new StitchLayer(fgPath, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder + 1));
+        }
+        else
+        {
+            layers.Add((new StitchLayer(basePath, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder));
+        }
     }
 
     public CharacterAppearance GetDefaultAppearanceForClass(string className)

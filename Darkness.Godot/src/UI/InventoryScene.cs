@@ -51,7 +51,7 @@ public partial class InventoryScene : Control
     {
         if (_session.CurrentCharacter != null)
         {
-            await _charSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
+            await _charSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem, _compositor);
             _charSprite.Play("idle_down");
         }
     }

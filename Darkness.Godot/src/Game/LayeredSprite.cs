@@ -62,7 +62,8 @@ public partial class LayeredSprite : Node2D
         }
     }
 
-    public async Task SetupCharacter(Character c, ISpriteLayerCatalog catalog, IFileSystemService fileSystem)
+    public async Task SetupCharacter(Character c, ISpriteLayerCatalog catalog, IFileSystemService fileSystem,
+        ISpriteCompositor? compositor = null)
     {
         EnsureLayers();
 
@@ -73,8 +74,8 @@ public partial class LayeredSprite : Node2D
             return;
         }
 
-        GD.Print($"[LayeredSprite] Falling back to individual layers for {c.Name}");
-        ResetLayers();
+        // Generate sprite sheet on the fly from appearance data
+        GD.Print($"[LayeredSprite] Generating sprite sheet for {c.Name}...");
 
         var appearance = new CharacterAppearance
         {
@@ -92,8 +93,28 @@ public partial class LayeredSprite : Node2D
             ShieldType = c.ShieldType ?? "None"
         };
 
-        GD.PrintErr($"[LayeredSprite] No FullSpriteSheet for {c.Name} — individual layer fallback is no longer supported.");
-        await Task.CompletedTask;
+        if (compositor != null)
+        {
+            try
+            {
+                var layers = catalog.GetStitchLayers(appearance);
+                c.FullSpriteSheet = await compositor.CompositeFullSheet(layers, fileSystem);
+                GD.Print($"[LayeredSprite] Generated sheet for {c.Name}: {c.FullSpriteSheet?.Length ?? 0} bytes");
+                if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
+                {
+                    await SetupFromBytes(c.FullSpriteSheet);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                GD.PrintErr($"[LayeredSprite] Failed to generate sheet for {c.Name}: {ex.Message}");
+            }
+        }
+        else
+        {
+            GD.PrintErr($"[LayeredSprite] No compositor provided for {c.Name} — cannot generate sprite sheet.");
+        }
     }
 
     public async Task SetupFromBytes(byte[] data)

@@ -28,7 +28,7 @@ namespace Darkness.Tests.Services
                            .ThrowsAsync(new FileNotFoundException());
 
             _dbService = new LocalDatabaseService(_fileSystemMock.Object);
-            _userService = new UserService(_dbService);
+            _userService = new UserService(_dbService.OpenDatabase());
             _settingsService = new SettingsService(_fileSystemMock.Object);
         }
 

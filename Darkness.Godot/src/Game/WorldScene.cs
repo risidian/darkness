@@ -135,7 +135,7 @@ public partial class WorldScene : Node2D, IInitializable
     {
         if (_session.CurrentCharacter != null)
         {
-            await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
+            await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem, _compositor);
             _playerSprite.Play("idle_down");
         }
 
@@ -153,7 +153,7 @@ public partial class WorldScene : Node2D, IInitializable
             Legs = knightAppearance.Legs,
             Head = "Human Male",
             Face = "Default"
-        }, _catalog, _fileSystem);
+        }, _catalog, _fileSystem, _compositor);
         _npcSprite.Play("idle_down");
     }
 

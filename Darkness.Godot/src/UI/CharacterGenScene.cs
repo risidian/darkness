@@ -190,52 +190,74 @@ public partial class CharacterGenScene : Control
 
     private async void OnCreatePressed()
     {
-        if (string.IsNullOrWhiteSpace(_nameEdit.Text) || _session.CurrentUser == null) return;
-
-        var appearance = GetCurrentAppearance();
-
-        var character = new Character
-        {
-            UserId = _session.CurrentUser.Id,
-            Name = _nameEdit.Text,
-            Class = _classOption.GetItemText(_classOption.Selected),
-            SkinColor = appearance.SkinColor,
-            Head = appearance.Head,
-            Face = appearance.Face,
-            Eyes = appearance.Eyes,
-            HairStyle = appearance.HairStyle,
-            HairColor = appearance.HairColor,
-            Legs = appearance.Legs,
-            Feet = appearance.Feet,
-            Arms = appearance.Arms,
-            ArmorType = appearance.ArmorType,
-            WeaponType = appearance.WeaponType,
-            ShieldType = appearance.ShieldType,
-            Thumbnail = _previewBytes,
-            Level = 1
-        };
-
-        // Generate Full Sprite Sheet
         try
         {
-            var stitchLayers = _catalog.GetStitchLayers(appearance);
-            GD.Print($"[CharacterGen] Stitching {stitchLayers.Count} layers for {character.Name}...");
-            character.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
-            GD.Print($"[CharacterGen] Full sheet generated: {character.FullSpriteSheet?.Length ?? 0} bytes");
+            if (string.IsNullOrWhiteSpace(_nameEdit.Text))
+            {
+                GD.Print("[CharacterGen] Name is empty.");
+                var global = GetNode<Global>("/root/Global");
+                var dialog = global.Services!.GetRequiredService<IDialogService>();
+                await dialog.DisplayAlertAsync("Validation", "Please enter a character name.", "OK");
+                return;
+            }
+
+            if (_session.CurrentUser == null)
+            {
+                GD.PrintErr("[CharacterGen] No current user in session!");
+                return;
+            }
+
+            var appearance = GetCurrentAppearance();
+
+            var character = new Character
+            {
+                UserId = _session.CurrentUser.Id,
+                Name = _nameEdit.Text,
+                Class = _classOption.GetItemText(_classOption.Selected),
+                SkinColor = appearance.SkinColor,
+                Head = appearance.Head,
+                Face = appearance.Face,
+                Eyes = appearance.Eyes,
+                HairStyle = appearance.HairStyle,
+                HairColor = appearance.HairColor,
+                Legs = appearance.Legs,
+                Feet = appearance.Feet,
+                Arms = appearance.Arms,
+                ArmorType = appearance.ArmorType,
+                WeaponType = appearance.WeaponType,
+                ShieldType = appearance.ShieldType,
+                Thumbnail = _previewBytes,
+                Level = 1
+            };
+
+            // Generate Full Sprite Sheet
+            try
+            {
+                var stitchLayers = _catalog.GetStitchLayers(appearance);
+                GD.Print($"[CharacterGen] Stitching {stitchLayers.Count} layers for {character.Name}...");
+                character.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
+                GD.Print($"[CharacterGen] Full sheet generated: {character.FullSpriteSheet?.Length ?? 0} bytes");
+            }
+            catch (System.Exception ex)
+            {
+                GD.PrintErr($"[CharacterGen] Failed to generate full sheet: {ex.Message}");
+            }
+
+            SetStats(character, character.Class);
+
+            await _characterService.SaveCharacterAsync(character);
+            GD.Print($"[CharacterGen] Character '{character.Name}' saved.");
+
+            // CRITICAL: Update session state so WorldScene knows who to render
+            _session.CurrentCharacter = character;
+
+            await _navigation.NavigateToAsync("MainMenuPage");
         }
         catch (System.Exception ex)
         {
-            GD.PrintErr($"[CharacterGen] Failed to generate full sheet: {ex.Message}");
+            GD.PrintErr($"[CharacterGen] EXCEPTION in OnCreatePressed: {ex.Message}");
+            GD.PrintErr(ex.StackTrace);
         }
-
-        SetStats(character, character.Class);
-
-        await _characterService.SaveCharacterAsync(character);
-
-        // CRITICAL: Update session state so WorldScene knows who to render
-        _session.CurrentCharacter = character;
-
-        await _navigation.NavigateToAsync("MainMenuPage");
     }
 
     private void SetStats(Character c, string cls)

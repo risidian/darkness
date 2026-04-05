@@ -10,15 +10,13 @@ namespace Darkness.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly string _dbPath;
+        private readonly LiteDatabase _db;
         private bool _initialized;
 
-        public UserService(LocalDatabaseService dbService)
+        public UserService(LiteDatabase db)
         {
-            _dbPath = dbService.GetLocalFilePath("Darkness.db");
+            _db = db;
         }
-
-        private LiteDatabase OpenDb() => new LiteDatabase(_dbPath);
 
         public Task InitializeAsync()
         {
@@ -27,10 +25,17 @@ namespace Darkness.Core.Services
 
             return Task.Run(() =>
             {
-                using var db = OpenDb();
-                var col = db.GetCollection<User>("users");
-                col.EnsureIndex(u => u.Username, unique: true);
-                _initialized = true;
+                try 
+                {
+                    var col = _db.GetCollection<User>("users");
+                    col.EnsureIndex(u => u.Username, unique: true);
+                    _initialized = true;
+                }
+                catch (System.Exception ex)
+                {
+                    System.Console.WriteLine($"[UserService] CRITICAL: Initialization FAILED: {ex.Message}");
+                    throw; // Re-throw so the UI can handle it
+                }
             });
         }
 
@@ -39,8 +44,7 @@ namespace Darkness.Core.Services
             return Task.Run(async () =>
             {
                 await InitializeAsync();
-                using var db = OpenDb();
-                var col = db.GetCollection<User>("users");
+                var col = _db.GetCollection<User>("users");
                 var id = col.Insert(user);
                 user.Id = id.AsInt32;
                 return true;
@@ -52,8 +56,7 @@ namespace Darkness.Core.Services
             return Task.Run<User?>(async () =>
             {
                 await InitializeAsync();
-                using var db = OpenDb();
-                var col = db.GetCollection<User>("users");
+                var col = _db.GetCollection<User>("users");
                 return col.FindOne(u => u.Username == username && u.Password == password);
             });
         }
@@ -63,8 +66,7 @@ namespace Darkness.Core.Services
             return Task.Run<User?>(async () =>
             {
                 await InitializeAsync();
-                using var db = OpenDb();
-                var col = db.GetCollection<User>("users");
+                var col = _db.GetCollection<User>("users");
                 return col.FindById(userId);
             });
         }
@@ -74,8 +76,7 @@ namespace Darkness.Core.Services
             return Task.Run(async () =>
             {
                 await InitializeAsync();
-                using var db = OpenDb();
-                var col = db.GetCollection<User>("users");
+                var col = _db.GetCollection<User>("users");
                 return col.FindAll().ToList();
             });
         }

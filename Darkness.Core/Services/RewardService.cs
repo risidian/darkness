@@ -1,6 +1,5 @@
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
-using Darkness.Core.Data;
 using LiteDB;
 using System;
 using System.Threading.Tasks;
@@ -9,14 +8,12 @@ namespace Darkness.Core.Services
 {
     public class RewardService : IRewardService
     {
-        private readonly string _dbPath;
+        private readonly LiteDatabase _db;
 
-        public RewardService(LocalDatabaseService dbService)
+        public RewardService(LiteDatabase db)
         {
-            _dbPath = dbService.GetLocalFilePath("Darkness.db");
+            _db = db;
         }
-
-        private LiteDatabase OpenDb() => new LiteDatabase(_dbPath);
 
         public Task<Item?> CheckDailyRewardAsync(User user)
         {
@@ -31,8 +28,7 @@ namespace Darkness.Core.Services
                     Item reward = GenerateRandomReward();
 
                     user.LastLogin = DateTime.Now;
-                    using var db = OpenDb();
-                    var col = db.GetCollection<User>("users");
+                    var col = _db.GetCollection<User>("users");
                     col.Update(user);
 
                     return (Item?)reward;

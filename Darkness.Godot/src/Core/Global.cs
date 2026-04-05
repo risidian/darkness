@@ -13,6 +13,7 @@ namespace Darkness.Godot.Core;
 public partial class Global : Node
 {
     public IServiceProvider? Services { get; private set; }
+    public Task SeedingTask { get; private set; } = Task.CompletedTask;
 
     public override void _Ready()
     {
@@ -49,17 +50,26 @@ public partial class Global : Node
             services.AddSingleton<ILevelingService, LevelingService>();
             services.AddSingleton<ITriggerService, TriggerService>();
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
+Services = services.BuildServiceProvider();
+GD.Print("[Global] DI Container initialized.");
 
-            Services = services.BuildServiceProvider();
-            GD.Print("[Global] DI Container initialized.");
+// Seed data synchronously to ensure it's available before scenes load
+try 
+{
+    var db = Services.GetRequiredService<LiteDatabase>();
+    var fs = Services.GetRequiredService<IFileSystemService>();
 
-            // Seed data
-            var db = Services.GetRequiredService<LiteDatabase>();
-            var fs = Services.GetRequiredService<IFileSystemService>();
-            new SpriteSeeder(fs).Seed(db);
-            new QuestSeeder(fs).Seed(db);
-            new LevelSeeder(fs).Seed(db);
-        }
+    GD.Print("[Global] Seeding data...");
+    new SpriteSeeder(fs).Seed(db);
+    new QuestSeeder(fs).Seed(db);
+    new LevelSeeder(fs).Seed(db);
+    GD.Print("[Global] Data seeding complete.");
+}
+catch (Exception ex)
+{
+    GD.PrintErr($"[Global] Data seeding failed: {ex.Message}");
+}
+}
         catch (Exception ex)
         {
             GD.PrintErr($"[Global] Critical error during DI initialization: {ex.Message}");

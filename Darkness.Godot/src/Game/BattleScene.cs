@@ -326,7 +326,7 @@ public partial class BattleScene : Control, IInitializable
             sprite.Scale = new Vector2(2.5f, 2.5f);
             _partySprites.Add(sprite);
 
-            await sprite.SetupCharacter(character, _catalog, _fileSystem);
+            await sprite.SetupCharacter(character, _catalog, _fileSystem, _compositor);
             sprite.Play("idle_right");
         }
 
@@ -382,7 +382,7 @@ public partial class BattleScene : Control, IInitializable
                     WeaponType = knightAppearance.WeaponType,
                     Legs = knightAppearance.Legs,
                     Feet = knightAppearance.Feet
-                }, _catalog, _fileSystem);
+                }, _catalog, _fileSystem, _compositor);
                 sprite.Play("idle_left");
             }
 

@@ -48,6 +48,10 @@ public partial class SplashScene : Control
 
         try
         {
+            // Wait for data seeding to finish before any DB access
+            var global = GetNode<Global>("/root/Global");
+            await global.SeedingTask;
+
             // Ensure DI and session are ready
             GD.Print("[Splash] Initializing Session/Database...");
             await _session.InitializeAsync();

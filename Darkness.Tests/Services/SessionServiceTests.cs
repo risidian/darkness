@@ -29,7 +29,7 @@ namespace Darkness.Tests.Services
                            .ThrowsAsync(new FileNotFoundException()); // Don't copy seed db
 
             _dbService = new LocalDatabaseService(_fileSystemMock.Object);
-            _userService = new UserService(_dbService);
+            _userService = new UserService(_dbService.OpenDatabase());
             _settingsService = new SettingsService(_fileSystemMock.Object);
             _sessionService = new SessionService(_settingsService, _userService);
         }

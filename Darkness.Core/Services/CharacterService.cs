@@ -10,21 +10,18 @@ namespace Darkness.Core.Services
 {
     public class CharacterService : ICharacterService
     {
-        private readonly string _dbPath;
+        private readonly LiteDatabase _db;
 
-        public CharacterService(LocalDatabaseService dbService)
+        public CharacterService(LiteDatabase db)
         {
-            _dbPath = dbService.GetLocalFilePath("Darkness.db");
+            _db = db;
         }
-
-        private LiteDatabase OpenDb() => new LiteDatabase(_dbPath);
 
         public Task<bool> SaveCharacterAsync(Character character)
         {
             return Task.Run(() =>
             {
-                using var db = OpenDb();
-                var col = db.GetCollection<Character>("characters");
+                var col = _db.GetCollection<Character>("characters");
                 col.EnsureIndex(c => c.UserId);
                 return col.Upsert(character);
             });
@@ -34,8 +31,7 @@ namespace Darkness.Core.Services
         {
             return Task.Run<Character?>(() =>
             {
-                using var db = OpenDb();
-                var col = db.GetCollection<Character>("characters");
+                var col = _db.GetCollection<Character>("characters");
                 return col.FindById(characterId);
             });
         }
@@ -44,8 +40,7 @@ namespace Darkness.Core.Services
         {
             return Task.Run(() =>
             {
-                using var db = OpenDb();
-                var col = db.GetCollection<Character>("characters");
+                var col = _db.GetCollection<Character>("characters");
                 col.EnsureIndex(c => c.UserId);
                 return col.Find(c => c.UserId == userId).ToList();
             });
