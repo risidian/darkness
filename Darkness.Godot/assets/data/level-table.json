@@ -1,0 +1,22 @@
+[
+  { "Value": 1, "ExperienceRequired": 0 },
+  { "Value": 2, "ExperienceRequired": 100 },
+  { "Value": 3, "ExperienceRequired": 250 },
+  { "Value": 4, "ExperienceRequired": 500 },
+  { "Value": 5, "ExperienceRequired": 900 },
+  { "Value": 6, "ExperienceRequired": 1400 },
+  { "Value": 7, "ExperienceRequired": 2100 },
+  { "Value": 8, "ExperienceRequired": 3000 },
+  { "Value": 9, "ExperienceRequired": 4200 },
+  { "Value": 10, "ExperienceRequired": 5700 },
+  { "Value": 11, "ExperienceRequired": 7500 },
+  { "Value": 12, "ExperienceRequired": 9800 },
+  { "Value": 13, "ExperienceRequired": 12600 },
+  { "Value": 14, "ExperienceRequired": 16000 },
+  { "Value": 15, "ExperienceRequired": 20000 },
+  { "Value": 16, "ExperienceRequired": 25000 },
+  { "Value": 17, "ExperienceRequired": 31000 },
+  { "Value": 18, "ExperienceRequired": 38000 },
+  { "Value": 19, "ExperienceRequired": 46500 },
+  { "Value": 20, "ExperienceRequired": 56500 }
+]
