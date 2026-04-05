@@ -54,11 +54,11 @@ namespace Darkness.Core.Services
         public List<string> WeaponTypes { get; } = new()
         {
             "Arming Sword (Steel)",
-            "Arming Sword (Iron)", 
-            "Arming Sword (Gold)", 
-            "Dagger (Steel)", 
+            "Arming Sword (Iron)",
+            "Arming Sword (Gold)",
+            "Dagger (Steel)",
             "Recurve Bow",
-            "Mage Wand", 
+            "Mage Wand",
             "None"
         };
 
@@ -109,14 +109,16 @@ namespace Darkness.Core.Services
             ["Leather"] = "leather/leather",
             ["Leather (Black)"] = "leather/black",
             ["Leather (Brown)"] = "leather/brown",
-            ["Mage Robes (Blue)"] = "blue",
-            ["Mage Robes (Red)"] = "red",
-            ["Mage Robes (White)"] = "white",
-            ["Longsleeve (White)"] = "longsleeve_white",
-            ["Longsleeve (Blue)"] = "longsleeve_blue",
-            ["Longsleeve (Brown)"] = "longsleeve_brown",
+            ["Mage Robes (Blue)"] = "robes/blue",
+            ["Mage Robes (Red)"] = "robes/red",
+            ["Mage Robes (White)"] = "robes/white",
+            // No dedicated longsleeve full-sprite assets exist — map to closest robe color
+            ["Longsleeve (White)"] = "robes/white",
+            ["Longsleeve (Blue)"] = "robes/blue",
+            ["Longsleeve (Brown)"] = "robes/brown",
         };
 
+        // Only shoes/basic assets currently exist on disk for full stitch path
         private static readonly Dictionary<string, string> FeetFileMap = new()
         {
             ["Boots (Basic)"] = "shoes/basic",
@@ -141,6 +143,13 @@ namespace Darkness.Core.Services
             ["Cuffed"] = "cuffed",
             ["Pantaloons"] = "pantaloons",
             ["None"] = "",
+        };
+
+        private static readonly Dictionary<string, string> WeaponMaterialMap = new()
+        {
+            ["Arming Sword (Steel)"] = "steel",
+            ["Arming Sword (Iron)"] = "iron",
+            ["Arming Sword (Gold)"] = "gold",
         };
 
         private static readonly Dictionary<string, string> LegacyArmorFileMap = new()
@@ -169,12 +178,6 @@ namespace Darkness.Core.Services
             ["None"] = "",
         };
 
-        private static readonly Dictionary<string, string> LegacyArmsFileMap = new()
-        {
-            ["Gloves"] = "gloves",
-            ["None"] = "",
-        };
-
         private static readonly Dictionary<string, string> LegacyLegsFileMap = new()
         {
             ["Slacks"] = "slacks",
@@ -185,12 +188,20 @@ namespace Darkness.Core.Services
             ["None"] = "",
         };
 
+        // Legs types that only have male assets on disk
+        private static readonly HashSet<string> MaleOnlyLegs = new() { "leggings", "cuffed", "pantaloons" };
+
+        // Robe colors that have their own subdirectory (color/{action}.png vs {action}/color.png)
+        private static readonly HashSet<string> RobeSubdirColors = new() { "blue", "red", "white" };
+
         public List<SpriteLayerDefinition> GetLayersForAppearance(CharacterAppearance appearance)
         {
             var skin = appearance.SkinColor ?? "Light";
             var hairStyle = (appearance.HairStyle ?? "Long").ToLower().Replace(" ", "_");
             var hairColor = (appearance.HairColor ?? "Black").ToLower().Replace(" ", "_");
             var head = appearance.Head ?? "Human Male";
+            var face = appearance.Face ?? "Default";
+            var eyes = appearance.Eyes ?? "Default";
             var armor = appearance.ArmorType ?? "Leather";
             var feet = appearance.Feet ?? "Boots (Basic)";
             var arms = appearance.Arms ?? "None";
@@ -200,15 +211,15 @@ namespace Darkness.Core.Services
             {
                 new($"sprites/body/{skin.ToLower()}.png", ZBody),
                 new($"sprites/head/human_{head.ToLower().Split(' ')[1]}.png", ZHead),
-                new($"sprites/face/default.png", ZFace),
-                new($"sprites/eyes/default.png", ZEyes),
+                new($"sprites/face/{face.ToLower()}.png", ZFace),
+                new($"sprites/eyes/{eyes.ToLower()}.png", ZEyes),
                 new($"sprites/hair/{hairStyle}_{hairColor}.png", ZHair),
             };
 
             if (armor.StartsWith("Mage Robes"))
             {
                 var color = LegacyArmorFileMap.GetValueOrDefault(armor, "blue");
-                layers.Add(new($"assets/sprites/full/torso/robes/female/{color}/walk.png", ZArmor));
+                layers.Add(new($"sprites/armor/{color}.png", ZArmor));
             }
             else
             {
@@ -219,22 +230,25 @@ namespace Darkness.Core.Services
             if (!string.IsNullOrEmpty(feet) && feet != "None")
                 layers.Add(new($"sprites/feet/{LegacyFeetFileMap.GetValueOrDefault(feet, "boots_basic")}.png", ZFeet));
             if (!string.IsNullOrEmpty(arms) && arms != "None")
-                layers.Add(new($"sprites/arms/{LegacyArmsFileMap.GetValueOrDefault(arms, "gloves")}.png", ZArms));
+                layers.Add(new($"sprites/arms/gloves.png", ZArms));
             if (!string.IsNullOrEmpty(legs) && legs != "None")
                 layers.Add(new($"sprites/legs/{LegacyLegsFileMap.GetValueOrDefault(legs, "slacks")}.png", ZLegs));
 
             var weapon = appearance.WeaponType ?? "None";
             if (weapon != "None")
             {
-                if (weapon.Contains("Wand")) layers.Add(new("assets/sprites/full/weapons/magic/wand/male/slash/wand.png", ZWeapon));
-                else if (weapon.Contains("Bow")) layers.Add(new("assets/sprites/full/weapons/ranged/bow/normal/walk/foreground/steel.png", ZWeapon));
-                else if (weapon.Contains("Dagger")) layers.Add(new("assets/sprites/full/weapons/sword/dagger/walk/dagger.png", ZWeapon));
+                if (weapon.Contains("Wand"))
+                    layers.Add(new("sprites/weapons/mage_wand.png", ZWeapon));
+                else if (weapon.Contains("Bow"))
+                    layers.Add(new("sprites/weapons/recurve_bow.png", ZWeapon));
+                else if (weapon.Contains("Dagger"))
+                    layers.Add(new("sprites/weapons/dagger_steel.png", ZWeapon));
                 else if (weapon.Contains("Arming Sword"))
                 {
-                    string color = "steel";
-                    if (weapon.Contains("Gold")) color = "gold";
-                    else if (weapon.Contains("Iron")) color = "iron";
-                    layers.Add(new($"sprites/weapons/arming_sword_{color}.png", ZWeapon));
+                    string material = "steel";
+                    if (weapon.Contains("Gold")) material = "gold";
+                    else if (weapon.Contains("Iron")) material = "iron";
+                    layers.Add(new($"sprites/weapons/arming_sword_{material}.png", ZWeapon));
                 }
             }
 
@@ -273,40 +287,54 @@ namespace Darkness.Core.Services
             layers.Add((new StitchLayer($"assets/sprites/full/eyes/human/adult/{eyeExpr}", "{action}/blue.png"),
                 ZEyes));
 
-            // Armor/Robes
-            if (armor.StartsWith("Mage Robes"))
-            {
-                var color = ArmorFileMap[armor];
-                layers.Add((new StitchLayer($"assets/sprites/full/torso/robes/female/{color}", "{action}.png"),
-                    ZArmor));
-            }
-            else if (ArmorFileMap.TryGetValue(armor, out var armorInfo))
+            // Armor/Robes/Longsleeve
+            if (ArmorFileMap.TryGetValue(armor, out var armorInfo))
             {
                 var parts = armorInfo.Split('/');
                 if (parts.Length == 2)
                 {
-                    layers.Add((
-                        new StitchLayer($"assets/sprites/full/armor/{parts[0]}/{gender}", $"{{action}}/{parts[1]}.png"),
-                        ZArmor));
+                    if (parts[0] == "robes")
+                    {
+                        // Colors with dedicated subdirs: blue, red, white → robes/female/{color}/{action}.png
+                        // Colors at action level: brown, black, etc. → robes/female/{action}/{color}.png
+                        if (RobeSubdirColors.Contains(parts[1]))
+                        {
+                            layers.Add((new StitchLayer($"assets/sprites/full/torso/robes/female/{parts[1]}", "{action}.png"),
+                                ZArmor));
+                        }
+                        else
+                        {
+                            layers.Add((new StitchLayer("assets/sprites/full/torso/robes/female", $"{{action}}/{parts[1]}.png"),
+                                ZArmor));
+                        }
+                    }
+                    else
+                    {
+                        // Standard armor (plate, leather)
+                        layers.Add((
+                            new StitchLayer($"assets/sprites/full/armor/{parts[0]}/{gender}", $"{{action}}/{parts[1]}.png"),
+                            ZArmor));
+                    }
                 }
             }
 
-            // Legs
-            if (legs != "None" && LegsFileMap.TryGetValue(legs, out var legsFile))
+            // Legs — fall back to male if female variant doesn't exist
+            if (legs != "None" && LegsFileMap.TryGetValue(legs, out var legsFile) && !string.IsNullOrEmpty(legsFile))
             {
-                layers.Add((new StitchLayer($"assets/sprites/full/legs/{legsFile}/{gender}", "{action}/black.png"),
+                string legsGender = MaleOnlyLegs.Contains(legsFile) ? "male" : gender;
+                layers.Add((new StitchLayer($"assets/sprites/full/legs/{legsFile}/{legsGender}", "{action}/black.png"),
                     ZLegs));
             }
 
             // Feet
-            if (feet != "None" && FeetFileMap.TryGetValue(feet, out var feetFile))
+            if (feet != "None" && FeetFileMap.TryGetValue(feet, out var feetFile) && !string.IsNullOrEmpty(feetFile))
             {
                 layers.Add((new StitchLayer($"assets/sprites/full/feet/{feetFile}/{gender}", "{action}/black.png"),
                     ZFeet));
             }
 
             // Arms (Gloves)
-            if (arms != "None" && ArmsFileMap.TryGetValue(arms, out var armsFile))
+            if (arms != "None" && ArmsFileMap.TryGetValue(arms, out var armsFile) && !string.IsNullOrEmpty(armsFile))
             {
                 layers.Add((new StitchLayer($"assets/sprites/full/arms/{armsFile}/{gender}", "{action}/black.png"),
                     ZArms));
@@ -317,21 +345,42 @@ namespace Darkness.Core.Services
                 ZHair));
 
             // Weapons
-            if (weapon.Contains("Wand"))
-                layers.Add((new StitchLayer("assets/sprites/full/weapons/magic/wand/male/slash", "wand.png"), ZWeapon));
-            else if (weapon.Contains("Bow"))
-                layers.Add((
-                    new StitchLayer("assets/sprites/full/weapons/ranged/bow/normal/walk/foreground", "steel.png"),
-                    ZWeapon));
-            else if (weapon.Contains("Dagger"))
-                layers.Add((new StitchLayer("assets/sprites/full/weapons/sword/dagger/walk", "dagger.png"), ZWeapon));
+            if (weapon != "None")
+            {
+                if (WeaponMaterialMap.TryGetValue(weapon, out var material))
+                {
+                    // Arming swords — universal/bg has per-action directories
+                    layers.Add((new StitchLayer("assets/sprites/full/weapons/sword/arming/universal/bg",
+                        $"{{action}}/{material}.png"), ZWeapon));
+                }
+                else if (weapon.Contains("Wand"))
+                {
+                    // Wand only has slash assets
+                    layers.Add((new StitchLayer($"assets/sprites/full/weapons/magic/wand/{gender}/slash", "wand.png"),
+                        ZWeapon));
+                }
+                else if (weapon.Contains("Bow"))
+                {
+                    // Bow only has walk assets for foreground
+                    layers.Add((
+                        new StitchLayer("assets/sprites/full/weapons/ranged/bow/normal/walk/foreground", "steel.png"),
+                        ZWeapon));
+                }
+                else if (weapon.Contains("Dagger"))
+                {
+                    // Dagger has per-action directories
+                    layers.Add((new StitchLayer("assets/sprites/full/weapons/sword/dagger", "{action}/dagger.png"),
+                        ZWeapon));
+                }
+            }
 
-            // Shield
+            // Shield — bg has per-action directories
             if (shield != "None" && !string.IsNullOrEmpty(shield))
             {
+                var shieldKey = shield.ToLower();
                 layers.Add((
-                    new StitchLayer($"assets/sprites/full/shields/{shield.ToLower()}/bg/walk",
-                        $"{shield.ToLower()}.png"), ZShield));
+                    new StitchLayer($"assets/sprites/full/shields/{shieldKey}/bg",
+                        $"{{action}}/{shieldKey}.png"), ZShield));
             }
 
             // Sort by Z and return just the layers
