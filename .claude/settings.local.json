@@ -28,7 +28,10 @@
       "Bash(xargs ls:*)",
       "Bash(find \"C:\\\\Users\\\\Mayce\\\\Documents\\\\GitHub\\\\darkness\" -name \"*.cs\" -type f -exec grep -l \"SQLite\\\\|sqlite\" {})",
       "Bash(dotnet restore:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(grep:*)",
+      "Bash(rm:*)",
+      "Bash(find:*)"
     ]
   }
 }

@@ -14,8 +14,8 @@ dotnet build Darkness.sln
 # Build specific project
 dotnet build Darkness.Core/Darkness.Core.csproj
 
-# Run MAUI app (Windows)
-dotnet build Darkness.MAUI -f net10.0-windows10.0.19041.0
+# Run Godot project (requires Godot 4.6.1 with .NET)
+dotnet build Darkness.Godot/Darkness.Godot.csproj
 
 # Run WebAPI backend
 dotnet run --project Darkness.WebAPI
