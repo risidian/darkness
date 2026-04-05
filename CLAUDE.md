@@ -39,8 +39,9 @@ This is **Darkness**, a cross-platform RPG built on .NET 10 with three active pr
 ### Key Patterns
 
 - **MVVM** via `CommunityToolkit.Mvvm` — ViewModels in Core extend `ObservableObject`.
-- **DI** configured in `Darkness.Godot/src/Core/Global.cs`.
-- **Interface-driven**: Core defines interfaces (`IUserService`, `ICharacterService`, `ICombatService`, `INavigationService`, `IDialogService`, `ISessionService`, `IRewardService`, `IFileSystemService`, `ISpriteCompositor`); Godot provides platform implementations.
+- **DI** configured in `Darkness.Godot/src/Core/Global.cs`. Seeders run at startup.
+- **Interface-driven**: Core defines interfaces (`IQuestService`, `ILevelingService`, `ITriggerService`, `ISpriteLayerCatalog`, `ICombatService`, `ICharacterService`, `INavigationService`, `ISessionService`, `IFileSystemService`, `ISpriteCompositor`); Godot provides platform implementations.
+- **Data-driven**: Game content (equipment, quests, level thresholds) defined in JSON seed files, loaded into LiteDB at startup. Adding content requires JSON edits only — no code changes.
 - **Local data**: LiteDB via `LiteDB` package.
 
 ### Data Flow
@@ -49,11 +50,26 @@ Godot Scenes → ViewModels (in Core) → Services (in Core) → LiteDB
 
 ### Sprite Composition Pipeline
 
-Character appearance uses an 11+ layer system (body, head, face, eyes, hair, armor, feet, arms, legs, weapon). `SpriteLayerCatalog` maps display names to file paths and defines z-ordering. `GodotSpriteCompositor` uses Godot's `Image` class to composite PNG layers into a single sprite sheet with proper alpha blending.
+Character appearance uses an 11+ layer system. `EquipmentSprite` and `AppearanceOption` records in LiteDB map display names to asset paths and z-ordering. `SpriteLayerCatalog` queries LiteDB to build `StitchLayer` lists. `GodotSpriteCompositor` composites PNG layers into a single sprite sheet. Seed data in `assets/data/sprite-catalog.json`.
+
+### Quest System
+
+Per-chain JSON files in `assets/data/quests/`, seeded into LiteDB. `QuestChain` contains `QuestStep`s (typed: dialogue, combat, location, branch). `QuestState` in LiteDB tracks per-character progress. `QuestService.AdvanceStep()` drives all progression. `TriggerService` handles location-based triggers. `ConditionEvaluator` supports extensible branch conditions (morality, class, item, quest).
+
+### XP & Leveling
+
+Level thresholds in `assets/data/level-table.json`. `LevelingService.AwardExperience()` handles XP award, level-up detection, attribute points (2/level), HP restore. BattleScene awards XP on victory, then advances quest.
+
+## Workflow Requirements
+
+- **Always use superpowers skills** for all work. Use brainstorming before creative/design work, TDD for implementation, systematic-debugging for bugs, and writing-plans for multi-step tasks. Never skip the skill workflow.
+- **All tests must pass before committing.** Run `dotnet test Darkness.Tests` and verify all tests pass before every commit. Do not commit with failing tests. If a pre-existing test fails, investigate and fix it or explicitly flag it to the user — do not ignore it.
 
 ## Project Conventions
 
 - .NET 10 with `ImplicitUsings` and `Nullable` enabled.
 - App identifier: `com.risidian.darkness`
-- Sprite assets in `/sprites/` (LPC-based character sprites).
+- Sprite assets in `assets/sprites/full/` (LPC-based character sprites).
+- Seed data in `assets/data/` (sprite-catalog.json, quests/*.json, level-table.json).
 - Key dependencies: CommunityToolkit.Mvvm 8.4.2, LiteDB 5.0.21.
+- Use `using SystemJson = System.Text.Json` when LiteDB is in scope (both have `JsonSerializer`).
