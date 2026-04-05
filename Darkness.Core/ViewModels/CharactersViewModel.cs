@@ -14,13 +14,12 @@ namespace Darkness.Core.ViewModels
         private readonly ISessionService _sessionService;
         private readonly INavigationService _navigationService;
 
-        [ObservableProperty]
-        private ObservableCollection<Character> _characters = new();
+        [ObservableProperty] private ObservableCollection<Character> _characters = new();
 
-        [ObservableProperty]
-        private Character? _selectedCharacter;
+        [ObservableProperty] private Character? _selectedCharacter;
 
-        public CharactersViewModel(ICharacterService characterService, ISessionService sessionService, INavigationService navigationService)
+        public CharactersViewModel(ICharacterService characterService, ISessionService sessionService,
+            INavigationService navigationService)
         {
             _characterService = characterService;
             _sessionService = sessionService;

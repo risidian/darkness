@@ -53,8 +53,10 @@ namespace Darkness.Core.Services
                 {
                     _mockAllies.Remove(ally);
                 }
+
                 return true;
             }
+
             return false;
         }
     }

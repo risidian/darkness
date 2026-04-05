@@ -10,8 +10,7 @@ namespace Darkness.Core.ViewModels
     {
         private readonly ICharacterService _characterService;
 
-        [ObservableProperty]
-        private Character? _character;
+        [ObservableProperty] private Character? _character;
 
         public StudyViewModel(ICharacterService characterService)
         {
@@ -30,7 +29,7 @@ namespace Darkness.Core.ViewModels
         public async Task UpgradeAttribute(string? attribute)
         {
             if (Character == null || Character.AttributePoints <= 0 || string.IsNullOrEmpty(attribute)) return;
-            
+
             switch (attribute)
             {
                 case "Strength": Character.Strength++; break;
@@ -40,7 +39,7 @@ namespace Darkness.Core.ViewModels
                 case "Wisdom": Character.Wisdom++; break;
                 case "Charisma": Character.Charisma++; break;
             }
-            
+
             Character.AttributePoints--;
             UpgradeAttributeCommand.NotifyCanExecuteChanged();
             await _characterService.SaveCharacterAsync(Character);

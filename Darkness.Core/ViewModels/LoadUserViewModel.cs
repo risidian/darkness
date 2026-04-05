@@ -48,7 +48,7 @@ namespace Darkness.Core.ViewModels
                 if (user != null)
                 {
                     _sessionService.CurrentUser = user;
-                    
+
                     // Save last user ID
                     _settingsService.LastUserId = user.Id;
                     await _settingsService.SaveSettingsAsync();

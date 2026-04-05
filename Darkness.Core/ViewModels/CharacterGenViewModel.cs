@@ -17,47 +17,33 @@ namespace Darkness.Core.ViewModels
         private readonly IFileSystemService _fileSystem;
         private CancellationTokenSource? _previewCts;
 
-        [ObservableProperty]
-        private string _characterName;
+        [ObservableProperty] private string _characterName;
 
-        [ObservableProperty]
-        private string _selectedClass;
+        [ObservableProperty] private string _selectedClass;
 
-        [ObservableProperty]
-        private string _selectedHairColor;
+        [ObservableProperty] private string _selectedHairColor;
 
-        [ObservableProperty]
-        private string _selectedSkinColor;
+        [ObservableProperty] private string _selectedSkinColor;
 
-        [ObservableProperty]
-        private string _selectedFace;
+        [ObservableProperty] private string _selectedFace;
 
-        [ObservableProperty]
-        private string _selectedEyes;
+        [ObservableProperty] private string _selectedEyes;
 
-        [ObservableProperty]
-        private string _selectedHead;
+        [ObservableProperty] private string _selectedHead;
 
-        [ObservableProperty]
-        private string _selectedFeet;
+        [ObservableProperty] private string _selectedFeet;
 
-        [ObservableProperty]
-        private string _selectedArms;
+        [ObservableProperty] private string _selectedArms;
 
-        [ObservableProperty]
-        private string _selectedLegs;
+        [ObservableProperty] private string _selectedLegs;
 
-        [ObservableProperty]
-        private string _selectedHairStyle;
+        [ObservableProperty] private string _selectedHairStyle;
 
-        [ObservableProperty]
-        private string _selectedArmor;
+        [ObservableProperty] private string _selectedArmor;
 
-        [ObservableProperty]
-        private string _selectedWeapon;
+        [ObservableProperty] private string _selectedWeapon;
 
-        [ObservableProperty]
-        private byte[]? _previewImageBytes;
+        [ObservableProperty] private byte[]? _previewImageBytes;
         public List<string> Classes { get; } = new() { "Knight", "Rogue", "Mage", "Warrior", "Cleric" };
         public List<string> HairColors => _catalog.HairColors;
         public List<string> SkinColors => _catalog.SkinColors;
@@ -141,7 +127,9 @@ namespace Darkness.Core.ViewModels
                     if (!token.IsCancellationRequested)
                         await UpdatePreviewAsync();
                 }
-                catch (TaskCanceledException) { }
+                catch (TaskCanceledException)
+                {
+                }
             });
         }
 

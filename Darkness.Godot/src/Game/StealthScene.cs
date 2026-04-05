@@ -12,28 +12,27 @@ public partial class StealthScene : Control, IInitializable
 {
     private INavigationService _navigation = null!;
     private ISessionService _session = null!;
-    
+
     private ProgressBar _stealthProgress = null!;
     private ProgressBar _detectionLevel = null!;
     private Label _statusLabel = null!;
     private Button _sneakButton = null!;
-    
+
     // Timing Bar Components
     private Control _timingBar = null!;
     private ColorRect _targetZone = null!;
     private ColorRect _slider = null!;
-    
+
     private int _successes = 0;
     private int _failures = 0;
     private const int MaxSuccesses = 5;
     private const int MaxFailures = 3;
-    
+
     private Tween? _sliderTween;
     private bool _isMovingRight = true;
-    
-    [Export]
-    public float SliderPosition { get; set; } = 0f; // 0 to 1
-    
+
+    [Export] public float SliderPosition { get; set; } = 0f; // 0 to 1
+
     private string _successScene = "WorldScene";
     private string _failureScene = "BattleScene";
 
@@ -41,7 +40,7 @@ public partial class StealthScene : Control, IInitializable
     {
         if (parameters.ContainsKey("SuccessScene"))
             _successScene = parameters["SuccessScene"].ToString() ?? "WorldScene";
-            
+
         if (parameters.ContainsKey("FailureScene"))
             _failureScene = parameters["FailureScene"].ToString() ?? "BattleScene";
     }
@@ -58,19 +57,19 @@ public partial class StealthScene : Control, IInitializable
         _detectionLevel = GetNode<ProgressBar>("%DetectionLevel");
         _statusLabel = GetNode<Label>("%StatusLabel");
         _sneakButton = GetNode<Button>("%SneakButton");
-        
+
         _timingBar = GetNode<Control>("%TimingBar");
         _targetZone = GetNode<ColorRect>("%TargetZone");
         _slider = GetNode<ColorRect>("%Slider");
 
         _stealthProgress.MaxValue = MaxSuccesses;
         _stealthProgress.Value = 0;
-        
+
         _detectionLevel.MaxValue = MaxFailures;
         _detectionLevel.Value = 0;
 
         _sneakButton.Pressed += OnSneakPressed;
-        
+
         StartSliderAnimation();
     }
 
@@ -81,7 +80,7 @@ public partial class StealthScene : Control, IInitializable
 
         _sliderTween = CreateTween();
         _sliderTween.SetLoops(); // Loop forever
-        
+
         // Move from 0 to 1 and back
         _sliderTween.TweenProperty(this, "SliderPosition", 1.0f, 1.5f)
             .SetTrans(Tween.TransitionType.Quad)
@@ -96,10 +95,10 @@ public partial class StealthScene : Control, IInitializable
         // Update visual slider position based on SliderPosition (0 to 1)
         float barWidth = _timingBar.CustomMinimumSize.X;
         if (barWidth <= 0) barWidth = _timingBar.Size.X;
-        
+
         float sliderWidth = _slider.Size.X;
         float availableWidth = barWidth - sliderWidth;
-        
+
         _slider.Position = new Vector2(SliderPosition * availableWidth, _slider.Position.Y);
     }
 
@@ -110,7 +109,7 @@ public partial class StealthScene : Control, IInitializable
         // Check if slider is within target zone
         float barWidth = _timingBar.Size.X;
         float sliderCenter = _slider.Position.X + (_slider.Size.X / 2f);
-        
+
         float targetStart = _targetZone.Position.X;
         float targetEnd = targetStart + _targetZone.Size.X;
 

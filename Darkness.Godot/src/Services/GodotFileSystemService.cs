@@ -22,8 +22,8 @@ public class GodotFileSystemService : IFileSystemService
         }
 
         // Check if it's an image that might be remapped
-        if (path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || 
-            path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+        if (path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+            path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
             path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
         {
             try
@@ -34,14 +34,14 @@ public class GodotFileSystemService : IFileSystemService
                 if (tex != null)
                 {
                     var img = tex.GetImage();
-                    
+
                     // ON ANDROID: Textures are often VRAM compressed (ETC2/ASTC).
                     // SavePngToBuffer() will FAIL on compressed formats.
                     if (img.IsCompressed())
                     {
                         img.Decompress();
                     }
-                    
+
                     // Ensure we are in a standard format for saving
                     if (img.GetFormat() != Image.Format.Rgba8)
                     {
@@ -49,14 +49,16 @@ public class GodotFileSystemService : IFileSystemService
                     }
 
                     byte[] pngBytes = img.SavePngToBuffer();
-                    
+
                     if (pngBytes == null || pngBytes.Length == 0)
                     {
-                        GD.PrintErr($"[FileSystem] SavePngToBuffer returned EMPTY for {path}. Format: {img.GetFormat()}");
+                        GD.PrintErr(
+                            $"[FileSystem] SavePngToBuffer returned EMPTY for {path}. Format: {img.GetFormat()}");
                     }
                     else
                     {
-                        GD.Print($"[FileSystem] Loaded image via ResourceLoader: {path} ({pngBytes.Length} bytes, Format: {img.GetFormat()})");
+                        GD.Print(
+                            $"[FileSystem] Loaded image via ResourceLoader: {path} ({pngBytes.Length} bytes, Format: {img.GetFormat()})");
                         return Task.FromResult<Stream>(new MemoryStream(pngBytes));
                     }
                 }
@@ -87,7 +89,7 @@ public class GodotFileSystemService : IFileSystemService
             using var file = global::Godot.FileAccess.Open(path, global::Godot.FileAccess.ModeFlags.Read);
             return file.GetAsText();
         }
-        
+
         throw new FileNotFoundException($"Could not find file: {path}");
     }
 }

@@ -9,7 +9,7 @@ namespace Darkness.Core.Models
         public int StaminaCost { get; set; }
         public int BasePower { get; set; }
         public string SkillType { get; set; } = "Physical"; // Physical, Magical, Defensive
-        
+
         // Multipliers and Modifiers
         public float DamageMultiplier { get; set; } = 1.0f;
         public float ArmorPenetration { get; set; } = 0.0f; // 0.0 to 1.0

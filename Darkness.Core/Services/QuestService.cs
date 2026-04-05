@@ -19,7 +19,7 @@ public class QuestService : IQuestService
 
     private void LoadQuests()
     {
-        try 
+        try
         {
             string json = _fileSystem.ReadAllText("assets/data/quests.json");
             _quests = JsonSerializer.Deserialize<List<QuestNode>>(json) ?? new();
@@ -33,8 +33,8 @@ public class QuestService : IQuestService
 
     public List<QuestNode> GetAvailableQuests(Character character)
     {
-        return _quests.Where(q => 
-            !character.CompletedQuestIds.Contains(q.Id) && 
+        return _quests.Where(q =>
+            !character.CompletedQuestIds.Contains(q.Id) &&
             q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p)) &&
             (!q.RequiredMoralityMin.HasValue || character.Morality >= q.RequiredMoralityMin.Value) &&
             (!q.RequiredMoralityMax.HasValue || character.Morality <= q.RequiredMoralityMax.Value)).ToList();
@@ -50,17 +50,17 @@ public class QuestService : IQuestService
 
     public QuestNode? GetQuestByLocation(Character character, string locationKey)
     {
-        return _quests.FirstOrDefault(q => 
-            q.Location == locationKey && 
-            !character.CompletedQuestIds.Contains(q.Id) && 
+        return _quests.FirstOrDefault(q =>
+            q.Location == locationKey &&
+            !character.CompletedQuestIds.Contains(q.Id) &&
             q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p)));
     }
 
     public QuestNode? GetNextAvailableMainStoryQuest(Character character)
     {
-        return _quests.FirstOrDefault(q => 
-            q.IsMainStory && 
-            !character.CompletedQuestIds.Contains(q.Id) && 
+        return _quests.FirstOrDefault(q =>
+            q.IsMainStory &&
+            !character.CompletedQuestIds.Contains(q.Id) &&
             q.Prerequisites.All(p => character.CompletedQuestIds.Contains(p)) &&
             (!q.RequiredMoralityMin.HasValue || character.Morality >= q.RequiredMoralityMin.Value) &&
             (!q.RequiredMoralityMax.HasValue || character.Morality <= q.RequiredMoralityMax.Value));

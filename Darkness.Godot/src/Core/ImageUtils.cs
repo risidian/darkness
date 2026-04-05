@@ -101,7 +101,8 @@ public static class ImageUtils
         return frames;
     }
 
-    private static void AddLpcRow(SpriteFrames frames, Texture2D tex, string animName, int row, int count, int frameW, int frameH, double speed = 12.0, bool loop = true)
+    private static void AddLpcRow(SpriteFrames frames, Texture2D tex, string animName, int row, int count, int frameW,
+        int frameH, double speed = 12.0, bool loop = true)
     {
         if (frames.HasAnimation(animName)) frames.RemoveAnimation(animName);
         frames.AddAnimation(animName);
@@ -110,12 +111,14 @@ public static class ImageUtils
 
         for (int col = 0; col < count; col++)
         {
-            var atlas = new AtlasTexture { Atlas = tex, Region = new Rect2(col * frameW, row * frameH, frameW, frameH) };
+            var atlas = new AtlasTexture
+                { Atlas = tex, Region = new Rect2(col * frameW, row * frameH, frameW, frameH) };
             frames.AddFrame(animName, atlas);
         }
     }
 
-    private static void AddSingleFrame(SpriteFrames frames, Texture2D tex, string animName, int row, int col, int frameW, int frameH)
+    private static void AddSingleFrame(SpriteFrames frames, Texture2D tex, string animName, int row, int col,
+        int frameW, int frameH)
     {
         if (frames.HasAnimation(animName)) frames.RemoveAnimation(animName);
         frames.AddAnimation(animName);
@@ -124,10 +127,11 @@ public static class ImageUtils
         frames.AddFrame(animName, atlas);
     }
 
-    public static void AddAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW, int frameH, double speed = 10.0, bool loop = true)
+    public static void AddAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW, int frameH,
+        double speed = 10.0, bool loop = true)
     {
         var tex = ByteArrayToTexture(data);
-        if (tex == null) 
+        if (tex == null)
         {
             GD.PrintErr($"[ImageUtils] Failed to create texture for {animName}");
             return;
@@ -140,22 +144,26 @@ public static class ImageUtils
 
         int cols = (int)(tex.GetSize().X / frameW);
         int rows = (int)(tex.GetSize().Y / frameH);
-        GD.Print($"[ImageUtils] Slicing {animName}: {tex.GetSize().X}x{tex.GetSize().Y} into {cols}x{rows} frames of {frameW}x{frameH}");
+        GD.Print(
+            $"[ImageUtils] Slicing {animName}: {tex.GetSize().X}x{tex.GetSize().Y} into {cols}x{rows} frames of {frameW}x{frameH}");
 
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)
             {
-                var atlas = new AtlasTexture { Atlas = tex, Region = new Rect2(c * frameW, r * frameH, frameW, frameH) };
+                var atlas = new AtlasTexture
+                    { Atlas = tex, Region = new Rect2(c * frameW, r * frameH, frameW, frameH) };
                 frames.AddFrame(animName, atlas);
             }
         }
+
         GD.Print($"[ImageUtils] Added {frames.GetFrameCount(animName)} frames to {animName}");
     }
 
     private static int row; // This was a typo in my thought process, corrected above.
 
-    public static void AddStaticAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW, int frameH)
+    public static void AddStaticAnimationFromBytes(SpriteFrames frames, string animName, byte[] data, int frameW,
+        int frameH)
     {
         AddAnimationFromBytes(frames, animName, data, frameW, frameH, 1.0, false);
     }

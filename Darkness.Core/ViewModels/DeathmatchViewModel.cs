@@ -14,13 +14,12 @@ namespace Darkness.Core.ViewModels
         private readonly INavigationService _navigationService;
         private readonly ISessionService _sessionService;
 
-        [ObservableProperty]
-        private ObservableCollection<DeathmatchEncounter> _encounters = new();
+        [ObservableProperty] private ObservableCollection<DeathmatchEncounter> _encounters = new();
 
-        [ObservableProperty]
-        private DeathmatchEncounter? _selectedEncounter;
+        [ObservableProperty] private DeathmatchEncounter? _selectedEncounter;
 
-        public DeathmatchViewModel(IDeathmatchService deathmatchService, INavigationService navigationService, ISessionService sessionService)
+        public DeathmatchViewModel(IDeathmatchService deathmatchService, INavigationService navigationService,
+            ISessionService sessionService)
         {
             _deathmatchService = deathmatchService;
             _navigationService = navigationService;

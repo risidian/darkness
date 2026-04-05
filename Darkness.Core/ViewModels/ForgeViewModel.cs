@@ -14,17 +14,14 @@ namespace Darkness.Core.ViewModels
         private readonly ICharacterService _characterService;
         private readonly IDialogService _dialogService;
 
-        [ObservableProperty]
-        private ObservableCollection<Recipe> _recipes = new();
+        [ObservableProperty] private ObservableCollection<Recipe> _recipes = new();
 
-        [ObservableProperty]
-        private Recipe? _selectedRecipe;
+        [ObservableProperty] private Recipe? _selectedRecipe;
 
-        [ObservableProperty]
-        private Character? _currentCharacter;
+        [ObservableProperty] private Character? _currentCharacter;
 
         public ForgeViewModel(
-            ICraftingService craftingService, 
+            ICraftingService craftingService,
             ISessionService sessionService,
             ICharacterService characterService,
             IDialogService dialogService)
@@ -39,7 +36,7 @@ namespace Darkness.Core.ViewModels
         {
             var recipes = await _craftingService.GetAvailableRecipesAsync();
             Recipes = new ObservableCollection<Recipe>(recipes);
-            
+
             if (_sessionService.CurrentUser != null)
             {
                 var characters = await _characterService.GetCharactersForUserAsync(_sessionService.CurrentUser.Id);
@@ -68,7 +65,8 @@ namespace Darkness.Core.ViewModels
             var success = await _craftingService.CraftItemAsync(CurrentCharacter, SelectedRecipe);
             if (success)
             {
-                await _dialogService.DisplayAlertAsync("Success!", $"Successfully crafted {SelectedRecipe.Result.Name}!", "Excellent");
+                await _dialogService.DisplayAlertAsync("Success!",
+                    $"Successfully crafted {SelectedRecipe.Result.Name}!", "Excellent");
             }
             else
             {

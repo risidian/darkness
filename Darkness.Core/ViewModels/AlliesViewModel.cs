@@ -14,14 +14,11 @@ namespace Darkness.Core.ViewModels
         private readonly ISessionService _sessionService;
         private readonly IDialogService _dialogService;
 
-        [ObservableProperty]
-        private ObservableCollection<Ally> _acceptedAllies = new();
+        [ObservableProperty] private ObservableCollection<Ally> _acceptedAllies = new();
 
-        [ObservableProperty]
-        private ObservableCollection<Ally> _pendingRequests = new();
+        [ObservableProperty] private ObservableCollection<Ally> _pendingRequests = new();
 
-        [ObservableProperty]
-        private bool _isRefreshing;
+        [ObservableProperty] private bool _isRefreshing;
 
         public AlliesViewModel(IAllyService allyService, ISessionService sessionService, IDialogService dialogService)
         {
@@ -44,7 +41,7 @@ namespace Darkness.Core.ViewModels
             try
             {
                 var alliesList = await _allyService.GetAlliesForUserAsync(_sessionService.CurrentUser.Id);
-                
+
                 AcceptedAllies.Clear();
                 PendingRequests.Clear();
 
@@ -78,7 +75,8 @@ namespace Darkness.Core.ViewModels
             if (success)
             {
                 await RefreshAlliesAsync();
-                await _dialogService.DisplayAlertAsync("Success", $"You are now allies with {ally.AllyUsername}.", "OK");
+                await _dialogService.DisplayAlertAsync("Success", $"You are now allies with {ally.AllyUsername}.",
+                    "OK");
             }
         }
 
@@ -90,7 +88,8 @@ namespace Darkness.Core.ViewModels
             if (success)
             {
                 await RefreshAlliesAsync();
-                await _dialogService.DisplayAlertAsync("Declined", $"Request from {ally.AllyUsername} has been declined.", "OK");
+                await _dialogService.DisplayAlertAsync("Declined",
+                    $"Request from {ally.AllyUsername} has been declined.", "OK");
             }
         }
     }

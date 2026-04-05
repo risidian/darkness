@@ -34,6 +34,7 @@ namespace Darkness.Core.Services
                 {
                     CurrentUser = await _userService.GetUserByIdAsync(_settingsService.LastUserId);
                 }
+
                 _isInitialized = true;
             }
             finally

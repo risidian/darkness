@@ -13,14 +13,11 @@ namespace Darkness.Core.ViewModels
         private readonly ISessionService _sessionService;
         private readonly ISettingsService _settingsService;
 
-        [ObservableProperty]
-        private string _username = string.Empty;
+        [ObservableProperty] private string _username = string.Empty;
 
-        [ObservableProperty]
-        private string _password = string.Empty;
+        [ObservableProperty] private string _password = string.Empty;
 
-        [ObservableProperty]
-        private string _email = string.Empty;
+        [ObservableProperty] private string _email = string.Empty;
 
         public CreateUserViewModel(
             IUserService userService,

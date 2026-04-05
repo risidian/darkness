@@ -19,6 +19,7 @@ namespace Darkness.Core.Data
             {
                 Directory.CreateDirectory(directory);
             }
+
             return Path.Combine(directory, filename);
         }
     }

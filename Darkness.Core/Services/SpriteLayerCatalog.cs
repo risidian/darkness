@@ -20,17 +20,43 @@ namespace Darkness.Core.Services
         private const int ZShield = 130;
         private const int ZWeapon = 140;
 
-        public List<string> HairStyles { get; } = new() { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob", "Afro" };
-        public List<string> HairColors { get; } = new() { "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut", "Blue", "Green", "Purple" };
-        public List<string> SkinColors { get; } = new() { "Light", "Amber", "Olive", "Taupe", "Bronze", "Brown", "Black" };
+        public List<string> HairStyles { get; } = new()
+            { "Long", "Plain", "Curly Long", "Shorthawk", "Spiked", "Bob", "Afro" };
+
+        public List<string> HairColors { get; } = new()
+        {
+            "Blonde", "Black", "Dark Brown", "Redhead", "White", "Gray", "Platinum", "Chestnut", "Blue", "Green",
+            "Purple"
+        };
+
+        public List<string> SkinColors { get; } =
+            new() { "Light", "Amber", "Olive", "Taupe", "Bronze", "Brown", "Black" };
+
         public List<string> FaceTypes { get; } = new() { "Default", "Female" };
         public List<string> EyeTypes { get; } = new() { "Default", "Neutral", "Anger", "Sad", "Shock" };
         public List<string> HeadTypes { get; } = new() { "Human Male", "Human Female" };
-        public List<string> FeetTypes { get; } = new() { "Boots (Basic)", "Boots (Fold)", "Boots (Rimmed)", "Shoes", "Sandals", "None" };
+
+        public List<string> FeetTypes { get; } = new()
+            { "Boots (Basic)", "Boots (Fold)", "Boots (Rimmed)", "Shoes", "Sandals", "None" };
+
         public List<string> ArmsTypes { get; } = new() { "Gloves", "None" };
-        public List<string> LegsTypes { get; } = new() { "Slacks", "Leggings", "Formal", "Cuffed", "Pantaloons", "None" };
-        public List<string> ArmorTypes { get; } = new() { "Plate (Steel)", "Plate (Iron)", "Plate (Gold)", "Leather", "Leather (Black)", "Leather (Brown)", "Mage Robes (Blue)", "Mage Robes (Red)", "Mage Robes (White)", "Longsleeve (White)", "Longsleeve (Blue)", "Longsleeve (Brown)" };
-        public List<string> WeaponTypes { get; } = new() { "Arming Sword (Steel)", "Arming Sword (Iron)", "Arming Sword (Gold)", "Dagger (Steel)", "Recurve Bow", "Mage Wand", "None" };
+
+        public List<string> LegsTypes { get; } =
+            new() { "Slacks", "Leggings", "Formal", "Cuffed", "Pantaloons", "None" };
+
+        public List<string> ArmorTypes { get; } = new()
+        {
+            "Plate (Steel)", "Plate (Iron)", "Plate (Gold)", "Leather", "Leather (Black)", "Leather (Brown)",
+            "Mage Robes (Blue)", "Mage Robes (Red)", "Mage Robes (White)", "Longsleeve (White)", "Longsleeve (Blue)",
+            "Longsleeve (Brown)"
+        };
+
+        public List<string> WeaponTypes { get; } = new()
+        {
+            "Arming Sword (Steel)", "Arming Sword (Iron)", "Arming Sword (Gold)", "Dagger (Steel)", "Recurve Bow",
+            "Mage Wand", "None"
+        };
+
         public List<string> ShieldTypes { get; } = new() { "Crusader", "Spartan", "None" };
 
         private static readonly Dictionary<string, string> HairStyleFileMap = new()
@@ -164,7 +190,7 @@ namespace Darkness.Core.Services
             var feet = appearance.Feet ?? "Boots (Basic)";
             var arms = appearance.Arms ?? "None";
             var legs = appearance.Legs ?? "Slacks";
-            
+
             var layers = new List<SpriteLayerDefinition>
             {
                 new($"sprites/body/{skin.ToLower()}.png", ZBody),
@@ -185,11 +211,11 @@ namespace Darkness.Core.Services
                 layers.Add(new($"sprites/armor/{file}.png", ZArmor));
             }
 
-            if (!string.IsNullOrEmpty(feet) && feet != "None") 
+            if (!string.IsNullOrEmpty(feet) && feet != "None")
                 layers.Add(new($"sprites/feet/{LegacyFeetFileMap.GetValueOrDefault(feet, "boots_basic")}.png", ZFeet));
-            if (!string.IsNullOrEmpty(arms) && arms != "None") 
+            if (!string.IsNullOrEmpty(arms) && arms != "None")
                 layers.Add(new($"sprites/arms/{LegacyArmsFileMap.GetValueOrDefault(arms, "gloves")}.png", ZArms));
-            if (!string.IsNullOrEmpty(legs) && legs != "None") 
+            if (!string.IsNullOrEmpty(legs) && legs != "None")
                 layers.Add(new($"sprites/legs/{LegacyLegsFileMap.GetValueOrDefault(legs, "slacks")}.png", ZLegs));
 
             layers.Sort((a, b) => a.ZOrder.CompareTo(b.ZOrder));
@@ -224,53 +250,68 @@ namespace Darkness.Core.Services
 
             // Eyes
             string eyeExpr = (appearance.Eyes ?? "Default").ToLower();
-            layers.Add((new StitchLayer($"assets/sprites/full/eyes/human/adult/{eyeExpr}", "{action}/blue.png"), ZEyes));
+            layers.Add((new StitchLayer($"assets/sprites/full/eyes/human/adult/{eyeExpr}", "{action}/blue.png"),
+                ZEyes));
 
             // Armor/Robes
             if (armor.StartsWith("Mage Robes"))
             {
                 var color = ArmorFileMap[armor];
-                layers.Add((new StitchLayer($"assets/sprites/full/torso/robes/female/{color}", "{action}.png"), ZArmor));
+                layers.Add((new StitchLayer($"assets/sprites/full/torso/robes/female/{color}", "{action}.png"),
+                    ZArmor));
             }
             else if (ArmorFileMap.TryGetValue(armor, out var armorInfo))
             {
                 var parts = armorInfo.Split('/');
                 if (parts.Length == 2)
                 {
-                    layers.Add((new StitchLayer($"assets/sprites/full/armor/{parts[0]}/{gender}", $"{{action}}/{parts[1]}.png"), ZArmor));
+                    layers.Add((
+                        new StitchLayer($"assets/sprites/full/armor/{parts[0]}/{gender}", $"{{action}}/{parts[1]}.png"),
+                        ZArmor));
                 }
             }
 
             // Legs
             if (legs != "None" && LegsFileMap.TryGetValue(legs, out var legsFile))
             {
-                layers.Add((new StitchLayer($"assets/sprites/full/legs/{legsFile}/{gender}", "{action}/black.png"), ZLegs));
+                layers.Add((new StitchLayer($"assets/sprites/full/legs/{legsFile}/{gender}", "{action}/black.png"),
+                    ZLegs));
             }
 
             // Feet
             if (feet != "None" && FeetFileMap.TryGetValue(feet, out var feetFile))
             {
-                layers.Add((new StitchLayer($"assets/sprites/full/feet/{feetFile}/{gender}", "{action}/black.png"), ZFeet));
+                layers.Add((new StitchLayer($"assets/sprites/full/feet/{feetFile}/{gender}", "{action}/black.png"),
+                    ZFeet));
             }
 
             // Arms (Gloves)
             if (arms != "None" && ArmsFileMap.TryGetValue(arms, out var armsFile))
             {
-                layers.Add((new StitchLayer($"assets/sprites/full/arms/{armsFile}/{gender}", "{action}/black.png"), ZArms));
+                layers.Add((new StitchLayer($"assets/sprites/full/arms/{armsFile}/{gender}", "{action}/black.png"),
+                    ZArms));
             }
 
             // Hair
-            layers.Add((new StitchLayer($"assets/sprites/full/hair/{hairStyle}/adult", "{action}/blonde.png", hairHex), ZHair));
+            layers.Add((new StitchLayer($"assets/sprites/full/hair/{hairStyle}/adult", "{action}/blonde.png", hairHex),
+                ZHair));
 
             // Weapons
-            if (weapon.Contains("Wand")) layers.Add((new StitchLayer("assets/sprites/full/weapons/magic/wand/male/slash", "wand.png"), ZWeapon));
-            else if (weapon.Contains("Bow")) layers.Add((new StitchLayer("assets/sprites/full/weapons/ranged/bow/normal/walk/foreground", "steel.png"), ZWeapon));
-            else if (weapon.Contains("Dagger")) layers.Add((new StitchLayer("assets/sprites/full/weapons/sword/dagger/walk", "dagger.png"), ZWeapon));
+            if (weapon.Contains("Wand"))
+                layers.Add((new StitchLayer("assets/sprites/full/weapons/magic/wand/male/slash", "wand.png"), ZWeapon));
+            else if (weapon.Contains("Bow"))
+                layers.Add((
+                    new StitchLayer("assets/sprites/full/weapons/ranged/bow/normal/walk/foreground", "steel.png"),
+                    ZWeapon));
+            else if (weapon.Contains("Dagger"))
+                layers.Add((new StitchLayer("assets/sprites/full/weapons/sword/dagger/walk", "dagger.png"), ZWeapon));
 
             // Shield
             if (shield != "None" && !string.IsNullOrEmpty(shield))
             {
-                layers.Add((new StitchLayer($"assets/sprites/full/shields/{shield.ToLower()}/bg/walk", $"{shield.ToLower()}.png"), ZShield));
+                layers.Add((
+                    new StitchLayer($"assets/sprites/full/shields/{shield.ToLower()}/bg/walk",
+                        $"{shield.ToLower()}.png"), ZShield));
             }
 
             // Sort by Z and return just the layers
@@ -343,6 +384,7 @@ namespace Darkness.Core.Services
                     appearance.Face = "Default";
                     break;
             }
+
             return appearance;
         }
     }

@@ -32,7 +32,8 @@ public class GodotNavigationService : INavigationService
         {
             GD.PrintErr($"[Navigation] Failed to change scene to {path}: {error}");
             var dialog = _global.Services!.GetRequiredService<IDialogService>();
-            await dialog.DisplayAlertAsync("Navigation Error", $"Failed to load scene {route} (Error: {error}). Path: {path}", "OK");
+            await dialog.DisplayAlertAsync("Navigation Error",
+                $"Failed to load scene {route} (Error: {error}). Path: {path}", "OK");
             return;
         }
 
@@ -44,7 +45,7 @@ public class GodotNavigationService : INavigationService
         {
             // Wait for the scene to be ready in the next frame
             await _global.ToSignal(_global.GetTree(), "process_frame");
-            
+
             var root = _global.GetTree().CurrentScene;
             if (root is IInitializable initializable)
             {
@@ -56,16 +57,16 @@ public class GodotNavigationService : INavigationService
     public async Task NavigateToAsync<T>(string route, T parameters) where T : NavigationArgs
     {
         GD.Print($"[Navigation] Navigating to {route} with typed args {typeof(T).Name}");
-        
+
         // Use existing logic for scene change
         string sceneName = route.Replace("Page", "Scene");
         string path = $"res://scenes/{sceneName}.tscn";
-        
+
         var error = _global.GetTree().ChangeSceneToFile(path);
         if (error != Error.Ok) return;
 
         await _global.ToSignal(_global.GetTree(), "process_frame");
-        
+
         var root = _global.GetTree().CurrentScene;
         if (root is IInitializable initializable)
         {

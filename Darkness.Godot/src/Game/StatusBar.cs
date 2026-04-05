@@ -3,7 +3,13 @@ using System;
 
 namespace Darkness.Godot.Game;
 
-public enum StatusType { HP, Mana, Stamina, EXP }
+public enum StatusType
+{
+    HP,
+    Mana,
+    Stamina,
+    EXP
+}
 
 public partial class StatusBar : VBoxContainer
 {
@@ -19,7 +25,7 @@ public partial class StatusBar : VBoxContainer
         _nameLabel = GetNode<Label>("NameLabel");
         _progressBar = GetNode<ProgressBar>("BarWrapper/ProgressBar");
         _valueLabel = GetNode<Label>("BarWrapper/ValueLabel");
-        
+
         UpdateTheme();
     }
 
@@ -27,7 +33,7 @@ public partial class StatusBar : VBoxContainer
     {
         var style = new StyleBoxFlat();
         style.SetCornerRadiusAll(2);
-        
+
         Color barColor = Type switch
         {
             StatusType.HP => new Color(0.7f, 0.1f, 0.1f), // Dark Red
@@ -45,7 +51,7 @@ public partial class StatusBar : VBoxContainer
     {
         Type = type;
         if (_nameLabel == null) _Ready(); // Ensure nodes are ready if called early
-        
+
         _nameLabel.Text = unitName;
         UpdateValue(current, max);
         UpdateTheme();
@@ -54,7 +60,7 @@ public partial class StatusBar : VBoxContainer
     public void UpdateValue(int current, int max)
     {
         if (_progressBar == null) _Ready();
-        
+
         int safeMax = Math.Max(1, max);
         int displayCurrent = Math.Max(0, current);
 

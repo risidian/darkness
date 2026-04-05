@@ -11,474 +11,514 @@ namespace Darkness.Godot.Game;
 
 public partial class WorldScene : Node2D, IInitializable
 {
-	private INavigationService _navigation = null!;
-	private ISessionService _session = null!;
-	private IQuestService _questService = null!;
-	private ISpriteCompositor _compositor = null!;
-	private ISpriteLayerCatalog _catalog = null!;
-	private IFileSystemService _fileSystem = null!;
+    private INavigationService _navigation = null!;
+    private ISessionService _session = null!;
+    private IQuestService _questService = null!;
+    private ISpriteCompositor _compositor = null!;
+    private ISpriteLayerCatalog _catalog = null!;
+    private IFileSystemService _fileSystem = null!;
 
-	private CharacterBody2D _player = null!;
-	private LayeredSprite _playerSprite = null!;
-	private LayeredSprite _npcSprite = null!;
-	private PanelContainer _dialogueBox = null!;
-	private PauseMenu _pauseMenu = null!;
-	private Label _nameLabel = null!;
-	private Label _textLabel = null!;
+    private CharacterBody2D _player = null!;
+    private LayeredSprite _playerSprite = null!;
+    private LayeredSprite _npcSprite = null!;
+    private PanelContainer _dialogueBox = null!;
+    private PauseMenu _pauseMenu = null!;
+    private Label _nameLabel = null!;
+    private Label _textLabel = null!;
 
-	private bool _isEncounterTriggered = false;
-	private float _moveSpeed = 300f;
-	private List<string> _dialogue = new();
-	private string _speakerName = "Old Man";
-	private int _currentDialogueIndex = -1;
-	private string _lastDirection = "down";
-	private Vector2? _targetPosition = null;
+    private bool _isEncounterTriggered = false;
+    private float _moveSpeed = 300f;
+    private List<string> _dialogue = new();
+    private string _speakerName = "Old Man";
+    private int _currentDialogueIndex = -1;
+    private string _lastDirection = "down";
+    private Vector2? _targetPosition = null;
 
-	private VBoxContainer _choicesContainer = null!;
-	private List<DialogueChoice> _currentChoices = new();
-	private QuestNode? _currentDialogueQuest = null;
-	private string? _pendingNextQuestId = null; // Stores the ID of the quest chosen by the player
+    private VBoxContainer _choicesContainer = null!;
+    private List<DialogueChoice> _currentChoices = new();
+    private QuestNode? _currentDialogueQuest = null;
+    private string? _pendingNextQuestId = null; // Stores the ID of the quest chosen by the player
 
-	public void Initialize(IDictionary<string, object> parameters)
-	{
-		if (parameters.ContainsKey("StealthOutcome") && _session.CurrentCharacter != null)
-		{
-			string outcome = parameters["StealthOutcome"].ToString() ?? "Failure";
-			if (outcome == "Success")
-			{
-				GD.Print("[WorldScene] Stealth successful. Skipping encounter.");
-				_questService.CompleteQuest(_session.CurrentCharacter, "beat_1_stealth");
-				_isEncounterTriggered = true; // Prevent immediate re-trigger
-			}
-			else
-			{
-				GD.Print("[WorldScene] Stealth failed. Triggering monster battle.");
-				_pendingNextQuestId = "beat_1_sneak_combat";
-				_isEncounterTriggered = false; // Allow trigger logic to run in Process
-			}
-		}
-	}
+    public void Initialize(IDictionary<string, object> parameters)
+    {
+        if (parameters.ContainsKey("StealthOutcome") && _session.CurrentCharacter != null)
+        {
+            string outcome = parameters["StealthOutcome"].ToString() ?? "Failure";
+            if (outcome == "Success")
+            {
+                GD.Print("[WorldScene] Stealth successful. Skipping encounter.");
+                _questService.CompleteQuest(_session.CurrentCharacter, "beat_1_stealth");
+                _isEncounterTriggered = true; // Prevent immediate re-trigger
+            }
+            else
+            {
+                GD.Print("[WorldScene] Stealth failed. Triggering monster battle.");
+                _pendingNextQuestId = "beat_1_sneak_combat";
+                _isEncounterTriggered = false; // Allow trigger logic to run in Process
+            }
+        }
+    }
 
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		bool isClickOrTouch = (@event is InputEventScreenTouch touch && touch.Pressed) || 
-		                      (@event is InputEventMouseButton mouse && mouse.Pressed && mouse.ButtonIndex == MouseButton.Left);
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        bool isClickOrTouch = (@event is InputEventScreenTouch touch && touch.Pressed) ||
+                              (@event is InputEventMouseButton mouse && mouse.Pressed &&
+                               mouse.ButtonIndex == MouseButton.Left);
 
-		if (isClickOrTouch)
-		{
-			if (_currentDialogueIndex >= 0)
-			{
-				NextDialogue();
-				GetViewport().SetInputAsHandled();
-			}
-			else
-			{
-				_targetPosition = GetGlobalMousePosition();
-			}
-		}
-	}
+        if (isClickOrTouch)
+        {
+            if (_currentDialogueIndex >= 0)
+            {
+                NextDialogue();
+                GetViewport().SetInputAsHandled();
+            }
+            else
+            {
+                _targetPosition = GetGlobalMousePosition();
+            }
+        }
+    }
 
-	public override async void _Ready()
-	{
-		var global = GetNode<Global>("/root/Global");
-		var sp = global.Services!;
-		_navigation = sp.GetRequiredService<INavigationService>();
-		_session = sp.GetRequiredService<ISessionService>();
-		_questService = sp.GetRequiredService<IQuestService>();
-		_compositor = sp.GetRequiredService<ISpriteCompositor>();
-		_catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
-		_fileSystem = sp.GetRequiredService<IFileSystemService>();
+    public override async void _Ready()
+    {
+        var global = GetNode<Global>("/root/Global");
+        var sp = global.Services!;
+        _navigation = sp.GetRequiredService<INavigationService>();
+        _session = sp.GetRequiredService<ISessionService>();
+        _questService = sp.GetRequiredService<IQuestService>();
+        _compositor = sp.GetRequiredService<ISpriteCompositor>();
+        _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
+        _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
-		// Apply simple shader to Backgrounds
-		var bgShader = GD.Load<Shader>("res://src/Shaders/simple_rect.gdshader");
-		var bgMat = new ShaderMaterial { Shader = bgShader };
-		GetNode<ColorRect>("Background").Material = bgMat;
-		GetNode<ColorRect>("Water").Material = bgMat;
+        // Apply simple shader to Backgrounds
+        var bgShader = GD.Load<Shader>("res://src/Shaders/simple_rect.gdshader");
+        var bgMat = new ShaderMaterial { Shader = bgShader };
+        GetNode<ColorRect>("Background").Material = bgMat;
+        GetNode<ColorRect>("Water").Material = bgMat;
 
-		_player = GetNode<CharacterBody2D>("Player");
-		_playerSprite = GetNode<LayeredSprite>("Player/Sprite");
-		_npcSprite = GetNode<LayeredSprite>("NPC/Sprite");
-		
-		_dialogueBox = GetNode<PanelContainer>("CanvasLayer/DialogueBox");
-		_pauseMenu = GetNode<PauseMenu>("CanvasLayer/PauseMenu");
-		_nameLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/NameLabel");
-		_textLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/TextLabel");
+        _player = GetNode<CharacterBody2D>("Player");
+        _playerSprite = GetNode<LayeredSprite>("Player/Sprite");
+        _npcSprite = GetNode<LayeredSprite>("NPC/Sprite");
 
-		_choicesContainer = new VBoxContainer();
-		GetNode<VBoxContainer>("CanvasLayer/DialogueBox/VBoxContainer").AddChild(_choicesContainer);
+        _dialogueBox = GetNode<PanelContainer>("CanvasLayer/DialogueBox");
+        _pauseMenu = GetNode<PauseMenu>("CanvasLayer/PauseMenu");
+        _nameLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/NameLabel");
+        _textLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/TextLabel");
 
-		GetNode<Button>("CanvasLayer/TopMenu/ForgeButton").Pressed += () => _navigation.NavigateToAsync("ForgePage");
-		GetNode<Button>("CanvasLayer/TopMenu/StudyButton").Pressed += () => _navigation.NavigateToAsync("StudyPage");
-		GetNode<Button>("CanvasLayer/TopMenu/AlliesButton").Pressed += () => _navigation.NavigateToAsync("AlliesPage");
-		GetNode<Button>("CanvasLayer/TopMenu/DeathmatchButton").Pressed += () => _navigation.NavigateToAsync("DeathmatchPage");
-		GetNode<Button>("CanvasLayer/TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
+        _choicesContainer = new VBoxContainer();
+        GetNode<VBoxContainer>("CanvasLayer/DialogueBox/VBoxContainer").AddChild(_choicesContainer);
 
-		GetNode<Area2D>("NPC").BodyEntered += (body) => {
-			if (body == _player) StartDialogue();
-		};
+        GetNode<Button>("CanvasLayer/TopMenu/ForgeButton").Pressed += () => _navigation.NavigateToAsync("ForgePage");
+        GetNode<Button>("CanvasLayer/TopMenu/StudyButton").Pressed += () => _navigation.NavigateToAsync("StudyPage");
+        GetNode<Button>("CanvasLayer/TopMenu/AlliesButton").Pressed += () => _navigation.NavigateToAsync("AlliesPage");
+        GetNode<Button>("CanvasLayer/TopMenu/DeathmatchButton").Pressed +=
+            () => _navigation.NavigateToAsync("DeathmatchPage");
+        GetNode<Button>("CanvasLayer/TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
 
-		await UpdateSprites();
-	}
+        GetNode<Area2D>("NPC").BodyEntered += (body) =>
+        {
+            if (body == _player) StartDialogue();
+        };
 
-	private async Task UpdateSprites()
-	{
-		if (_session.CurrentCharacter != null)
-		{
-			await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
-			_playerSprite.Play("idle_down");
-		}
+        await UpdateSprites();
+    }
 
-		var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-		await _npcSprite.SetupCharacter(new Character { 
+    private async Task UpdateSprites()
+    {
+        if (_session.CurrentCharacter != null)
+        {
+            await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem);
+            _playerSprite.Play("idle_down");
+        }
+
+        var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
+        await _npcSprite.SetupCharacter(new Character
+        {
             Name = "Old Man",
-			SkinColor = knightAppearance.SkinColor,
-			HairStyle = knightAppearance.HairStyle,
-			HairColor = knightAppearance.HairColor,
-			ArmorType = knightAppearance.ArmorType,
-			WeaponType = knightAppearance.WeaponType,
-			Feet = knightAppearance.Feet,
-			Arms = knightAppearance.Arms,
-			Legs = knightAppearance.Legs,
+            SkinColor = knightAppearance.SkinColor,
+            HairStyle = knightAppearance.HairStyle,
+            HairColor = knightAppearance.HairColor,
+            ArmorType = knightAppearance.ArmorType,
+            WeaponType = knightAppearance.WeaponType,
+            Feet = knightAppearance.Feet,
+            Arms = knightAppearance.Arms,
+            Legs = knightAppearance.Legs,
             Head = "Human Male",
             Face = "Default"
-		}, _catalog, _fileSystem);
-		_npcSprite.Play("idle_down");
-	}
+        }, _catalog, _fileSystem);
+        _npcSprite.Play("idle_down");
+    }
 
-	public override void _Process(double delta)
-	{
-		if (!IsInsideTree()) return;
-		if (Input.IsActionJustPressed("ui_cancel"))
-		{
-			_pauseMenu.Toggle();
-			return;
-		}
+    public override void _Process(double delta)
+    {
+        if (!IsInsideTree()) return;
+        if (Input.IsActionJustPressed("ui_cancel"))
+        {
+            _pauseMenu.Toggle();
+            return;
+        }
 
-		if (_currentDialogueIndex >= 0)
-		{
-			if (Input.IsActionJustPressed("ui_accept"))
-			{
-				NextDialogue();
-			}
-			return;
-		}
+        if (_currentDialogueIndex >= 0)
+        {
+            if (Input.IsActionJustPressed("ui_accept"))
+            {
+                NextDialogue();
+            }
 
-		Vector2 velocity = Vector2.Zero;
-		
-		bool keyboardMoving = false;
-		if (Input.IsActionPressed("ui_left")) { velocity.X -= 1; keyboardMoving = true; }
-		if (Input.IsActionPressed("ui_right")) { velocity.X += 1; keyboardMoving = true; }
-		if (Input.IsActionPressed("ui_up")) { velocity.Y -= 1; keyboardMoving = true; }
-		if (Input.IsActionPressed("ui_down")) { velocity.Y += 1; keyboardMoving = true; }
+            return;
+        }
 
-		if (keyboardMoving)
-		{
-			_targetPosition = null;
-		}
-		else if (_targetPosition.HasValue)
-		{
-			Vector2 toTarget = _targetPosition.Value - _player.GlobalPosition;
-			if (toTarget.Length() < 5)
-			{
-				_targetPosition = null;
-			}
-			else
-			{
-				velocity = toTarget.Normalized();
-			}
-		}
+        Vector2 velocity = Vector2.Zero;
 
-		if (velocity != Vector2.Zero)
-		{
-			_player.Velocity = velocity.Normalized() * _moveSpeed;
-			_player.MoveAndSlide();
-			UpdateAnimation(velocity);
-		}
-		else
-		{
-			_playerSprite.Play("idle_" + _lastDirection);
-		}
+        bool keyboardMoving = false;
+        if (Input.IsActionPressed("ui_left"))
+        {
+            velocity.X -= 1;
+            keyboardMoving = true;
+        }
 
-		// This trigger should now check for pending quests from dialogue choices
-		// It should be called even if _pendingNextQuestId is set, to initiate the pending quest.
-		if (_player.GlobalPosition.X > 1200)
-		{
-			TriggerEncounter();
-		}
-	}
+        if (Input.IsActionPressed("ui_right"))
+        {
+            velocity.X += 1;
+            keyboardMoving = true;
+        }
 
-	private void UpdateAnimation(Vector2 velocity)
-	{
-		if (Mathf.Abs(velocity.X) > Mathf.Abs(velocity.Y))
-		{
-			_lastDirection = velocity.X > 0 ? "right" : "left";
-		}
-		else
-		{
-			_lastDirection = velocity.Y > 0 ? "down" : "up";
-		}
-		_playerSprite.Play("walk_" + _lastDirection);
-	}
+        if (Input.IsActionPressed("ui_up"))
+        {
+            velocity.Y -= 1;
+            keyboardMoving = true;
+        }
 
-	private void StartDialogue()
-	{
-		GD.Print("StartDialogue called.");
-		_targetPosition = null;
-		_player.Velocity = Vector2.Zero;
-		_playerSprite.Play("idle_" + _lastDirection);
-		
-		_currentChoices.Clear();
-		_currentDialogueQuest = null;
-		_pendingNextQuestId = null; // Reset pending quest on new dialogue
+        if (Input.IsActionPressed("ui_down"))
+        {
+            velocity.Y += 1;
+            keyboardMoving = true;
+        }
 
-		// Load dynamic dialogue from quest if available
-		var quest = _session.CurrentCharacter != null ? _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter) : null;
-		if (quest?.Dialogue != null && quest.Dialogue.Lines.Count > 0)
-		{
-			_currentDialogueQuest = quest;
-			_speakerName = quest.Dialogue.Speaker;
-			_dialogue = new List<string>(quest.Dialogue.Lines);
-			if (quest.Dialogue.Choices != null)
-			{
-				_currentChoices = new List<DialogueChoice>(quest.Dialogue.Choices);
-			}
-			GD.Print($"[WorldScene] Loaded dialogue for quest: {quest.Title} (ID: {quest.Id}). Speaker: {_speakerName}, Lines: {_dialogue.Count}, Choices: {_currentChoices.Count}");
-		}
-		else
-		{
-			// Fallback hardcoded dialogue
-			_speakerName = "Old Man";
-			_dialogue = new List<string> {
-				"Welcome to the Shore of Camelot, Wanderer.",
-				"The path to the castle is blocked by shadows.",
-				"You'll find only hounds and darkness to the east."
-			};
-			GD.Print($"[WorldScene] No quest dialogue found. Using fallback dialogue. Lines: {_dialogue.Count}");
-		}
+        if (keyboardMoving)
+        {
+            _targetPosition = null;
+        }
+        else if (_targetPosition.HasValue)
+        {
+            Vector2 toTarget = _targetPosition.Value - _player.GlobalPosition;
+            if (toTarget.Length() < 5)
+            {
+                _targetPosition = null;
+            }
+            else
+            {
+                velocity = toTarget.Normalized();
+            }
+        }
 
-		if (_dialogue.Count > 0)
-		{
-			_currentDialogueIndex = 0;
-			_dialogueBox.Show();
-			
-			// Update prompt for mobile/touch
-			var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
-			prompt.Text = "[TAP TO CONTINUE]";
-			
-			UpdateDialogueUI();
-		}
-		else
-		{
-			GD.Print("[WorldScene] No dialogue lines to display. Hiding dialogue box.");
-			_dialogueBox.Hide();
-		}
-	}
+        if (velocity != Vector2.Zero)
+        {
+            _player.Velocity = velocity.Normalized() * _moveSpeed;
+            _player.MoveAndSlide();
+            UpdateAnimation(velocity);
+        }
+        else
+        {
+            _playerSprite.Play("idle_" + _lastDirection);
+        }
 
-	private void NextDialogue()
-	{
-		// If we are showing choices, tapping should not advance or close the dialogue
-		if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
-		{
-			GD.Print("[WorldScene] Last line of dialogue with choices, tap does nothing.");
-			return;
-		}
+        // This trigger should now check for pending quests from dialogue choices
+        // It should be called even if _pendingNextQuestId is set, to initiate the pending quest.
+        if (_player.GlobalPosition.X > 1200)
+        {
+            TriggerEncounter();
+        }
+    }
 
-		_currentDialogueIndex++;
-		if (_currentDialogueIndex >= _dialogue.Count)
-		{
-			GD.Print("[WorldScene] End of dialogue reached.");
-			_currentDialogueIndex = -1;
-			_dialogueBox.Hide();
+    private void UpdateAnimation(Vector2 velocity)
+    {
+        if (Mathf.Abs(velocity.X) > Mathf.Abs(velocity.Y))
+        {
+            _lastDirection = velocity.X > 0 ? "right" : "left";
+        }
+        else
+        {
+            _lastDirection = velocity.Y > 0 ? "down" : "up";
+        }
 
-			// If there were no choices, mark the dialogue quest as complete when finished
-			if (_currentChoices.Count == 0 && _currentDialogueQuest != null && _session.CurrentCharacter != null)
-			{
-				GD.Print($"[WorldScene] Completing quest: {_currentDialogueQuest.Id} (no choices)");
-				_questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
-			}
-		}
-		else
-		{
-			UpdateDialogueUI();
-		}
-	}
+        _playerSprite.Play("walk_" + _lastDirection);
+    }
 
-	private void UpdateDialogueUI()
-	{
-		_nameLabel.Text = _speakerName;
-		_textLabel.Text = _dialogue[_currentDialogueIndex];
-		
-		var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
-		
-		// Clear existing buttons
-		foreach (Node child in _choicesContainer.GetChildren())
-		{
-			child.QueueFree();
-		}
+    private void StartDialogue()
+    {
+        GD.Print("StartDialogue called.");
+        _targetPosition = null;
+        _player.Velocity = Vector2.Zero;
+        _playerSprite.Play("idle_" + _lastDirection);
 
-		// If we are at the last line and have choices, show them
-		if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
-		{
-			GD.Print($"[WorldScene] Showing {_currentChoices.Count} choices.");
-			prompt.Hide(); // Hide "TAP TO CONTINUE"
-			
-			foreach (var choice in _currentChoices)
-			{
-				var btn = new Button { Text = choice.Text };
-				btn.Pressed += () => OnChoiceSelected(choice);
-				_choicesContainer.AddChild(btn);
-			}
-		}
-		else
-		{
-			prompt.Show(); // Show "TAP TO CONTINUE"
-			prompt.Text = "[TAP TO CONTINUE]";
-		}
-	}
+        _currentChoices.Clear();
+        _currentDialogueQuest = null;
+        _pendingNextQuestId = null; // Reset pending quest on new dialogue
 
-	private void OnChoiceSelected(DialogueChoice choice)
-	{
-		GD.Print($"[WorldScene] Choice selected: '{choice.Text}' (NextQuestId: {choice.NextQuestId}, MoralityImpact: {choice.MoralityImpact})");
-		
-		// 1. Mark the current dialogue quest as complete
-		if (_currentDialogueQuest != null && _session.CurrentCharacter != null)
-		{
-			GD.Print($"[WorldScene] Completing current dialogue quest: {_currentDialogueQuest.Id}");
-			_questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
-			
-			// 2. Store the NextQuestId to be triggered later. Do NOT complete it yet.
-			_pendingNextQuestId = choice.NextQuestId;
-			GD.Print($"[WorldScene] Choice selected: '{choice.Text}'. Next quest ID pending: {_pendingNextQuestId ?? "None"}");
+        // Load dynamic dialogue from quest if available
+        var quest = _session.CurrentCharacter != null
+            ? _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter)
+            : null;
+        if (quest?.Dialogue != null && quest.Dialogue.Lines.Count > 0)
+        {
+            _currentDialogueQuest = quest;
+            _speakerName = quest.Dialogue.Speaker;
+            _dialogue = new List<string>(quest.Dialogue.Lines);
+            if (quest.Dialogue.Choices != null)
+            {
+                _currentChoices = new List<DialogueChoice>(quest.Dialogue.Choices);
+            }
 
-			// Apply morality
-			if (choice.MoralityImpact != 0)
-			{
-				_session.CurrentCharacter.Morality += choice.MoralityImpact;
-				GD.Print($"[Morality] Changed by {choice.MoralityImpact}. New Total: {_session.CurrentCharacter.Morality}");
-			}
-		}
+            GD.Print(
+                $"[WorldScene] Loaded dialogue for quest: {quest.Title} (ID: {quest.Id}). Speaker: {_speakerName}, Lines: {_dialogue.Count}, Choices: {_currentChoices.Count}");
+        }
+        else
+        {
+            // Fallback hardcoded dialogue
+            _speakerName = "Old Man";
+            _dialogue = new List<string>
+            {
+                "Welcome to the Shore of Camelot, Wanderer.",
+                "The path to the castle is blocked by shadows.",
+                "You'll find only hounds and darkness to the east."
+            };
+            GD.Print($"[WorldScene] No quest dialogue found. Using fallback dialogue. Lines: {_dialogue.Count}");
+        }
 
-		// 3. Hide dialogue box and end conversation
-		_currentDialogueIndex = -1;
-		_dialogueBox.Hide();
-		
-		// Clear buttons
-		foreach (Node child in _choicesContainer.GetChildren())
-		{
-			child.QueueFree();
-		}
+        if (_dialogue.Count > 0)
+        {
+            _currentDialogueIndex = 0;
+            _dialogueBox.Show();
 
-		// 4. If the chosen next quest is purely dialogue, start it immediately
-		if (!string.IsNullOrEmpty(_pendingNextQuestId))
-		{
-			var nextQuest = _questService.GetQuestById(_pendingNextQuestId);
-			if (nextQuest?.Dialogue != null && nextQuest.Dialogue.Lines.Count > 0)
-			{
-				GD.Print($"[WorldScene] Next quest '{nextQuest.Title}' has dialogue. Starting immediately.");
-				_pendingNextQuestId = null; // Clear pending since we are handling it now
-				
-				_currentDialogueQuest = nextQuest;
-				_speakerName = nextQuest.Dialogue.Speaker;
-				_dialogue = new List<string>(nextQuest.Dialogue.Lines);
-				if (nextQuest.Dialogue.Choices != null)
-				{
-					_currentChoices = new List<DialogueChoice>(nextQuest.Dialogue.Choices);
-				}
-				else
-				{
-					_currentChoices.Clear();
-				}
-				
-				_currentDialogueIndex = 0;
-				_dialogueBox.Show();
-				
-				var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
-				prompt.Text = "[TAP TO CONTINUE]";
-				
-				UpdateDialogueUI();
-			}
-			else
-			{
-				GD.Print($"[WorldScene] Next quest has no immediate dialogue. Leaving as pending for movement trigger.");
-			}
-		}
-	}
+            // Update prompt for mobile/touch
+            var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+            prompt.Text = "[TAP TO CONTINUE]";
 
-	private async void TriggerEncounter()
-	{
-		GD.Print($"[WorldScene] TriggerEncounter called. _isEncounterTriggered: {_isEncounterTriggered}, _currentDialogueIndex: {_currentDialogueIndex}, _pendingNextQuestId: {_pendingNextQuestId ?? "null"}");
+            UpdateDialogueUI();
+        }
+        else
+        {
+            GD.Print("[WorldScene] No dialogue lines to display. Hiding dialogue box.");
+            _dialogueBox.Hide();
+        }
+    }
 
-		// Prevent re-triggering if an encounter is already in progress or dialogue is active.
-		// If a choice was made and a quest is pending, we SHOULD proceed to trigger it.
-		if (_isEncounterTriggered || _currentDialogueIndex >= 0) 
-		{
-			GD.Print($"[WorldScene] TriggerEncounter blocked: Encountered={_isEncounterTriggered}, Dialogue={_currentDialogueIndex >= 0}");
-			return;
-		}
+    private void NextDialogue()
+    {
+        // If we are showing choices, tapping should not advance or close the dialogue
+        if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
+        {
+            GD.Print("[WorldScene] Last line of dialogue with choices, tap does nothing.");
+            return;
+        }
 
-		QuestNode? questToTrigger = null;
+        _currentDialogueIndex++;
+        if (_currentDialogueIndex >= _dialogue.Count)
+        {
+            GD.Print("[WorldScene] End of dialogue reached.");
+            _currentDialogueIndex = -1;
+            _dialogueBox.Hide();
 
-		// 1. Check if a choice was made that leads to a specific quest.
-		if (!string.IsNullOrEmpty(_pendingNextQuestId))
-		{
-			GD.Print($"[WorldScene] Checking pending quest ID: {_pendingNextQuestId}");
-			questToTrigger = _questService.GetQuestById(_pendingNextQuestId);
-			GD.Print($"[WorldScene] Pending quest '{_pendingNextQuestId}' found: {questToTrigger?.Title ?? "None"}");
-			_pendingNextQuestId = null; // Reset after checking
-		}
+            // If there were no choices, mark the dialogue quest as complete when finished
+            if (_currentChoices.Count == 0 && _currentDialogueQuest != null && _session.CurrentCharacter != null)
+            {
+                GD.Print($"[WorldScene] Completing quest: {_currentDialogueQuest.Id} (no choices)");
+                _questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
+            }
+        }
+        else
+        {
+            UpdateDialogueUI();
+        }
+    }
 
-		// 2. If no pending choice-driven quest, use location-based or next main story quest.
-		if (questToTrigger == null && _session.CurrentCharacter != null)
-		{
-			questToTrigger = _questService.GetQuestByLocation(_session.CurrentCharacter, "SandyShore_East");
-			GD.Print($"[WorldScene] No pending quest. Checking location 'SandyShore_East'. Found: {questToTrigger?.Title ?? "None"}");
+    private void UpdateDialogueUI()
+    {
+        _nameLabel.Text = _speakerName;
+        _textLabel.Text = _dialogue[_currentDialogueIndex];
 
-			if (questToTrigger == null)
-			{
-				questToTrigger = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
-				GD.Print($"[WorldScene] No location quest found. Falling back to next main story quest: {questToTrigger?.Title ?? "None"}");
-			}
-		}
+        var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
 
-		// 3. Trigger the determined quest.
-		if (questToTrigger != null)
-		{
-			GD.Print($"[WorldScene] Triggering quest: {questToTrigger.Title} (ID: {questToTrigger.Id})");
-			if (questToTrigger.Encounter != null)
-			{
-				GD.Print($"[WorldScene] Navigating to BattleScene with encounter from quest '{questToTrigger.Title}'.");
-				await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs { Encounter = questToTrigger.Encounter });
-				_isEncounterTriggered = true; 
-			}
-			else if (questToTrigger.Id == "beat_1_stealth")
-			{
-				GD.Print($"[WorldScene] Navigating to StealthScene for quest '{questToTrigger.Title}'.");
-				await _navigation.NavigateToAsync(Routes.Stealth);
-				_isEncounterTriggered = true;
-			}
-			else if (questToTrigger.Dialogue != null && questToTrigger.Dialogue.Lines.Count > 0)
-			{
-				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' has dialogue. Initiating.");
-				_isEncounterTriggered = true;
-				StartDialogue(); // Start dialogue sequence for the next part of the story
-			}
-			else
-			{
-				GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' found, but no encounter or dialogue to trigger immediately.");
-				_isEncounterTriggered = false; 
-			}
-		}
-		else
-		{
-			GD.Print("[WorldScene] No quest found to trigger.");
-			// If no encounter is found, reset the flag.
-			_isEncounterTriggered = false;
-		}
-	}
-	
-	// Helper to check if a quest is completed (for TriggerEncounter logic)
-	private bool IsQuestCompleted(string questId)
-	{
-		return _session.CurrentCharacter != null && _session.CurrentCharacter.CompletedQuestIds.Contains(questId);
-	}
+        // Clear existing buttons
+        foreach (Node child in _choicesContainer.GetChildren())
+        {
+            child.QueueFree();
+        }
+
+        // If we are at the last line and have choices, show them
+        if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
+        {
+            GD.Print($"[WorldScene] Showing {_currentChoices.Count} choices.");
+            prompt.Hide(); // Hide "TAP TO CONTINUE"
+
+            foreach (var choice in _currentChoices)
+            {
+                var btn = new Button { Text = choice.Text };
+                btn.Pressed += () => OnChoiceSelected(choice);
+                _choicesContainer.AddChild(btn);
+            }
+        }
+        else
+        {
+            prompt.Show(); // Show "TAP TO CONTINUE"
+            prompt.Text = "[TAP TO CONTINUE]";
+        }
+    }
+
+    private void OnChoiceSelected(DialogueChoice choice)
+    {
+        GD.Print(
+            $"[WorldScene] Choice selected: '{choice.Text}' (NextQuestId: {choice.NextQuestId}, MoralityImpact: {choice.MoralityImpact})");
+
+        // 1. Mark the current dialogue quest as complete
+        if (_currentDialogueQuest != null && _session.CurrentCharacter != null)
+        {
+            GD.Print($"[WorldScene] Completing current dialogue quest: {_currentDialogueQuest.Id}");
+            _questService.CompleteQuest(_session.CurrentCharacter, _currentDialogueQuest.Id);
+
+            // 2. Store the NextQuestId to be triggered later. Do NOT complete it yet.
+            _pendingNextQuestId = choice.NextQuestId;
+            GD.Print(
+                $"[WorldScene] Choice selected: '{choice.Text}'. Next quest ID pending: {_pendingNextQuestId ?? "None"}");
+
+            // Apply morality
+            if (choice.MoralityImpact != 0)
+            {
+                _session.CurrentCharacter.Morality += choice.MoralityImpact;
+                GD.Print(
+                    $"[Morality] Changed by {choice.MoralityImpact}. New Total: {_session.CurrentCharacter.Morality}");
+            }
+        }
+
+        // 3. Hide dialogue box and end conversation
+        _currentDialogueIndex = -1;
+        _dialogueBox.Hide();
+
+        // Clear buttons
+        foreach (Node child in _choicesContainer.GetChildren())
+        {
+            child.QueueFree();
+        }
+
+        // 4. If the chosen next quest is purely dialogue, start it immediately
+        if (!string.IsNullOrEmpty(_pendingNextQuestId))
+        {
+            var nextQuest = _questService.GetQuestById(_pendingNextQuestId);
+            if (nextQuest?.Dialogue != null && nextQuest.Dialogue.Lines.Count > 0)
+            {
+                GD.Print($"[WorldScene] Next quest '{nextQuest.Title}' has dialogue. Starting immediately.");
+                _pendingNextQuestId = null; // Clear pending since we are handling it now
+
+                _currentDialogueQuest = nextQuest;
+                _speakerName = nextQuest.Dialogue.Speaker;
+                _dialogue = new List<string>(nextQuest.Dialogue.Lines);
+                if (nextQuest.Dialogue.Choices != null)
+                {
+                    _currentChoices = new List<DialogueChoice>(nextQuest.Dialogue.Choices);
+                }
+                else
+                {
+                    _currentChoices.Clear();
+                }
+
+                _currentDialogueIndex = 0;
+                _dialogueBox.Show();
+
+                var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+                prompt.Text = "[TAP TO CONTINUE]";
+
+                UpdateDialogueUI();
+            }
+            else
+            {
+                GD.Print(
+                    $"[WorldScene] Next quest has no immediate dialogue. Leaving as pending for movement trigger.");
+            }
+        }
+    }
+
+    private async void TriggerEncounter()
+    {
+        GD.Print(
+            $"[WorldScene] TriggerEncounter called. _isEncounterTriggered: {_isEncounterTriggered}, _currentDialogueIndex: {_currentDialogueIndex}, _pendingNextQuestId: {_pendingNextQuestId ?? "null"}");
+
+        // Prevent re-triggering if an encounter is already in progress or dialogue is active.
+        // If a choice was made and a quest is pending, we SHOULD proceed to trigger it.
+        if (_isEncounterTriggered || _currentDialogueIndex >= 0)
+        {
+            GD.Print(
+                $"[WorldScene] TriggerEncounter blocked: Encountered={_isEncounterTriggered}, Dialogue={_currentDialogueIndex >= 0}");
+            return;
+        }
+
+        QuestNode? questToTrigger = null;
+
+        // 1. Check if a choice was made that leads to a specific quest.
+        if (!string.IsNullOrEmpty(_pendingNextQuestId))
+        {
+            GD.Print($"[WorldScene] Checking pending quest ID: {_pendingNextQuestId}");
+            questToTrigger = _questService.GetQuestById(_pendingNextQuestId);
+            GD.Print($"[WorldScene] Pending quest '{_pendingNextQuestId}' found: {questToTrigger?.Title ?? "None"}");
+            _pendingNextQuestId = null; // Reset after checking
+        }
+
+        // 2. If no pending choice-driven quest, use location-based or next main story quest.
+        if (questToTrigger == null && _session.CurrentCharacter != null)
+        {
+            questToTrigger = _questService.GetQuestByLocation(_session.CurrentCharacter, "SandyShore_East");
+            GD.Print(
+                $"[WorldScene] No pending quest. Checking location 'SandyShore_East'. Found: {questToTrigger?.Title ?? "None"}");
+
+            if (questToTrigger == null)
+            {
+                questToTrigger = _questService.GetNextAvailableMainStoryQuest(_session.CurrentCharacter);
+                GD.Print(
+                    $"[WorldScene] No location quest found. Falling back to next main story quest: {questToTrigger?.Title ?? "None"}");
+            }
+        }
+
+        // 3. Trigger the determined quest.
+        if (questToTrigger != null)
+        {
+            GD.Print($"[WorldScene] Triggering quest: {questToTrigger.Title} (ID: {questToTrigger.Id})");
+            if (questToTrigger.Encounter != null)
+            {
+                GD.Print($"[WorldScene] Navigating to BattleScene with encounter from quest '{questToTrigger.Title}'.");
+                await _navigation.NavigateToAsync(Routes.Battle,
+                    new BattleArgs { Encounter = questToTrigger.Encounter });
+                _isEncounterTriggered = true;
+            }
+            else if (questToTrigger.Id == "beat_1_stealth")
+            {
+                GD.Print($"[WorldScene] Navigating to StealthScene for quest '{questToTrigger.Title}'.");
+                await _navigation.NavigateToAsync(Routes.Stealth);
+                _isEncounterTriggered = true;
+            }
+            else if (questToTrigger.Dialogue != null && questToTrigger.Dialogue.Lines.Count > 0)
+            {
+                GD.Print($"[WorldScene] Quest '{questToTrigger.Title}' has dialogue. Initiating.");
+                _isEncounterTriggered = true;
+                StartDialogue(); // Start dialogue sequence for the next part of the story
+            }
+            else
+            {
+                GD.Print(
+                    $"[WorldScene] Quest '{questToTrigger.Title}' found, but no encounter or dialogue to trigger immediately.");
+                _isEncounterTriggered = false;
+            }
+        }
+        else
+        {
+            GD.Print("[WorldScene] No quest found to trigger.");
+            // If no encounter is found, reset the flag.
+            _isEncounterTriggered = false;
+        }
+    }
+
+    // Helper to check if a quest is completed (for TriggerEncounter logic)
+    private bool IsQuestCompleted(string questId)
+    {
+        return _session.CurrentCharacter != null && _session.CurrentCharacter.CompletedQuestIds.Contains(questId);
+    }
 }

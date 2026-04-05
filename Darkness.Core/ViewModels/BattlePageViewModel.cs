@@ -17,17 +17,13 @@ namespace Darkness.Core.ViewModels
         private List<Character> _party = new();
         private string? _currentQuestId;
 
-        [ObservableProperty]
-        private object? _gameInstance;
+        [ObservableProperty] private object? _gameInstance;
 
-        [ObservableProperty]
-        private string _statusText = "Battle in progress...";
+        [ObservableProperty] private string _statusText = "Battle in progress...";
 
-        [ObservableProperty]
-        private bool _isContinueVisible;
+        [ObservableProperty] private bool _isContinueVisible;
 
-        [ObservableProperty]
-        private string _statusColor = "White";
+        [ObservableProperty] private string _statusColor = "White";
 
         public BattlePageViewModel(
             ICharacterService characterService,
@@ -48,7 +44,7 @@ namespace Darkness.Core.ViewModels
             if (string.IsNullOrEmpty(_currentQuestId)) return (new(), null, new());
             var quest = _questService.GetQuestById(_currentQuestId);
             if (quest?.Encounter == null) return (new(), null, new());
-            
+
             return (quest.Encounter.Enemies, quest.Encounter.SurvivalTurns, quest.Encounter.AdditionalPartyMembers);
         }
 
@@ -134,7 +130,9 @@ namespace Darkness.Core.ViewModels
         [RelayCommand]
         public async Task FleeAsync()
         {
-            bool confirmed = await _dialogService.DisplayConfirmAsync("Flee", "Are you sure you want to attempt to flee?", "Yes", "No");
+            bool confirmed =
+                await _dialogService.DisplayConfirmAsync("Flee", "Are you sure you want to attempt to flee?", "Yes",
+                    "No");
             if (confirmed)
             {
                 await _navigationService.GoBackAsync();

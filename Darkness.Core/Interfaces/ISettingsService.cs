@@ -8,7 +8,7 @@ namespace Darkness.Core.Interfaces
         double MusicVolume { get; set; }
         double SfxVolume { get; set; }
         int LastUserId { get; set; }
-        
+
         Task LoadSettingsAsync();
         Task SaveSettingsAsync();
     }

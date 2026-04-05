@@ -45,7 +45,7 @@ public partial class CreateUserScene : Control
         // DEBUG: Immediate confirmation that button was hit
         await dialog.DisplayAlertAsync("Debug", $"Create button hit! Username entered: '{_usernameEdit.Text}'", "OK");
 
-        if (string.IsNullOrWhiteSpace(_usernameEdit.Text)) 
+        if (string.IsNullOrWhiteSpace(_usernameEdit.Text))
         {
             GD.Print("[CreateUserScene] Username is empty.");
             await dialog.DisplayAlertAsync("Validation Error", "Please enter a username.", "OK");
@@ -56,10 +56,10 @@ public partial class CreateUserScene : Control
         {
             var user = new User { Username = _usernameEdit.Text };
             GD.Print($"[CreateUserScene] Creating user: '{user.Username}'");
-            
+
             var success = await _userService.CreateUserAsync(user);
             GD.Print($"[CreateUserScene] Create success: {success}");
-            
+
             if (success)
             {
                 _session.CurrentUser = user;
@@ -69,7 +69,8 @@ public partial class CreateUserScene : Control
             else
             {
                 GD.PrintErr("[CreateUserScene] CreateUserAsync returned false.");
-                await dialog.DisplayAlertAsync("Create Failed", "Failed to create user. The username might already be in use.", "OK");
+                await dialog.DisplayAlertAsync("Create Failed",
+                    "Failed to create user. The username might already be in use.", "OK");
             }
         }
         catch (System.Exception ex)
@@ -77,7 +78,9 @@ public partial class CreateUserScene : Control
             GD.PrintErr($"[CreateUserScene] EXCEPTION: {ex.Message}");
             GD.PrintErr(ex.StackTrace);
             string stackTrace = ex.StackTrace ?? "No stack trace available";
-            await dialog.DisplayAlertAsync("System Error", $"An error occurred during user creation: {ex.Message}\n\nStack Trace: {stackTrace.Substring(0, System.Math.Min(stackTrace.Length, 200))}...", "OK");
+            await dialog.DisplayAlertAsync("System Error",
+                $"An error occurred during user creation: {ex.Message}\n\nStack Trace: {stackTrace.Substring(0, System.Math.Min(stackTrace.Length, 200))}...",
+                "OK");
         }
     }
 
@@ -91,6 +94,7 @@ public partial class CreateUserScene : Control
             await dialog.DisplayAlertAsync("Login Required", "You must create a user to continue.", "OK");
             return;
         }
+
         await _navigation.GoBackAsync();
     }
 }

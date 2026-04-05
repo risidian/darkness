@@ -2,7 +2,9 @@ using Darkness.Core.Models;
 
 namespace Darkness.Core.Models;
 
-public abstract class NavigationArgs { }
+public abstract class NavigationArgs
+{
+}
 
 public class BattleArgs : NavigationArgs
 {

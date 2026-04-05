@@ -11,17 +11,14 @@ namespace Darkness.Core.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
 
-        [ObservableProperty]
-        private double _masterVolume;
+        [ObservableProperty] private double _masterVolume;
 
-        [ObservableProperty]
-        private double _musicVolume;
+        [ObservableProperty] private double _musicVolume;
 
-        [ObservableProperty]
-        private double _sfxVolume;
+        [ObservableProperty] private double _sfxVolume;
 
         public SettingsViewModel(
-            ISettingsService settingsService, 
+            ISettingsService settingsService,
             INavigationService navigationService,
             IDialogService dialogService)
         {
@@ -51,9 +48,11 @@ namespace Darkness.Core.ViewModels
         }
 
         [RelayCommand]
-        public Task GraphicsSettingsAsync() => _dialogService.DisplayAlertAsync("Graphics", "Graphics settings coming soon!", "OK");
+        public Task GraphicsSettingsAsync() =>
+            _dialogService.DisplayAlertAsync("Graphics", "Graphics settings coming soon!", "OK");
 
         [RelayCommand]
-        public Task KeybindingsAsync() => _dialogService.DisplayAlertAsync("Keybindings", "Keybindings settings coming soon!", "OK");
+        public Task KeybindingsAsync() =>
+            _dialogService.DisplayAlertAsync("Keybindings", "Keybindings settings coming soon!", "OK");
     }
 }

@@ -13,11 +13,9 @@ namespace Darkness.Core.ViewModels
         private readonly IDialogService _dialogService;
         private readonly ISettingsService _settingsService;
 
-        [ObservableProperty]
-        private bool _isDailyRewardVisible;
+        [ObservableProperty] private bool _isDailyRewardVisible;
 
-        [ObservableProperty]
-        private string _rewardText = string.Empty;
+        [ObservableProperty] private string _rewardText = string.Empty;
 
         public MainViewModel(
             IRewardService rewardService,
@@ -84,8 +82,9 @@ namespace Darkness.Core.ViewModels
                     {
                         IsDailyRewardVisible = true;
                         RewardText = $"You received: {reward.Name} - {reward.Description}";
-                        
-                        await _dialogService.DisplayAlertAsync("Daily Bonus!", $"You received a {reward.Name}!", "Excellent");
+
+                        await _dialogService.DisplayAlertAsync("Daily Bonus!", $"You received a {reward.Name}!",
+                            "Excellent");
                     }
                 }
             }
@@ -99,7 +98,7 @@ namespace Darkness.Core.ViewModels
         public async Task LogoutAsync()
         {
             _sessionService.CurrentUser = null;
-            
+
             // Clear last user ID
             _settingsService.LastUserId = 0;
             await _settingsService.SaveSettingsAsync();
@@ -108,8 +107,8 @@ namespace Darkness.Core.ViewModels
         }
 
         // Placeholder commands for menu buttons
-        [RelayCommand] 
-        public async Task StorylineAsync() 
+        [RelayCommand]
+        public async Task StorylineAsync()
         {
             try
             {
@@ -122,12 +121,17 @@ namespace Darkness.Core.ViewModels
             }
         }
 
-        [RelayCommand] public Task CharactersAsync() => _navigationService.NavigateToAsync("CharactersPage");
-        [RelayCommand] public Task DeathmatchAsync() => _navigationService.NavigateToAsync("DeathmatchPage");
-        [RelayCommand] public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
-        
-        [RelayCommand] 
-        public async Task PvpAsync() 
+        [RelayCommand]
+        public Task CharactersAsync() => _navigationService.NavigateToAsync("CharactersPage");
+
+        [RelayCommand]
+        public Task DeathmatchAsync() => _navigationService.NavigateToAsync("DeathmatchPage");
+
+        [RelayCommand]
+        public Task TrainingModeAsync() => _dialogService.DisplayAlertAsync("Mode", "Training Mode coming soon!", "OK");
+
+        [RelayCommand]
+        public async Task PvpAsync()
         {
             if (_sessionService.CurrentUser == null) return;
             var characters = await _characterService.GetCharactersForUserAsync(_sessionService.CurrentUser.Id);
@@ -147,12 +151,17 @@ namespace Darkness.Core.ViewModels
             await _navigationService.NavigateToAsync("GamePage", parameters);
         }
 
-        [RelayCommand] public Task SiegeAsync() => _dialogService.DisplayAlertAsync("Mode", "Siege coming soon!", "OK");
-        [RelayCommand] public Task AlliesAsync() => _navigationService.NavigateToAsync("AlliesPage");
-        [RelayCommand] public Task ForgeAsync() => _navigationService.NavigateToAsync("ForgePage");
-        
-        [RelayCommand] 
-        public async Task StudyAsync() 
+        [RelayCommand]
+        public Task SiegeAsync() => _dialogService.DisplayAlertAsync("Mode", "Siege coming soon!", "OK");
+
+        [RelayCommand]
+        public Task AlliesAsync() => _navigationService.NavigateToAsync("AlliesPage");
+
+        [RelayCommand]
+        public Task ForgeAsync() => _navigationService.NavigateToAsync("ForgePage");
+
+        [RelayCommand]
+        public async Task StudyAsync()
         {
             if (_sessionService.CurrentUser == null) return;
             var characters = await _characterService.GetCharactersForUserAsync(_sessionService.CurrentUser.Id);
@@ -168,6 +177,7 @@ namespace Darkness.Core.ViewModels
             });
         }
 
-        [RelayCommand] public Task SettingsAsync() => _navigationService.NavigateToAsync("SettingsPage");
+        [RelayCommand]
+        public Task SettingsAsync() => _navigationService.NavigateToAsync("SettingsPage");
     }
 }

@@ -34,7 +34,8 @@ namespace Darkness.Core.Logic
                 .ToList();
         }
 
-        public int CalculateDamage(Character attacker, Enemy defender, Skill? skill = null, ActionType action = ActionType.Standard, double? critRoll = null)
+        public int CalculateDamage(Character attacker, Enemy defender, Skill? skill = null,
+            ActionType action = ActionType.Standard, double? critRoll = null)
         {
             float dmgMult = skill?.DamageMultiplier ?? 1.0f;
             float armorPen = skill?.ArmorPenetration ?? 0.0f;
@@ -43,7 +44,7 @@ namespace Darkness.Core.Logic
             // Determine base attack stat (Strength for Physical, Intelligence for Magical)
             int baseAtk = (skill?.SkillType == "Magical") ? attacker.Intelligence : attacker.Strength;
             int totalAttack = (int)((baseAtk + (skill?.BasePower ?? 0)) * dmgMult);
-            
+
             // Defense ignores portion based on armor penetration
             int targetDef = (int)(defender.Defense * (1.0f - armorPen));
 
@@ -63,13 +64,14 @@ namespace Darkness.Core.Logic
             // Target Block reduction
             if (defender.IsBlocking)
             {
-                damage = (int)(damage * 0.5); 
+                damage = (int)(damage * 0.5);
             }
 
             return Math.Max(0, damage);
         }
 
-        public int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null, ActionType action = ActionType.Standard, double? critRoll = null)
+        public int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null,
+            ActionType action = ActionType.Standard, double? critRoll = null)
         {
             int totalAttack = attacker.Attack + (skill?.BasePower ?? 0);
             int totalDefense = defender.Defense;
@@ -91,16 +93,17 @@ namespace Darkness.Core.Logic
             if (defender.IsBlocking)
             {
                 float reduction = 0.05f; // Bare handed
-                if (defender.ShieldType != "None" && defender.ShieldType != "") reduction = 0.60f; 
+                if (defender.ShieldType != "None" && defender.ShieldType != "") reduction = 0.60f;
                 else if (defender.WeaponType != "None" && defender.WeaponType != "") reduction = 0.20f;
-                
+
                 damage = (int)(damage * (1.0f - reduction));
             }
 
             return Math.Max(0, damage);
         }
 
-        public int CalculateDamage(Character attacker, Character defender, Skill? skill = null, ActionType action = ActionType.Standard, double? critRoll = null)
+        public int CalculateDamage(Character attacker, Character defender, Skill? skill = null,
+            ActionType action = ActionType.Standard, double? critRoll = null)
         {
             float dmgMult = skill?.DamageMultiplier ?? 1.0f;
             float armorPen = skill?.ArmorPenetration ?? 0.0f;
@@ -109,14 +112,18 @@ namespace Darkness.Core.Logic
             int totalAttack = (int)((baseAtk + (skill?.BasePower ?? 0)) * dmgMult);
             int totalDefense = (int)(defender.Defense * (1.0f - armorPen));
 
-            int damage = (totalAttack + totalDefense > 0) ? (int)(((long)totalAttack * totalAttack) / (totalAttack + totalDefense)) : 0;
+            int damage = (totalAttack + totalDefense > 0)
+                ? (int)(((long)totalAttack * totalAttack) / (totalAttack + totalDefense))
+                : 0;
             if (totalAttack > 0 && damage == 0) damage = 1;
 
             if ((critRoll ?? _random.NextDouble()) < 0.05) damage = (int)(damage * 1.5);
 
             if (defender.IsBlocking)
             {
-                float reduction = (defender.ShieldType != "None" && defender.ShieldType != "") ? 0.60f : ((defender.WeaponType != "None" && defender.WeaponType != "") ? 0.20f : 0.05f);
+                float reduction = (defender.ShieldType != "None" && defender.ShieldType != "")
+                    ? 0.60f
+                    : ((defender.WeaponType != "None" && defender.WeaponType != "") ? 0.20f : 0.05f);
                 damage = (int)(damage * (1.0f - reduction));
             }
 

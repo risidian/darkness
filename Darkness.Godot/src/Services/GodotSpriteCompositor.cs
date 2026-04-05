@@ -18,7 +18,7 @@ public class GodotSpriteCompositor : ISpriteCompositor
 
         // Map internal action names to LPC rows
         var animMap = new Dictionary<string, int>
-        { 
+        {
             { "spellcast", 0 },
             { "thrust", 4 },
             { "walk", 8 },
@@ -31,14 +31,14 @@ public class GodotSpriteCompositor : ISpriteCompositor
         {
             var layerImage = Image.CreateEmpty(1536, 2112, false, Image.Format.Rgba8);
             layerImage.Fill(new Color(0, 0, 0, 0));
-            
+
             var tint = Color.FromHtml(layer.TintHex);
             bool layerHasContent = false;
 
             foreach (var anim in animMap)
             {
                 byte[]? data = await LoadLayerData(layer, anim.Key, fileSystem);
-                
+
                 // Fallback to walk if specific action is missing (except for Body)
                 if (data == null && anim.Key != "walk")
                 {
@@ -53,7 +53,7 @@ public class GodotSpriteCompositor : ISpriteCompositor
                         layerHasContent = true;
                         if (img.IsCompressed()) img.Decompress();
                         img.Convert(Image.Format.Rgba8);
-                        
+
                         // Apply Tint if not White
                         if (tint.R < 0.99f || tint.G < 0.99f || tint.B < 0.99f)
                         {
@@ -64,7 +64,8 @@ public class GodotSpriteCompositor : ISpriteCompositor
                                     var pixel = img.GetPixel(x, y);
                                     if (pixel.A > 0)
                                     {
-                                        var newPixel = new Color(pixel.R * tint.R, pixel.G * tint.G, pixel.B * tint.B, pixel.A);
+                                        var newPixel = new Color(pixel.R * tint.R, pixel.G * tint.G, pixel.B * tint.B,
+                                            pixel.A);
                                         img.SetPixel(x, y, newPixel);
                                     }
                                 }
@@ -91,26 +92,31 @@ public class GodotSpriteCompositor : ISpriteCompositor
 
                             // Map full sheet rows to face image Y offset
                             // 0 = Up, 1 = Left, 2 = Down, 3 = Right (in full sheet order)
-                            int[] faceYOffset = { 0, 96, 64, 32 }; 
+                            int[] faceYOffset = { 0, 96, 64, 32 };
 
                             for (int dir = 0; dir < 4; dir++)
                             {
                                 // Face has 3 frames: standing, step 1, step 2.
                                 // We'll just use the standing frame (x=0) for all frames in the animation.
-                                var faceFrame = img.GetRegion(new Rect2I(32, faceYOffset[dir], 32, 32)); // col 1 is usually standing
+                                var faceFrame =
+                                    img.GetRegion(new Rect2I(32, faceYOffset[dir], 32,
+                                        32)); // col 1 is usually standing
 
                                 // Blit to all 9 columns of this row in the full sheet
                                 for (int col = 0; col < 9; col++)
                                 {
-                                    layerImage.BlendRect(faceFrame, new Rect2I(0, 0, 32, 32), new Vector2I(col * 64 + 16, (destRowBase + dir) * 64 + 16));
+                                    layerImage.BlendRect(faceFrame, new Rect2I(0, 0, 32, 32),
+                                        new Vector2I(col * 64 + 16, (destRowBase + dir) * 64 + 16));
                                 }
                             }
                         }
                         else
                         {
                             // Blit into the correct row
-                            layerImage.BlendRect(img, new Rect2I(0, 0, img.GetWidth(), img.GetHeight()), new Vector2I(0, anim.Value * 64));
-                        }                    }
+                            layerImage.BlendRect(img, new Rect2I(0, 0, img.GetWidth(), img.GetHeight()),
+                                new Vector2I(0, anim.Value * 64));
+                        }
+                    }
                 }
             }
 
@@ -129,8 +135,10 @@ public class GodotSpriteCompositor : ISpriteCompositor
         try
         {
             string fileName = layer.FileNameTemplate.Replace("{action}", action);
-            string fullPath = layer.RootPath.EndsWith("/") ? layer.RootPath + fileName : layer.RootPath + "/" + fileName;
-            
+            string fullPath = layer.RootPath.EndsWith("/")
+                ? layer.RootPath + fileName
+                : layer.RootPath + "/" + fileName;
+
             var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
@@ -168,7 +176,8 @@ public class GodotSpriteCompositor : ISpriteCompositor
                                 var pixel = img.GetPixel(x, y);
                                 if (pixel.A > 0)
                                 {
-                                    img.SetPixel(x, y, new Color(pixel.R * tint.R, pixel.G * tint.G, pixel.B * tint.B, pixel.A));
+                                    img.SetPixel(x, y,
+                                        new Color(pixel.R * tint.R, pixel.G * tint.G, pixel.B * tint.B, pixel.A));
                                 }
                             }
                         }
@@ -204,20 +213,20 @@ public class GodotSpriteCompositor : ISpriteCompositor
             stream.CopyTo(ms);
             var img = new Image();
             if (img.LoadPngFromBuffer(ms.ToArray()) == Error.Ok)
-            { 
+            {
                 if (img.IsCompressed()) img.Decompress();
                 img.Convert(Image.Format.Rgba8);
-                
+
                 int w = img.GetWidth();
                 int h = img.GetHeight();
-                
+
                 // If it's a small asset (like face 96x128), it's 32x32 frames.
                 if (h <= 128 && h < sheetHeight)
                 {
                     // Extract the Down-pose frame (Row 3, Column 1 of 32x32 grid)
                     // Row 3 starts at y = 64.
                     var frame = img.GetRegion(new Rect2I(0, 64, 32, 32));
-                    
+
                     // Do not resize it! A 32x32 face should be drawn at an offset within the 64x64 bounds.
                     // The preview extracts a 64x64 block from y=128.
                     // Offset of (16, 16) centers the 32x32 head within the 64x64 extraction block.
@@ -226,7 +235,8 @@ public class GodotSpriteCompositor : ISpriteCompositor
                 else
                 {
                     // Full sheet or already 64x64 based. Blit entire sheet.
-                    composite.BlendRect(img, new Rect2I(0, 0, Math.Min(w, sheetWidth), Math.Min(h, sheetHeight)), Vector2I.Zero);
+                    composite.BlendRect(img, new Rect2I(0, 0, Math.Min(w, sheetWidth), Math.Min(h, sheetHeight)),
+                        Vector2I.Zero);
                 }
             }
         }
@@ -234,11 +244,12 @@ public class GodotSpriteCompositor : ISpriteCompositor
         return composite.SavePngToBuffer();
     }
 
-    public byte[] ExtractFrame(byte[] spriteSheetPng, int frameX, int frameY, int frameWidth, int frameHeight, int scale)
+    public byte[] ExtractFrame(byte[] spriteSheetPng, int frameX, int frameY, int frameWidth, int frameHeight,
+        int scale)
     {
         var sheet = new Image();
         sheet.LoadPngFromBuffer(spriteSheetPng);
-        
+
         var rect = new Rect2I(frameX, frameY, frameWidth, frameHeight);
         var frame = sheet.GetRegion(rect);
 

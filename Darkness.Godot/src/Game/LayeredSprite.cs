@@ -26,7 +26,7 @@ public partial class LayeredSprite : Node2D
             }
         }
     }
-    
+
     public override void _Ready()
     {
         if (!IsInsideTree()) return;
@@ -94,7 +94,7 @@ public partial class LayeredSprite : Node2D
 
         var layerDefs = catalog.GetLayersForAppearance(appearance);
         GD.Print($"[LayeredSprite] Setting up {layerDefs.Count} individual layers for fallback.");
-        
+
         foreach (var def in layerDefs)
         {
             var nodeName = GetNodeNameForPath(def.ResourcePath);
@@ -127,7 +127,8 @@ public partial class LayeredSprite : Node2D
         var frames = ImageUtils.CreateSpriteFrames(data, 64, 64);
         if (frames != null)
         {
-            GD.Print($"[LayeredSprite] Created SpriteFrames from bytes. Animations: {string.Join(", ", frames.GetAnimationNames())}");
+            GD.Print(
+                $"[LayeredSprite] Created SpriteFrames from bytes. Animations: {string.Join(", ", frames.GetAnimationNames())}");
             bodySprite.SpriteFrames = frames;
             bodySprite.FlipH = _flipH;
             bodySprite.Show();
@@ -147,8 +148,8 @@ public partial class LayeredSprite : Node2D
     {
         ResetLayers();
         GD.Print($"[LayeredSprite] SetupMonster started for: {monsterType}");
-        
-        if (!_layers.TryGetValue("Body", out var bodySprite)) 
+
+        if (!_layers.TryGetValue("Body", out var bodySprite))
         {
             GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
             return;
@@ -171,7 +172,7 @@ public partial class LayeredSprite : Node2D
         bodySprite.SpriteFrames = frames;
         bodySprite.FlipH = _flipH;
         bodySprite.Show();
-        
+
         if (frames.HasAnimation("idle"))
         {
             bodySprite.Play("idle");
@@ -211,15 +212,16 @@ public partial class LayeredSprite : Node2D
             using var ms = new System.IO.MemoryStream();
             await stream.CopyToAsync(ms);
             var data = ms.ToArray();
-            
+
             var img = new Image();
             img.LoadPngFromBuffer(data);
             int frameH = img.GetHeight();
-            
+
             // Heuristic for hound sprites: they are 64px wide even if only 32px tall
             int frameW = (frameH <= 48) ? 64 : frameH;
-            
-            GD.Print($"[LayeredSprite] Successfully read {data.Length} bytes for {animName}. Detected Frame Size: {frameW}x{frameH}");
+
+            GD.Print(
+                $"[LayeredSprite] Successfully read {data.Length} bytes for {animName}. Detected Frame Size: {frameW}x{frameH}");
             ImageUtils.AddAnimationFromBytes(frames, animName, data, frameW, frameH);
         }
         catch (Exception ex)
@@ -272,6 +274,7 @@ public partial class LayeredSprite : Node2D
         {
             return bodySprite.SpriteFrames != null && bodySprite.SpriteFrames.HasAnimation(animation);
         }
+
         return false;
     }
 }

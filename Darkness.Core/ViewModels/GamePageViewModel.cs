@@ -9,26 +9,20 @@ namespace Darkness.Core.ViewModels
     {
         private readonly INavigationService _navigationService;
 
-        [ObservableProperty]
-        private object? _gameInstance;
+        [ObservableProperty] private object? _gameInstance;
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsEngineUnavailable))]
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsEngineUnavailable))]
         private bool _isEngineAvailable;
 
         public bool IsEngineUnavailable => !IsEngineAvailable;
 
-        [ObservableProperty]
-        private DeathmatchEncounter? _encounter;
+        [ObservableProperty] private DeathmatchEncounter? _encounter;
 
-        [ObservableProperty]
-        private string? _mode;
+        [ObservableProperty] private string? _mode;
 
-        [ObservableProperty]
-        private Character? _player1;
+        [ObservableProperty] private Character? _player1;
 
-        [ObservableProperty]
-        private Character? _player2;
+        [ObservableProperty] private Character? _player2;
 
         public GamePageViewModel(INavigationService navigationService)
         {

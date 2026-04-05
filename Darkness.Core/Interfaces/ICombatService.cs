@@ -21,7 +21,8 @@ namespace Darkness.Core.Interfaces
         /// <param name="action">The type of action taken.</param>
         /// <param name="critRoll">Optional: The roll for a critical hit (0.0 to 1.0). If null, a random roll is used.</param>
         /// <returns>The amount of damage dealt.</returns>
-        int CalculateDamage(Character attacker, Enemy defender, Skill? skill = null, ActionType action = ActionType.Standard, double? critRoll = null);
+        int CalculateDamage(Character attacker, Enemy defender, Skill? skill = null,
+            ActionType action = ActionType.Standard, double? critRoll = null);
 
         /// <summary>
         /// Calculates damage dealt by an enemy to a character.
@@ -32,7 +33,8 @@ namespace Darkness.Core.Interfaces
         /// <param name="action">The type of action taken.</param>
         /// <param name="critRoll">Optional: The roll for a critical hit (0.0 to 1.0). If null, a random roll is used.</param>
         /// <returns>The amount of damage dealt.</returns>
-        int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null, ActionType action = ActionType.Standard, double? critRoll = null);
+        int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null,
+            ActionType action = ActionType.Standard, double? critRoll = null);
 
         /// <summary>
         /// Calculates damage dealt by a character to another character.
@@ -43,7 +45,8 @@ namespace Darkness.Core.Interfaces
         /// <param name="action">The type of action taken.</param>
         /// <param name="critRoll">Optional: The roll for a critical hit (0.0 to 1.0). If null, a random roll is used.</param>
         /// <returns>The amount of damage dealt.</returns>
-        int CalculateDamage(Character attacker, Character defender, Skill? skill = null, ActionType action = ActionType.Standard, double? critRoll = null);
+        int CalculateDamage(Character attacker, Character defender, Skill? skill = null,
+            ActionType action = ActionType.Standard, double? critRoll = null);
 
         /// <summary>
         /// Deducts Mana and Stamina costs for a skill from a character.
