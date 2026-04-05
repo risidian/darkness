@@ -1,98 +1,156 @@
-using System.Collections.Generic;
-using System.Text.Json;
-using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using Darkness.Core.Services;
-using Moq;
-using Xunit;
+using LiteDB;
 
 namespace Darkness.Tests.Services;
 
-public class QuestServiceTests
+public class QuestServiceTests : IDisposable
 {
+    private readonly LiteDatabase _db;
+    private readonly string _dbPath;
     private readonly QuestService _questService;
-    private readonly Mock<IFileSystemService> _mockFileSystem;
 
     public QuestServiceTests()
     {
-        _mockFileSystem = new Mock<IFileSystemService>();
-        
-        // Setup mock quest data
-        var quests = new List<QuestNode>
+        _dbPath = Path.Combine(Path.GetTempPath(), $"QuestServiceTests_{Guid.NewGuid()}.db");
+        _db = new LiteDatabase(_dbPath);
+
+        var chains = _db.GetCollection<QuestChain>("quest_chains");
+        chains.Insert(new QuestChain
         {
-            new QuestNode { Id = "beat_1", Title = "The Beginning", IsMainStory = true, Prerequisites = new List<string>() },
-            new QuestNode { Id = "side_1", Title = "A Small Favor", IsMainStory = false, Prerequisites = new List<string> { "beat_1" } },
-            new QuestNode { Id = "loc_1", Title = "Location Quest", Location = "TestLoc", Prerequisites = new List<string>() }
-        };
-        
-        string json = JsonSerializer.Serialize(quests);
-        _mockFileSystem.Setup(f => f.ReadAllText("assets/data/quests.json")).Returns(json);
+            Id = "beat_1", Title = "The Awakening", IsMainStory = true, SortOrder = 1,
+            Prerequisites = new(),
+            Steps = new List<QuestStep>
+            {
+                new() { Id = "beat_1_intro", Type = "branch",
+                    Branch = new BranchData { Options = new()
+                    {
+                        new BranchOption { Text = "Fight", NextStepId = "beat_1_combat", MoralityImpact = 5 },
+                        new BranchOption { Text = "Sneak", NextStepId = "beat_1_stealth", MoralityImpact = -5 }
+                    }}},
+                new() { Id = "beat_1_combat", Type = "combat" },
+                new() { Id = "beat_1_stealth", Type = "location" }
+            }
+        });
+        chains.Insert(new QuestChain
+        {
+            Id = "beat_2", Title = "Dark Warrior", IsMainStory = true, SortOrder = 2,
+            Prerequisites = new() { "beat_1" },
+            Steps = new List<QuestStep>
+            {
+                new() { Id = "beat_2_combat", Type = "combat" }
+            }
+        });
 
-        _questService = new QuestService(_mockFileSystem.Object);
+        _questService = new QuestService(_db);
+    }
+
+    public void Dispose()
+    {
+        _db.Dispose();
+        try { File.Delete(_dbPath); } catch { }
     }
 
     [Fact]
-    public void GetAvailableQuests_ShouldReturnInitialMainQuest_WhenNoQuestsCompleted()
+    public void GetAvailableChains_ReturnsChainWithNoPrereqs()
     {
-        // Arrange
-        var character = new Character { Name = "Test" };
-
-        // Act
-        var availableQuests = _questService.GetAvailableQuests(character);
-
-        // Assert
-        Assert.Contains(availableQuests, q => q.Id == "beat_1");
+        var character = new Character { Id = 1 };
+        var chains = _questService.GetAvailableChains(character);
+        Assert.Single(chains);
+        Assert.Equal("beat_1", chains[0].Id);
     }
 
     [Fact]
-    public void GetAvailableQuests_ShouldReturnSideQuest_WhenMainQuestCompleted()
+    public void GetAvailableChains_ExcludesChainWithUnmetPrereqs()
     {
-        // Arrange
-        var character = new Character { Name = "Test" };
-        _questService.CompleteQuest(character, "beat_1");
-
-        // Act
-        var availableQuests = _questService.GetAvailableQuests(character);
-
-        // Assert
-        Assert.Contains(availableQuests, q => q.Id == "side_1");
+        var character = new Character { Id = 1 };
+        var chains = _questService.GetAvailableChains(character);
+        Assert.DoesNotContain(chains, c => c.Id == "beat_2");
     }
 
     [Fact]
-    public void GetQuestById_ShouldReturnCorrectQuest()
+    public void GetAvailableChains_IncludesChainWhenPrereqsComplete()
     {
-        // Act
-        var quest = _questService.GetQuestById("beat_1");
+        var character = new Character { Id = 1 };
+        var stateCol = _db.GetCollection<QuestState>("quest_states");
+        stateCol.Insert(new QuestState { CharacterId = 1, ChainId = "beat_1", Status = "completed" });
 
-        // Assert
-        Assert.NotNull(quest);
-        Assert.Equal("The Beginning", quest.Title);
+        var chains = _questService.GetAvailableChains(character);
+        Assert.Contains(chains, c => c.Id == "beat_2");
     }
 
     [Fact]
-    public void GetQuestByLocation_ShouldReturnQuest_WhenPrerequisitesMet()
+    public void GetCurrentStep_ReturnsFirstStep_WhenNoState()
     {
-        // Arrange
-        var character = new Character { Name = "Test" };
-
-        // Act
-        var quest = _questService.GetQuestByLocation(character, "TestLoc");
-
-        // Assert
-        Assert.NotNull(quest);
-        Assert.Equal("loc_1", quest.Id);
+        var character = new Character { Id = 1 };
+        var step = _questService.GetCurrentStep(character, "beat_1");
+        Assert.NotNull(step);
+        Assert.Equal("beat_1_intro", step.Id);
     }
 
     [Fact]
-    public void CompleteQuest_ShouldAddIdToCompletedQuests()
+    public void AdvanceStep_WithBranchChoice_SetsCorrectStep()
     {
-        // Arrange
-        var character = new Character { Name = "Test" };
+        var character = new Character { Id = 1 };
+        var step = _questService.AdvanceStep(character, "beat_1", "beat_1_combat");
 
-        // Act
-        _questService.CompleteQuest(character, "beat_1");
+        Assert.NotNull(step);
+        Assert.Equal("beat_1_combat", step.Id);
 
-        // Assert
-        Assert.Contains("beat_1", character.CompletedQuestIds);
+        var state = _questService.GetQuestState(1, "beat_1");
+        Assert.NotNull(state);
+        Assert.Equal("beat_1_combat", state.CurrentStepId);
+        Assert.Equal("in_progress", state.Status);
+    }
+
+    [Fact]
+    public void AdvanceStep_OnLastStep_CompletesChain()
+    {
+        var character = new Character { Id = 1 };
+        _questService.AdvanceStep(character, "beat_1", "beat_1_combat");
+        _questService.AdvanceStep(character, "beat_1");
+
+        var state = _questService.GetQuestState(1, "beat_1");
+        Assert.NotNull(state);
+        Assert.Equal("completed", state.Status);
+    }
+
+    [Fact]
+    public void AdvanceStep_AppliesMoralityImpact()
+    {
+        var character = new Character { Id = 1, Morality = 0 };
+        _questService.AdvanceStep(character, "beat_1", "beat_1_combat");
+        Assert.Equal(5, character.Morality);
+    }
+
+    [Fact]
+    public void IsMainStoryComplete_ReturnsFalse_WhenChainsIncomplete()
+    {
+        var character = new Character { Id = 1 };
+        Assert.False(_questService.IsMainStoryComplete(character));
+    }
+
+    [Fact]
+    public void IsMainStoryComplete_ReturnsTrue_WhenAllMainChainsComplete()
+    {
+        var character = new Character { Id = 1 };
+        var stateCol = _db.GetCollection<QuestState>("quest_states");
+        stateCol.Insert(new QuestState { CharacterId = 1, ChainId = "beat_1", Status = "completed" });
+        stateCol.Insert(new QuestState { CharacterId = 1, ChainId = "beat_2", Status = "completed" });
+        Assert.True(_questService.IsMainStoryComplete(character));
+    }
+
+    [Fact]
+    public void GetChainById_ReturnsCorrectChain()
+    {
+        var chain = _questService.GetChainById("beat_1");
+        Assert.NotNull(chain);
+        Assert.Equal("The Awakening", chain.Title);
+    }
+
+    [Fact]
+    public void GetChainById_ReturnsNull_ForUnknownId()
+    {
+        Assert.Null(_questService.GetChainById("nonexistent"));
     }
 }

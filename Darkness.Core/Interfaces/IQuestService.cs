@@ -1,13 +1,14 @@
-using System.Collections.Generic;
 using Darkness.Core.Models;
 
 namespace Darkness.Core.Interfaces;
 
 public interface IQuestService
 {
-    List<QuestNode> GetAvailableQuests(Character character);
-    QuestNode? GetQuestById(string id);
-    void CompleteQuest(Character character, string questId);
-    QuestNode? GetQuestByLocation(Character character, string locationKey);
-    QuestNode? GetNextAvailableMainStoryQuest(Character character);
+    List<QuestChain> GetAvailableChains(Character character);
+    QuestChain? GetChainById(string chainId);
+    QuestStep? GetCurrentStep(Character character, string chainId);
+    QuestStep? AdvanceStep(Character character, string chainId, string? choiceStepId = null);
+    QuestState? GetQuestState(int characterId, string chainId);
+    bool IsMainStoryComplete(Character character);
+    List<string> GetCompletedChainIds(int characterId);
 }
