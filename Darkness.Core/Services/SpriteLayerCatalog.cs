@@ -53,8 +53,13 @@ namespace Darkness.Core.Services
 
         public List<string> WeaponTypes { get; } = new()
         {
-            "Arming Sword (Steel)", "Arming Sword (Iron)", "Arming Sword (Gold)", "Dagger (Steel)", "Recurve Bow",
-            "Mage Wand", "None"
+            "Arming Sword (Steel)",
+            "Arming Sword (Iron)", 
+            "Arming Sword (Gold)", 
+            "Dagger (Steel)", 
+            "Recurve Bow",
+            "Mage Wand", 
+            "None"
         };
 
         public List<string> ShieldTypes { get; } = new() { "Crusader", "Spartan", "None" };
@@ -217,6 +222,21 @@ namespace Darkness.Core.Services
                 layers.Add(new($"sprites/arms/{LegacyArmsFileMap.GetValueOrDefault(arms, "gloves")}.png", ZArms));
             if (!string.IsNullOrEmpty(legs) && legs != "None")
                 layers.Add(new($"sprites/legs/{LegacyLegsFileMap.GetValueOrDefault(legs, "slacks")}.png", ZLegs));
+
+            var weapon = appearance.WeaponType ?? "None";
+            if (weapon != "None")
+            {
+                if (weapon.Contains("Wand")) layers.Add(new("assets/sprites/full/weapons/magic/wand/male/slash/wand.png", ZWeapon));
+                else if (weapon.Contains("Bow")) layers.Add(new("assets/sprites/full/weapons/ranged/bow/normal/walk/foreground/steel.png", ZWeapon));
+                else if (weapon.Contains("Dagger")) layers.Add(new("assets/sprites/full/weapons/sword/dagger/walk/dagger.png", ZWeapon));
+                else if (weapon.Contains("Arming Sword"))
+                {
+                    string color = "steel";
+                    if (weapon.Contains("Gold")) color = "gold";
+                    else if (weapon.Contains("Iron")) color = "iron";
+                    layers.Add(new($"sprites/weapons/arming_sword_{color}.png", ZWeapon));
+                }
+            }
 
             layers.Sort((a, b) => a.ZOrder.CompareTo(b.ZOrder));
             return layers;
