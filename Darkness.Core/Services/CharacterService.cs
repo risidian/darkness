@@ -32,7 +32,7 @@ namespace Darkness.Core.Services
 
         public Task<Character?> GetCharacterByIdAsync(int characterId)
         {
-            return Task.Run(() =>
+            return Task.Run<Character?>(() =>
             {
                 using var db = OpenDb();
                 var col = db.GetCollection<Character>("characters");

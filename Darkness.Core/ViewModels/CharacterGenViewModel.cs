@@ -307,13 +307,6 @@ namespace Darkness.Core.ViewModels
                     break;
                 default:
                     throw new ArgumentException($"Unknown class: {className}");
-                    character.Strength = 10;
-                    character.Dexterity = 10;
-                    character.Constitution = 10;
-                    character.Intelligence = 10;
-                    character.Wisdom = 10;
-                    character.Charisma = 10;
-                    break;
             }
 
             //TODO: Modifiers

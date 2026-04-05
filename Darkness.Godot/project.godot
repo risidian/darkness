@@ -15,6 +15,10 @@ run/main_scene="res://scenes/SplashScene.tscn"
 config/features=PackedStringArray("4.6", "C#")
 config/icon="res://icon.svg"
 
+[audio]
+
+driver/driver.windows="WASAPI"
+
 [autoload]
 
 Global="*res://src/Core/Global.cs"
