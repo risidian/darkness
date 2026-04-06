@@ -51,7 +51,7 @@
 	  "NextStepId": "beat_1_stealth",
 	  "Dialogue": {
 		"Speaker": "Old Man",
-		"Lines": ["Cowards choice. The shadows are thickest near the main road.", "Follow the riverbed to the east, but move quietly."]
+		"Lines": ["Wise choice. The shadows are thickest near the main road.", "Follow the riverbed to the east, but move quietly."]
 	  }
 	},
 	{

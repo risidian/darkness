@@ -131,9 +131,13 @@ public class SpriteLayerCatalogTests : IDisposable
     }
 
     [Fact]
-    public void GetDefaultAppearanceForClass_UnknownClass_ReturnsDefault()
+    public void GetStitchLayers_GrayHairColor_UsesGrayAssetAndNoTint()
     {
-        var appearance = _catalog.GetDefaultAppearanceForClass("UnknownClass");
-        Assert.Equal("Leather", appearance.ArmorType);
+        var appearance = new CharacterAppearance { HairColor = "Gray", HairStyle = "Long" };
+        var layers = _catalog.GetStitchLayers(appearance);
+        var hairLayer = layers.FirstOrDefault(l => l.RootPath.Contains("hair"));
+        Assert.NotNull(hairLayer);
+        Assert.Contains("gray.png", hairLayer.FileNameTemplate);
+        Assert.Equal("#FFFFFF", hairLayer.TintHex);
     }
 }

@@ -28,6 +28,8 @@ public partial class BattleScene : Control, IInitializable
     private Label _endBattleTitle = null!;
     private Label _endBattleMessage = null!;
     private Button _retryButton = null!;
+    private Button _continueButton = null!;
+    private Button _okButton = null!;
     private string? _questChainId;
     private string? _questStepId;
 
@@ -151,17 +153,26 @@ public partial class BattleScene : Control, IInitializable
         _endBattleTitle = GetNode<Label>("%Title");
         _endBattleMessage = GetNode<Label>("%Message");
         _retryButton = GetNode<Button>("%RetryButton");
+        _continueButton = GetNode<Button>("%ContinueButton");
+        _okButton = GetNode<Button>("%OkButton");
 
         _partyContainer = GetNode<HBoxContainer>("CombatArea/PartyContainer");
         _enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
 
         GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
-        GetNode<Button>("%OkButton").Pressed += async () =>
+
+        _okButton.Pressed += async () =>
+        {
+            await _navigation.NavigateToAsync("MainMenuPage");
+        };
+
+        _continueButton.Pressed += async () =>
         {
             if (_questChainId != null)
                 _questService.AdvanceStep(_session.CurrentCharacter!, _questChainId);
             await _navigation.NavigateToAsync("WorldScene");
         };
+
         _retryButton.Pressed += () => RetryBattle();
 
         SetupBattle();
@@ -534,7 +545,11 @@ public partial class BattleScene : Control, IInitializable
         }
 
         _endBattleMessage.Text = victoryMsg;
+        
         _retryButton.Hide();
+        _continueButton.Show();
+        _okButton.Show();
+        
         _endBattlePanel.Show();
     }
 
@@ -544,7 +559,11 @@ public partial class BattleScene : Control, IInitializable
         _endBattleTitle.Text = "BATTLE FAILED";
         _endBattleTitle.Set("theme_override_colors/font_color", Colors.Red);
         _endBattleMessage.Text = "Your party has been defeated in combat.";
+        
         _retryButton.Show();
+        _continueButton.Hide();
+        _okButton.Hide();
+        
         _endBattlePanel.Show();
     }
 }

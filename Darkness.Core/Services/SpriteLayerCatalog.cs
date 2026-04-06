@@ -55,9 +55,7 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
         string gender = head.ToLower().Contains("female") ? "female" : "male";
 
         var skinOpt = optionCol.FindOne(o => o.Category == "Skin" && o.DisplayName == (appearance.SkinColor ?? "Light"));
-        var hairColorOpt = optionCol.FindOne(o => o.Category == "HairColor" && o.DisplayName == (appearance.HairColor ?? "Black"));
         string skinHex = skinOpt?.TintHex ?? "#FFFFFF";
-        string hairHex = hairColorOpt?.TintHex ?? "#FFFFFF";
 
         var layers = new List<(StitchLayer Layer, int Z)>();
 
@@ -90,7 +88,13 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
         string hairKey = appearance.HairStyle ?? "Long";
         var hairOpt = optionCol.FindOne(o => o.Category == "Hair" && o.DisplayName == hairKey);
         if (hairOpt != null)
-            layers.Add((new StitchLayer(hairOpt.AssetPath, hairOpt.FileNameTemplate, hairHex), hairOpt.ZOrder));
+        {
+            string colorName = (appearance.HairColor ?? "Blonde").ToLower().Replace(" ", "_");
+            string template = hairOpt.FileNameTemplate.Replace("blonde", colorName);
+            // We use #FFFFFF (no tint) because we are using the pre-tinted assets (gray.png, black.png, etc.)
+            // which look much better than multiplicative tinting on a blonde base.
+            layers.Add((new StitchLayer(hairOpt.AssetPath, template, "#FFFFFF"), hairOpt.ZOrder));
+        }
 
         // Equipment slots
         AddEquipmentLayer(spriteCol, layers, "Armor", appearance.ArmorType ?? "Leather", gender);

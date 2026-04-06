@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Darkness.Core.Interfaces;
 using Godot;
 using System.IO;
@@ -95,15 +97,22 @@ public class GodotFileSystemService : IFileSystemService
 
     public bool DirectoryExists(string path)
     {
-        var fullPath = ProjectSettings.GlobalizePath(System.IO.Path.Combine("res://", path));
-        return System.IO.Directory.Exists(fullPath);
+        string resPath = path.StartsWith("res://") ? path : $"res://{path}";
+        return DirAccess.DirExistsAbsolute(resPath);
     }
 
     public string[] GetFiles(string path, string searchPattern)
     {
-        var fullPath = ProjectSettings.GlobalizePath(System.IO.Path.Combine("res://", path));
-        if (!System.IO.Directory.Exists(fullPath))
+        string resPath = path.StartsWith("res://") ? path : $"res://{path}";
+        if (!DirAccess.DirExistsAbsolute(resPath))
             return Array.Empty<string>();
-        return System.IO.Directory.GetFiles(fullPath, searchPattern);
+
+        var files = DirAccess.GetFilesAt(resPath);
+        var extension = Path.GetExtension(searchPattern);
+
+        return files
+            .Where(f => string.IsNullOrEmpty(extension) || f.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+            .Select(f => Path.Combine(resPath, f).Replace("\\", "/"))
+            .ToArray();
     }
 }

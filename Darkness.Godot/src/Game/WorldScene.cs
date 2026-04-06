@@ -52,14 +52,22 @@ public partial class WorldScene : Node2D, IInitializable
 
             if (outcome == "Success")
             {
-                GD.Print("[WorldScene] Stealth successful. Advancing quest.");
+                GD.Print("[WorldScene] Stealth successful. Skipping combat and finishing chain.");
                 if (questChainId != null)
+                {
+                    // Advance past stealth
                     _questService.AdvanceStep(_session.CurrentCharacter, questChainId);
+                    // Advance past combat (finish chain)
+                    _questService.AdvanceStep(_session.CurrentCharacter, questChainId);
+                }
                 _isEncounterTriggered = true;
             }
             else
             {
-                GD.Print("[WorldScene] Stealth failed. Triggering monster battle.");
+                GD.Print("[WorldScene] Stealth failed. Advancing quest to trigger combat.");
+                if (questChainId != null)
+                    _questService.AdvanceStep(_session.CurrentCharacter, questChainId);
+                
                 // Let trigger logic run in Process to find the next combat step
                 _isEncounterTriggered = false;
             }
@@ -231,13 +239,13 @@ public partial class WorldScene : Node2D, IInitializable
             _playerSprite.Play("idle_" + _lastDirection);
         }
 
-        // Check location trigger for quest encounters
-        if (_session.CurrentCharacter != null)
+        // Check location trigger for quest encounters at the eastern edge
+        if (_session.CurrentCharacter != null && _player.GlobalPosition.X > 1200)
         {
             var triggerStep = _triggerService.CheckLocationTrigger(_session.CurrentCharacter, "SandyShore_East");
             if (triggerStep != null)
             {
-                TriggerEncounter();
+                TriggerEncounter(true);
             }
         }
     }
@@ -275,6 +283,8 @@ public partial class WorldScene : Node2D, IInitializable
         if (character != null)
         {
             var availableChains = _questService.GetAvailableChains(character);
+            if(availableChains.Count == 0)
+                GD.PrintErr("[WorldScene] No available quest chains for current character.");
             chain = availableChains.FirstOrDefault();
             if (chain != null)
                 step = _questService.GetCurrentStep(character, chain.Id);
@@ -298,10 +308,12 @@ public partial class WorldScene : Node2D, IInitializable
         }
         else
         {
+            GD.PrintErr("Failed to find dialogue - falling back to Default");
             // Fallback hardcoded dialogue
-            _speakerName = "Old Man";
+            _speakerName = "Place holder Man";
             _dialogue = new List<string>
             {
+                "Error finding dialogue.......",
                 "Welcome to the Shore of Camelot, Wanderer.",
                 "The path to the castle is blocked by shadows.",
                 "You'll find only hounds and darkness to the east."
@@ -455,7 +467,7 @@ public partial class WorldScene : Node2D, IInitializable
         }
     }
 
-    private async void TriggerEncounter()
+    private async void TriggerEncounter(bool isLocationTrigger = false)
     {
         if (_isEncounterTriggered || _currentDialogueIndex >= 0) return;
 
@@ -493,14 +505,14 @@ public partial class WorldScene : Node2D, IInitializable
                 new BattleArgs { Combat = step.Combat, QuestChainId = chain.Id, QuestStepId = step.Id });
             _isEncounterTriggered = true;
         }
-        else if (step.Type == "stealth")
+        else if (step.Type == "stealth" || (step.Location?.SceneKey == "stealth"))
         {
             GD.Print($"[WorldScene] Navigating to StealthScene for step '{step.Id}'.");
             await _navigation.NavigateToAsync(Routes.Stealth,
                 new StealthArgs { QuestChainId = chain.Id, QuestStepId = step.Id });
             _isEncounterTriggered = true;
         }
-        else if (step.Dialogue != null && step.Dialogue.Lines.Count > 0)
+        else if (!isLocationTrigger && step.Dialogue != null && step.Dialogue.Lines.Count > 0)
         {
             GD.Print($"[WorldScene] Step '{step.Id}' has dialogue. Initiating.");
             _isEncounterTriggered = true;
@@ -508,7 +520,7 @@ public partial class WorldScene : Node2D, IInitializable
         }
         else
         {
-            GD.Print($"[WorldScene] Step '{step.Id}' has no actionable content.");
+            GD.Print($"[WorldScene] Step '{step.Id}' has no actionable content or is skipped due to location trigger.");
         }
     }
 }
