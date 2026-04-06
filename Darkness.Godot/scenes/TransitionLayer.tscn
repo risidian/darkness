@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://transition_layer_uid"]
+
+[ext_resource type="Script" path="res://src/UI/TransitionLayer.cs" id="1_trans"]
+
+[node name="TransitionLayer" type="CanvasLayer"]
+script = ExtResource("1_trans")
