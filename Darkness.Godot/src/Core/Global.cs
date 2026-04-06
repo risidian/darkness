@@ -7,6 +7,7 @@ using Darkness.Core.Services;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Logic;
 using Darkness.Godot.Services;
+using Darkness.Godot.UI;
 
 namespace Darkness.Godot.Core;
 
@@ -14,6 +15,7 @@ public partial class Global : Node
 {
     public IServiceProvider? Services { get; private set; }
     public Task SeedingTask { get; private set; } = Task.CompletedTask;
+    public TransitionLayer Transition { get; private set; } = null!;
 
     public override void _Ready()
     {
@@ -52,6 +54,10 @@ public partial class Global : Node
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
 Services = services.BuildServiceProvider();
 GD.Print("[Global] DI Container initialized.");
+
+// Initialize Transition Overlay
+Transition = new TransitionLayer();
+AddChild(Transition);
 
 // Seed data synchronously to ensure it's available before scenes load
 try 

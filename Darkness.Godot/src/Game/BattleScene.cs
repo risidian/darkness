@@ -46,6 +46,11 @@ public partial class BattleScene : Control, IInitializable
     private bool _isProcessingTurn = false;
     private int _selectedEnemyIndex = 0;
 
+    private int _survivalTurns = 0;
+    private int _currentTurn = 0;
+    private ProgressBar? _survivalBar;
+    private Label? _survivalLabel;
+
     private List<Skill> _currentWeaponSkills = new();
 
     public void Initialize(IDictionary<string, object> parameters)
@@ -58,6 +63,7 @@ public partial class BattleScene : Control, IInitializable
             if (args.Combat != null)
             {
                 var combat = args.Combat;
+                _survivalTurns = combat.SurvivalTurns ?? 0;
                 _enemies.Clear();
                 _originalEnemies.Clear();
                 var enemies = combat.Enemies.Select(e => new Enemy
@@ -181,12 +187,49 @@ public partial class BattleScene : Control, IInitializable
 
         _continueButton.Pressed += async () =>
         {
-            if (_questChainId != null)
-                _questService.AdvanceStep(_session.CurrentCharacter!, _questChainId);
-            await _navigation.NavigateToAsync("WorldScene");
+            // Navigate back to world with a safe start position to avoid trigger loops
+            var parameters = new Dictionary<string, object>
+            {
+                { "PlayerPosition", new Vector2(200, 300) }
+            };
+            await _navigation.NavigateToAsync("WorldScene", parameters);
         };
 
         _retryButton.Pressed += () => RetryBattle();
+
+        if (_survivalTurns > 0)
+        {
+            var survivalContainer = new VBoxContainer
+            {
+                CustomMinimumSize = new Vector2(300, 50),
+                Position = new Vector2(GetViewportRect().Size.X / 2 - 150, 20),
+                MouseFilter = MouseFilterEnum.Ignore
+            };
+
+            _survivalLabel = new Label
+            {
+                Text = $"Survive! (0/{_survivalTurns} Turns)",
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            
+            _survivalBar = new ProgressBar
+            {
+                MinValue = 0,
+                MaxValue = _survivalTurns,
+                Value = 0,
+                CustomMinimumSize = new Vector2(300, 20),
+                ShowPercentage = false
+            };
+
+            survivalContainer.AddChild(_survivalLabel);
+            survivalContainer.AddChild(_survivalBar);
+            AddChild(survivalContainer);
+        }
+
+        // Wait a few frames to ensure GodotNavigationService has called Initialize()
+        await ToSignal(GetTree(), "process_frame");
+        await ToSignal(GetTree(), "process_frame");
+        await ToSignal(GetTree(), "process_frame");
 
         SetupBattle();
         SetupWeaponSkills();
@@ -285,7 +328,20 @@ public partial class BattleScene : Control, IInitializable
         foreach (var e in _originalEnemies)
         {
             _enemies.Add(new Enemy
-                { Name = e.Name, MaxHP = e.MaxHP, CurrentHP = e.MaxHP, Defense = e.Defense, SpriteKey = e.SpriteKey });
+            {
+                Name = e.Name,
+                MaxHP = e.MaxHP,
+                CurrentHP = e.MaxHP,
+                Attack = e.Attack,
+                Defense = e.Defense,
+                Accuracy = e.Accuracy,
+                Speed = e.Speed,
+                SpriteKey = e.SpriteKey,
+                IsInvincible = e.IsInvincible,
+                MoralityImpact = e.MoralityImpact,
+                ExperienceReward = e.ExperienceReward,
+                GoldReward = e.GoldReward
+            });
         }
 
         if (_party.Count > 0)
@@ -293,6 +349,10 @@ public partial class BattleScene : Control, IInitializable
             _party[0].CurrentHP = _party[0].MaxHP;
             _party[0].IsBlocking = false;
         }
+
+        _currentTurn = 0;
+        if (_survivalBar != null) _survivalBar.Value = 0;
+        if (_survivalLabel != null) _survivalLabel.Text = $"Survive! (0/{_survivalTurns} Turns)";
 
         _combatLog.Clear();
         _combatLog.AppendText("Retrying battle...");
@@ -530,7 +590,24 @@ public partial class BattleScene : Control, IInitializable
                 }
             }
 
-            if (_enemies.Count == 0) Victory();
+            if (_enemies.Count == 0)
+            {
+                Victory();
+            }
+            else if (_survivalTurns > 0)
+            {
+                _currentTurn++;
+                if (_survivalBar != null && _survivalLabel != null)
+                {
+                    _survivalBar.Value = _currentTurn;
+                    _survivalLabel.Text = $"Survive! ({_currentTurn}/{_survivalTurns} Turns)";
+                }
+
+                if (_currentTurn >= _survivalTurns)
+                {
+                    Victory(survived: true);
+                }
+            }
         }
         finally
         {
@@ -539,7 +616,7 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
-    private void Victory()
+    private void Victory(bool survived = false)
     {
         _combatLog.AppendText("\n[color=yellow]VICTORY![/color]");
         _endBattleTitle.Text = "VICTORY ACHIEVED";
@@ -547,7 +624,7 @@ public partial class BattleScene : Control, IInitializable
 
         var character = _session.CurrentCharacter;
         int totalXp = _originalEnemies.Sum(e => e.ExperienceReward);
-        string victoryMsg = "All enemies have been defeated!";
+        string victoryMsg = survived ? $"You survived {_survivalTurns} turns!" : "All enemies have been defeated!";
 
         if (character != null && totalXp > 0)
         {
@@ -555,6 +632,12 @@ public partial class BattleScene : Control, IInitializable
             victoryMsg += $"\n+{result.XpAwarded} XP";
             if (result.DidLevelUp)
                 victoryMsg += $"\nLevel Up! You are now level {result.NewLevel}!";
+        }
+        
+        if (character != null && _questChainId != null)
+        {
+            GD.Print($"[BattleScene] Victory! Advancing quest chain: {_questChainId} for Char {character.Id}");
+            _questService.AdvanceStep(character, _questChainId);
         }
 
         _endBattleMessage.Text = victoryMsg;

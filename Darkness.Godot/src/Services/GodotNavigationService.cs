@@ -11,6 +11,7 @@ namespace Darkness.Godot.Services;
 public class GodotNavigationService : INavigationService
 {
     private readonly Global _global;
+    private bool _isNavigating = false;
 
     public GodotNavigationService(Global global)
     {
@@ -19,60 +20,141 @@ public class GodotNavigationService : INavigationService
 
     public async Task NavigateToAsync(string route, IDictionary<string, object>? parameters = null)
     {
-        GD.Print($"[Navigation] Navigating to route: {route}");
-        // 1. Convert route name to Godot scene path (e.g. "MainPage" -> "res://scenes/MainScene.tscn")
-        // We'll follow a convention for now
-        string sceneName = route.Replace("Page", "Scene");
-        string path = $"res://scenes/{sceneName}.tscn";
-        GD.Print($"[Navigation] Target path: {path}");
-
-        // 2. Change scene
-        var error = _global.GetTree().ChangeSceneToFile(path);
-        if (error != Error.Ok)
+        if (_isNavigating) 
         {
-            GD.PrintErr($"[Navigation] Failed to change scene to {path}: {error}");
-            var dialog = _global.Services!.GetRequiredService<IDialogService>();
-            await dialog.DisplayAlertAsync("Navigation Error",
-                $"Failed to load scene {route} (Error: {error}). Path: {path}", "OK");
+            GD.PrintErr($"[Navigation] REJECTED navigation to {route} (dict) because _isNavigating is TRUE. Concurrent navigation is blocked.");
             return;
         }
+        _isNavigating = true;
 
-        GD.Print($"[Navigation] Scene change initiated for {path}");
-
-        // 3. Handle parameter injection after scene enters tree
-        // Note: ChangeSceneToFile is async/delayed. We need to wait for the next frame.
-        if (parameters != null)
+        try
         {
-            // Wait for the scene to be ready in the next frame
-            await _global.ToSignal(_global.GetTree(), "process_frame");
+            GD.Print($"[Navigation] Navigating to route: {route}");
 
-            var root = _global.GetTree().CurrentScene;
-            if (root is IInitializable initializable)
+            // 1. Fade Out
+            await _global.Transition.FadeOut();
+
+            // 2. Convert route name to Godot scene path
+            string sceneName = route.Replace("Page", "Scene");
+            string path = $"res://scenes/{sceneName}.tscn";
+            GD.Print($"[Navigation] Target path: {path}");
+
+            // 3. Load and instantiate the new scene
+            var packedScene = GD.Load<PackedScene>(path);
+            if (packedScene == null)
             {
+                GD.PrintErr($"[Navigation] Failed to load scene {path}");
+                await _global.Transition.FadeIn();
+                return;
+            }
+
+            var newScene = packedScene.Instantiate();
+
+            // 4. Inject parameters BEFORE adding to the tree (so Initialize runs before _Ready)
+            if (newScene is IInitializable initializable && parameters != null)
+            {
+                GD.Print($"[Navigation] Calling Initialize on {newScene.Name}");
                 initializable.Initialize(parameters);
             }
+            else if (parameters != null)
+            {
+                GD.PrintErr($"[Navigation] ERROR: Scene {newScene.Name} does NOT implement IInitializable!");
+            }
+
+            // 5. Swap scenes
+            var tree = _global.GetTree();
+            var oldScene = tree.CurrentScene;
+            if (oldScene != null)
+            {
+                tree.Root.RemoveChild(oldScene);
+                oldScene.QueueFree();
+            }
+            
+            tree.Root.AddChild(newScene);
+            tree.CurrentScene = newScene;
+
+            GD.Print($"[Navigation] Scene change completed. CurrentScene is now: {newScene.Name}");
+
+            // Wait a frame for Godot to settle
+            await _global.ToSignal(tree, "process_frame");
+
+            // 6. Fade In
+            await _global.Transition.FadeIn();
+        }
+        finally
+        {
+            _isNavigating = false;
+            GD.Print($"[Navigation] Finished navigation to {route}. _isNavigating set to FALSE.");
         }
     }
 
     public async Task NavigateToAsync<T>(string route, T parameters) where T : NavigationArgs
     {
-        GD.Print($"[Navigation] Navigating to {route} with typed args {typeof(T).Name}");
-
-        // Use existing logic for scene change
-        string sceneName = route.Replace("Page", "Scene");
-        string path = $"res://scenes/{sceneName}.tscn";
-
-        var error = _global.GetTree().ChangeSceneToFile(path);
-        if (error != Error.Ok) return;
-
-        await _global.ToSignal(_global.GetTree(), "process_frame");
-
-        var root = _global.GetTree().CurrentScene;
-        if (root is IInitializable initializable)
+        if (_isNavigating) 
         {
-            // Wrap typed args in a dict for IInitializable compatibility
-            var dict = new Dictionary<string, object> { { "Args", parameters } };
-            initializable.Initialize(dict);
+            GD.PrintErr($"[Navigation] REJECTED navigation to {route} (typed) because _isNavigating is TRUE. Concurrent navigation is blocked.");
+            return;
+        }
+        _isNavigating = true;
+
+        try
+        {
+            GD.Print($"[Navigation] Navigating to {route} with typed args {typeof(T).Name}");
+
+            // 1. Fade Out
+            await _global.Transition.FadeOut();
+
+            // 2. Convert route name to Godot scene path
+            string sceneName = route.Replace("Page", "Scene");
+            string path = $"res://scenes/{sceneName}.tscn";
+
+            // 3. Load and instantiate the new scene
+            var packedScene = GD.Load<PackedScene>(path);
+            if (packedScene == null)
+            {
+                GD.PrintErr($"[Navigation] Failed to load scene {path}");
+                await _global.Transition.FadeIn();
+                return;
+            }
+
+            var newScene = packedScene.Instantiate();
+
+            // 4. Inject parameters BEFORE adding to the tree
+            if (newScene is IInitializable initializable)
+            {
+                GD.Print($"[Navigation] Calling Initialize on {newScene.Name} with typed args");
+                var dict = new Dictionary<string, object> { { "Args", parameters } };
+                initializable.Initialize(dict);
+            }
+            else
+            {
+                GD.PrintErr($"[Navigation] ERROR: Scene {newScene.Name} does NOT implement IInitializable!");
+            }
+
+            // 5. Swap scenes
+            var tree = _global.GetTree();
+            var oldScene = tree.CurrentScene;
+            if (oldScene != null)
+            {
+                tree.Root.RemoveChild(oldScene);
+                oldScene.QueueFree();
+            }
+            
+            tree.Root.AddChild(newScene);
+            tree.CurrentScene = newScene;
+
+            GD.Print($"[Navigation] Scene change completed. CurrentScene is now: {newScene.Name}");
+
+            // Wait a frame for Godot to settle
+            await _global.ToSignal(tree, "process_frame");
+
+            // 6. Fade In
+            await _global.Transition.FadeIn();
+        }
+        finally
+        {
+            _isNavigating = false;
+            GD.Print($"[Navigation] Finished navigation to {route}. _isNavigating set to FALSE.");
         }
     }
 

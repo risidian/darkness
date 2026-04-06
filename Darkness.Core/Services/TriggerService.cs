@@ -22,12 +22,6 @@ public class TriggerService : ITriggerService
             var currentStep = _questService.GetCurrentStep(character, chain.Id);
             if (currentStep?.Location?.LocationKey == locationKey)
                 return currentStep;
-
-            foreach (var step in chain.Steps)
-            {
-                if (step.Location?.LocationKey == locationKey)
-                    return step;
-            }
         }
 
         return null;

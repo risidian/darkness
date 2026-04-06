@@ -29,12 +29,14 @@ public partial class WorldScene : Node2D, IInitializable
     private Label _textLabel = null!;
 
     private bool _isEncounterTriggered = false;
+    private bool _isReady = false;
     private float _moveSpeed = 300f;
     private List<string> _dialogue = new();
     private string _speakerName = "Old Man";
     private int _currentDialogueIndex = -1;
     private string _lastDirection = "down";
     private Vector2? _targetPosition = null;
+    private Vector2? _startingPosition = null;
 
     private VBoxContainer _choicesContainer = null!;
     private List<BranchOption> _currentChoices = new();
@@ -43,6 +45,13 @@ public partial class WorldScene : Node2D, IInitializable
 
     public void Initialize(IDictionary<string, object> parameters)
     {
+        _isEncounterTriggered = true; // Block triggers during initialization
+
+        if (parameters.ContainsKey("PlayerPosition") && parameters["PlayerPosition"] is Vector2 pos)
+        {
+            _startingPosition = pos;
+        }
+
         if (parameters.ContainsKey("StealthOutcome") && _session.CurrentCharacter != null)
         {
             string outcome = parameters["StealthOutcome"].ToString() ?? "Failure";
@@ -60,16 +69,12 @@ public partial class WorldScene : Node2D, IInitializable
                     // Advance past combat (finish chain)
                     _questService.AdvanceStep(_session.CurrentCharacter, questChainId);
                 }
-                _isEncounterTriggered = true;
             }
             else
             {
                 GD.Print("[WorldScene] Stealth failed. Advancing quest to trigger combat.");
                 if (questChainId != null)
                     _questService.AdvanceStep(_session.CurrentCharacter, questChainId);
-                
-                // Let trigger logic run in Process to find the next combat step
-                _isEncounterTriggered = false;
             }
         }
     }
@@ -116,6 +121,12 @@ public partial class WorldScene : Node2D, IInitializable
         _playerSprite = GetNode<LayeredSprite>("Player/Sprite");
         _npcSprite = GetNode<LayeredSprite>("NPC/Sprite");
 
+        if (_startingPosition.HasValue)
+        {
+            _player.GlobalPosition = _startingPosition.Value;
+            GD.Print($"[WorldScene] Set starting position to: {_startingPosition.Value}");
+        }
+
         _dialogueBox = GetNode<PanelContainer>("CanvasLayer/DialogueBox");
         _pauseMenu = GetNode<PauseMenu>("CanvasLayer/PauseMenu");
         _nameLabel = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/NameLabel");
@@ -133,22 +144,41 @@ public partial class WorldScene : Node2D, IInitializable
 
         GetNode<Area2D>("NPC").BodyEntered += (body) =>
         {
-            if (body == _player) StartDialogue();
+            if (body == _player) _ = TriggerEncounter();
         };
 
         // Find current step to initialize visuals
         if (_session.CurrentCharacter != null)
         {
-            var availableChains = _questService.GetAvailableChains(_session.CurrentCharacter);
+            var character = _session.CurrentCharacter;
+            GD.Print($"[WorldScene] Diagnostic START for Char {character.Id} ({character.Name})");
+            
+            var completedChains = _questService.GetCompletedChainIds(character.Id);
+            var availableChains = _questService.GetAvailableChains(character);
+
+            GD.Print($"[WorldScene]   Completed chains: [{string.Join(", ", completedChains)}]");
+            GD.Print($"[WorldScene]   Available chains: [{string.Join(", ", availableChains.Select(c => c.Id))}]");
+
             var chain = availableChains.FirstOrDefault();
             if (chain != null)
             {
-                var step = _questService.GetCurrentStep(_session.CurrentCharacter, chain.Id);
-                UpdateVisuals(step);
+                var step = _questService.GetCurrentStep(character, chain.Id);
+                GD.Print($"[WorldScene] Initializing visuals for chain: {chain.Id}, step: {step?.Id ?? "NULL"}");
+                await UpdateVisuals(step, chain);
+            }
+            else
+            {
+                GD.PrintErr("[WorldScene] No available quest chains found in _Ready.");
             }
         }
 
         await UpdateSprites();
+
+        // Final safety: Wait one more frame before enabling triggers
+        await ToSignal(GetTree(), "process_frame");
+        _isReady = true;
+        _isEncounterTriggered = false;
+        GD.Print("[WorldScene] Ready and triggers enabled.");
     }
 
     private async Task UpdateSprites()
@@ -158,28 +188,11 @@ public partial class WorldScene : Node2D, IInitializable
             await _playerSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem, _compositor);
             _playerSprite.Play("idle_down");
         }
-
-        var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-        await _npcSprite.SetupCharacter(new Character
-        {
-            Name = "Old Man",
-            SkinColor = knightAppearance.SkinColor,
-            HairStyle = knightAppearance.HairStyle,
-            HairColor = knightAppearance.HairColor,
-            ArmorType = knightAppearance.ArmorType,
-            WeaponType = knightAppearance.WeaponType,
-            Feet = knightAppearance.Feet,
-            Arms = knightAppearance.Arms,
-            Legs = knightAppearance.Legs,
-            Head = "Human Male",
-            Face = "Default"
-        }, _catalog, _fileSystem, _compositor);
-        _npcSprite.Play("idle_down");
     }
 
     public override void _Process(double delta)
     {
-        if (!IsInsideTree()) return;
+        if (!IsInsideTree() || !_isReady) return;
         if (Input.IsActionJustPressed("ui_cancel"))
         {
             _pauseMenu.Toggle();
@@ -257,7 +270,7 @@ public partial class WorldScene : Node2D, IInitializable
             var triggerStep = _triggerService.CheckLocationTrigger(_session.CurrentCharacter, "SandyShore_East");
             if (triggerStep != null)
             {
-                TriggerEncounter(true);
+                _ = TriggerEncounter(true);
             }
         }
     }
@@ -279,6 +292,7 @@ public partial class WorldScene : Node2D, IInitializable
     private void StartDialogue()
     {
         GD.Print("StartDialogue called.");
+        GD.Print(System.Environment.StackTrace);
         _targetPosition = null;
         _player.Velocity = Vector2.Zero;
         _playerSprite.Play("idle_" + _lastDirection);
@@ -302,6 +316,14 @@ public partial class WorldScene : Node2D, IInitializable
                 step = _questService.GetCurrentStep(character, chain.Id);
         }
 
+        if (step != null && (step.Combat != null || step.Type == "stealth" || (step.Location?.SceneKey == "stealth")))
+        {
+            GD.Print($"[WorldScene] StartDialogue called on a non-dialogue step ({step.Id}). Redirecting to TriggerEncounter.");
+            _isEncounterTriggered = false; // Reset so TriggerEncounter can run
+            _ = TriggerEncounter();
+            return;
+        }
+
         if (step?.Dialogue != null && step.Dialogue.Lines.Count > 0)
         {
             _currentDialogueChain = chain;
@@ -320,15 +342,13 @@ public partial class WorldScene : Node2D, IInitializable
         }
         else
         {
-            GD.PrintErr("Failed to find dialogue - falling back to Default");
+            GD.PrintErr($"Failed to find dialogue for step {step?.Id ?? "NULL"} - falling back to Default");
             // Fallback hardcoded dialogue
-            _speakerName = "Place holder Man";
+            _speakerName = _currentDialogueStep?.Visuals?.Npc?.Name ?? "Wanderer";
             _dialogue = new List<string>
             {
-                "Error finding dialogue.......",
-                "Welcome to the Shore of Camelot, Wanderer.",
-                "The path to the castle is blocked by shadows.",
-                "You'll find only hounds and darkness to the east."
+                "The path ahead is dangerous.",
+                "You should prepare yourself for what's to come."
             };
             GD.Print($"[WorldScene] No quest dialogue found. Using fallback dialogue. Lines: {_dialogue.Count}");
         }
@@ -351,7 +371,7 @@ public partial class WorldScene : Node2D, IInitializable
         }
     }
 
-    private void NextDialogue()
+    private async void NextDialogue()
     {
         // If we are showing choices, tapping should not advance or close the dialogue
         if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
@@ -366,6 +386,7 @@ public partial class WorldScene : Node2D, IInitializable
             GD.Print("[WorldScene] End of dialogue reached.");
             _currentDialogueIndex = -1;
             _dialogueBox.Hide();
+            _isEncounterTriggered = false; // Release the lock so sequential encounters can trigger
 
             // If there were no choices, advance the quest step when finished
             if (_currentChoices.Count == 0 && _currentDialogueChain != null && _session.CurrentCharacter != null)
@@ -375,12 +396,12 @@ public partial class WorldScene : Node2D, IInitializable
 
                 if (nextStep != null)
                 {
-                    UpdateVisuals(nextStep);
+                    await UpdateVisuals(nextStep, _currentDialogueChain);
 
                     // If the new step is an immediate encounter, trigger it
                     if (nextStep.Combat != null || nextStep.Type == "stealth" || (nextStep.Location?.SceneKey == "stealth"))
                     {
-                        TriggerEncounter();
+                        await TriggerEncounter();
                     }
                 }
 
@@ -430,7 +451,7 @@ public partial class WorldScene : Node2D, IInitializable
         }
     }
 
-    private void OnChoiceSelected(BranchOption choice)
+    private async void OnChoiceSelected(BranchOption choice)
     {
         GD.Print(
             $"[WorldScene] Choice selected: '{choice.Text}' (NextStepId: {choice.NextStepId}, MoralityImpact: {choice.MoralityImpact})");
@@ -450,7 +471,7 @@ public partial class WorldScene : Node2D, IInitializable
             var nextStep = _questService.AdvanceStep(_session.CurrentCharacter, _currentDialogueChain.Id, choice.NextStepId);
 
             // Update visuals for the new step
-            UpdateVisuals(nextStep);
+            await UpdateVisuals(nextStep, _currentDialogueChain);
 
             // Check if main story is complete
             if (_questService.IsMainStoryComplete(_session.CurrentCharacter))
@@ -487,7 +508,7 @@ public partial class WorldScene : Node2D, IInitializable
                 // Must reset dialogue index and hide box before triggering
                 _currentDialogueIndex = -1;
                 _dialogueBox.Hide();
-                TriggerEncounter();
+                await TriggerEncounter();
                 return;
             }
         }
@@ -503,12 +524,23 @@ public partial class WorldScene : Node2D, IInitializable
         }
     }
 
-    private async void TriggerEncounter(bool isLocationTrigger = false)
+    private async Task TriggerEncounter(bool isLocationTrigger = false)
     {
-        if (_isEncounterTriggered || _currentDialogueIndex >= 0) return;
+        if (_isEncounterTriggered) return;
+        _isEncounterTriggered = true; // Block immediately
+
+        if (_currentDialogueIndex >= 0)
+        {
+            _isEncounterTriggered = false; // Dialogue is already showing
+            return;
+        }
 
         var character = _session.CurrentCharacter;
-        if (character == null) return;
+        if (character == null)
+        {
+            _isEncounterTriggered = false;
+            return;
+        }
 
         // Find the first available quest chain and its current step
         var availableChains = _questService.GetAvailableChains(character);
@@ -537,16 +569,16 @@ public partial class WorldScene : Node2D, IInitializable
         if (step.Combat != null)
         {
             GD.Print($"[WorldScene] Navigating to BattleScene with combat from step '{step.Id}'.");
+            _isEncounterTriggered = true; // Set before await to prevent double trigger
             await _navigation.NavigateToAsync(Routes.Battle,
                 new BattleArgs { Combat = step.Combat, QuestChainId = chain.Id, QuestStepId = step.Id });
-            _isEncounterTriggered = true;
         }
         else if (step.Type == "stealth" || (step.Location?.SceneKey == "stealth"))
         {
             GD.Print($"[WorldScene] Navigating to StealthScene for step '{step.Id}'.");
+            _isEncounterTriggered = true; // Set before await
             await _navigation.NavigateToAsync(Routes.Stealth,
                 new StealthArgs { QuestChainId = chain.Id, QuestStepId = step.Id });
-            _isEncounterTriggered = true;
         }
         else if (!isLocationTrigger && step.Dialogue != null && step.Dialogue.Lines.Count > 0)
         {
@@ -560,11 +592,25 @@ public partial class WorldScene : Node2D, IInitializable
         }
     }
 
-    private void UpdateVisuals(QuestStep? step)
+    private async Task UpdateVisuals(QuestStep? step, QuestChain? chain = null)
     {
-        if (step?.Visuals == null) return;
+        var visuals = step?.Visuals;
+        
+        // Fallback: If current step has no visuals, try to use the first step of the chain
+        if (visuals == null && chain != null && chain.Steps.Count > 0)
+        {
+            visuals = chain.Steps[0].Visuals;
+            if (visuals != null)
+                GD.Print($"[WorldScene] Step '{step?.Id ?? "NULL"}' has no visuals. Falling back to chain-level visuals from '{chain.Steps[0].Id}'.");
+        }
 
-        var visuals = step.Visuals;
+        if (visuals == null)
+        {
+            GD.Print("[WorldScene] No visual configuration found for step or chain fallback.");
+            return;
+        }
+
+        GD.Print($"[WorldScene] Applying visuals for step: {step?.Id ?? "Fallback"}");
 
         // 1. Background Logic
         var bgRect = GetNode<ColorRect>("Background");
@@ -577,11 +623,12 @@ public partial class WorldScene : Node2D, IInitializable
                 ? visuals.BackgroundKey
                 : $"res://assets/backgrounds/{visuals.BackgroundKey}.png";
 
+            GD.Print($"[WorldScene] Loading background: {texPath}");
             if (global::Godot.FileAccess.FileExists(texPath))
             {
                 bgImage.Texture = GD.Load<Texture2D>(texPath);
                 bgImage.Show();
-                bgRect.Hide(); // Hide placeholder color
+                bgRect.Hide();
             }
             else
             {
@@ -596,7 +643,6 @@ public partial class WorldScene : Node2D, IInitializable
             bgRect.Show();
         }
 
-        // Apply fallback colors
         if (!string.IsNullOrEmpty(visuals.GroundColor))
         {
             bgRect.Color = Color.FromHtml(visuals.GroundColor);
@@ -620,6 +666,7 @@ public partial class WorldScene : Node2D, IInitializable
             _speakerName = visuals.Npc.Name;
 
             var npcSprite = GetNode<LayeredSprite>("NPC/Sprite");
+            GD.Print($"[WorldScene] Setting up NPC: {visuals.Npc.Name}");
 
             if (!string.IsNullOrEmpty(visuals.Npc.SpriteKey))
             {
@@ -629,49 +676,56 @@ public partial class WorldScene : Node2D, IInitializable
 
                 if (global::Godot.FileAccess.FileExists(spritePath))
                 {
-                    _ = npcSprite.SetupFullSheet(spritePath, _fileSystem);
+                    GD.Print($"[WorldScene] Using full sheet for NPC: {spritePath}");
+                    await npcSprite.SetupFullSheet(spritePath, _fileSystem);
                 }
-                else if (visuals.Npc.Appearance != null)
+                else
                 {
-                    GD.Print($"[WorldScene] NPC sprite '{spritePath}' not found. Using generated LPC appearance.");
-                    var app = visuals.Npc.Appearance;
-                    var npcChar = new Character
+                    GD.PrintErr($"[WorldScene] NPC sprite '{spritePath}' not found.");
+                    if (visuals.Npc.Appearance != null)
                     {
-                        Name = visuals.Npc.Name,
-                        HairStyle = app.HairStyle,
-                        HairColor = app.HairColor,
-                        SkinColor = app.SkinColor,
-                        Head = app.Head,
-                        Face = app.Face,
-                        ArmorType = app.ArmorType,
-                        Legs = app.Legs,
-                        Feet = app.Feet
-                    };
-                    _ = npcSprite.SetupCharacter(npcChar, _catalog, _fileSystem, _compositor);
+                        GD.Print("[WorldScene] Falling back to generated LPC appearance.");
+                        var npcChar = CreateNpcCharacter(visuals.Npc);
+                        await npcSprite.SetupCharacter(npcChar, _catalog, _fileSystem, _compositor);
+                    }
                 }
             }
             else if (visuals.Npc.Appearance != null)
             {
-                var app = visuals.Npc.Appearance;
-                var npcChar = new Character
-                {
-                    Name = visuals.Npc.Name,
-                    HairStyle = app.HairStyle,
-                    HairColor = app.HairColor,
-                    SkinColor = app.SkinColor,
-                    Head = app.Head,
-                    Face = app.Face,
-                    ArmorType = app.ArmorType,
-                    Legs = app.Legs,
-                    Feet = app.Feet
-                };
-                _ = npcSprite.SetupCharacter(npcChar, _catalog, _fileSystem, _compositor);
+                GD.Print("[WorldScene] Using generated LPC appearance for NPC.");
+                var npcChar = CreateNpcCharacter(visuals.Npc);
+                await npcSprite.SetupCharacter(npcChar, _catalog, _fileSystem, _compositor);
             }
             npcNode.Show();
         }
         else
         {
+            GD.Print("[WorldScene] Hiding NPC node (none in this step).");
             GetNode<Area2D>("NPC").Hide();
         }
+    }
+
+    private Character CreateNpcCharacter(NpcConfig config)
+    {
+        // Use class defaults as base to avoid "naked" sprites
+        var defaults = _catalog.GetDefaultAppearanceForClass("Warrior");
+        var app = config.Appearance;
+
+        return new Character
+        {
+            Name = config.Name,
+            SkinColor = !string.IsNullOrEmpty(app?.SkinColor) ? app.SkinColor : defaults.SkinColor,
+            HairStyle = !string.IsNullOrEmpty(app?.HairStyle) ? app.HairStyle : defaults.HairStyle,
+            HairColor = !string.IsNullOrEmpty(app?.HairColor) ? app.HairColor : defaults.HairColor,
+            ArmorType = !string.IsNullOrEmpty(app?.ArmorType) ? app.ArmorType : defaults.ArmorType,
+            WeaponType = !string.IsNullOrEmpty(app?.WeaponType) ? app.WeaponType : defaults.WeaponType,
+            Feet = !string.IsNullOrEmpty(app?.Feet) ? app.Feet : defaults.Feet,
+            Arms = defaults.Arms,
+            Legs = !string.IsNullOrEmpty(app?.Legs) ? app.Legs : defaults.Legs,
+            Head = !string.IsNullOrEmpty(app?.Head) ? app.Head : defaults.Head,
+            Face = !string.IsNullOrEmpty(app?.Face) ? app.Face : defaults.Face,
+            Eyes = defaults.Eyes,
+            ShieldType = defaults.ShieldType
+        };
     }
 }

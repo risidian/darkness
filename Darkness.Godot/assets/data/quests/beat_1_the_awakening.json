@@ -18,11 +18,11 @@
 		  "Appearance": {
 			"HairStyle": "Long",
 			"HairColor": "#FFFFFF",
-			"SkinColor": "White",
+			"SkinColor": "Light",
 			"Head": "Human Male",
 			"Face": "Old",
 			"ArmorType": "None",
-			"Legs": "Pants",
+			"Legs": "Slacks",
 			"Feet": "Shoes"
 		  }
 		}

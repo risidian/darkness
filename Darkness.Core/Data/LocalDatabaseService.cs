@@ -30,7 +30,7 @@ namespace Darkness.Core.Data
 
         public LiteDatabase OpenDatabase() 
         {
-            var connectionString = $"Filename={_dbPath};Connection=direct";
+            var connectionString = $"Filename={_dbPath};Connection=shared";
             return new LiteDatabase(connectionString);
         }
     }

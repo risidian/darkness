@@ -217,6 +217,7 @@ namespace Darkness.Core.ViewModels
 
             if (success)
             {
+                _sessionService.CurrentCharacter = character;
                 await _dialogService.DisplayAlertAsync("Success", "Character Created!", "OK");
                 await _navigationService.NavigateToAsync("MainMenuPage");
             }

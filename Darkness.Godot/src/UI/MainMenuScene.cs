@@ -74,7 +74,8 @@ public partial class MainMenuScene : Control
 
             if (_session.CurrentCharacter == null)
             {
-                _session.CurrentCharacter = characters[0];
+                await _navigation.NavigateToAsync("CharactersPage");
+                return;
             }
 
             // Check daily reward
