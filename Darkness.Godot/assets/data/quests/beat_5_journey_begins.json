@@ -1,0 +1,52 @@
+{
+  "Id": "beat_5",
+  "Title": "Journey Begins",
+  "IsMainStory": true,
+  "SortOrder": 5,
+  "Prerequisites": ["beat_4"],
+  "Steps": [
+    {
+      "Id": "beat_5_intro",
+      "Type": "dialogue",
+      "NextStepId": "beat_5_combat",
+      "Visuals": {
+        "BackgroundKey": "forest",
+        "GroundColor": "#2d4c1e",
+        "Npc": {
+          "Name": "Scout",
+          "PositionX": 450,
+          "PositionY": 220,
+          "Appearance": {
+            "HairStyle": "Short",
+            "HairColor": "#221100",
+            "SkinColor": "Tan",
+            "Head": "Human Male",
+            "Face": "Default",
+            "ArmorType": "Leather",
+            "Legs": "Pants",
+            "Feet": "Boots"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Scout",
+        "Lines": [
+          "Wait! Don't go further.",
+          "The woods are crawling with Goblins.",
+          "They've set an ambush just ahead!"
+        ]
+      }
+    },
+    {
+      "Id": "beat_5_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Goblin Raider", "Level": 4, "MaxHP": 80, "CurrentHP": 80, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "knight", "ExperienceReward": 50 },
+          { "Name": "Goblin Archer", "Level": 4, "MaxHP": 60, "CurrentHP": 60, "Attack": 10, "Defense": 4, "Speed": 18, "SpriteKey": "knight", "ExperienceReward": 50 }
+        ],
+        "BackgroundKey": "forest"
+      }
+    }
+  ]
+}

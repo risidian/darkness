@@ -9,4 +9,5 @@ public class QuestStep
     public CombatData? Combat { get; set; }
     public LocationTrigger? Location { get; set; }
     public BranchData? Branch { get; set; }
+    public VisualConfig? Visuals { get; set; }
 }

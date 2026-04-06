@@ -99,6 +99,19 @@ public partial class BattleScene : Control, IInitializable
                         GoldReward = enemy.GoldReward
                     });
                 }
+
+                // Handle dynamic background
+                if (!string.IsNullOrEmpty(combat.BackgroundKey))
+                {
+                    var texPath = $"res://assets/backgrounds/{combat.BackgroundKey}.png";
+                    if (global::Godot.FileAccess.FileExists(texPath))
+                    {
+                        var bgImage = GetNode<TextureRect>("BackgroundImage");
+                        bgImage.Texture = GD.Load<Texture2D>(texPath);
+                        bgImage.Show();
+                        GetNode<ColorRect>("Background").Hide();
+                    }
+                }
             }
         }
         // Backward compatibility for old DeathmatchEncounter

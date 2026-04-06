@@ -9,6 +9,16 @@
       "Id": "beat_3_dialogue",
       "Type": "dialogue",
       "NextStepId": "beat_3_combat",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#333333",
+        "Npc": {
+          "Name": "The Sorcerer",
+          "SpriteKey": "bosses/Risidian",
+          "PositionX": 600,
+          "PositionY": 250
+        }
+      },
       "Dialogue": {
         "Speaker": "The Sorcerer",
         "Lines": ["The Dark Warrior was only the beginning.", "I have woven the shadows into a cage for you.", "Let us see if your spirit is truly unbreakable."]

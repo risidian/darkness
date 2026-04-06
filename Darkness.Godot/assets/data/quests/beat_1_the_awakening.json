@@ -8,6 +8,25 @@
 	{
 	  "Id": "beat_1_intro",
 	  "Type": "branch",
+	  "Visuals": {
+		"GroundColor": "#C2B280",
+		"WaterColor": "#006994",
+		"Npc": {
+		  "Name": "Old Man",
+		  "PositionX": 400,
+		  "PositionY": 200,
+		  "Appearance": {
+			"HairStyle": "Long",
+			"HairColor": "#FFFFFF",
+			"SkinColor": "White",
+			"Head": "Human Male",
+			"Face": "Old",
+			"ArmorType": "None",
+			"Legs": "Pants",
+			"Feet": "Shoes"
+		  }
+		}
+	  },
 	  "Dialogue": {
 		"Speaker": "Old Man",
 		"Lines": [

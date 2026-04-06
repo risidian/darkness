@@ -1,0 +1,42 @@
+{
+  "Id": "beat_7",
+  "Title": "Araknos Demon",
+  "IsMainStory": true,
+  "SortOrder": 7,
+  "Prerequisites": ["beat_6"],
+  "Steps": [
+    {
+      "Id": "beat_7_intro",
+      "Type": "dialogue",
+      "NextStepId": "beat_7_combat",
+      "Visuals": {
+        "BackgroundKey": "cave",
+        "GroundColor": "#1a1a1a",
+        "Npc": {
+          "Name": "Araknos",
+          "PositionX": 650,
+          "PositionY": 280,
+          "SpriteKey": "bosses/Raknith"
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Araknos",
+        "Lines": [
+          "SSSSSssss... fresh meat enters the dark.",
+          "You smell of surface world and hope. I shall devour both.",
+          "The darkness is hungry, little one."
+        ]
+      }
+    },
+    {
+      "Id": "beat_7_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Araknos", "Level": 10, "MaxHP": 500, "CurrentHP": 500, "Attack": 35, "Defense": 10, "Speed": 25, "SpriteKey": "bosses/Raknith", "ExperienceReward": 400 }
+        ],
+        "BackgroundKey": "cave"
+      }
+    }
+  ]
+}

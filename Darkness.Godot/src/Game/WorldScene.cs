@@ -136,6 +136,18 @@ public partial class WorldScene : Node2D, IInitializable
             if (body == _player) StartDialogue();
         };
 
+        // Find current step to initialize visuals
+        if (_session.CurrentCharacter != null)
+        {
+            var availableChains = _questService.GetAvailableChains(_session.CurrentCharacter);
+            var chain = availableChains.FirstOrDefault();
+            if (chain != null)
+            {
+                var step = _questService.GetCurrentStep(_session.CurrentCharacter, chain.Id);
+                UpdateVisuals(step);
+            }
+        }
+
         await UpdateSprites();
     }
 
@@ -359,7 +371,18 @@ public partial class WorldScene : Node2D, IInitializable
             if (_currentChoices.Count == 0 && _currentDialogueChain != null && _session.CurrentCharacter != null)
             {
                 GD.Print($"[WorldScene] Advancing quest chain: {_currentDialogueChain.Id} (no choices)");
-                _questService.AdvanceStep(_session.CurrentCharacter, _currentDialogueChain.Id);
+                var nextStep = _questService.AdvanceStep(_session.CurrentCharacter, _currentDialogueChain.Id);
+
+                if (nextStep != null)
+                {
+                    UpdateVisuals(nextStep);
+
+                    // If the new step is an immediate encounter, trigger it
+                    if (nextStep.Combat != null || nextStep.Type == "stealth" || (nextStep.Location?.SceneKey == "stealth"))
+                    {
+                        TriggerEncounter();
+                    }
+                }
 
                 // Check if main story is complete
                 if (_questService.IsMainStoryComplete(_session.CurrentCharacter))
@@ -426,6 +449,9 @@ public partial class WorldScene : Node2D, IInitializable
             GD.Print($"[WorldScene] Advancing chain {_currentDialogueChain.Id} to step {choice.NextStepId}");
             var nextStep = _questService.AdvanceStep(_session.CurrentCharacter, _currentDialogueChain.Id, choice.NextStepId);
 
+            // Update visuals for the new step
+            UpdateVisuals(nextStep);
+
             // Check if main story is complete
             if (_questService.IsMainStoryComplete(_session.CurrentCharacter))
             {
@@ -452,6 +478,16 @@ public partial class WorldScene : Node2D, IInitializable
                 prompt.Text = "[TAP TO CONTINUE]";
 
                 UpdateDialogueUI();
+                return;
+            }
+
+            // If no immediate dialogue, check if it's an encounter
+            if (nextStep != null && (nextStep.Combat != null || nextStep.Type == "stealth" || (nextStep.Location?.SceneKey == "stealth")))
+            {
+                // Must reset dialogue index and hide box before triggering
+                _currentDialogueIndex = -1;
+                _dialogueBox.Hide();
+                TriggerEncounter();
                 return;
             }
         }
@@ -521,6 +557,121 @@ public partial class WorldScene : Node2D, IInitializable
         else
         {
             GD.Print($"[WorldScene] Step '{step.Id}' has no actionable content or is skipped due to location trigger.");
+        }
+    }
+
+    private void UpdateVisuals(QuestStep? step)
+    {
+        if (step?.Visuals == null) return;
+
+        var visuals = step.Visuals;
+
+        // 1. Background Logic
+        var bgRect = GetNode<ColorRect>("Background");
+        var waterRect = GetNode<ColorRect>("Water");
+        var bgImage = GetNode<TextureRect>("BackgroundImage");
+
+        if (!string.IsNullOrEmpty(visuals.BackgroundKey))
+        {
+            var texPath = visuals.BackgroundKey.StartsWith("res://")
+                ? visuals.BackgroundKey
+                : $"res://assets/backgrounds/{visuals.BackgroundKey}.png";
+
+            if (global::Godot.FileAccess.FileExists(texPath))
+            {
+                bgImage.Texture = GD.Load<Texture2D>(texPath);
+                bgImage.Show();
+                bgRect.Hide(); // Hide placeholder color
+            }
+            else
+            {
+                GD.PrintErr($"[WorldScene] Background artwork not found: {texPath}. Falling back to colors.");
+                bgImage.Hide();
+                bgRect.Show();
+            }
+        }
+        else
+        {
+            bgImage.Hide();
+            bgRect.Show();
+        }
+
+        // Apply fallback colors
+        if (!string.IsNullOrEmpty(visuals.GroundColor))
+        {
+            bgRect.Color = Color.FromHtml(visuals.GroundColor);
+        }
+
+        if (!string.IsNullOrEmpty(visuals.WaterColor))
+        {
+            waterRect.Color = Color.FromHtml(visuals.WaterColor);
+            waterRect.Show();
+        }
+        else
+        {
+            waterRect.Hide();
+        }
+
+        // 2. NPC Logic
+        if (visuals.Npc != null)
+        {
+            var npcNode = GetNode<Area2D>("NPC");
+            npcNode.GlobalPosition = new Vector2(visuals.Npc.PositionX, visuals.Npc.PositionY);
+            _speakerName = visuals.Npc.Name;
+
+            var npcSprite = GetNode<LayeredSprite>("NPC/Sprite");
+
+            if (!string.IsNullOrEmpty(visuals.Npc.SpriteKey))
+            {
+                var spritePath = visuals.Npc.SpriteKey.StartsWith("res://")
+                    ? visuals.Npc.SpriteKey
+                    : $"res://assets/sprites/{visuals.Npc.SpriteKey}.png";
+
+                if (global::Godot.FileAccess.FileExists(spritePath))
+                {
+                    _ = npcSprite.SetupFullSheet(spritePath, _fileSystem);
+                }
+                else if (visuals.Npc.Appearance != null)
+                {
+                    GD.Print($"[WorldScene] NPC sprite '{spritePath}' not found. Using generated LPC appearance.");
+                    var app = visuals.Npc.Appearance;
+                    var npcChar = new Character
+                    {
+                        Name = visuals.Npc.Name,
+                        HairStyle = app.HairStyle,
+                        HairColor = app.HairColor,
+                        SkinColor = app.SkinColor,
+                        Head = app.Head,
+                        Face = app.Face,
+                        ArmorType = app.ArmorType,
+                        Legs = app.Legs,
+                        Feet = app.Feet
+                    };
+                    _ = npcSprite.SetupCharacter(npcChar, _catalog, _fileSystem, _compositor);
+                }
+            }
+            else if (visuals.Npc.Appearance != null)
+            {
+                var app = visuals.Npc.Appearance;
+                var npcChar = new Character
+                {
+                    Name = visuals.Npc.Name,
+                    HairStyle = app.HairStyle,
+                    HairColor = app.HairColor,
+                    SkinColor = app.SkinColor,
+                    Head = app.Head,
+                    Face = app.Face,
+                    ArmorType = app.ArmorType,
+                    Legs = app.Legs,
+                    Feet = app.Feet
+                };
+                _ = npcSprite.SetupCharacter(npcChar, _catalog, _fileSystem, _compositor);
+            }
+            npcNode.Show();
+        }
+        else
+        {
+            GetNode<Area2D>("NPC").Hide();
         }
     }
 }

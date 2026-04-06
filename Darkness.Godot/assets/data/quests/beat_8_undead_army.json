@@ -1,0 +1,52 @@
+{
+  "Id": "beat_8",
+  "Title": "Undead Army",
+  "IsMainStory": true,
+  "SortOrder": 8,
+  "Prerequisites": ["beat_7"],
+  "Steps": [
+    {
+      "Id": "beat_8_intro",
+      "Type": "dialogue",
+      "NextStepId": "beat_8_combat",
+      "Visuals": {
+        "BackgroundKey": "battlefield",
+        "GroundColor": "#2b2b2b",
+        "Npc": {
+          "Name": "Undead Commander",
+          "PositionX": 550,
+          "PositionY": 240,
+          "Appearance": {
+            "HairStyle": "None",
+            "SkinColor": "Pale",
+            "Head": "Skeleton",
+            "Face": "Default",
+            "ArmorType": "Plate (Steel)",
+            "Legs": "Plate (Steel)",
+            "Feet": "Plate (Steel)"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Undead Commander",
+        "Lines": [
+          "My legions are infinite. Your struggle is futile.",
+          "Every soul that falls joins our ranks.",
+          "Behold the power of the eternal army!"
+        ]
+      }
+    },
+    {
+      "Id": "beat_8_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Undead Knight A", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 25, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 100 },
+          { "Name": "Undead Knight B", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 25, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 100 },
+          { "Name": "Undead Knight C", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 25, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 100 }
+        ],
+        "BackgroundKey": "battlefield"
+      }
+    }
+  ]
+}

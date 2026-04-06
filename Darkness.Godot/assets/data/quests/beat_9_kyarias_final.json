@@ -1,0 +1,42 @@
+{
+  "Id": "beat_9",
+  "Title": "Kyarias Final",
+  "IsMainStory": true,
+  "SortOrder": 9,
+  "Prerequisites": ["beat_8"],
+  "Steps": [
+    {
+      "Id": "beat_9_intro",
+      "Type": "dialogue",
+      "NextStepId": "beat_9_combat",
+      "Visuals": {
+        "BackgroundKey": "throne_room",
+        "GroundColor": "#4a0000",
+        "Npc": {
+          "Name": "Kyarias",
+          "PositionX": 600,
+          "PositionY": 200,
+          "SpriteKey": "bosses/KazarthEndGame"
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Kyarias",
+        "Lines": [
+          "So, the little ant has reached the throne.",
+          "I have watched your journey with amusement, but all games must end.",
+          "Now, you shall witness the true meaning of Darkness!"
+        ]
+      }
+    },
+    {
+      "Id": "beat_9_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Kyarias", "Level": 15, "MaxHP": 1000, "CurrentHP": 1000, "Attack": 50, "Defense": 20, "Speed": 35, "SpriteKey": "bosses/KazarthEndGame", "ExperienceReward": 1000 }
+        ],
+        "BackgroundKey": "throne_room"
+      }
+    }
+  ]
+}

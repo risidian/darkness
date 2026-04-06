@@ -9,6 +9,16 @@
       "Id": "beat_2_dialogue",
       "Type": "dialogue",
       "NextStepId": "beat_2_combat",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#333333",
+        "Npc": {
+          "Name": "Dark Warrior",
+          "SpriteKey": "bosses/Balgathor",
+          "PositionX": 600,
+          "PositionY": 300
+        }
+      },
       "Dialogue": {
         "Speaker": "Dark Warrior",
         "Lines": ["You dare approach the gates of Camelot?", "Your journey ends here, mortal.", "The shadow consumes all."]
