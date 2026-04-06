@@ -5,10 +5,10 @@ namespace Darkness.Core.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Class { get; set; } = string.Empty;
-        public string HairColor { get; set; } = string.Empty;
-        public string HairStyle { get; set; } = string.Empty;
-        public string SkinColor { get; set; } = string.Empty;
+        public string Class { get; set; } = "Knight";
+        public string HairColor { get; set; } = "Black";
+        public string HairStyle { get; set; } = "Long";
+        public string SkinColor { get; set; } = "Light";
         public string Face { get; set; } = "Default";
         public string Eyes { get; set; } = "Default";
         public string Head { get; set; } = "Human Male";
@@ -36,6 +36,9 @@ namespace Darkness.Core.Models
         public int Accuracy { get; set; }
         public int Evasion { get; set; }
         public int Defense { get; set; }
+        public int CriticalChance { get; set; }
+        public int CriticalDamage { get; set; }
+        public int CriticalDefense { get; set; }
         public int MagicDefense { get; set; }
         public int ArmorClass { get; set; }
 

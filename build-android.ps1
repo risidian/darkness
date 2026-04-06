@@ -38,6 +38,16 @@ if (Test-Path $PresetsPath) {
     Write-Host "--- export_presets.cfg not found at $PresetsPath ---" -ForegroundColor Gray
 }
 
+# 3. Ensure Gradle build fix for transient files is applied (Godot 4 + Gradle 8.x)
+$GradlePath = "$ProjectDir/android/build/build.gradle"
+if (Test-Path $GradlePath) {
+    $GradleContent = Get-Content $GradlePath -Raw
+    if (!($GradleContent -match "doNotTrackState\('Avoid hashing transient .TMP files in Godot export'\)")) {
+        Write-Host "--- Applying Gradle build fix for transient files ---" -ForegroundColor Yellow
+        Add-Content -Path $GradlePath -Value "`n`ntasks.withType(com.android.build.gradle.tasks.MergeSourceSetFolders).configureEach {`n    doNotTrackState('Avoid hashing transient .TMP files in Godot export')`n}"
+    }
+}
+
 Write-Host "--- Building C# Project for Android ---" -ForegroundColor Cyan
 dotnet build "$ProjectDir/$ProjectDir.csproj" -r android-arm64 --self-contained false
 

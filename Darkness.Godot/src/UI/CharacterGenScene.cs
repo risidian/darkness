@@ -37,7 +37,8 @@ public partial class CharacterGenScene : Control
 
     public override void _Ready()
     {
-        if (!IsInsideTree()) return;
+        if (!IsInsideTree()) 
+            return;
         var global = GetNode<Global>("/root/Global");
         var sp = global.Services!;
         _navigation = sp.GetRequiredService<INavigationService>();
@@ -271,7 +272,7 @@ public partial class CharacterGenScene : Control
                 c.Intelligence = 8;
                 c.Wisdom = 10;
                 c.Charisma = 12;
-                c.ArmorClass = 2;
+                c.ArmorClass = 5;
                 break;
             case "Warrior":
                 c.Strength = 15;
@@ -280,7 +281,7 @@ public partial class CharacterGenScene : Control
                 c.Intelligence = 8;
                 c.Wisdom = 8;
                 c.Charisma = 10;
-                c.ArmorClass = 2;
+                c.ArmorClass = 3;
                 break;
             case "Mage":
                 c.Strength = 8;
@@ -289,7 +290,7 @@ public partial class CharacterGenScene : Control
                 c.Intelligence = 15;
                 c.Wisdom = 14;
                 c.Charisma = 12;
-                c.ArmorClass = 0;
+                c.ArmorClass = 1;
                 break;
             case "Rogue":
                 c.Strength = 12;
@@ -298,7 +299,7 @@ public partial class CharacterGenScene : Control
                 c.Intelligence = 10;
                 c.Wisdom = 8;
                 c.Charisma = 12;
-                c.ArmorClass = 1;
+                c.ArmorClass = 2;
                 break;
             case "Cleric":
                 c.Strength = 10;
@@ -307,7 +308,7 @@ public partial class CharacterGenScene : Control
                 c.Intelligence = 10;
                 c.Wisdom = 15;
                 c.Charisma = 12;
-                c.ArmorClass = 2;
+                c.ArmorClass = 4;
                 break;
         }
 
