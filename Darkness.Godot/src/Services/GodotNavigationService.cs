@@ -31,8 +31,20 @@ public class GodotNavigationService : INavigationService
         {
             GD.Print($"[Navigation] Navigating to route: {route}");
 
+            string loadingText = route.Replace("Page", "").Replace("Scene", "");
+            if (parameters != null)
+            {
+                if (parameters.ContainsKey("LoadingText") && parameters["LoadingText"] != null)
+                    loadingText = parameters["LoadingText"]!.ToString()!;
+                else if (parameters.ContainsKey("QuestChainId") && parameters["QuestChainId"] != null)
+                    loadingText = parameters["QuestChainId"]!.ToString()!;
+            }
+            
+            if (loadingText!.StartsWith("beat_"))
+                loadingText = "Beat " + loadingText.Substring(5);
+
             // 1. Fade Out
-            await _global.Transition.FadeOut();
+            await _global.Transition.FadeOut(loadingText);
 
             // 2. Convert route name to Godot scene path
             string sceneName = route.Replace("Page", "Scene");
@@ -101,8 +113,21 @@ public class GodotNavigationService : INavigationService
         {
             GD.Print($"[Navigation] Navigating to {route} with typed args {typeof(T).Name}");
 
+            string loadingText = route.Replace("Page", "").Replace("Scene", "");
+            if (parameters is BattleArgs bArgs && !string.IsNullOrEmpty(bArgs.QuestChainId))
+            {
+                loadingText = bArgs.QuestChainId;
+            }
+            else if (parameters is StealthArgs sArgs && !string.IsNullOrEmpty(sArgs.QuestChainId))
+            {
+                loadingText = sArgs.QuestChainId;
+            }
+
+            if (loadingText.StartsWith("beat_"))
+                loadingText = "Beat " + loadingText.Substring(5);
+
             // 1. Fade Out
-            await _global.Transition.FadeOut();
+            await _global.Transition.FadeOut(loadingText);
 
             // 2. Convert route name to Godot scene path
             string sceneName = route.Replace("Page", "Scene");

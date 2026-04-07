@@ -616,6 +616,7 @@ public partial class WorldScene : Node2D, IInitializable
         var bgRect = GetNode<ColorRect>("Background");
         var waterRect = GetNode<ColorRect>("Water");
         var bgImage = GetNode<TextureRect>("BackgroundImage");
+        bool imageLoaded = false;
 
         if (!string.IsNullOrEmpty(visuals.BackgroundKey))
         {
@@ -624,11 +625,12 @@ public partial class WorldScene : Node2D, IInitializable
                 : $"res://assets/backgrounds/{visuals.BackgroundKey}.png";
 
             GD.Print($"[WorldScene] Loading background: {texPath}");
-            if (global::Godot.FileAccess.FileExists(texPath))
+            if (global::Godot.FileAccess.FileExists(texPath) || ResourceLoader.Exists(texPath))
             {
                 bgImage.Texture = GD.Load<Texture2D>(texPath);
                 bgImage.Show();
                 bgRect.Hide();
+                imageLoaded = true;
             }
             else
             {
@@ -648,7 +650,7 @@ public partial class WorldScene : Node2D, IInitializable
             bgRect.Color = Color.FromHtml(visuals.GroundColor);
         }
 
-        if (!string.IsNullOrEmpty(visuals.WaterColor))
+        if (!string.IsNullOrEmpty(visuals.WaterColor) && !imageLoaded)
         {
             waterRect.Color = Color.FromHtml(visuals.WaterColor);
             waterRect.Show();

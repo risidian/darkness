@@ -113,7 +113,7 @@ public partial class BattleScene : Control, IInitializable
                 if (!string.IsNullOrEmpty(combat.BackgroundKey))
                 {
                     var texPath = $"res://assets/backgrounds/{combat.BackgroundKey}.png";
-                    if (global::Godot.FileAccess.FileExists(texPath))
+                    if (global::Godot.FileAccess.FileExists(texPath) || ResourceLoader.Exists(texPath))
                     {
                         var bgImage = GetNode<TextureRect>("BackgroundImage");
                         bgImage.Texture = GD.Load<Texture2D>(texPath);
@@ -170,6 +170,22 @@ public partial class BattleScene : Control, IInitializable
         _questService = sp.GetRequiredService<IQuestService>();
 
         _combatLog = GetNode<RichTextLabel>("CombatLog");
+        
+        // Add translucent background to make text visible against backgrounds
+        var logStyleBox = new StyleBoxFlat
+        {
+            BgColor = new Color(0, 0, 0, 0.6f),
+            CornerRadiusTopLeft = 8,
+            CornerRadiusTopRight = 8,
+            CornerRadiusBottomLeft = 8,
+            CornerRadiusBottomRight = 8,
+            ContentMarginLeft = 10,
+            ContentMarginTop = 10,
+            ContentMarginRight = 10,
+            ContentMarginBottom = 10
+        };
+        _combatLog.AddThemeStyleboxOverride("normal", logStyleBox);
+        
         _pauseMenu = GetNode<PauseMenu>("PauseMenu");
         _endBattlePanel = GetNode<Control>("EndBattlePanel");
         _endBattleTitle = GetNode<Label>("%Title");

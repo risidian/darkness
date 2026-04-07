@@ -33,7 +33,7 @@
 		  { "Name": "Balgathor", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 500 }
 		],
 		"SurvivalTurns": 5,
-		"BackgroundKey": "camelot_shore"
+		"BackgroundKey": "dark_castle"
 	  }
 	}
   ]
