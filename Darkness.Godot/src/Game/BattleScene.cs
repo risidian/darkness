@@ -33,6 +33,8 @@ public partial class BattleScene : Control, IInitializable
     private string? _questChainId;
     private string? _questStepId;
 
+    private ItemList _turnOrderList = null!;
+
     private HBoxContainer _partyContainer = null!;
     private VBoxContainer _enemyContainer = null!;
 
@@ -178,6 +180,12 @@ public partial class BattleScene : Control, IInitializable
         _partyContainer = GetNode<HBoxContainer>("CombatArea/PartyContainer");
         _enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
 
+        _turnOrderList = new ItemList();
+        _turnOrderList.Name = "TurnOrderList";
+        _turnOrderList.CustomMinimumSize = new Vector2(200, 300);
+        var combatArea = GetNode<HBoxContainer>("CombatArea");
+        combatArea.AddChild(_turnOrderList);
+
         GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
 
         _okButton.Pressed += async () =>
@@ -318,6 +326,14 @@ public partial class BattleScene : Control, IInitializable
                     MoralityImpact = e.MoralityImpact
                 });
             }
+        }
+
+        var turnOrder = _combat.CalculateTurnOrder(_party, _enemies);
+        _turnOrderList.Clear();
+        foreach (var entity in turnOrder)
+        {
+            string name = entity is Character c ? c.Name : ((Enemy)entity).Name;
+            _turnOrderList.AddItem(name);
         }
     }
 
@@ -525,12 +541,21 @@ public partial class BattleScene : Control, IInitializable
 
                 attackerSprite.Play(attackAnim);
 
-                int damage = _combat.CalculateDamage(attacker, target, skill: skill);
-                target.CurrentHP -= damage;
-                _enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
+                var combatResult = _combat.CalculateDamage(attacker, target, skill: skill);
+                
+                if (combatResult.IsHit)
+                {
+                    target.CurrentHP -= combatResult.DamageDealt;
+                    _enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
 
-                _combatLog.AppendText(
-                    $"\n[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {damage} damage!");
+                    string critMsg = combatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
+                    _combatLog.AppendText($"\n{critMsg}[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {combatResult.DamageDealt} damage!");
+                }
+                else
+                {
+                    string missMsg = combatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
+                    _combatLog.AppendText($"\n{missMsg}[color=red]{attacker.Name}[/color] tried to use [b]{skill.Name}[/b] on {target.Name} but missed!");
+                }
 
                 await ToSignal(tween, "finished");
                 await ToSignal(GetTree().CreateTimer(0.2), "timeout");
@@ -566,13 +591,22 @@ public partial class BattleScene : Control, IInitializable
 
                 targetSprite.Play(enemyAnim);
 
-                int enemyDamage = _combat.CalculateDamage(target, attacker);
-                attacker.CurrentHP -= enemyDamage;
-                _partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
+                var enemyCombatResult = _combat.CalculateDamage(target, attacker);
+                
+                if (enemyCombatResult.IsHit)
+                {
+                    attacker.CurrentHP -= enemyCombatResult.DamageDealt;
+                    _partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
 
-                string defendMsg = attacker.IsBlocking ? " (Blocked!)" : "";
-                _combatLog.AppendText(
-                    $"\n[color=orange]{target.Name}[/color] attacks for {enemyDamage} damage!{defendMsg}");
+                    string defendMsg = attacker.IsBlocking ? " (Blocked!)" : "";
+                    string eCritMsg = enemyCombatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
+                    _combatLog.AppendText($"\n{eCritMsg}[color=orange]{target.Name}[/color] attacks for {enemyCombatResult.DamageDealt} damage!{defendMsg}");
+                }
+                else
+                {
+                    string eMissMsg = enemyCombatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
+                    _combatLog.AppendText($"\n{eMissMsg}[color=orange]{target.Name}[/color] attacks but misses!");
+                }
 
                 await ToSignal(eTween, "finished");
                 await ToSignal(GetTree().CreateTimer(0.2), "timeout");
