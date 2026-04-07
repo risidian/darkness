@@ -42,9 +42,27 @@ if (Test-Path $PresetsPath) {
 $GradlePath = "$ProjectDir/android/build/build.gradle"
 if (Test-Path $GradlePath) {
     $GradleContent = Get-Content $GradlePath -Raw
-    if (!($GradleContent -match "doNotTrackState\('Avoid hashing transient .TMP files in Godot export'\)")) {
-        Write-Host "--- Applying Gradle build fix for transient files ---" -ForegroundColor Yellow
-        Add-Content -Path $GradlePath -Value "`n`ntasks.withType(com.android.build.gradle.tasks.MergeSourceSetFolders).configureEach {`n    doNotTrackState('Avoid hashing transient .TMP files in Godot export')`n}"
+    
+    $Changed = $false
+
+    # Fix aaptOptions to ignore .tmp files
+    if ($GradleContent -match 'ignoreAssetsPattern "(!\.svn:!\.git:!\.gitignore:!\.ds_store:!\*\.scc:!CVS:!thumbs\.db:!picasa\.ini:!\*~)"') {
+        $OldPattern = $Matches[1]
+        $NewPattern = $OldPattern + ":*.tmp:*.TMP"
+        $GradleContent = $GradleContent -replace [regex]::Escape($OldPattern), $NewPattern
+        $Changed = $true
+        Write-Host "--- Updated aaptOptions to ignore .tmp files ---" -ForegroundColor Yellow
+    }
+
+    # Fix packagingOptions to exclude .tmp files
+    if ($GradleContent -match 'exclude ''META-INF/NOTICE''' -and !($GradleContent -match "exclude '\*\*/\*\.tmp'")) {
+        $GradleContent = $GradleContent -replace "exclude 'META-INF/NOTICE'", "exclude 'META-INF/NOTICE'`n        exclude '**/*.tmp'`n        exclude '**/*.TMP'"
+        $Changed = $true
+        Write-Host "--- Updated packagingOptions to exclude .tmp files ---" -ForegroundColor Yellow
+    }
+
+    if ($Changed) {
+        $GradleContent | Set-Content $GradlePath -NoNewline
     }
 }
 

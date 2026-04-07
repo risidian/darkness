@@ -177,14 +177,15 @@ public partial class BattleScene : Control, IInitializable
         _continueButton = GetNode<Button>("%ContinueButton");
         _okButton = GetNode<Button>("%OkButton");
 
-        _partyContainer = GetNode<HBoxContainer>("CombatArea/PartyContainer");
-        _enemyContainer = GetNode<VBoxContainer>("CombatArea/EnemyContainer");
+        var combatArea = GetNode<Control>("CombatArea");
+        _partyContainer = combatArea.GetNode<HBoxContainer>("PartyContainer");
+        _enemyContainer = combatArea.GetNode<VBoxContainer>("EnemyContainer");
 
         _turnOrderList = new ItemList();
         _turnOrderList.Name = "TurnOrderList";
-        _turnOrderList.CustomMinimumSize = new Vector2(200, 300);
-        var combatArea = GetNode<HBoxContainer>("CombatArea");
-        combatArea.AddChild(_turnOrderList);
+        _turnOrderList.CustomMinimumSize = new Vector2(200, 200);
+        AddChild(_turnOrderList);
+        _turnOrderList.SetPosition(new Vector2(20, 150));
 
         GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
 
@@ -234,9 +235,7 @@ public partial class BattleScene : Control, IInitializable
             AddChild(survivalContainer);
         }
 
-        // Wait a few frames to ensure GodotNavigationService has called Initialize()
-        await ToSignal(GetTree(), "process_frame");
-        await ToSignal(GetTree(), "process_frame");
+        // Wait a single frame to ensure GodotNavigationService has called Initialize()
         await ToSignal(GetTree(), "process_frame");
 
         SetupBattle();
@@ -310,20 +309,29 @@ public partial class BattleScene : Control, IInitializable
                 Name = "Hellhound Gamma", MaxHP = 50, CurrentHP = 50, Defense = 5, Attack = 8, Accuracy = 80,
                 SpriteKey = "hound"
             });
+        }
 
+        // Ensure _originalEnemies is populated once if empty (whether from params or defaults)
+        if (_originalEnemies.Count == 0)
+        {
             foreach (var e in _enemies)
             {
                 _originalEnemies.Add(new Enemy
                 {
                     Name = e.Name,
+                    Level = e.Level,
                     MaxHP = e.MaxHP,
                     CurrentHP = e.MaxHP,
                     Attack = e.Attack,
                     Defense = e.Defense,
                     Accuracy = e.Accuracy,
                     Speed = e.Speed,
+                    Evasion = e.Evasion,
                     SpriteKey = e.SpriteKey,
-                    MoralityImpact = e.MoralityImpact
+                    IsInvincible = e.IsInvincible,
+                    MoralityImpact = e.MoralityImpact,
+                    ExperienceReward = e.ExperienceReward,
+                    GoldReward = e.GoldReward
                 });
             }
         }
