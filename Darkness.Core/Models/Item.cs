@@ -21,6 +21,7 @@ namespace Darkness.Core.Models
         public int DefenseBonus { get; set; }
         public int AttackBonus { get; set; }
         public int ArmorClass { get; set; }
+        public string DamageDice { get; set; } = "1d4"; // Default fallback
         public string? EquipmentSlot { get; set; }
         public int? EquipmentSpriteId { get; set; }
     }

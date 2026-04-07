@@ -8,6 +8,7 @@ namespace Darkness.Core.Models
         public int ManaCost { get; set; }
         public int StaminaCost { get; set; }
         public int BasePower { get; set; }
+        public string DamageDice { get; set; } = "1d6";
         public string SkillType { get; set; } = "Physical"; // Physical, Magical, Defensive
 
         // Multipliers and Modifiers
