@@ -39,6 +39,9 @@ public partial class BattleScene : Control, IInitializable
     private HBoxContainer _partyContainer = null!;
     private VBoxContainer _enemyContainer = null!;
 
+    private List<object> _turnOrder = new();
+    private int _currentTurnIndex = 0;
+
     private List<Character> _party = new();
     private List<Enemy> _enemies = new();
     private List<Enemy> _originalEnemies = new(); // For retry
@@ -258,6 +261,7 @@ public partial class BattleScene : Control, IInitializable
         SetupBattle();
         SetupWeaponSkills();
         await UpdateSprites();
+        ProcessNextTurn();
     }
 
     private void SetupWeaponSkills()
@@ -353,13 +357,8 @@ public partial class BattleScene : Control, IInitializable
             }
         }
 
-        var turnOrder = _combat.CalculateTurnOrder(_party, _enemies);
-        _turnOrderList.Clear();
-        foreach (var entity in turnOrder)
-        {
-            string name = entity is Character c ? c.Name : ((Enemy)entity).Name;
-            _turnOrderList.AddItem(name);
-        }
+        _turnOrder = _combat.CalculateTurnOrder(_party, _enemies);
+        UpdateTurnOrderUI();
     }
 
     private void RetryBattle()
@@ -515,17 +514,162 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
+    private void UpdateTurnOrderUI()
+    {
+        _turnOrderList.Clear();
+        for (int i = 0; i < _turnOrder.Count; i++)
+        {
+            var entity = _turnOrder[i];
+            string name = entity is Character c ? c.Name : ((Enemy)entity).Name;
+            _turnOrderList.AddItem(name);
+            if (i == _currentTurnIndex)
+            {
+                _turnOrderList.SetItemCustomBgColor(i, new Color(0, 0.5f, 0, 0.5f));
+            }
+        }
+    }
+
+    private async void ProcessNextTurn()
+    {
+        if (!IsInsideTree() || _party.Count == 0 || _enemies.Count == 0 || _turnOrder.Count == 0) return;
+
+        if (_currentTurnIndex >= _turnOrder.Count)
+        {
+            _currentTurnIndex = 0;
+            
+            if (_survivalTurns > 0)
+            {
+                _currentTurn++;
+                if (_survivalBar != null && _survivalLabel != null)
+                {
+                    _survivalBar.Value = _currentTurn;
+                    _survivalLabel.Text = $"Survive! ({_currentTurn}/{_survivalTurns} Turns)";
+                }
+
+                if (_currentTurn >= _survivalTurns)
+                {
+                    Victory(survived: true);
+                    return;
+                }
+            }
+        }
+
+        UpdateTurnOrderUI();
+        var currentEntity = _turnOrder[_currentTurnIndex];
+
+        if (currentEntity is Character character)
+        {
+            EnablePlayerInput(true);
+            _combatLog.AppendText($"\n\n--- [color=cyan]{character.Name}'s Turn[/color] ---");
+        }
+        else if (currentEntity is Enemy enemy)
+        {
+            EnablePlayerInput(false);
+            _combatLog.AppendText($"\n\n--- [color=orange]{enemy.Name}'s Turn[/color] ---");
+            await ExecuteEnemyTurn(enemy);
+        }
+    }
+
+    private void EnablePlayerInput(bool enable)
+    {
+        var buttons = new[]
+        {
+            GetNode<Button>("ActionsArea/Attack1"),
+            GetNode<Button>("ActionsArea/Attack2"),
+            GetNode<Button>("ActionsArea/Attack3")
+        };
+        foreach (var btn in buttons)
+        {
+            btn.Disabled = !enable;
+        }
+    }
+
+    private async Task ExecuteEnemyTurn(Enemy target)
+    {
+        _isProcessingTurn = true;
+        try
+        {
+            var attacker = _party[0]; // Player is the only valid target currently
+            if (attacker.CurrentHP <= 0) return;
+
+            int actualIndex = _enemies.IndexOf(target);
+            if (actualIndex < 0)
+            {
+                _currentTurnIndex++;
+                ProcessNextTurn();
+                return;
+            }
+
+            var targetSprite = _enemySprites[actualIndex];
+
+            await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+
+            string enemyAnim = target.SpriteKey == "hound"
+                ? "jump"
+                : (targetSprite.HasAnimation("slash_left") ? "slash_left" : "walk_left");
+            var eOriginalPos = targetSprite.Position;
+            var eLungePos = eOriginalPos + new Vector2(-50, 0);
+            var eTween = GetTree().CreateTween();
+            eTween.TweenProperty(targetSprite, "position", eLungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.Out);
+
+            targetSprite.Play(enemyAnim);
+
+            var enemyCombatResult = _combat.CalculateDamage(target, attacker);
+            
+            if (enemyCombatResult.IsHit)
+            {
+                attacker.CurrentHP -= enemyCombatResult.DamageDealt;
+                _partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
+
+                string defendMsg = attacker.IsBlocking ? " (Blocked!)" : "";
+                string eCritMsg = enemyCombatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
+                _combatLog.AppendText($"\n{eCritMsg}[color=orange]{target.Name}[/color] attacks for {enemyCombatResult.DamageDealt} damage!{defendMsg}");
+            }
+            else
+            {
+                string eMissMsg = enemyCombatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
+                _combatLog.AppendText($"\n{eMissMsg}[color=orange]{target.Name}[/color] attacks but misses!");
+            }
+
+            await ToSignal(eTween, "finished");
+            await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+
+            var eReturnTween = GetTree().CreateTween();
+            eReturnTween.TweenProperty(targetSprite, "position", eOriginalPos, 0.15f)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            await ToSignal(eReturnTween, "finished");
+            targetSprite.Play(target.SpriteKey == "hound" ? "idle" : "idle_left");
+
+            if (attacker.CurrentHP <= 0)
+            {
+                Defeat();
+                return;
+            }
+            
+            _currentTurnIndex++;
+            ProcessNextTurn();
+        }
+        finally
+        {
+            _isProcessingTurn = false;
+        }
+    }
+
     private async void ExecuteWeaponSkill(Skill skill)
     {
         if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
 
+        var currentEntity = _turnOrder[_currentTurnIndex];
+        if (!(currentEntity is Character attacker)) return;
+
         int actualIndex = _selectedEnemyIndex < _enemies.Count ? _selectedEnemyIndex : 0;
-        var attacker = _party[0];
         var target = _enemies[actualIndex];
 
         if (target.CurrentHP <= 0 || attacker.CurrentHP <= 0) return;
 
         _isProcessingTurn = true;
+        EnablePlayerInput(false);
         attacker.IsBlocking = false;
 
         try
@@ -567,10 +711,6 @@ public partial class BattleScene : Control, IInitializable
                 attackerSprite.Play(attackAnim);
 
                 var combatResult = _combat.CalculateDamage(attacker, target, skill: skill);
-                //this is for debugging
-                //result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
-                //_combatLog.AppendText($"\nDebug D20 roll was: {combatResult.D20Roll} attack modifier: {combatResult.AttackModifier}  AC: {combatResult.TargetAC} dmg dice {combatResult.DamageDice} multi {combatResult.DamageMultiplier} cmbt roll: {combatResult.DamageRoll}" +
-                //                      $"\nCalculation {combatResult.D20Roll + combatResult.AttackModifier} vs {combatResult.TargetAC}");
                 
                 if (combatResult.IsHit)
                 {
@@ -600,82 +740,34 @@ public partial class BattleScene : Control, IInitializable
             {
                 _combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
                 if (target.MoralityImpact != 0) _party[0].Morality += target.MoralityImpact;
+                
+                int targetTurnIndex = _turnOrder.IndexOf(target);
+                if (targetTurnIndex >= 0)
+                {
+                    _turnOrder.RemoveAt(targetTurnIndex);
+                    if (targetTurnIndex < _currentTurnIndex)
+                    {
+                        _currentTurnIndex--;
+                    }
+                }
+                
                 _enemies.Remove(target);
                 _selectedEnemyIndex = 0;
                 await UpdateSprites();
-            }
-            else if (attacker.CurrentHP > 0)
-            {
-                // Enemy Turn
-                await ToSignal(GetTree().CreateTimer(0.3), "timeout");
-
-                string enemyAnim = target.SpriteKey == "hound"
-                    ? "jump"
-                    : (targetSprite.HasAnimation("slash_left") ? "slash_left" : "walk_left");
-                var eOriginalPos = targetSprite.Position;
-                var eLungePos = eOriginalPos + new Vector2(-50, 0);
-                var eTween = GetTree().CreateTween();
-                eTween.TweenProperty(targetSprite, "position", eLungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
-                    .SetEase(Tween.EaseType.Out);
-
-                targetSprite.Play(enemyAnim);
-
-                var enemyCombatResult = _combat.CalculateDamage(target, attacker);
-                
-                if (enemyCombatResult.IsHit)
-                {
-                    attacker.CurrentHP -= enemyCombatResult.DamageDealt;
-                    _partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
-
-                    string defendMsg = attacker.IsBlocking ? " (Blocked!)" : "";
-                    string eCritMsg = enemyCombatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
-                    _combatLog.AppendText($"\n{eCritMsg}[color=orange]{target.Name}[/color] attacks for {enemyCombatResult.DamageDealt} damage!{defendMsg}");
-                }
-                else
-                {
-                    string eMissMsg = enemyCombatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
-                    _combatLog.AppendText($"\n{eMissMsg}[color=orange]{target.Name}[/color] attacks but misses!");
-                }
-
-                await ToSignal(eTween, "finished");
-                await ToSignal(GetTree().CreateTimer(0.2), "timeout");
-
-                var eReturnTween = GetTree().CreateTween();
-                eReturnTween.TweenProperty(targetSprite, "position", eOriginalPos, 0.15f)
-                    .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-                await ToSignal(eReturnTween, "finished");
-                targetSprite.Play(target.SpriteKey == "hound" ? "idle" : "idle_left");
-
-                if (attacker.CurrentHP <= 0)
-                {
-                    Defeat();
-                    return;
-                }
             }
 
             if (_enemies.Count == 0)
             {
                 Victory();
+                return;
             }
-            else if (_survivalTurns > 0)
-            {
-                _currentTurn++;
-                if (_survivalBar != null && _survivalLabel != null)
-                {
-                    _survivalBar.Value = _currentTurn;
-                    _survivalLabel.Text = $"Survive! ({_currentTurn}/{_survivalTurns} Turns)";
-                }
-
-                if (_currentTurn >= _survivalTurns)
-                {
-                    Victory(survived: true);
-                }
-            }
+            
+            _currentTurnIndex++;
+            ProcessNextTurn();
         }
         finally
         {
             _isProcessingTurn = false;
-            attacker.IsBlocking = false;
         }
     }
 
