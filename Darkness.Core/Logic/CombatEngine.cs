@@ -19,7 +19,8 @@ namespace Darkness.Core.Logic
         {
             if (string.IsNullOrWhiteSpace(diceStr)) return 0;
             var parts = diceStr.ToLower().Split('d');
-            if (parts.Length != 2 || !int.TryParse(parts[0], out int numDice) || !int.TryParse(parts[1], out int diceSides))
+            if (parts.Length != 2 || !int.TryParse(parts[0], out int numDice) ||
+                !int.TryParse(parts[1], out int diceSides))
             {
                 return 0; // Fallback
             }
@@ -29,6 +30,7 @@ namespace Darkness.Core.Logic
             {
                 total += _random.Next(1, diceSides + 1);
             }
+
             return total;
         }
 
@@ -60,36 +62,57 @@ namespace Darkness.Core.Logic
             ActionType action = ActionType.Standard, double? critRoll = null)
         {
             var result = new CombatResult();
-            
+
             bool isMagical = skill?.SkillType == "Magical";
             int attackStat = isMagical ? attacker.Intelligence : attacker.Strength;
             int attackModifier = GetModifier(attackStat);
-
+            result.AttackModifier = attackModifier;
             int targetAC = defender.Defense;
-
+            
             int d20Roll = critRoll.HasValue ? (int)(critRoll.Value * 20) + 1 : _random.Next(1, 21);
-            if (d20Roll == 20) result.IsCriticalHit = true;
-            if (d20Roll == 1) result.IsCriticalMiss = true;
+            result.D20Roll = d20Roll;
+            if (d20Roll == 20) 
+                result.IsCriticalHit = true;
+            if (d20Roll == 1) 
+                result.IsCriticalMiss = true;
 
-            int totalAttackBonus = attackModifier + (skill?.AccuracyModifier ?? 0);
-            
-            if (result.IsCriticalHit) result.IsHit = true;
-            else if (result.IsCriticalMiss) result.IsHit = false;
-            else result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
+            int totalAttackBonus = attackModifier; // this was causing random behaviour with missing+ (skill?.AccuracyModifier ?? 0);
 
-            if (!result.IsHit) return result;
+            if (result.IsCriticalHit) 
+                result.IsHit = true;
+            else if (result.IsCriticalMiss) 
+                result.IsHit = false;
+            else 
+                result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
+            result.TargetAC = targetAC;
 
-            string diceStr = skill?.DamageDice ?? "1d4"; 
-            
+            if (!result.IsHit)
+            {
+                //debugging
+                //result.DamageDice = $"Not hit return early {(d20Roll + totalAttackBonus)} >= {targetAC} {attackModifier} {skill?.AccuracyModifier}";
+                return result;
+            }
+
+            string diceStr = skill?.DamageDice ?? "1d4";
+
             int damageRoll = RollDice(diceStr);
-            if (result.IsCriticalHit) damageRoll += RollDice(diceStr);
+            if (result.IsCriticalHit) 
+                damageRoll += RollDice(diceStr);
 
-            float dmgMult = skill?.DamageMultiplier ?? 1.0f;
+            float dmgMult;
+            dmgMult = skill?.DamageMultiplier ?? 1.0f;
+
+            if (dmgMult < 1f)
+                dmgMult = 1.0f; // Ensure multiplier is never zero to avoid nullifying damage
             int totalDamage = (int)((damageRoll + attackModifier + (skill?.BasePower ?? 0)) * dmgMult);
 
-            if (defender.IsBlocking) totalDamage = (int)(totalDamage * 0.5f);
+            if (defender.IsBlocking) 
+                totalDamage = (int)(totalDamage * 0.5f);
 
             result.DamageDealt = Math.Max(1, totalDamage);
+            result.DamageMultiplier = skill?.DamageMultiplier;
+            result.DamageDice = diceStr;
+            result.DamageRoll = damageRoll;
             return result;
         }
 
@@ -97,7 +120,7 @@ namespace Darkness.Core.Logic
             ActionType action = ActionType.Standard, double? critRoll = null)
         {
             var result = new CombatResult();
-            
+
             int attackModifier = GetModifier(attacker.STR);
 
             int targetAC = 10 + defender.ArmorClass + GetModifier(defender.Dexterity);
@@ -107,7 +130,7 @@ namespace Darkness.Core.Logic
             if (d20Roll == 1) result.IsCriticalMiss = true;
 
             int totalAttackBonus = attackModifier + attacker.Accuracy + (skill?.AccuracyModifier ?? 0);
-            
+
             if (result.IsCriticalHit) result.IsHit = true;
             else if (result.IsCriticalMiss) result.IsHit = false;
             else result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
@@ -115,7 +138,7 @@ namespace Darkness.Core.Logic
             if (!result.IsHit) return result;
 
             string diceStr = skill?.DamageDice ?? "1d6";
-            
+
             int damageRoll = RollDice(diceStr);
             if (result.IsCriticalHit) damageRoll += RollDice(diceStr);
 
@@ -137,7 +160,7 @@ namespace Darkness.Core.Logic
             ActionType action = ActionType.Standard, double? critRoll = null)
         {
             var result = new CombatResult();
-            
+
             bool isMagical = skill?.SkillType == "Magical";
             int attackStat = isMagical ? attacker.Intelligence : attacker.Strength;
             int attackModifier = GetModifier(attackStat);
@@ -149,7 +172,7 @@ namespace Darkness.Core.Logic
             if (d20Roll == 1) result.IsCriticalMiss = true;
 
             int totalAttackBonus = attackModifier + (skill?.AccuracyModifier ?? 0);
-            
+
             if (result.IsCriticalHit) result.IsHit = true;
             else if (result.IsCriticalMiss) result.IsHit = false;
             else result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
@@ -157,7 +180,7 @@ namespace Darkness.Core.Logic
             if (!result.IsHit) return result;
 
             string diceStr = skill?.DamageDice ?? "1d4";
-            
+
             int damageRoll = RollDice(diceStr);
             if (result.IsCriticalHit) damageRoll += RollDice(diceStr);
 

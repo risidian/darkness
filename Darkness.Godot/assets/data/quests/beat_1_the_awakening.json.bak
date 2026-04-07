@@ -57,9 +57,9 @@
 	  "Location": { "LocationKey": "SandyShore_East" },
 	  "Combat": {
 		"Enemies": [
-		  { "Name": "Hell Hound 1", "Level": 1, "MaxHP": 50, "CurrentHP": 50, "Attack": 7, "Defense": 5, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
-		  { "Name": "Undead Dog B", "Level": 1, "MaxHP": 50, "CurrentHP": 50, "Attack": 6, "Defense": 5, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
-		  { "Name": "Undead Dog C", "Level": 1, "MaxHP": 50, "CurrentHP": 50, "Attack": 6, "Defense": 5, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 }
+		  { "Name": "Hell Hound Alpha", "Level": 1, "MaxHP": 60, "CurrentHP": 30, "Attack": 7, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
+		  { "Name": "Hell Hound Beta", "Level": 1, "MaxHP": 50, "CurrentHP": 20, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
+		  { "Name": "Undead Dog Gamma", "Level": 1, "MaxHP": 50, "CurrentHP": 20, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 }
 		],
 		"BackgroundKey": "forest"
 	  }

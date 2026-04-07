@@ -1,13 +1,14 @@
-using Godot;
-using Darkness.Godot.Core;
 using Darkness.Core.Interfaces;
-using Darkness.Core.Models;
 using Darkness.Core.Logic;
+using Darkness.Core.Models;
+using Darkness.Godot.Core;
+using Darkness.Godot.UI;
+using Godot;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Darkness.Godot.UI;
+using static Godot.HttpRequest;
 
 namespace Darkness.Godot.Game;
 
@@ -550,19 +551,23 @@ public partial class BattleScene : Control, IInitializable
                 attackerSprite.Play(attackAnim);
 
                 var combatResult = _combat.CalculateDamage(attacker, target, skill: skill);
+                //this is for debugging
+                //result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
+                //_combatLog.AppendText($"\nDebug D20 roll was: {combatResult.D20Roll} attack modifier: {combatResult.AttackModifier}  AC: {combatResult.TargetAC} dmg dice {combatResult.DamageDice} multi {combatResult.DamageMultiplier} cmbt roll: {combatResult.DamageRoll}" +
+                //                      $"\nCalculation {combatResult.D20Roll + combatResult.AttackModifier} vs {combatResult.TargetAC}");
                 
                 if (combatResult.IsHit)
                 {
                     target.CurrentHP -= combatResult.DamageDealt;
                     _enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
-
+                    
                     string critMsg = combatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
-                    _combatLog.AppendText($"\n{critMsg}[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {combatResult.DamageDealt} damage!");
+                    _combatLog.AppendText($"\n{critMsg}[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {combatResult.DamageDealt} damage! Rolled {combatResult.D20Roll}");
                 }
                 else
                 {
                     string missMsg = combatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
-                    _combatLog.AppendText($"\n{missMsg}[color=red]{attacker.Name}[/color] tried to use [b]{skill.Name}[/b] on {target.Name} but missed!");
+                    _combatLog.AppendText($"\n{missMsg}[color=red]{attacker.Name}[/color] tried to use [b]{skill.Name}[/b] on {target.Name} but missed! Rolled { combatResult.D20Roll}");
                 }
 
                 await ToSignal(tween, "finished");
