@@ -10,19 +10,41 @@ namespace Darkness.Core.Logic
     {
         private readonly Random _random = new();
 
+        private int GetModifier(int stat)
+        {
+            return (int)Math.Floor((stat - 10) / 2.0);
+        }
+
+        private int RollDice(string diceStr)
+        {
+            if (string.IsNullOrWhiteSpace(diceStr)) return 0;
+            var parts = diceStr.ToLower().Split('d');
+            if (parts.Length != 2 || !int.TryParse(parts[0], out int numDice) || !int.TryParse(parts[1], out int diceSides))
+            {
+                return 0; // Fallback
+            }
+
+            int total = 0;
+            for (int i = 0; i < numDice; i++)
+            {
+                total += _random.Next(1, diceSides + 1);
+            }
+            return total;
+        }
+
         public List<object> CalculateTurnOrder(List<Character> party, List<Enemy> enemies)
         {
             var participants = new List<(object Participant, int Initiative)>();
 
             foreach (var character in party)
             {
-                int initiative = character.Dexterity + character.Speed + _random.Next(1, 11);
+                int initiative = _random.Next(1, 21) + GetModifier(character.Dexterity);
                 participants.Add((character, initiative));
             }
 
             foreach (var enemy in enemies)
             {
-                int initiative = enemy.DEX + enemy.Speed + _random.Next(1, 11);
+                int initiative = _random.Next(1, 21) + GetModifier(enemy.DEX);
                 participants.Add((enemy, initiative));
             }
 
@@ -34,100 +56,124 @@ namespace Darkness.Core.Logic
                 .ToList();
         }
 
-        public int CalculateDamage(Character attacker, Enemy defender, Skill? skill = null,
+        public CombatResult CalculateDamage(Character attacker, Enemy defender, Skill? skill = null,
             ActionType action = ActionType.Standard, double? critRoll = null)
         {
+            var result = new CombatResult();
+            
+            bool isMagical = skill?.SkillType == "Magical";
+            int attackStat = isMagical ? attacker.Intelligence : attacker.Strength;
+            int attackModifier = GetModifier(attackStat);
+
+            int targetAC = defender.Defense;
+
+            int d20Roll = critRoll.HasValue ? (int)(critRoll.Value * 20) + 1 : _random.Next(1, 21);
+            if (d20Roll == 20) result.IsCriticalHit = true;
+            if (d20Roll == 1) result.IsCriticalMiss = true;
+
+            int totalAttackBonus = attackModifier + (skill?.AccuracyModifier ?? 0);
+            
+            if (result.IsCriticalHit) result.IsHit = true;
+            else if (result.IsCriticalMiss) result.IsHit = false;
+            else result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
+
+            if (!result.IsHit) return result;
+
+            string diceStr = skill?.DamageDice ?? "1d4"; 
+            
+            int damageRoll = RollDice(diceStr);
+            if (result.IsCriticalHit) damageRoll += RollDice(diceStr);
+
             float dmgMult = skill?.DamageMultiplier ?? 1.0f;
-            float armorPen = skill?.ArmorPenetration ?? 0.0f;
-            int accMod = skill?.AccuracyModifier ?? 0;
+            int totalDamage = (int)((damageRoll + attackModifier + (skill?.BasePower ?? 0)) * dmgMult);
 
-            // Determine base attack stat (Strength for Physical, Intelligence for Magical)
-            int baseAtk = (skill?.SkillType == "Magical") ? attacker.Intelligence : attacker.Strength;
-            int totalAttack = (int)((baseAtk + (skill?.BasePower ?? 0)) * dmgMult);
+            if (defender.IsBlocking) totalDamage = (int)(totalDamage * 0.5f);
 
-            // Defense ignores portion based on armor penetration
-            int targetDef = (int)(defender.Defense * (1.0f - armorPen));
-
-            int damage = 0;
-            if (totalAttack + targetDef > 0)
-            {
-                long squaredAttack = (long)totalAttack * totalAttack;
-                damage = (int)(squaredAttack / (totalAttack + targetDef));
-            }
-
-            if (totalAttack > 0 && damage == 0) damage = 1;
-
-            // Critical hit calculation
-            double roll = critRoll ?? _random.NextDouble();
-            if (roll < 0.05) damage = (int)(damage * 1.5);
-
-            // Target Block reduction
-            if (defender.IsBlocking)
-            {
-                damage = (int)(damage * 0.5);
-            }
-
-            return Math.Max(0, damage);
+            result.DamageDealt = Math.Max(1, totalDamage);
+            return result;
         }
 
-        public int CalculateDamage(Enemy attacker, Character defender, Skill? skill = null,
+        public CombatResult CalculateDamage(Enemy attacker, Character defender, Skill? skill = null,
             ActionType action = ActionType.Standard, double? critRoll = null)
         {
-            int totalAttack = attacker.Attack + (skill?.BasePower ?? 0);
-            int totalDefense = defender.Defense;
+            var result = new CombatResult();
+            
+            int attackModifier = GetModifier(attacker.STR);
 
-            int damage = 0;
-            if (totalAttack + totalDefense > 0)
-            {
-                long squaredAttack = (long)totalAttack * totalAttack;
-                damage = (int)(squaredAttack / (totalAttack + totalDefense));
-            }
+            int targetAC = 10 + defender.ArmorClass + GetModifier(defender.Dexterity);
 
-            if (totalAttack > 0 && damage == 0) damage = 1;
+            int d20Roll = critRoll.HasValue ? (int)(critRoll.Value * 20) + 1 : _random.Next(1, 21);
+            if (d20Roll == 20) result.IsCriticalHit = true;
+            if (d20Roll == 1) result.IsCriticalMiss = true;
 
-            // Critical hit
-            double roll = critRoll ?? _random.NextDouble();
-            if (roll < 0.05) damage = (int)(damage * 1.5);
+            int totalAttackBonus = attackModifier + attacker.Accuracy + (skill?.AccuracyModifier ?? 0);
+            
+            if (result.IsCriticalHit) result.IsHit = true;
+            else if (result.IsCriticalMiss) result.IsHit = false;
+            else result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
 
-            // Target Block reduction for Player
+            if (!result.IsHit) return result;
+
+            string diceStr = skill?.DamageDice ?? "1d6";
+            
+            int damageRoll = RollDice(diceStr);
+            if (result.IsCriticalHit) damageRoll += RollDice(diceStr);
+
+            int totalDamage = damageRoll + attackModifier + attacker.Attack + (skill?.BasePower ?? 0);
+
             if (defender.IsBlocking)
             {
-                float reduction = 0.05f; // Bare handed
+                float reduction = 0.05f;
                 if (defender.ShieldType != "None" && defender.ShieldType != "") reduction = 0.60f;
                 else if (defender.WeaponType != "None" && defender.WeaponType != "") reduction = 0.20f;
-
-                damage = (int)(damage * (1.0f - reduction));
+                totalDamage = (int)(totalDamage * (1.0f - reduction));
             }
 
-            return Math.Max(0, damage);
+            result.DamageDealt = Math.Max(1, totalDamage);
+            return result;
         }
 
-        public int CalculateDamage(Character attacker, Character defender, Skill? skill = null,
+        public CombatResult CalculateDamage(Character attacker, Character defender, Skill? skill = null,
             ActionType action = ActionType.Standard, double? critRoll = null)
         {
+            var result = new CombatResult();
+            
+            bool isMagical = skill?.SkillType == "Magical";
+            int attackStat = isMagical ? attacker.Intelligence : attacker.Strength;
+            int attackModifier = GetModifier(attackStat);
+
+            int targetAC = 10 + defender.ArmorClass + GetModifier(defender.Dexterity);
+
+            int d20Roll = critRoll.HasValue ? (int)(critRoll.Value * 20) + 1 : _random.Next(1, 21);
+            if (d20Roll == 20) result.IsCriticalHit = true;
+            if (d20Roll == 1) result.IsCriticalMiss = true;
+
+            int totalAttackBonus = attackModifier + (skill?.AccuracyModifier ?? 0);
+            
+            if (result.IsCriticalHit) result.IsHit = true;
+            else if (result.IsCriticalMiss) result.IsHit = false;
+            else result.IsHit = (d20Roll + totalAttackBonus) >= targetAC;
+
+            if (!result.IsHit) return result;
+
+            string diceStr = skill?.DamageDice ?? "1d4";
+            
+            int damageRoll = RollDice(diceStr);
+            if (result.IsCriticalHit) damageRoll += RollDice(diceStr);
+
             float dmgMult = skill?.DamageMultiplier ?? 1.0f;
-            float armorPen = skill?.ArmorPenetration ?? 0.0f;
-
-            int baseAtk = (skill?.SkillType == "Magical") ? attacker.Intelligence : attacker.Strength;
-            int totalAttack = (int)((baseAtk + (skill?.BasePower ?? 0)) * dmgMult);
-            int totalDefense = (int)(defender.Defense * (1.0f - armorPen));
-
-            int damage = (totalAttack + totalDefense > 0)
-                ? (int)(((long)totalAttack * totalAttack) / (totalAttack + totalDefense))
-                : 0;
-            if (totalAttack > 0 && damage == 0) damage = 1;
-
-            if ((critRoll ?? _random.NextDouble()) < 0.05) damage = (int)(damage * 1.5);
+            int totalDamage = (int)((damageRoll + attackModifier + (skill?.BasePower ?? 0)) * dmgMult);
 
             if (defender.IsBlocking)
             {
-                float reduction = (defender.ShieldType != "None" && defender.ShieldType != "")
-                    ? 0.60f
-                    : ((defender.WeaponType != "None" && defender.WeaponType != "") ? 0.20f : 0.05f);
-                damage = (int)(damage * (1.0f - reduction));
+                float reduction = 0.05f;
+                if (defender.ShieldType != "None" && defender.ShieldType != "") reduction = 0.60f;
+                else if (defender.WeaponType != "None" && defender.WeaponType != "") reduction = 0.20f;
+                totalDamage = (int)(totalDamage * (1.0f - reduction));
             }
 
-            return Math.Max(0, damage);
+            result.DamageDealt = Math.Max(1, totalDamage);
+            return result;
         }
 
         public void ApplySkillCosts(Character attacker, Skill skill)
