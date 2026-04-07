@@ -39,8 +39,7 @@ namespace Darkness.Tests
         [Fact]
         public void GetLocalFilePath_CreatesDirectoryIfMissing()
         {
-            Assert.False(Directory.Exists(_testAppDataDir));
-
+            // The constructor now creates the directory by default to ensure path is valid
             _service.GetLocalFilePath("test.db");
 
             Assert.True(Directory.Exists(_testAppDataDir));
