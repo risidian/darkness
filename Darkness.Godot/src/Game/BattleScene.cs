@@ -39,8 +39,7 @@ public partial class BattleScene : Control, IInitializable
     private HBoxContainer _partyContainer = null!;
     private VBoxContainer _enemyContainer = null!;
 
-    private List<object> _turnOrder = new();
-    private int _currentTurnIndex = 0;
+    private TurnManager _turnManager = new();
 
     private List<Character> _party = new();
     private List<Enemy> _enemies = new();
@@ -357,11 +356,11 @@ public partial class BattleScene : Control, IInitializable
             }
         }
 
-        _turnOrder = _combat.CalculateTurnOrder(_party, _enemies);
+        _turnManager.TurnOrder = _combat.CalculateTurnOrder(_party, _enemies);
         UpdateTurnOrderUI();
     }
 
-    private void RetryBattle()
+    private async void RetryBattle()
     {
         _endBattlePanel.Hide();
         _enemies.Clear();
@@ -390,14 +389,18 @@ public partial class BattleScene : Control, IInitializable
             _party[0].IsBlocking = false;
         }
 
-        _currentTurn = 0;
         if (_survivalBar != null) _survivalBar.Value = 0;
         if (_survivalLabel != null) _survivalLabel.Text = $"Survive! (0/{_survivalTurns} Turns)";
 
         _combatLog.Clear();
         _combatLog.AppendText("Retrying battle...");
         _selectedEnemyIndex = 0;
-        _ = UpdateSprites();
+        
+        _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
+        UpdateTurnOrderUI();
+        
+        await UpdateSprites();
+        ProcessNextTurn();
     }
 
     private void OnEnemyTapped(int index)
@@ -517,12 +520,12 @@ public partial class BattleScene : Control, IInitializable
     private void UpdateTurnOrderUI()
     {
         _turnOrderList.Clear();
-        for (int i = 0; i < _turnOrder.Count; i++)
+        for (int i = 0; i < _turnManager.TurnOrder.Count; i++)
         {
-            var entity = _turnOrder[i];
+            var entity = _turnManager.TurnOrder[i];
             string name = entity is Character c ? c.Name : ((Enemy)entity).Name;
             _turnOrderList.AddItem(name);
-            if (i == _currentTurnIndex)
+            if (i == _turnManager.CurrentTurnIndex)
             {
                 _turnOrderList.SetItemCustomBgColor(i, new Color(0, 0.5f, 0, 0.5f));
             }
@@ -531,11 +534,11 @@ public partial class BattleScene : Control, IInitializable
 
     private async void ProcessNextTurn()
     {
-        if (!IsInsideTree() || _party.Count == 0 || _enemies.Count == 0 || _turnOrder.Count == 0) return;
+        if (!IsInsideTree() || _party.Count == 0 || _enemies.Count == 0 || _turnManager.TurnOrder.Count == 0) return;
 
-        if (_currentTurnIndex >= _turnOrder.Count)
+        if (_turnManager.CurrentTurnIndex >= _turnManager.TurnOrder.Count)
         {
-            _currentTurnIndex = 0;
+            _turnManager.CurrentTurnIndex = 0;
             
             if (_survivalTurns > 0)
             {
@@ -555,7 +558,7 @@ public partial class BattleScene : Control, IInitializable
         }
 
         UpdateTurnOrderUI();
-        var currentEntity = _turnOrder[_currentTurnIndex];
+        var currentEntity = _turnManager.TurnOrder[_turnManager.CurrentTurnIndex];
 
         if (currentEntity is Character character)
         {
@@ -595,7 +598,7 @@ public partial class BattleScene : Control, IInitializable
             int actualIndex = _enemies.IndexOf(target);
             if (actualIndex < 0)
             {
-                _currentTurnIndex++;
+                _turnManager.CurrentTurnIndex++;
                 ProcessNextTurn();
                 return;
             }
@@ -647,7 +650,7 @@ public partial class BattleScene : Control, IInitializable
                 return;
             }
             
-            _currentTurnIndex++;
+            _turnManager.CurrentTurnIndex++;
             ProcessNextTurn();
         }
         finally
@@ -660,7 +663,7 @@ public partial class BattleScene : Control, IInitializable
     {
         if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
 
-        var currentEntity = _turnOrder[_currentTurnIndex];
+        var currentEntity = _turnManager.TurnOrder[_turnManager.CurrentTurnIndex];
         if (!(currentEntity is Character attacker)) return;
 
         int actualIndex = _selectedEnemyIndex < _enemies.Count ? _selectedEnemyIndex : 0;
@@ -741,15 +744,7 @@ public partial class BattleScene : Control, IInitializable
                 _combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
                 if (target.MoralityImpact != 0) _party[0].Morality += target.MoralityImpact;
                 
-                int targetTurnIndex = _turnOrder.IndexOf(target);
-                if (targetTurnIndex >= 0)
-                {
-                    _turnOrder.RemoveAt(targetTurnIndex);
-                    if (targetTurnIndex < _currentTurnIndex)
-                    {
-                        _currentTurnIndex--;
-                    }
-                }
+                _turnManager.RemoveEntity(target);
                 
                 _enemies.Remove(target);
                 _selectedEnemyIndex = 0;
@@ -762,7 +757,7 @@ public partial class BattleScene : Control, IInitializable
                 return;
             }
             
-            _currentTurnIndex++;
+            _turnManager.NextTurn();
             ProcessNextTurn();
         }
         finally

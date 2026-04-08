@@ -63,7 +63,6 @@
 		  { "Name": "Undead Dog Gamma", "Level": 1, "MaxHP": 20, "CurrentHP": 20, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 }
 		],
 		"BackgroundKey": "camelot_shore_2"
-		//"BackgroundKey": "forest"
 	  }
 	},
 	{

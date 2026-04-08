@@ -29,7 +29,7 @@
       "Type": "combat",
       "Combat": {
         "Enemies": [
-          { "Name": "Risidian", "Level": 8, "MaxHP": 120, "CurrentHP": 120, "Attack": 20, "Defense": 8, "Speed": 20, "SpriteKey": "bosses/Risidian", "ExperienceReward": 300 }
+          { "Name": "Risidian", "Level": 8, "MaxHP": 120, "CurrentHP": 120, "Attack": 35, "Defense": 8, "Speed": 20, "SpriteKey": "bosses/Risidian", "ExperienceReward": 300 }
         ],
         "BackgroundKey": "dark_castle"
       }
