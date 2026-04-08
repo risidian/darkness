@@ -229,7 +229,7 @@ public partial class InventoryScene : Control
             ArmorType = c.ArmorType,
             WeaponType = c.WeaponType,
             ShieldType = c.ShieldType,
-            Head = "Human Male"
+            Head = c.Head
         };
 
         try

@@ -38,14 +38,79 @@ namespace Darkness.Core.Services
             return Task.FromResult(recipes);
         }
 
-        public Task<bool> CraftItemAsync(Character character, Recipe recipe)
+        public async Task<bool> CraftItemAsync(Character character, Recipe recipe)
         {
-            // Simple logic for now: return true if both exist
-            if (character == null || recipe == null) return Task.FromResult(false);
+            if (character == null || recipe == null) return false;
 
-            // In a real implementation, we would check character inventory for materials
-            // and remove them, then add the result item to inventory.
-            return Task.FromResult(true);
+            // Check materials
+            foreach (var material in recipe.Materials)
+            {
+                var count = character.Inventory.Count(i => i.Name == material.Key);
+                if (count < material.Value) return false;
+            }
+
+            // Consume materials
+            foreach (var material in recipe.Materials)
+            {
+                for (int i = 0; i < material.Value; i++)
+                {
+                    var itemToRemove = character.Inventory.First(item => item.Name == material.Key);
+                    character.Inventory.Remove(itemToRemove);
+                }
+            }
+
+            // Add result
+            character.Inventory.Add(new Item
+            {
+                Name = recipe.Result.Name,
+                Description = recipe.Result.Description,
+                Type = recipe.Result.Type,
+                AttackBonus = recipe.Result.AttackBonus,
+                DefenseBonus = recipe.Result.DefenseBonus,
+                Value = recipe.Result.Value,
+                DamageDice = recipe.Result.DamageDice,
+                EquipmentSlot = recipe.Result.EquipmentSlot,
+                Tier = 0
+            });
+
+            return true;
+        }
+
+        public async Task<bool> UpgradeItemAsync(Character character, Item item, List<Item> materials, int gold)
+        {
+            if (character == null || item == null) return false;
+            if (character.Gold < gold) return false;
+
+            // TODO: Check materials if any are required for the upgrade
+
+            character.Gold -= gold;
+            item.Tier++;
+
+            // Increase stats based on type
+            if (item.Type == "Weapon")
+            {
+                item.AttackBonus += 2 * item.Tier;
+            }
+            else if (item.Type == "Armor")
+            {
+                item.DefenseBonus += 2 * item.Tier;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> InfuseItemAsync(Character character, Item item, Item essence)
+        {
+            if (character == null || item == null || essence == null) return false;
+            if (!character.Inventory.Contains(essence)) return false;
+
+            // Infusion is derived from the essence name
+            item.Infusion = essence.Name.Replace(" Essence", "");
+            
+            // Remove essence from inventory
+            character.Inventory.Remove(essence);
+
+            return true;
         }
     }
 }

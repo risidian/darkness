@@ -24,5 +24,8 @@ namespace Darkness.Core.Models
         public string DamageDice { get; set; } = "1d4"; // Default fallback
         public string? EquipmentSlot { get; set; }
         public int? EquipmentSpriteId { get; set; }
+
+        public int Tier { get; set; } = 0; // 0 = normal, 1 = +1, 2 = +2, etc.
+        public string? Infusion { get; set; } // Elemental/Bonus effect (e.g., "Fire", "Life Steal")
     }
 }
