@@ -16,7 +16,7 @@ public class LevelSeederTests : IDisposable
     {
         _fsMock = new Mock<IFileSystemService>();
         _dbPath = Path.Combine(Path.GetTempPath(), $"LevelSeederTests_{Guid.NewGuid()}.db");
-        _db = new LiteDatabase(_dbPath);
+        _db = new LiteDatabase(_dbPath, new BsonMapper());
     }
 
     public void Dispose()
