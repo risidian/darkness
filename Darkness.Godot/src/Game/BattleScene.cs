@@ -23,6 +23,7 @@ public partial class BattleScene : Control, IInitializable
     private ILevelingService _leveling = null!;
     private IQuestService _questService = null!;
     private IRewardService _rewardService = null!;
+    private ICharacterService _characterService = null!;
     private RichTextLabel _combatLog = null!;
     private PauseMenu _pauseMenu = null!;
     private Control _endBattlePanel = null!;
@@ -38,6 +39,7 @@ public partial class BattleScene : Control, IInitializable
 
     private HBoxContainer _partyContainer = null!;
     private VBoxContainer _enemyContainer = null!;
+    private HBoxContainer _hotbarContainer = null!;
 
     private TurnManager _turnManager = new();
 
@@ -170,6 +172,7 @@ public partial class BattleScene : Control, IInitializable
         _leveling = sp.GetRequiredService<ILevelingService>();
         _questService = sp.GetRequiredService<IQuestService>();
         _rewardService = sp.GetRequiredService<IRewardService>();
+        _characterService = sp.GetRequiredService<ICharacterService>();
 
         _combatLog = GetNode<RichTextLabel>("CombatLog");
         
@@ -199,6 +202,7 @@ public partial class BattleScene : Control, IInitializable
         var combatArea = GetNode<Control>("CombatArea");
         _partyContainer = combatArea.GetNode<HBoxContainer>("PartyContainer");
         _enemyContainer = combatArea.GetNode<VBoxContainer>("EnemyContainer");
+        _hotbarContainer = GetNode<HBoxContainer>("HotbarContainer");
 
         _turnOrderList = new ItemList();
         _turnOrderList.Name = "TurnOrderList";
@@ -260,6 +264,7 @@ public partial class BattleScene : Control, IInitializable
 
         SetupBattle();
         SetupWeaponSkills();
+        SetupHotbar();
         await UpdateSprites();
         ProcessNextTurn();
     }
@@ -361,6 +366,113 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
+    private void SetupHotbar()
+    {
+        if (_session.CurrentCharacter == null) return;
+        var character = _session.CurrentCharacter;
+
+        var buttons = new[]
+        {
+            _hotbarContainer.GetNode<Button>("Slot1"),
+            _hotbarContainer.GetNode<Button>("Slot2"),
+            _hotbarContainer.GetNode<Button>("Slot3"),
+            _hotbarContainer.GetNode<Button>("Slot4"),
+            _hotbarContainer.GetNode<Button>("Slot5")
+        };
+
+        for (int i = 0; i < 5; i++)
+        {
+            string? itemName = character.Hotbar[i];
+            var btn = buttons[i];
+
+            // Clear existing connections
+            foreach (var connection in btn.GetSignalConnectionList("pressed"))
+                btn.Disconnect("pressed", connection["callable"].AsCallable());
+
+            if (!string.IsNullOrEmpty(itemName))
+            {
+                var item = character.Inventory.FirstOrDefault(it => it.Name == itemName);
+                if (item != null)
+                {
+                    btn.Text = itemName.ToUpper();
+                    btn.TooltipText = item.Description;
+                    int slot = i;
+                    btn.Pressed += () => UseHotbarItem(slot);
+                    btn.Show();
+                }
+                else
+                {
+                    btn.Hide();
+                }
+            }
+            else
+            {
+                btn.Hide();
+            }
+        }
+    }
+
+    private async void UseHotbarItem(int slot)
+    {
+        if (_isProcessingTurn || _session.CurrentCharacter == null || !IsInsideTree()) return;
+        
+        var character = _session.CurrentCharacter;
+        string? itemName = character.Hotbar[slot];
+        if (string.IsNullOrEmpty(itemName)) return;
+
+        var item = character.Inventory.FirstOrDefault(it => it.Name == itemName);
+        if (item == null) return;
+
+        _isProcessingTurn = true;
+        EnablePlayerInput(false);
+        character.IsBlocking = false;
+
+        try
+        {
+            if (item.Type == "Consumable")
+            {
+                _combatLog.AppendText($"\n[color=cyan]{character.Name}[/color] uses [b]{item.Name}[/b]!");
+                
+                // Basic healing logic
+                if (item.Name.Contains("Health Potion"))
+                {
+                    int healAmount = 30; // Standard heal for now
+                    character.CurrentHP = Mathf.Min(character.CurrentHP + healAmount, character.MaxHP);
+                    if (_partyHealthBars.Count > 0)
+                        _partyHealthBars[0].UpdateValue(character.CurrentHP, character.MaxHP);
+                    
+                    _combatLog.AppendText($"\nHealed for {healAmount} HP!");
+                }
+                else
+                {
+                    _combatLog.AppendText("\nNo effect!");
+                }
+                
+                // Remove from inventory
+                character.Inventory.Remove(item);
+                await _characterService.SaveCharacterAsync(character);
+                
+                SetupHotbar(); // Refresh hotbar icons/visibility
+            }
+            else
+            {
+                 _combatLog.AppendText($"\n[color=gray]Cannot use {item.Name} in battle.[/color]");
+                 EnablePlayerInput(true);
+                 _isProcessingTurn = false;
+                 return;
+            }
+
+            await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+            
+            _turnManager.NextTurn();
+            ProcessNextTurn();
+        }
+        finally
+        {
+            _isProcessingTurn = false;
+        }
+    }
+
     private async void RetryBattle()
     {
         _endBattlePanel.Hide();
@@ -400,6 +512,7 @@ public partial class BattleScene : Control, IInitializable
         _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
         UpdateTurnOrderUI();
         SetupWeaponSkills();
+        SetupHotbar();
         
         await UpdateSprites();
         ProcessNextTurn();
@@ -573,15 +686,26 @@ public partial class BattleScene : Control, IInitializable
 
     private void EnablePlayerInput(bool enable)
     {
-        var buttons = new[]
+        var attackButtons = new[]
         {
             GetNode<Button>("ActionsArea/Attack1"),
             GetNode<Button>("ActionsArea/Attack2"),
             GetNode<Button>("ActionsArea/Attack3")
         };
-        foreach (var btn in buttons)
+        foreach (var btn in attackButtons)
         {
             btn.Disabled = !enable;
+        }
+
+        if (_hotbarContainer != null)
+        {
+            foreach (var node in _hotbarContainer.GetChildren())
+            {
+                if (node is Button btn)
+                {
+                    btn.Disabled = !enable;
+                }
+            }
         }
     }
 
