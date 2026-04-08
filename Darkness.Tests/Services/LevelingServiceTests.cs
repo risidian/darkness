@@ -13,7 +13,7 @@ public class LevelingServiceTests : IDisposable
     public LevelingServiceTests()
     {
         _dbPath = Path.Combine(Path.GetTempPath(), $"LevelingServiceTests_{Guid.NewGuid()}.db");
-        _db = new LiteDatabase(_dbPath);
+        _db = new LiteDatabase(_dbPath, new BsonMapper());
 
         var levels = _db.GetCollection<Level>("levels");
         levels.Insert(new Level { Value = 1, ExperienceRequired = 0 });
