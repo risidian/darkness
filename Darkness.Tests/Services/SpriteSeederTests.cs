@@ -17,7 +17,7 @@ public class SpriteSeederTests : IDisposable
     {
         _fsMock = new Mock<IFileSystemService>();
         _dbPath = Path.Combine(Path.GetTempPath(), $"SpriteSeederTests_{Guid.NewGuid()}.db");
-        _db = new LiteDatabase(_dbPath);
+        _db = new LiteDatabase(_dbPath, new BsonMapper());
     }
 
     public void Dispose()
