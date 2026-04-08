@@ -676,7 +676,8 @@ public partial class WorldScene : Node2D, IInitializable
                     ? visuals.Npc.SpriteKey
                     : $"res://assets/sprites/{visuals.Npc.SpriteKey}.png";
 
-                if (global::Godot.FileAccess.FileExists(spritePath))
+                // ResourceLoader.Exists is more reliable on Android than FileAccess.FileExists for res:// paths
+                if (ResourceLoader.Exists(spritePath) || global::Godot.FileAccess.FileExists(spritePath))
                 {
                     GD.Print($"[WorldScene] Using full sheet for NPC: {spritePath}");
                     await npcSprite.SetupFullSheet(spritePath, _fileSystem);

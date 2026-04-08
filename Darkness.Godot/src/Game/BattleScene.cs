@@ -931,13 +931,20 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
-    private void Victory(bool survived = false)
+    private async void Victory(bool survived = false)
     {
         _combatLog.AppendText("\n[color=yellow]VICTORY![/color]");
         _endBattleTitle.Text = "VICTORY ACHIEVED";
         _endBattleTitle.Set("theme_override_colors/font_color", Colors.Gold);
 
         var character = _session.CurrentCharacter;
+
+        // Restore HP to full on victory as requested
+        if (character != null)
+        {
+            character.CurrentHP = character.MaxHP;
+        }
+
         int totalXp = _originalEnemies.Sum(e => e.ExperienceReward);
         string victoryMsg = survived ? $"You survived {_survivalTurns} turns!" : "All enemies have been defeated!";
 
@@ -960,6 +967,9 @@ public partial class BattleScene : Control, IInitializable
                 var itemNames = string.Join(", ", rewards.ItemsAwarded.Select(i => i.Name));
                 victoryMsg += $"\nItems: {itemNames}";
             }
+
+            // Save character after rewards and XP are processed
+            await _characterService.SaveCharacterAsync(character);
         }
         
         if (character != null && _questChainId != null)
