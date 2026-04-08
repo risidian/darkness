@@ -58,9 +58,9 @@
 	  "Location": { "LocationKey": "SandyShore_East" },
 	  "Combat": {
 		"Enemies": [
-		  { "Name": "Hell Hound Alpha", "Level": 1, "MaxHP": 30, "CurrentHP": 30, "Attack": 7, "Defense": 4, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
-		  { "Name": "Hell Hound Beta", "Level": 1, "MaxHP": 20, "CurrentHP": 20, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 },
-		  { "Name": "Hell Hound Gamma", "Level": 1, "MaxHP": 20, "CurrentHP": 20, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25 }
+		  { "Name": "Hell Hound Alpha", "Level": 1, "MaxHP": 30, "CurrentHP": 30, "Attack": 7, "Defense": 4, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25, "GoldReward": 2 },
+		  { "Name": "Hell Hound Beta", "Level": 1, "MaxHP": 20, "CurrentHP": 20, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25,"GoldReward": 1 },
+		  { "Name": "Hell Hound Gamma", "Level": 1, "MaxHP": 20, "CurrentHP": 20, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "ExperienceReward": 25,"GoldReward": 1 }
 		],
 		"BackgroundKey": "camelot_shore_2"
 	  }

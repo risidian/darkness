@@ -660,6 +660,17 @@ public partial class WorldScene : Node2D, IInitializable
             waterRect.Hide();
         }
 
+        // 1.5 Player Logic
+        if (visuals.PlayerPositionX.HasValue || visuals.PlayerPositionY.HasValue)
+        {
+            float x = visuals.PlayerPositionX ?? _player.GlobalPosition.X;
+            float y = visuals.PlayerPositionY ?? _player.GlobalPosition.Y;
+            _player.GlobalPosition = new Vector2(x, y);
+            _targetPosition = null; // Stop any ongoing movement
+            _player.Velocity = Vector2.Zero;
+            GD.Print($"[WorldScene] Player position updated from quest data to: ({x}, {y})");
+        }
+
         // 2. NPC Logic
         if (visuals.Npc != null)
         {

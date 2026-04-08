@@ -10,14 +10,16 @@
 	  "Type": "dialogue",
 	  "NextStepId": "beat_2_combat",
 	  "Visuals": {
+		"PlayerPositionX": 150,
+		"PlayerPositionY": 580,
 		"BackgroundKey": "dark_castle",
 		"GroundColor": "#333333",
 		"WaterColor" : "#FFFFFF",
 		"Npc": {
 		  "Name": "Dark Warrior",
 		  "SpriteKey": "bosses/Balgathor",
-		  "PositionX": 600,
-		  "PositionY": 300
+		  "PositionX": 650,
+		  "PositionY": 400
 		}
 	  },
 	  "Dialogue": {
@@ -30,10 +32,10 @@
 	  "Type": "combat",
 	  "Combat": {
 		"Enemies": [
-		  { "Name": "Balgathor", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 500 }
+		  { "Name": "Balgathor", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 500, "GoldReward":20}
 		],
 		"SurvivalTurns": 5,
-		"BackgroundKey": "dark_castle"
+		"BackgroundKey": "camelot_shore"
 	  }
 	}
   ]
