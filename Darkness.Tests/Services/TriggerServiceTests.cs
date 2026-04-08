@@ -13,7 +13,7 @@ public class TriggerServiceTests : IDisposable
     public TriggerServiceTests()
     {
         _dbPath = Path.Combine(Path.GetTempPath(), $"TriggerServiceTests_{Guid.NewGuid()}.db");
-        _db = new LiteDatabase(_dbPath);
+        _db = new LiteDatabase(_dbPath, new BsonMapper());
 
         var chains = _db.GetCollection<QuestChain>("quest_chains");
         chains.Insert(new QuestChain
