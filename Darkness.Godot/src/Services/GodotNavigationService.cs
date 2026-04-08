@@ -46,11 +46,11 @@ public class GodotNavigationService : INavigationService
                 {
                     _history.Push((currentSceneName, _currentParameters, _currentTypedArgs));
                 }
-            }
 
-            // Track the new state
-            _currentParameters = parameters;
-            _currentTypedArgs = null;
+                // Track the new state for the scene we are ENTERING
+                _currentParameters = parameters;
+                _currentTypedArgs = null;
+            }
 
             string loadingText = route.Replace("Page", "").Replace("Scene", "");
             if (parameters != null)
@@ -143,11 +143,11 @@ public class GodotNavigationService : INavigationService
                 {
                     _history.Push((currentSceneName, _currentParameters, _currentTypedArgs));
                 }
-            }
 
-            // Track the new state
-            _currentParameters = null;
-            _currentTypedArgs = parameters;
+                // Track the new state for the scene we are ENTERING
+                _currentParameters = null;
+                _currentTypedArgs = parameters;
+            }
 
             string loadingText = route.Replace("Page", "").Replace("Scene", "");
             if (parameters is BattleArgs bArgs && !string.IsNullOrEmpty(bArgs.QuestChainId))
@@ -229,21 +229,17 @@ public class GodotNavigationService : INavigationService
             _isGoingBack = true;
             try
             {
+                // Restore the state tracking BEFORE navigating back
+                _currentParameters = prev.Parameters;
+                _currentTypedArgs = prev.TypedArgs;
+
                 if (prev.TypedArgs != null)
                 {
-                    // Restore the state tracking before navigating back
-                    _currentParameters = null;
-                    _currentTypedArgs = prev.TypedArgs;
-                    
                     var dict = new Dictionary<string, object> { { "Args", prev.TypedArgs } };
                     await NavigateToAsync(route, dict);
                 }
                 else
                 {
-                    // Restore the state tracking before navigating back
-                    _currentParameters = prev.Parameters;
-                    _currentTypedArgs = null;
-                    
                     await NavigateToAsync(route, prev.Parameters);
                 }
             }
