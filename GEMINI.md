@@ -104,7 +104,9 @@ To add a new quest: create a JSON file in `assets/data/quests/` following the Qu
 ## 9. Workflow Requirements
 
 - **Always use superpowers skills** for all work. Use brainstorming before creative/design work, TDD for implementation, systematic-debugging for bugs, and writing-plans for multi-step tasks. Never skip the skill workflow.
-- **All tests must pass before committing.** Run `dotnet test Darkness.Tests` and verify all tests pass before every commit. Do not commit with failing tests. If a pre-existing test fails, investigate and fix it or explicitly flag it to the user — do not ignore it.
+- **Regression Testing**: Every bug fix MUST include a new regression test in `Darkness.Tests` to prevent the issue from recurring.
+- **Continuous Validation**: Run `dotnet test Darkness.Tests` after every code change to ensure no regressions were introduced.
+- **All tests must pass before committing.** Verify all tests pass before every commit. Do not commit with failing tests. If a pre-existing test fails, investigate and fix it or explicitly flag it to the user — do not ignore it.
 
 ## 10. Project Conventions
 - .NET 10 with `ImplicitUsings` and `Nullable` enabled.

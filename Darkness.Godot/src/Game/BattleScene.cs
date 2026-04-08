@@ -58,6 +58,7 @@ public partial class BattleScene : Control, IInitializable
     private Label? _survivalLabel;
 
     private List<Skill> _currentWeaponSkills = new();
+    private string? _backgroundKey;
 
     public void Initialize(IDictionary<string, object> parameters)
     {
@@ -70,6 +71,7 @@ public partial class BattleScene : Control, IInitializable
             {
                 var combat = args.Combat;
                 _survivalTurns = combat.SurvivalTurns ?? 0;
+                _backgroundKey = combat.BackgroundKey;
                 _enemies.Clear();
                 _originalEnemies.Clear();
                 var enemies = combat.Enemies.Select(e => new Enemy
@@ -110,19 +112,6 @@ public partial class BattleScene : Control, IInitializable
                         ExperienceReward = enemy.ExperienceReward,
                         GoldReward = enemy.GoldReward
                     });
-                }
-
-                // Handle dynamic background
-                if (!string.IsNullOrEmpty(combat.BackgroundKey))
-                {
-                    var texPath = $"res://assets/backgrounds/{combat.BackgroundKey}.png";
-                    if (global::Godot.FileAccess.FileExists(texPath) || ResourceLoader.Exists(texPath))
-                    {
-                        var bgImage = GetNode<TextureRect>("BackgroundImage");
-                        bgImage.Texture = GD.Load<Texture2D>(texPath);
-                        bgImage.Show();
-                        GetNode<ColorRect>("Background").Hide();
-                    }
                 }
             }
         }
@@ -259,8 +248,31 @@ public partial class BattleScene : Control, IInitializable
             AddChild(survivalContainer);
         }
 
+        // Apply background if available
+        if (!string.IsNullOrEmpty(_backgroundKey))
+        {
+            var texPath = $"res://assets/backgrounds/{_backgroundKey}.png";
+            if (global::Godot.FileAccess.FileExists(texPath) || ResourceLoader.Exists(texPath))
+            {
+                GD.Print($"[BattleScene] Loading background: {texPath}");
+                var bgImage = GetNode<TextureRect>("BackgroundImage");
+                bgImage.Texture = GD.Load<Texture2D>(texPath);
+                bgImage.Show();
+                GetNode<ColorRect>("Background").Hide();
+            }
+            else
+            {
+                GD.PrintErr($"[BattleScene] Background artwork not found: {texPath}");
+            }
+        }
+
         // Wait a single frame to ensure GodotNavigationService has called Initialize()
         await ToSignal(GetTree(), "process_frame");
+
+        if (_session.CurrentCharacter != null)
+        {
+            _session.CurrentCharacter.ConsolidateInventory();
+        }
 
         SetupBattle();
         SetupWeaponSkills();
@@ -392,18 +404,26 @@ public partial class BattleScene : Control, IInitializable
             if (!string.IsNullOrEmpty(itemName))
             {
                 var item = character.Inventory.FirstOrDefault(it => it.Name == itemName);
-                if (item != null)
+                string btnText = itemName.ToUpper();
+                
+                if (item != null && item.Quantity > 0)
                 {
-                    btn.Text = itemName.ToUpper();
+                    btn.Text = $"{btnText} (X{item.Quantity})";
                     btn.TooltipText = item.Description;
+                    btn.Disabled = false;
+                    btn.Modulate = new Color(1, 1, 1, 1);
                     int slot = i;
                     btn.Pressed += () => UseHotbarItem(slot);
-                    btn.Show();
                 }
                 else
                 {
-                    btn.Hide();
+                    // Item missing or quantity 0 - KEEP ON HOTBAR but grey out
+                    btn.Text = $"{btnText} (X0)";
+                    btn.TooltipText = "Out of items!";
+                    btn.Disabled = true;
+                    btn.Modulate = new Color(1, 1, 1, 0.5f); 
                 }
+                btn.Show();
             }
             else
             {
@@ -421,7 +441,7 @@ public partial class BattleScene : Control, IInitializable
         if (string.IsNullOrEmpty(itemName)) return;
 
         var item = character.Inventory.FirstOrDefault(it => it.Name == itemName);
-        if (item == null) return;
+        if (item == null || item.Quantity <= 0) return;
 
         _isProcessingTurn = true;
         EnablePlayerInput(false);
@@ -448,8 +468,13 @@ public partial class BattleScene : Control, IInitializable
                     _combatLog.AppendText("\nNo effect!");
                 }
                 
-                // Remove from inventory
-                character.Inventory.Remove(item);
+                // Decrement quantity
+                item.Quantity--;
+                if (item.Quantity <= 0)
+                {
+                    character.Inventory.Remove(item);
+                }
+                
                 await _characterService.SaveCharacterAsync(character);
                 
                 SetupHotbar(); // Refresh hotbar icons/visibility
@@ -531,6 +556,14 @@ public partial class BattleScene : Control, IInitializable
             _enemyHealthBars[_selectedEnemyIndex].SetHighlighted(true);
 
         GD.Print($"[Battle] Target selected: {_enemies[_selectedEnemyIndex].Name}");
+
+        if (!_isProcessingTurn && _turnManager.CurrentEntity is Character)
+        {
+            if (_currentWeaponSkills.Count > 0)
+            {
+                ExecuteWeaponSkill(_currentWeaponSkills[0]);
+            }
+        }
     }
 
     private async Task UpdateSprites()
@@ -697,13 +730,23 @@ public partial class BattleScene : Control, IInitializable
             btn.Disabled = !enable;
         }
 
-        if (_hotbarContainer != null)
+        if (_hotbarContainer != null && _session.CurrentCharacter != null)
         {
-            foreach (var node in _hotbarContainer.GetChildren())
+            var character = _session.CurrentCharacter;
+            for (int i = 0; i < 5; i++)
             {
-                if (node is Button btn)
+                var btn = _hotbarContainer.GetNode<Button>($"Slot{i + 1}");
+                string? itemName = character.Hotbar[i];
+                var item = character.Inventory.FirstOrDefault(it => it.Name == itemName);
+
+                if (enable)
                 {
-                    btn.Disabled = !enable;
+                    // Only re-enable if there is actually an item to use
+                    btn.Disabled = string.IsNullOrEmpty(itemName) || item == null || item.Quantity <= 0;
+                }
+                else
+                {
+                    btn.Disabled = true;
                 }
             }
         }

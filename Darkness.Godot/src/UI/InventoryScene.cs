@@ -18,6 +18,7 @@ public partial class InventoryScene : Control
     private ICharacterService _characterService = null!;
     private IFileSystemService _fileSystem = null!;
     private VBoxContainer _itemList = null!;
+    private VBoxContainer _equipmentList = null!;
     private LayeredSprite _charSprite = null!;
     private Label _goldLabel = null!;
 
@@ -33,7 +34,8 @@ public partial class InventoryScene : Control
         _characterService = sp.GetRequiredService<ICharacterService>();
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
-        _itemList = GetNode<VBoxContainer>("MarginContainer/VBoxContainer/HSplitContainer/BackpackArea/ItemList");
+        _itemList = GetNode<VBoxContainer>("MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ITEMS/ItemList");
+        _equipmentList = GetNode<VBoxContainer>("MarginContainer/VBoxContainer/HSplitContainer/TabContainer/EQUIPMENT/EquipmentList");
         _goldLabel = GetNode<Label>("MarginContainer/VBoxContainer/Header/GoldLabel");
         GetNode<Button>("MarginContainer/VBoxContainer/BackButton").Pressed += () => _navigation.GoBackAsync();
 
@@ -43,6 +45,11 @@ public partial class InventoryScene : Control
         previewContainer.AddChild(_charSprite);
         _charSprite.Position = new Vector2(150, 200);
         _charSprite.Scale = new Vector2(4, 4);
+
+        if (_session.CurrentCharacter != null)
+        {
+            _session.CurrentCharacter.ConsolidateInventory();
+        }
 
         EnsureInventory();
         LoadInventory();
@@ -70,8 +77,7 @@ public partial class InventoryScene : Control
         _session.CurrentCharacter.Inventory.Add(new Item { Name = "Recurve Bow", Type = "Weapon", AttackBonus = 6 });
         _session.CurrentCharacter.Inventory.Add(new Item { Name = "Mage Wand", Type = "Weapon", AttackBonus = 4 });
 
-        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Health Potion", Type = "Consumable", Value = 50 });
-        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Health Potion", Type = "Consumable", Value = 50 });
+        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Health Potion", Type = "Consumable", Value = 50, Quantity = 5 });
 
         _session.CurrentCharacter.Inventory.Add(new Item
             { Name = "Mage Robes (Blue)", Type = "Armor", DefenseBonus = 2, ArmorClass = 0 });
@@ -87,6 +93,7 @@ public partial class InventoryScene : Control
     private void LoadInventory()
     {
         foreach (Node child in _itemList.GetChildren()) child.QueueFree();
+        foreach (Node child in _equipmentList.GetChildren()) child.QueueFree();
 
         if (_session.CurrentCharacter == null) return;
 
@@ -98,12 +105,14 @@ public partial class InventoryScene : Control
 
             bool isEquipped = false;
             bool isConsumable = item.Type == "Consumable";
+            bool isEquipment = item.Type == "Weapon" || item.Type == "Armor" || item.Type == "Shield";
 
             if (item.Type == "Weapon") isEquipped = _session.CurrentCharacter.WeaponType == item.Name;
             else if (item.Type == "Armor") isEquipped = _session.CurrentCharacter.ArmorType == item.Name;
             else if (item.Type == "Shield") isEquipped = _session.CurrentCharacter.ShieldType == item.Name;
 
             var labelText = isEquipped ? $"{item.Name} (EQUIPPED)" : item.Name;
+            if (item.Quantity > 1) labelText += $" (x{item.Quantity})";
             if (item.Type == "Armor") labelText += $" [AC: {item.ArmorClass}]";
 
             var label = new Label { Text = labelText, SizeFlagsHorizontal = SizeFlags.ExpandFill };
@@ -151,7 +160,14 @@ public partial class InventoryScene : Control
                 }
             }
 
-            _itemList.AddChild(hbox);
+            if (isEquipment)
+            {
+                _equipmentList.AddChild(hbox);
+            }
+            else
+            {
+                _itemList.AddChild(hbox);
+            }
         }
     }
 
@@ -180,7 +196,12 @@ public partial class InventoryScene : Control
             {
                 _session.CurrentCharacter.Mana += item.Value;
             }
-            _session.CurrentCharacter.Inventory.Remove(item);
+            
+            item.Quantity--;
+            if (item.Quantity <= 0)
+            {
+                _session.CurrentCharacter.Inventory.Remove(item);
+            }
         }
         else if (item.Type == "Weapon")
         {

@@ -14,6 +14,9 @@ public class GodotNavigationService : INavigationService
     private bool _isNavigating = false;
     private bool _isGoingBack = false;
     private Stack<(string Route, IDictionary<string, object>? Parameters, NavigationArgs? TypedArgs)> _history = new();
+    
+    private IDictionary<string, object>? _currentParameters;
+    private NavigationArgs? _currentTypedArgs;
 
     public GodotNavigationService(Global global)
     {
@@ -38,12 +41,16 @@ public class GodotNavigationService : INavigationService
             
             if (!_isGoingBack)
             {
-                // Do not add the same route sequentially
+                // Push the state of the scene we are LEAVING
                 if (_history.Count == 0 || _history.Peek().Route != currentSceneName)
                 {
-                    _history.Push((currentSceneName, parameters, null));
+                    _history.Push((currentSceneName, _currentParameters, _currentTypedArgs));
                 }
             }
+
+            // Track the new state
+            _currentParameters = parameters;
+            _currentTypedArgs = null;
 
             string loadingText = route.Replace("Page", "").Replace("Scene", "");
             if (parameters != null)
@@ -131,12 +138,16 @@ public class GodotNavigationService : INavigationService
             
             if (!_isGoingBack)
             {
-                // Do not add the same route sequentially
+                // Push the state of the scene we are LEAVING
                 if (_history.Count == 0 || _history.Peek().Route != currentSceneName)
                 {
-                    _history.Push((currentSceneName, null, parameters));
+                    _history.Push((currentSceneName, _currentParameters, _currentTypedArgs));
                 }
             }
+
+            // Track the new state
+            _currentParameters = null;
+            _currentTypedArgs = parameters;
 
             string loadingText = route.Replace("Page", "").Replace("Scene", "");
             if (parameters is BattleArgs bArgs && !string.IsNullOrEmpty(bArgs.QuestChainId))
@@ -220,11 +231,19 @@ public class GodotNavigationService : INavigationService
             {
                 if (prev.TypedArgs != null)
                 {
+                    // Restore the state tracking before navigating back
+                    _currentParameters = null;
+                    _currentTypedArgs = prev.TypedArgs;
+                    
                     var dict = new Dictionary<string, object> { { "Args", prev.TypedArgs } };
                     await NavigateToAsync(route, dict);
                 }
                 else
                 {
+                    // Restore the state tracking before navigating back
+                    _currentParameters = prev.Parameters;
+                    _currentTypedArgs = null;
+                    
                     await NavigateToAsync(route, prev.Parameters);
                 }
             }

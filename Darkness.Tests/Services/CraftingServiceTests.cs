@@ -66,8 +66,24 @@ namespace Darkness.Tests.Services
             
             Assert.True(result);
             Assert.Equal(1, item.Tier);
+            Assert.Equal("Steel Sword +1", item.Name);
             Assert.True(item.AttackBonus > 10);
             Assert.Equal(500, character.Gold);
+        }
+
+        [Fact]
+        public async Task UpgradeItem_Handles_Multiple_Upgrades_Correctly()
+        {
+            var service = new CraftingService();
+            var character = new Character { Gold = 2000 };
+            var item = new Item { Name = "Steel Sword", AttackBonus = 10, Tier = 0, Type = "Weapon" };
+            
+            await service.UpgradeItemAsync(character, item, new List<Item>(), 500);
+            Assert.Equal("Steel Sword +1", item.Name);
+            
+            await service.UpgradeItemAsync(character, item, new List<Item>(), 1000);
+            Assert.Equal(2, item.Tier);
+            Assert.Equal("Steel Sword +2", item.Name);
         }
 
         [Fact]

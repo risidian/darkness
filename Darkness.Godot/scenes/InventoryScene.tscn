@@ -62,12 +62,26 @@ split_offset = 300
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="BackpackArea" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+
+[node name="EQUIPMENT" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="ItemList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/BackpackArea"]
+[node name="EquipmentList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/TabContainer/EQUIPMENT"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ITEMS" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ItemList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ITEMS"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10

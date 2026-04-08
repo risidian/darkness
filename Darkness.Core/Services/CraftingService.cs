@@ -79,12 +79,22 @@ namespace Darkness.Core.Services
         public async Task<bool> UpgradeItemAsync(Character character, Item item, List<Item> materials, int gold)
         {
             if (character == null || item == null) return false;
+            if (item.Type != "Weapon" && item.Type != "Armor") return false;
             if (character.Gold < gold) return false;
 
             // TODO: Check materials if any are required for the upgrade
 
             character.Gold -= gold;
             item.Tier++;
+
+            // Update Name with suffix (e.g., "Steel Sword +1")
+            // First remove any existing suffix
+            var baseName = item.Name;
+            if (baseName.Contains(" +"))
+            {
+                baseName = baseName.Substring(0, baseName.LastIndexOf(" +"));
+            }
+            item.Name = $"{baseName} +{item.Tier}";
 
             // Increase stats based on type
             if (item.Type == "Weapon")

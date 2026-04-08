@@ -55,6 +55,7 @@ namespace Darkness.Core.Services
             }
 
             character.Gold += result.GoldAwarded;
+            character.ConsolidateInventory();
 
             // Update character in database
             var charCol = _db.GetCollection<Character>("characters");

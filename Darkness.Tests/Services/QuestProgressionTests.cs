@@ -13,8 +13,7 @@ public class QuestProgressionTests : IDisposable
 
     public QuestProgressionTests()
     {
-        _dbPath = Path.Combine(Path.GetTempPath(), $"QuestProgressionTests_{Guid.NewGuid()}.db");
-        _db = new LiteDatabase(_dbPath);
+        _db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         _questService = new QuestService(_db);
 
         SeedData();
@@ -74,7 +73,6 @@ public class QuestProgressionTests : IDisposable
     public void Dispose()
     {
         _db.Dispose();
-        try { File.Delete(_dbPath); } catch { }
     }
 
     [Fact]

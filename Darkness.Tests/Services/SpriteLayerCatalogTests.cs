@@ -16,7 +16,7 @@ public class SpriteLayerCatalogTests : IDisposable
     public SpriteLayerCatalogTests()
     {
         _dbPath = Path.Combine(Path.GetTempPath(), $"SpriteLayerCatalogTests_{Guid.NewGuid()}.db");
-        _db = new LiteDatabase(_dbPath);
+        _db = new LiteDatabase(_dbPath, new BsonMapper());
         _fsMock = new Mock<IFileSystemService>();
 
         // Find and load the actual seed file

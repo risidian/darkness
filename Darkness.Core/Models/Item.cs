@@ -27,5 +27,6 @@ namespace Darkness.Core.Models
 
         public int Tier { get; set; } = 0; // 0 = normal, 1 = +1, 2 = +2, etc.
         public string? Infusion { get; set; } // Elemental/Bonus effect (e.g., "Fire", "Life Steal")
+        public int Quantity { get; set; } = 1;
     }
 }

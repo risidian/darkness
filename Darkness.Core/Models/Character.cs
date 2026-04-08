@@ -53,6 +53,41 @@ namespace Darkness.Core.Models
         public string?[] Hotbar { get; set; } = new string?[5];
         public bool IsBlocking { get; set; } = false;
 
+        public void ConsolidateInventory()
+        {
+            if (Inventory == null || Inventory.Count <= 1) return;
+
+            var consolidated = new List<Item>();
+            foreach (var item in Inventory)
+            {
+                // Only stack Consumables and Materials
+                if (item.Type == "Consumable" || item.Type == "Material")
+                {
+                    var existing = consolidated.FirstOrDefault(i => 
+                        i.Name == item.Name && 
+                        i.Type == item.Type && 
+                        i.Tier == item.Tier && 
+                        i.Infusion == item.Infusion);
+
+                    if (existing != null)
+                    {
+                        existing.Quantity += item.Quantity;
+                    }
+                    else
+                    {
+                        consolidated.Add(item);
+                    }
+                }
+                else
+                {
+                    // Equipment (Weapon, Armor, Shield) usually shouldn't stack
+                    consolidated.Add(item);
+                }
+            }
+
+            Inventory = consolidated;
+        }
+
         public void RecalculateDerivedStats()
         {
             int oldMaxHP = MaxHP;
