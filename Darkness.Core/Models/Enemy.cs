@@ -32,6 +32,9 @@ namespace Darkness.Core.Models
         public int ExperienceReward { get; set; }
         public int GoldReward { get; set; }
 
+        public List<string> FixedDrops { get; set; } = new();
+        public List<LootEntry> RandomDrops { get; set; } = new();
+
         public bool IsInvincible { get; set; } = false;
         public string SpriteKey { get; set; } = "knight";
         public int MoralityImpact { get; set; } = 0;

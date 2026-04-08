@@ -49,6 +49,8 @@ namespace Darkness.Core.Models
         public byte[]? FullSpriteSheet { get; set; }
         public List<Item> Inventory { get; set; } = new();
         public int Morality { get; set; } = 0;
+        public int Gold { get; set; } = 0;
+        public string?[] Hotbar { get; set; } = new string?[5];
         public bool IsBlocking { get; set; } = false;
 
         public void RecalculateDerivedStats()

@@ -16,4 +16,6 @@ public class EnemySpawn
     public int MoralityImpact { get; set; }
     public int ExperienceReward { get; set; }
     public int GoldReward { get; set; }
+    public List<string> FixedDrops { get; set; } = new();
+    public List<LootEntry> RandomDrops { get; set; } = new();
 }
