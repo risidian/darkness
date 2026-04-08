@@ -12,6 +12,8 @@ public class GodotNavigationService : INavigationService
 {
     private readonly Global _global;
     private bool _isNavigating = false;
+    private bool _isGoingBack = false;
+    private Stack<(string Route, IDictionary<string, object>? Parameters, NavigationArgs? TypedArgs)> _history = new();
 
     public GodotNavigationService(Global global)
     {
@@ -30,6 +32,18 @@ public class GodotNavigationService : INavigationService
         try
         {
             GD.Print($"[Navigation] Navigating to route: {route}");
+
+            var tree = _global.GetTree();
+            var currentSceneName = tree.CurrentScene?.Name ?? "MainMenuPage";
+            
+            if (!_isGoingBack)
+            {
+                // Do not add the same route sequentially
+                if (_history.Count == 0 || _history.Peek().Route != currentSceneName)
+                {
+                    _history.Push((currentSceneName, parameters, null));
+                }
+            }
 
             string loadingText = route.Replace("Page", "").Replace("Scene", "");
             if (parameters != null)
@@ -74,7 +88,6 @@ public class GodotNavigationService : INavigationService
             }
 
             // 5. Swap scenes
-            var tree = _global.GetTree();
             var oldScene = tree.CurrentScene;
             if (oldScene != null)
             {
@@ -112,6 +125,18 @@ public class GodotNavigationService : INavigationService
         try
         {
             GD.Print($"[Navigation] Navigating to {route} with typed args {typeof(T).Name}");
+
+            var tree = _global.GetTree();
+            var currentSceneName = tree.CurrentScene?.Name ?? "MainMenuPage";
+            
+            if (!_isGoingBack)
+            {
+                // Do not add the same route sequentially
+                if (_history.Count == 0 || _history.Peek().Route != currentSceneName)
+                {
+                    _history.Push((currentSceneName, null, parameters));
+                }
+            }
 
             string loadingText = route.Replace("Page", "").Replace("Scene", "");
             if (parameters is BattleArgs bArgs && !string.IsNullOrEmpty(bArgs.QuestChainId))
@@ -157,7 +182,6 @@ public class GodotNavigationService : INavigationService
             }
 
             // 5. Swap scenes
-            var tree = _global.GetTree();
             var oldScene = tree.CurrentScene;
             if (oldScene != null)
             {
@@ -183,9 +207,36 @@ public class GodotNavigationService : INavigationService
         }
     }
 
-    public Task GoBackAsync()
+    public async Task GoBackAsync()
     {
-        // Return to Hub
-        return NavigateToAsync("MainMenuPage");
+        if (_history.Count > 0)
+        {
+            var prev = _history.Pop();
+            string route = prev.Route;
+            if (route.EndsWith("Scene")) route = route.Replace("Scene", "Page");
+
+            _isGoingBack = true;
+            try
+            {
+                if (prev.TypedArgs != null)
+                {
+                    var dict = new Dictionary<string, object> { { "Args", prev.TypedArgs } };
+                    await NavigateToAsync(route, dict);
+                }
+                else
+                {
+                    await NavigateToAsync(route, prev.Parameters);
+                }
+            }
+            finally
+            {
+                _isGoingBack = false;
+            }
+        }
+        else
+        {
+            // Return to Hub
+            await NavigateToAsync("MainMenuPage");
+        }
     }
 }

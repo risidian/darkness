@@ -51,6 +51,24 @@ namespace Darkness.Core.Models
         public int Morality { get; set; } = 0;
         public bool IsBlocking { get; set; } = false;
 
+        public void RecalculateDerivedStats()
+        {
+            int oldMaxHP = MaxHP;
+            MaxHP = Constitution * 10;
+            if (MaxHP > oldMaxHP)
+            {
+                CurrentHP += (MaxHP - oldMaxHP);
+            }
+            
+            Mana = Wisdom * 5;
+            Stamina = Constitution * 5;
+            Speed = Dexterity;
+            Accuracy = 80 + Dexterity / 2;
+            Evasion = Dexterity / 2;
+            Defense = Constitution / 2;
+            MagicDefense = Wisdom / 2;
+        }
+
         public CharacterSnapshot ToSnapshot() => new CharacterSnapshot(
             Name, Class, CurrentHP, MaxHP, Level, Thumbnail, HairColor, HairStyle, SkinColor
         );

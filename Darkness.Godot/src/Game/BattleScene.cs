@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Godot.HttpRequest;
 
 namespace Darkness.Godot.Game;
 
@@ -52,7 +51,6 @@ public partial class BattleScene : Control, IInitializable
     private int _selectedEnemyIndex = 0;
 
     private int _survivalTurns = 0;
-    private int _currentTurn = 0;
     private ProgressBar? _survivalBar;
     private Label? _survivalLabel;
 
@@ -207,6 +205,7 @@ public partial class BattleScene : Control, IInitializable
         _turnOrderList.SetPosition(new Vector2(20, 150));
 
         GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
+        GetNode<Button>("TopLeftMenu/InventoryButton").Pressed += () => _navigation.NavigateToAsync("InventoryPage");
 
         _okButton.Pressed += async () =>
         {
@@ -261,43 +260,6 @@ public partial class BattleScene : Control, IInitializable
         SetupWeaponSkills();
         await UpdateSprites();
         ProcessNextTurn();
-    }
-
-    private void SetupWeaponSkills()
-    {
-        if (_session.CurrentCharacter == null) return;
-        var character = _session.CurrentCharacter;
-
-        _currentWeaponSkills =
-            _weaponSkillService.GetSkillsForWeapon(character.WeaponType ?? "None", character.ShieldType ?? "None");
-
-        var buttons = new[]
-        {
-            GetNode<Button>("ActionsArea/Attack1"),
-            GetNode<Button>("ActionsArea/Attack2"),
-            GetNode<Button>("ActionsArea/Attack3")
-        };
-
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            if (i < _currentWeaponSkills.Count)
-            {
-                var skill = _currentWeaponSkills[i];
-                buttons[i].Text = skill.Name.ToUpper();
-                buttons[i].TooltipText = skill.Description;
-
-                // Clear existing connections if any (though usually fine on _Ready)
-                foreach (var connection in buttons[i].GetSignalConnectionList("pressed"))
-                    buttons[i].Disconnect("pressed", connection["callable"].AsCallable());
-
-                buttons[i].Pressed += () => ExecuteWeaponSkill(skill);
-                buttons[i].Show();
-            }
-            else
-            {
-                buttons[i].Hide();
-            }
-        }
     }
 
     private void SetupBattle()
@@ -356,8 +318,45 @@ public partial class BattleScene : Control, IInitializable
             }
         }
 
-        _turnManager.TurnOrder = _combat.CalculateTurnOrder(_party, _enemies);
+        _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
         UpdateTurnOrderUI();
+    }
+
+    private void SetupWeaponSkills()
+    {
+        if (_session.CurrentCharacter == null) return;
+        var character = _session.CurrentCharacter;
+
+        _currentWeaponSkills =
+            _weaponSkillService.GetSkillsForWeapon(character.WeaponType ?? "None", character.ShieldType ?? "None");
+
+        var buttons = new[]
+        {
+            GetNode<Button>("ActionsArea/Attack1"),
+            GetNode<Button>("ActionsArea/Attack2"),
+            GetNode<Button>("ActionsArea/Attack3")
+        };
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (i < _currentWeaponSkills.Count)
+            {
+                var skill = _currentWeaponSkills[i];
+                buttons[i].Text = skill.Name.ToUpper();
+                buttons[i].TooltipText = skill.Description;
+
+                // Clear existing connections if any (though usually fine on _Ready)
+                foreach (var connection in buttons[i].GetSignalConnectionList("pressed"))
+                    buttons[i].Disconnect("pressed", connection["callable"].AsCallable());
+
+                buttons[i].Pressed += () => ExecuteWeaponSkill(skill);
+                buttons[i].Show();
+            }
+            else
+            {
+                buttons[i].Hide();
+            }
+        }
     }
 
     private async void RetryBattle()
@@ -398,6 +397,7 @@ public partial class BattleScene : Control, IInitializable
         
         _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
         UpdateTurnOrderUI();
+        SetupWeaponSkills();
         
         await UpdateSprites();
         ProcessNextTurn();
@@ -536,34 +536,30 @@ public partial class BattleScene : Control, IInitializable
     {
         if (!IsInsideTree() || _party.Count == 0 || _enemies.Count == 0 || _turnManager.TurnOrder.Count == 0) return;
 
-        if (_turnManager.CurrentTurnIndex >= _turnManager.TurnOrder.Count)
+        if (_survivalTurns > 0)
         {
-            _turnManager.CurrentTurnIndex = 0;
-            
-            if (_survivalTurns > 0)
+            int currentSurvivalTurn = _turnManager.CurrentRound - 1;
+            if (_survivalBar != null && _survivalLabel != null)
             {
-                _currentTurn++;
-                if (_survivalBar != null && _survivalLabel != null)
-                {
-                    _survivalBar.Value = _currentTurn;
-                    _survivalLabel.Text = $"Survive! ({_currentTurn}/{_survivalTurns} Turns)";
-                }
+                _survivalBar.Value = currentSurvivalTurn;
+                _survivalLabel.Text = $"Survive! ({currentSurvivalTurn}/{_survivalTurns} Turns)";
+            }
 
-                if (_currentTurn >= _survivalTurns)
-                {
-                    Victory(survived: true);
-                    return;
-                }
+            if (currentSurvivalTurn >= _survivalTurns)
+            {
+                Victory(survived: true);
+                return;
             }
         }
 
         UpdateTurnOrderUI();
-        var currentEntity = _turnManager.TurnOrder[_turnManager.CurrentTurnIndex];
+        var currentEntity = _turnManager.CurrentEntity;
 
         if (currentEntity is Character character)
         {
             EnablePlayerInput(true);
             _combatLog.AppendText($"\n\n--- [color=cyan]{character.Name}'s Turn[/color] ---");
+            _combatLog.AppendText("\n[color=gray]Select an action and target![/color]");
         }
         else if (currentEntity is Enemy enemy)
         {
@@ -598,7 +594,7 @@ public partial class BattleScene : Control, IInitializable
             int actualIndex = _enemies.IndexOf(target);
             if (actualIndex < 0)
             {
-                _turnManager.CurrentTurnIndex++;
+                _turnManager.NextTurn();
                 ProcessNextTurn();
                 return;
             }
@@ -650,7 +646,7 @@ public partial class BattleScene : Control, IInitializable
                 return;
             }
             
-            _turnManager.CurrentTurnIndex++;
+            _turnManager.NextTurn();
             ProcessNextTurn();
         }
         finally
@@ -663,7 +659,7 @@ public partial class BattleScene : Control, IInitializable
     {
         if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
 
-        var currentEntity = _turnManager.TurnOrder[_turnManager.CurrentTurnIndex];
+        var currentEntity = _turnManager.CurrentEntity;
         if (!(currentEntity is Character attacker)) return;
 
         int actualIndex = _selectedEnemyIndex < _enemies.Count ? _selectedEnemyIndex : 0;

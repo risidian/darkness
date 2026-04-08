@@ -89,6 +89,7 @@ public partial class StudyScene : Control
         }
 
         _character.AttributePoints--;
+        _character.RecalculateDerivedStats();
         UpdateUI();
         await _characterService.SaveCharacterAsync(_character);
     }

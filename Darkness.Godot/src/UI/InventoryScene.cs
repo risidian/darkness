@@ -67,6 +67,9 @@ public partial class InventoryScene : Control
         _session.CurrentCharacter.Inventory.Add(new Item { Name = "Recurve Bow", Type = "Weapon", AttackBonus = 6 });
         _session.CurrentCharacter.Inventory.Add(new Item { Name = "Mage Wand", Type = "Weapon", AttackBonus = 4 });
 
+        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Health Potion", Type = "Consumable", Value = 50 });
+        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Health Potion", Type = "Consumable", Value = 50 });
+
         _session.CurrentCharacter.Inventory.Add(new Item
             { Name = "Mage Robes (Blue)", Type = "Armor", DefenseBonus = 2, ArmorClass = 0 });
         _session.CurrentCharacter.Inventory.Add(new Item
@@ -91,6 +94,8 @@ public partial class InventoryScene : Control
             hbox.AddThemeConstantOverride("separation", 20);
 
             bool isEquipped = false;
+            bool isConsumable = item.Type == "Consumable";
+
             if (item.Type == "Weapon") isEquipped = _session.CurrentCharacter.WeaponType == item.Name;
             else if (item.Type == "Armor") isEquipped = _session.CurrentCharacter.ArmorType == item.Name;
             else if (item.Type == "Shield") isEquipped = _session.CurrentCharacter.ShieldType == item.Name;
@@ -103,7 +108,7 @@ public partial class InventoryScene : Control
             hbox.AddChild(label);
 
             var equipBtn = new Button
-                { Text = isEquipped ? "UNEQUIP" : "EQUIP", CustomMinimumSize = new Vector2(180, 0) };
+                { Text = isConsumable ? "USE" : (isEquipped ? "UNEQUIP" : "EQUIP"), CustomMinimumSize = new Vector2(180, 0) };
             equipBtn.AddThemeFontSizeOverride("font_size", 20);
 
             // Disable if character doesn't have required ArmorClass proficiency
@@ -128,7 +133,21 @@ public partial class InventoryScene : Control
     {
         if (_session.CurrentCharacter == null) return;
 
-        if (item.Type == "Weapon")
+        if (item.Type == "Consumable")
+        {
+            if (item.Name.Contains("Health") || item.Name.Contains("HP") || item.Name.Contains("Potion"))
+            {
+                _session.CurrentCharacter.CurrentHP += item.Value;
+                if (_session.CurrentCharacter.CurrentHP > _session.CurrentCharacter.MaxHP)
+                    _session.CurrentCharacter.CurrentHP = _session.CurrentCharacter.MaxHP;
+            }
+            else if (item.Name.Contains("Mana") || item.Name.Contains("MP"))
+            {
+                _session.CurrentCharacter.Mana += item.Value;
+            }
+            _session.CurrentCharacter.Inventory.Remove(item);
+        }
+        else if (item.Type == "Weapon")
         {
             if (_session.CurrentCharacter.WeaponType == item.Name)
                 _session.CurrentCharacter.WeaponType = "None";
