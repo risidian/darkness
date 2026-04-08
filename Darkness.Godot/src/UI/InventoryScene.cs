@@ -19,6 +19,7 @@ public partial class InventoryScene : Control
     private IFileSystemService _fileSystem = null!;
     private VBoxContainer _itemList = null!;
     private LayeredSprite _charSprite = null!;
+    private Label _goldLabel = null!;
 
     public override void _Ready()
     {
@@ -33,6 +34,7 @@ public partial class InventoryScene : Control
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
         _itemList = GetNode<VBoxContainer>("MarginContainer/VBoxContainer/HSplitContainer/BackpackArea/ItemList");
+        _goldLabel = GetNode<Label>("MarginContainer/VBoxContainer/Header/GoldLabel");
         GetNode<Button>("MarginContainer/VBoxContainer/BackButton").Pressed += () => _navigation.GoBackAsync();
 
         var previewContainer = GetNode<Control>("MarginContainer/VBoxContainer/HSplitContainer/PreviewArea");
@@ -53,6 +55,7 @@ public partial class InventoryScene : Control
         {
             await _charSprite.SetupCharacter(_session.CurrentCharacter, _catalog, _fileSystem, _compositor);
             _charSprite.Play("idle_down");
+            _goldLabel.Text = $"GOLD: {_session.CurrentCharacter.Gold}";
         }
     }
 
@@ -125,8 +128,40 @@ public partial class InventoryScene : Control
 
             hbox.AddChild(equipBtn);
 
+            if (isConsumable)
+            {
+                var hotbarLabel = new Label { Text = "MAP:", VerticalAlignment = VerticalAlignment.Center };
+                hotbarLabel.AddThemeFontSizeOverride("font_size", 18);
+                hbox.AddChild(hotbarLabel);
+
+                for (int i = 1; i <= 5; i++)
+                {
+                    int slot = i;
+                    var hotbarBtn = new Button { Text = slot.ToString(), CustomMinimumSize = new Vector2(40, 40) };
+                    hotbarBtn.AddThemeFontSizeOverride("font_size", 16);
+                    
+                    // Check if already mapped
+                    if (_session.CurrentCharacter.Hotbar[slot - 1] == item.Name)
+                    {
+                        hotbarBtn.Modulate = new Color(0, 1, 0); // Green highlight
+                    }
+                    
+                    hotbarBtn.Pressed += () => OnHotbarMapPressed(item, slot);
+                    hbox.AddChild(hotbarBtn);
+                }
+            }
+
             _itemList.AddChild(hbox);
         }
+    }
+
+    private async void OnHotbarMapPressed(Item item, int slot)
+    {
+        if (_session.CurrentCharacter == null) return;
+        
+        _session.CurrentCharacter.Hotbar[slot - 1] = item.Name;
+        await _characterService.SaveCharacterAsync(_session.CurrentCharacter);
+        LoadInventory();
     }
 
     private async void OnEquipPressed(Item item)
