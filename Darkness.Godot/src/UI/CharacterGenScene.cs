@@ -34,6 +34,7 @@ public partial class CharacterGenScene : Control
     private OptionButton _shieldOption = null!;
 
     private byte[]? _previewBytes;
+    private Character _character = new();
 
     public override void _Ready()
     {
@@ -67,7 +68,7 @@ public partial class CharacterGenScene : Control
 
         SetupOptions();
 
-        _classOption.ItemSelected += (_) => OnClassChanged();
+        _classOption.ItemSelected += (idx) => OnClassChanged((int)idx);
         _skinOption.ItemSelected += (_) => UpdatePreview();
         _headOption.ItemSelected += (_) => UpdatePreview();
         _hairStyleOption.ItemSelected += (_) => UpdatePreview();
@@ -84,7 +85,7 @@ public partial class CharacterGenScene : Control
         GetNode<Button>(container + "CreateButton").Pressed += OnCreatePressed;
         GetNode<Button>(container + "BackButton").Pressed += () => _navigation.GoBackAsync();
 
-        UpdatePreview();
+        OnClassChanged(0);
     }
 
     private void SetupOptions()
@@ -116,10 +117,14 @@ public partial class CharacterGenScene : Control
         foreach (var item in items) node.AddItem(item);
     }
 
-    private void OnClassChanged()
+    private void OnClassChanged(int index)
     {
-        var className = _classOption.GetItemText(_classOption.Selected);
+        var className = _classOption.GetItemText(index);
         var defaults = _catalog.GetDefaultAppearanceForClass(className);
+
+        _character.WeaponType = defaults.WeaponType;
+        _character.ArmorType = defaults.ArmorType;
+        _character.ShieldType = defaults.ShieldType;
 
         SelectByText(_armorOption, defaults.ArmorType);
         SelectByText(_weaponOption, defaults.WeaponType);
@@ -210,47 +215,65 @@ public partial class CharacterGenScene : Control
 
             var appearance = GetCurrentAppearance();
 
-            var character = new Character
+            _character.UserId = _session.CurrentUser.Id;
+            _character.Name = _nameEdit.Text;
+            _character.Class = _classOption.GetItemText(_classOption.Selected);
+            _character.SkinColor = appearance.SkinColor;
+            _character.Head = appearance.Head;
+            _character.Face = appearance.Face;
+            _character.Eyes = appearance.Eyes;
+            _character.HairStyle = appearance.HairStyle;
+            _character.HairColor = appearance.HairColor;
+            _character.Legs = appearance.Legs;
+            _character.Feet = appearance.Feet;
+            _character.Arms = appearance.Arms;
+            _character.ArmorType = appearance.ArmorType;
+            _character.WeaponType = appearance.WeaponType;
+            _character.ShieldType = appearance.ShieldType;
+            _character.Thumbnail = _previewBytes;
+            _character.Level = 1;
+
+            // Starter Inventory: 5 Health Potions
+            _character.Inventory = new List<Item>();
+            for (int i = 0; i < 5; i++)
             {
-                UserId = _session.CurrentUser.Id,
-                Name = _nameEdit.Text,
-                Class = _classOption.GetItemText(_classOption.Selected),
-                SkinColor = appearance.SkinColor,
-                Head = appearance.Head,
-                Face = appearance.Face,
-                Eyes = appearance.Eyes,
-                HairStyle = appearance.HairStyle,
-                HairColor = appearance.HairColor,
-                Legs = appearance.Legs,
-                Feet = appearance.Feet,
-                Arms = appearance.Arms,
-                ArmorType = appearance.ArmorType,
-                WeaponType = appearance.WeaponType,
-                ShieldType = appearance.ShieldType,
-                Thumbnail = _previewBytes,
-                Level = 1
-            };
+                _character.Inventory.Add(new Item 
+                { 
+                    Name = "Health Potion", 
+                    Type = "Consumable", 
+                    Description = "Restores 50 HP.",
+                    Value = 50 
+                });
+            }
+
+            // Starter Gear in Inventory
+            if (!string.IsNullOrEmpty(_character.WeaponType) && _character.WeaponType != "None")
+                _character.Inventory.Add(new Item { Name = _character.WeaponType, Type = "Weapon", Value = 100 });
+            if (!string.IsNullOrEmpty(_character.ArmorType) && _character.ArmorType != "None")
+                _character.Inventory.Add(new Item { Name = _character.ArmorType, Type = "Armor", Value = 150 });
+            if (!string.IsNullOrEmpty(_character.ShieldType) && _character.ShieldType != "None")
+                _character.Inventory.Add(new Item { Name = _character.ShieldType, Type = "Shield", Value = 75 });
 
             // Generate Full Sprite Sheet
             try
             {
                 var stitchLayers = _catalog.GetStitchLayers(appearance);
-                GD.Print($"[CharacterGen] Stitching {stitchLayers.Count} layers for {character.Name}...");
-                character.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
-                GD.Print($"[CharacterGen] Full sheet generated: {character.FullSpriteSheet?.Length ?? 0} bytes");
+                GD.Print($"[CharacterGen] Stitching {stitchLayers.Count} layers for {_character.Name}...");
+                _character.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
+                GD.Print($"[CharacterGen] Full sheet generated: {_character.FullSpriteSheet?.Length ?? 0} bytes");
             }
             catch (System.Exception ex)
             {
                 GD.PrintErr($"[CharacterGen] Failed to generate full sheet: {ex.Message}");
             }
 
-            SetStats(character, character.Class);
+            SetStats(_character, _character.Class);
 
-            await _characterService.SaveCharacterAsync(character);
-            GD.Print($"[CharacterGen] Character '{character.Name}' saved.");
+            await _characterService.SaveCharacterAsync(_character);
+            GD.Print($"[CharacterGen] Character '{_character.Name}' saved.");
 
             // CRITICAL: Update session state so WorldScene knows who to render
-            _session.CurrentCharacter = character;
+            _session.CurrentCharacter = _character;
 
             await _navigation.NavigateToAsync("MainMenuPage");
         }

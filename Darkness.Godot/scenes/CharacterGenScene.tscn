@@ -176,31 +176,37 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
 [node name="ArmorLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Armor"
 
 [node name="ArmorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
 [node name="WeaponLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Weapon"
 
 [node name="WeaponOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
 [node name="ShieldLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Shield"
 
 [node name="ShieldOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
