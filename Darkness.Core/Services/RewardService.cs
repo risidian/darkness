@@ -2,6 +2,8 @@ using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using LiteDB;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Darkness.Core.Services
@@ -13,6 +15,52 @@ namespace Darkness.Core.Services
         public RewardService(LiteDatabase db)
         {
             _db = db;
+        }
+
+        public BattleRewardResult ProcessCombatRewards(Character character, List<Enemy> enemies)
+        {
+            var result = new BattleRewardResult();
+            var random = new Random();
+            var itemCol = _db.GetCollection<Item>("items");
+
+            foreach (var enemy in enemies)
+            {
+                // Gold
+                result.GoldAwarded += enemy.GoldReward;
+
+                // Fixed Drops
+                foreach (var itemName in enemy.FixedDrops)
+                {
+                    var item = itemCol.FindOne(x => x.Name == itemName);
+                    if (item != null)
+                    {
+                        character.Inventory.Add(item);
+                        result.ItemsAwarded.Add(item);
+                    }
+                }
+
+                // Random Drops
+                foreach (var loot in enemy.RandomDrops)
+                {
+                    if (random.NextDouble() <= loot.Chance)
+                    {
+                        var item = itemCol.FindOne(x => x.Name == loot.ItemName);
+                        if (item != null)
+                        {
+                            character.Inventory.Add(item);
+                            result.ItemsAwarded.Add(item);
+                        }
+                    }
+                }
+            }
+
+            character.Gold += result.GoldAwarded;
+
+            // Update character in database
+            var charCol = _db.GetCollection<Character>("characters");
+            charCol.Update(character);
+
+            return result;
         }
 
         public Task<Item?> CheckDailyRewardAsync(User user)

@@ -22,6 +22,7 @@ public partial class BattleScene : Control, IInitializable
     private IWeaponSkillService _weaponSkillService = null!;
     private ILevelingService _leveling = null!;
     private IQuestService _questService = null!;
+    private IRewardService _rewardService = null!;
     private RichTextLabel _combatLog = null!;
     private PauseMenu _pauseMenu = null!;
     private Control _endBattlePanel = null!;
@@ -168,6 +169,7 @@ public partial class BattleScene : Control, IInitializable
         _weaponSkillService = sp.GetRequiredService<IWeaponSkillService>();
         _leveling = sp.GetRequiredService<ILevelingService>();
         _questService = sp.GetRequiredService<IQuestService>();
+        _rewardService = sp.GetRequiredService<IRewardService>();
 
         _combatLog = GetNode<RichTextLabel>("CombatLog");
         
@@ -778,6 +780,19 @@ public partial class BattleScene : Control, IInitializable
             victoryMsg += $"\n+{result.XpAwarded} XP";
             if (result.DidLevelUp)
                 victoryMsg += $"\nLevel Up! You are now level {result.NewLevel}!";
+        }
+
+        if (character != null)
+        {
+            var rewards = _rewardService.ProcessCombatRewards(character, _originalEnemies);
+            if (rewards.GoldAwarded > 0)
+                victoryMsg += $"\n+{rewards.GoldAwarded} Gold";
+            
+            if (rewards.ItemsAwarded.Count > 0)
+            {
+                var itemNames = string.Join(", ", rewards.ItemsAwarded.Select(i => i.Name));
+                victoryMsg += $"\nItems: {itemNames}";
+            }
         }
         
         if (character != null && _questChainId != null)
