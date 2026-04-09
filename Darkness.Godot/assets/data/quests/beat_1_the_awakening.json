@@ -7,6 +7,7 @@
   "Steps": [
 	{
 	  "Id": "beat_1_intro",
+	  "AutoTransition": false,
 	  "Type": "branch",
 	  "Visuals": {
 		"BackgroundKey": "camelot_shore",
@@ -57,11 +58,11 @@
 	  "Type": "combat",
 	  "AutoTransition": false,
 	  "Visuals": {
-	    "BackgroundKey": "sandy_shore",
-	    "Zones": [
-	      { "x": 1800, "y": 0, "width": 120, "height": 1080, "type": "Trigger", "actionId": "next_step" },
-	      { "x": 0, "y": 950, "width": 1920, "height": 130, "type": "Text", "message": "The water is too deep. Don't go any further or you will drown." }
-	    ]
+		"BackgroundKey": "sandy_shore",
+		"Zones": [
+		  { "x": 1800, "y": 0, "width": 120, "height": 1080, "type": "Trigger", "actionId": "next_step" },
+		  { "x": 0, "y": 950, "width": 1920, "height": 130, "type": "Text", "message": "The water is too deep. Don't go any further or you will drown." }
+		]
 	  },
 	  "Location": { "LocationKey": "SandyShore_East" },	  "Combat": {
 		"Enemies": [
