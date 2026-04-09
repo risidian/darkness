@@ -529,6 +529,7 @@ public partial class WorldScene : Node2D, IInitializable
             foreach (var choice in _currentChoices)
             {
                 var btn = new Button { Text = choice.Text };
+                btn.ApplyMobileSizing();
                 btn.Pressed += () => OnChoiceSelected(choice);
                 _choicesContainer.AddChild(btn);
             }
