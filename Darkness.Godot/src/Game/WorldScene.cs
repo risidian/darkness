@@ -476,7 +476,7 @@ public partial class WorldScene : Node2D, IInitializable
                     await UpdateVisuals(nextStep, _currentDialogueChain);
 
                     // If the new step is an immediate encounter, trigger it
-                    if (nextStep.Combat != null || nextStep.Type == "stealth" || (nextStep.Location?.SceneKey == "stealth"))
+                    if (nextStep.AutoTransition && (nextStep.Combat != null || nextStep.Type == "stealth" || (nextStep.Location?.SceneKey == "stealth")))
                     {
                         await TriggerEncounter();
                     }
