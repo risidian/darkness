@@ -86,6 +86,8 @@ public partial class BattleScene : Control, IInitializable
                     Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
                     Evasion = e.Evasion,
                     SpriteKey = e.SpriteKey ?? "knight",
+                    SpriteOffsetX = e.SpriteOffsetX,
+                    SpriteOffsetY = e.SpriteOffsetY,
                     IsInvincible = e.IsInvincible,
                     MoralityImpact = e.MoralityImpact,
                     ExperienceReward = e.ExperienceReward,
@@ -630,7 +632,11 @@ public partial class BattleScene : Control, IInitializable
 
             var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
             spriteContainer.AddChild(sprite);
-            sprite.Position = new Vector2(20, -10);
+            
+            float offsetX = enemy.SpriteOffsetX ?? 20f;
+            float offsetY = enemy.SpriteOffsetY ?? -10f;
+            sprite.Position = new Vector2(offsetX, offsetY);
+            
             _enemySprites.Add(sprite);
 
             if (enemy.SpriteKey == "hound")

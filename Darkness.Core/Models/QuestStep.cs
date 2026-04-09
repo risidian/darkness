@@ -10,4 +10,5 @@ public class QuestStep
     public LocationTrigger? Location { get; set; }
     public BranchData? Branch { get; set; }
     public VisualConfig? Visuals { get; set; }
+    public bool AutoTransition { get; set; } = false;
 }

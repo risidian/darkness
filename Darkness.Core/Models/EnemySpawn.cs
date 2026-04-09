@@ -12,6 +12,8 @@ public class EnemySpawn
     public int Accuracy { get; set; }
     public int Evasion { get; set; }
     public string SpriteKey { get; set; } = "hound";
+    public float? SpriteOffsetX { get; set; }
+    public float? SpriteOffsetY { get; set; }
     public bool IsInvincible { get; set; }
     public int MoralityImpact { get; set; }
     public int ExperienceReward { get; set; }

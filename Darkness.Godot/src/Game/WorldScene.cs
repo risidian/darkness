@@ -503,7 +503,7 @@ public partial class WorldScene : Node2D, IInitializable
             }
 
             // If no immediate dialogue, check if it's an encounter
-            if (nextStep != null && (nextStep.Combat != null || nextStep.Type == "stealth" || (nextStep.Location?.SceneKey == "stealth")))
+            if (nextStep != null && nextStep.AutoTransition && (nextStep.Combat != null || nextStep.Type == "stealth" || (nextStep.Location?.SceneKey == "stealth")))
             {
                 // Must reset dialogue index and hide box before triggering
                 _currentDialogueIndex = -1;
