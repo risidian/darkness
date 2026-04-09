@@ -37,6 +37,9 @@ project/assembly_name="Darkness.Godot"
 
 movie_writer/movie_file="C:/Users/Mayce/Documents/GitHub/darkness/Darkness.Godot/movie.avi"
 
+[gui]
+theme/custom="res://darkness_ui_theme.tres"
+
 [input_devices]
 
 pointing/emulate_touch_from_mouse=true
