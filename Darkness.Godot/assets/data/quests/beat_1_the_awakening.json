@@ -58,11 +58,26 @@
 	  "Type": "combat",
 	  "AutoTransition": false,
 	  "Visuals": {
-		"BackgroundKey": "sandy_shore",
-		"Zones": [
-		  { "x": 1800, "y": 0, "width": 120, "height": 1080, "type": "Trigger", "actionId": "next_step" },
-		  { "x": 0, "y": 950, "width": 1920, "height": 130, "type": "Text", "message": "The water is too deep. Don't go any further or you will drown." }
-		]
+	        "BackgroundKey": "camelot_shore",
+	        "Npc": {
+	          "Name": "Old Man",
+	          "PositionX": 400,
+	          "PositionY": 200,
+	          "Appearance": {
+	                "HairStyle": "Long",
+	                "HairColor": "#FFFFFF",
+	                "SkinColor": "Light",
+	                "Head": "Human Male",
+	                "Face": "Old",
+	                "ArmorType": "None",
+	                "Legs": "Slacks",
+	                "Feet": "Shoes"
+	          }
+	        },
+	        "Zones": [
+	          { "x": 1800, "y": 0, "width": 120, "height": 1080, "type": "Trigger", "actionId": "next_step" },
+	          { "x": 0, "y": 950, "width": 1920, "height": 130, "type": "Text", "message": "The water is too deep. Don't go any further or you will drown." }
+	        ]
 	  },
 	  "Location": { "LocationKey": "SandyShore_East" },	  "Combat": {
 		"Enemies": [
@@ -85,10 +100,32 @@
 	{
 	  "Id": "beat_1_stealth",
 	  "Type": "location",
+	  "AutoTransition": false,
 	  "NextStepId": "beat_1_sneak_combat",
+	  "Visuals": {
+	        "BackgroundKey": "camelot_shore",
+	        "Npc": {
+	          "Name": "Old Man",
+	          "PositionX": 400,
+	          "PositionY": 200,
+	          "Appearance": {
+	                "HairStyle": "Long",
+	                "HairColor": "#FFFFFF",
+	                "SkinColor": "Light",
+	                "Head": "Human Male",
+	                "Face": "Old",
+	                "ArmorType": "None",
+	                "Legs": "Slacks",
+	                "Feet": "Shoes"
+	          }
+	        },
+	        "Zones": [
+	          { "x": 1800, "y": 0, "width": 120, "height": 1080, "type": "Trigger", "actionId": "next_step" },
+	          { "x": 0, "y": 950, "width": 1920, "height": 130, "type": "Text", "message": "The water is too deep. Don't go any further or you will drown." }
+	        ]
+	  },
 	  "Location": { "LocationKey": "SandyShore_East", "SceneKey": "stealth" }
-	},
-	{
+	},	{
 	  "Id": "beat_1_sneak_combat",
 	  "Type": "combat",
 	  "Combat": {
