@@ -207,6 +207,44 @@ public partial class LayeredSprite : Node2D
         }
     }
 
+    public async Task AddWeaponOverlay(string weaponType, ISpriteLayerCatalog catalog, IFileSystemService fileSystem, ISpriteCompositor compositor)
+    {
+        EnsureLayers();
+
+        var appearance = new CharacterAppearance { WeaponType = weaponType };
+        var layers = catalog.GetStitchLayers(appearance);
+        
+        var weaponLayers = new List<StitchLayer>();
+        foreach (var l in layers)
+        {
+            if (l.RootPath.Contains("weapons/"))
+            {
+                weaponLayers.Add(l);
+            }
+        }
+
+        if (weaponLayers.Count == 0)
+        {
+            GD.PrintErr($"[LayeredSprite] No weapon layers found for {weaponType}");
+            return;
+        }
+
+        GD.Print($"[LayeredSprite] Compositing weapon overlay: {weaponType}");
+        var sheetBytes = await compositor.CompositeFullSheet(weaponLayers, fileSystem);
+        
+        if (sheetBytes != null && sheetBytes.Length > 0)
+        {
+            var frames = ImageUtils.CreateSpriteFrames(sheetBytes, 64, 64);
+            if (frames != null && _layers.TryGetValue("Weapon", out var weaponSprite))
+            {
+                weaponSprite.SpriteFrames = frames;
+                weaponSprite.FlipH = _flipH;
+                weaponSprite.Show();
+                GD.Print($"[LayeredSprite] Weapon overlay applied successfully.");
+            }
+        }
+    }
+
     private async Task LoadIfExists(SpriteFrames frames, string animName, string path, IFileSystemService fileSystem)
     {
         try

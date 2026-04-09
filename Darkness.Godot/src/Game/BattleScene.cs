@@ -643,6 +643,13 @@ public partial class BattleScene : Control, IInitializable
             {
                 sprite.Scale = new Vector2(2.5f, 2.5f);
                 await sprite.SetupFullSheet("assets/sprites/" + enemy.SpriteKey + ".png", _fileSystem);
+                
+                //This is how to add a weapon overlay
+                //if (enemy.SpriteKey.Contains("Balgathor"))
+                //{
+                //    await sprite.AddWeaponOverlay("Arming Sword (Steel)", _catalog, _fileSystem, _compositor);
+                //}
+                
                 sprite.Play("idle_left");
             }
             else
