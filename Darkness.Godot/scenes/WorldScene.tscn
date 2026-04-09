@@ -73,27 +73,23 @@ offset_bottom = 100.0
 theme_override_constants/separation = 15
 
 [node name="ForgeButton" type="Button" parent="CanvasLayer/TopMenu"]
-custom_minimum_size = Vector2(140, 70)
+custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "FORGE"
 
 [node name="StudyButton" type="Button" parent="CanvasLayer/TopMenu"]
-custom_minimum_size = Vector2(140, 70)
+custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "STUDY"
 
 [node name="AlliesButton" type="Button" parent="CanvasLayer/TopMenu"]
-custom_minimum_size = Vector2(140, 70)
+custom_minimum_size = Vector2(140, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "ALLIES"
 
 [node name="DeathmatchButton" type="Button" parent="CanvasLayer/TopMenu"]
-custom_minimum_size = Vector2(180, 70)
+custom_minimum_size = Vector2(180, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "DEATHMATCH"
 
 [node name="TopRightMenu" type="HBoxContainer" parent="CanvasLayer"]
@@ -108,9 +104,8 @@ grow_horizontal = 0
 alignment = 2
 
 [node name="MenuButton" type="Button" parent="CanvasLayer/TopRightMenu"]
-custom_minimum_size = Vector2(150, 70)
+custom_minimum_size = Vector2(150, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
 text = "MENU"
 
 [node name="DialogueBox" type="PanelContainer" parent="CanvasLayer"]

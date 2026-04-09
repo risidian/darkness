@@ -50,59 +50,59 @@ theme_override_constants/v_separation = 20
 columns = 2
 
 [node name="StoryButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "STORYLINE"
 
 [node name="BattleButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "DEATHMATCH"
 
 [node name="PvpButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "PVP (TEST)"
 
 [node name="CharactersButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "CHARACTERS"
 
 [node name="ForgeButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "FORGE"
 
 [node name="StudyButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "STUDY"
 
 [node name="AlliesButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "ALLIES"
 
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 24
 text = "SETTINGS"
 
 [node name="TopRightMenu" type="HBoxContainer" parent="."]
@@ -113,12 +113,11 @@ anchor_right = 1.0
 offset_left = -220.0
 offset_top = 20.0
 offset_right = -20.0
-offset_bottom = 80.0
+offset_bottom = 100.0
 grow_horizontal = 0
 alignment = 2
 
 [node name="LogoutButton" type="Button" parent="TopRightMenu"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
 text = "LOGOUT"
