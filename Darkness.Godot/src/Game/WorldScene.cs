@@ -43,6 +43,7 @@ public partial class WorldScene : Node2D, IInitializable
     private QuestChain? _currentDialogueChain = null;
     private QuestStep? _currentDialogueStep = null;
     private double _textZoneCooldown = 0;
+    private bool _isZoneDialogue = false;
 
     public void Initialize(IDictionary<string, object> parameters)
     {
@@ -286,6 +287,7 @@ public partial class WorldScene : Node2D, IInitializable
 
                     if (playerRect.Intersects(zoneRect))
                     {
+                        GD.Print($"[WorldScene] Intersecting zone type: {zone.Type} at {zone.X},{zone.Y}");
                         if (zone.Type.Equals("Block", System.StringComparison.OrdinalIgnoreCase))
                         {
                             // Simple block: zero velocity entirely for now to prevent getting stuck
@@ -306,6 +308,7 @@ public partial class WorldScene : Node2D, IInitializable
                         {
                             if (!_isEncounterTriggered && (zone.ActionId == "next_step" || string.IsNullOrEmpty(zone.ActionId)))
                             {
+                                GD.Print($"[WorldScene] Trigger zone hit at X: {nextPos.X}, Y: {nextPos.Y}. Action: {zone.ActionId ?? "next_step"}");
                                 _targetPosition = null;
                                 intendedVelocity = Vector2.Zero;
                                 _ = TriggerEncounter(true);
@@ -431,6 +434,7 @@ public partial class WorldScene : Node2D, IInitializable
 
     private void ShowZoneText(string message)
     {
+        _isZoneDialogue = true;
         _targetPosition = null;
         _player.Velocity = Vector2.Zero;
         _playerSprite.Play("idle_" + _lastDirection);
@@ -464,6 +468,14 @@ public partial class WorldScene : Node2D, IInitializable
             _currentDialogueIndex = -1;
             _dialogueBox.Hide();
             _isEncounterTriggered = false; // Release the lock so sequential encounters can trigger
+
+            // If this was a one-off zone message, don't advance the quest!
+            if (_isZoneDialogue)
+            {
+                GD.Print("[WorldScene] Zone message finished. Resetting flag and not advancing quest.");
+                _isZoneDialogue = false;
+                return;
+            }
 
             // If there were no choices, advance the quest step when finished
             if (_currentChoices.Count == 0 && _currentDialogueChain != null && _session.CurrentCharacter != null)
@@ -593,6 +605,7 @@ public partial class WorldScene : Node2D, IInitializable
         // Hide dialogue box and end conversation
         _currentDialogueIndex = -1;
         _dialogueBox.Hide();
+        _isEncounterTriggered = false; // Add this reset!
 
         // Clear buttons
         foreach (Node child in _choicesContainer.GetChildren())
@@ -603,11 +616,13 @@ public partial class WorldScene : Node2D, IInitializable
 
     private async Task TriggerEncounter(bool isLocationTrigger = false)
     {
+        GD.Print($"[WorldScene] TriggerEncounter called. isLocationTrigger: {isLocationTrigger}, _isEncounterTriggered: {_isEncounterTriggered}");
         if (_isEncounterTriggered) return;
         _isEncounterTriggered = true; // Block immediately
 
         if (_currentDialogueIndex >= 0)
         {
+            GD.Print("[WorldScene] TriggerEncounter aborted: Dialogue is active.");
             _isEncounterTriggered = false; // Dialogue is already showing
             return;
         }
@@ -615,12 +630,14 @@ public partial class WorldScene : Node2D, IInitializable
         var character = _session.CurrentCharacter;
         if (character == null)
         {
+            GD.PrintErr("[WorldScene] TriggerEncounter aborted: CurrentCharacter is null.");
             _isEncounterTriggered = false;
             return;
         }
 
         // Find the first available quest chain and its current step
         var availableChains = _questService.GetAvailableChains(character);
+        GD.Print($"[WorldScene] Available chains: {availableChains.Count}");
         QuestChain? chain = null;
         QuestStep? step = null;
 
@@ -638,39 +655,44 @@ public partial class WorldScene : Node2D, IInitializable
         if (chain == null || step == null)
         {
             GD.Print("[WorldScene] No quest step found to trigger.");
+            _isEncounterTriggered = false;
             return;
         }
 
-        GD.Print($"[WorldScene] Triggering step: {step.Id} from chain: {chain.Title} (type: {step.Type})");
+        GD.Print($"[WorldScene] Triggering step: {step.Id} from chain: {chain.Id} (type: {step.Type})");
 
         if (step.Combat != null)
         {
-            GD.Print($"[WorldScene] Navigating to BattleScene with combat from step '{step.Id}'.");
-            _isEncounterTriggered = true; // Set before await to prevent double trigger
+            GD.Print($"[WorldScene] Navigating to BattleScene with combat from step '{step.Id}'. Background: {step.Combat.BackgroundKey}");
+            _isEncounterTriggered = true; // Keep blocked
             await _navigation.NavigateToAsync(Routes.Battle,
                 new BattleArgs { Combat = step.Combat, QuestChainId = chain.Id, QuestStepId = step.Id });
         }
         else if (step.Type == "stealth" || (step.Location?.SceneKey == "stealth"))
         {
             GD.Print($"[WorldScene] Navigating to StealthScene for step '{step.Id}'.");
-            _isEncounterTriggered = true; // Set before await
+            _isEncounterTriggered = true; 
             await _navigation.NavigateToAsync(Routes.Stealth,
                 new StealthArgs { QuestChainId = chain.Id, QuestStepId = step.Id });
         }
         else if (!isLocationTrigger && step.Dialogue != null && step.Dialogue.Lines.Count > 0)
         {
-            GD.Print($"[WorldScene] Step '{step.Id}' has dialogue. Initiating.");
+            GD.Print($"[WorldScene] Step '{step.Id}' has dialogue. Initiating StartDialogue.");
             _isEncounterTriggered = true;
             StartDialogue();
         }
         else
         {
-            GD.Print($"[WorldScene] Step '{step.Id}' has no actionable content or is skipped due to location trigger.");
+            GD.Print($"[WorldScene] Step '{step.Id}' has no actionable content or is skipped due to location trigger. Resetting lock.");
+            _isEncounterTriggered = false;
         }
     }
 
     private async Task UpdateVisuals(QuestStep? step, QuestChain? chain = null)
     {
+        _currentDialogueStep = step;
+        if (chain != null) _currentDialogueChain = chain;
+
         var visuals = step?.Visuals;
         
         // Fallback: If current step has no visuals, try to use the first step of the chain

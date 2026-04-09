@@ -22,7 +22,7 @@ public class QuestSeeder
 
         if (!_fileSystem.DirectoryExists(questDir))
         {
-            Console.WriteLine($"[QuestSeeder] ERROR: Quest directory not found: {questDir}");
+            Console.Error.WriteLine($"[QuestSeeder] ERROR: Quest directory not found: {questDir}");
             return;
         }
 
@@ -33,7 +33,7 @@ public class QuestSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[QuestSeeder] ERROR: Failed to list quest files — {ex.Message}");
+            Console.Error.WriteLine($"[QuestSeeder] ERROR: Failed to list quest files — {ex.Message}");
             return;
         }
 
@@ -47,6 +47,8 @@ public class QuestSeeder
             try
             {
                 var json = _fileSystem.ReadAllText(file);
+                Console.Error.WriteLine($"[QuestSeeder] DEBUG: Reading file: {file}");
+                if (json.Contains("sandy_shore")) Console.Error.WriteLine($"[QuestSeeder] DEBUG: FOUND sandy_shore in {file}!");
                 var chain = SystemJson.JsonSerializer.Deserialize<QuestChain>(json, new SystemJson.JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
@@ -54,7 +56,7 @@ public class QuestSeeder
 
                 if (chain == null)
                 {
-                    Console.WriteLine($"[QuestSeeder] WARN: File deserialized to null: {Path.GetFileName(file)}");
+                    Console.Error.WriteLine($"[QuestSeeder] WARN: File deserialized to null: {Path.GetFileName(file)}");
                     errorCount++;
                     continue;
                 }
@@ -65,12 +67,12 @@ public class QuestSeeder
             }
             catch (SystemJson.JsonException ex)
             {
-                Console.WriteLine($"[QuestSeeder] ERROR: Failed to parse quest file: {Path.GetFileName(file)} — {ex.Message}");
+                Console.Error.WriteLine($"[QuestSeeder] ERROR: Failed to parse quest file: {Path.GetFileName(file)} — {ex.Message}");
                 errorCount++;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[QuestSeeder] ERROR: Failed to read quest file: {Path.GetFileName(file)} — {ex.Message}");
+                Console.Error.WriteLine($"[QuestSeeder] ERROR: Failed to read quest file: {Path.GetFileName(file)} — {ex.Message}");
                 errorCount++;
             }
         }
@@ -78,6 +80,7 @@ public class QuestSeeder
         chainCol.EnsureIndex(c => c.Id);
         chainCol.EnsureIndex(c => c.IsMainStory);
 
-        Console.WriteLine($"[QuestSeeder] INFO: Loaded {chainCount} quest chains with {stepCount} steps from {files.Length} files ({errorCount} errors)");
+        Console.Error.WriteLine($"[QuestSeeder] INFO: Loaded {chainCount} quest chains with {stepCount} steps from {files.Length} files ({errorCount} errors)");
+        Console.Error.WriteLine($"[QuestSeeder] DEBUG: Total chains in DB now: {chainCol.Count()}");
     }
 }
