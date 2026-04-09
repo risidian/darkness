@@ -8,4 +8,5 @@ public class VisualConfig
     public NpcConfig? Npc { get; set; }        // The NPC present in this beat
     public float? PlayerPositionX { get; set; } // Starting X position for the player
     public float? PlayerPositionY { get; set; } // Starting Y position for the player
+    public System.Collections.Generic.List<ZoneConfig> Zones { get; set; } = new();
 }
