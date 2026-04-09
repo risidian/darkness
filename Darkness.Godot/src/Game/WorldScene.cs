@@ -255,9 +255,30 @@ public partial class WorldScene : Node2D, IInitializable
 
         if (velocity != Vector2.Zero)
         {
-            _player.Velocity = velocity.Normalized() * _moveSpeed;
-            _player.MoveAndSlide();
-            UpdateAnimation(velocity);
+            Vector2 intendedVelocity = velocity.Normalized() * _moveSpeed;
+            Vector2 nextPos = _player.GlobalPosition + (intendedVelocity * (float)delta);
+            
+            // Hard boundaries (Screen Edges)
+            // Assuming default Godot viewport size 1920x1080 and character sprite ~100px wide/tall
+            float minX = 50f;
+            float maxX = GetViewportRect().Size.X - 50f;
+            float minY = 50f;
+            float maxY = GetViewportRect().Size.Y - 50f;
+
+            if (nextPos.X < minX || nextPos.X > maxX) intendedVelocity.X = 0;
+            if (nextPos.Y < minY || nextPos.Y > maxY) intendedVelocity.Y = 0;
+
+            _player.Velocity = intendedVelocity;
+            
+            if (intendedVelocity != Vector2.Zero)
+            {
+                _player.MoveAndSlide();
+                UpdateAnimation(intendedVelocity);
+            }
+            else
+            {
+                _playerSprite.Play("idle_" + _lastDirection);
+            }
         }
         else
         {
