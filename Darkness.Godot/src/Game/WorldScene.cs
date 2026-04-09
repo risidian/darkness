@@ -42,6 +42,7 @@ public partial class WorldScene : Node2D, IInitializable
     private List<BranchOption> _currentChoices = new();
     private QuestChain? _currentDialogueChain = null;
     private QuestStep? _currentDialogueStep = null;
+    private double _textZoneCooldown = 0;
 
     public void Initialize(IDictionary<string, object> parameters)
     {
@@ -193,6 +194,12 @@ public partial class WorldScene : Node2D, IInitializable
     public override void _Process(double delta)
     {
         if (!IsInsideTree() || !_isReady) return;
+        
+        if (_textZoneCooldown > 0)
+        {
+            _textZoneCooldown -= delta;
+        }
+
         if (Input.IsActionJustPressed("ui_cancel"))
         {
             _pauseMenu.Toggle();
@@ -268,6 +275,46 @@ public partial class WorldScene : Node2D, IInitializable
             if (nextPos.X < minX || nextPos.X > maxX) intendedVelocity.X = 0;
             if (nextPos.Y < minY || nextPos.Y > maxY) intendedVelocity.Y = 0;
 
+            // Zone Evaluation
+            if (_currentDialogueStep?.Visuals?.Zones != null)
+            {
+                Rect2 playerRect = new Rect2(nextPos.X - 25, nextPos.Y - 25, 50, 50); // Approximate player size
+
+                foreach (var zone in _currentDialogueStep.Visuals.Zones)
+                {
+                    Rect2 zoneRect = new Rect2(zone.X, zone.Y, zone.Width, zone.Height);
+
+                    if (playerRect.Intersects(zoneRect))
+                    {
+                        if (zone.Type.Equals("Block", System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Simple block: zero velocity entirely for now to prevent getting stuck
+                            intendedVelocity = Vector2.Zero;
+                            _targetPosition = null; // Cancel pathfinding
+                        }
+                        else if (zone.Type.Equals("Text", System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            intendedVelocity = Vector2.Zero;
+                            _targetPosition = null;
+                            if (_textZoneCooldown <= 0 && _currentDialogueIndex < 0 && !string.IsNullOrEmpty(zone.Message)) 
+                            {
+                                ShowZoneText(zone.Message);
+                                _textZoneCooldown = 2.0; // 2 second cooldown after showing text
+                            }
+                        }
+                        else if (zone.Type.Equals("Trigger", System.StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!_isEncounterTriggered && (zone.ActionId == "next_step" || string.IsNullOrEmpty(zone.ActionId)))
+                            {
+                                _targetPosition = null;
+                                intendedVelocity = Vector2.Zero;
+                                _ = TriggerEncounter(true);
+                            }
+                        }
+                    }
+                }
+            }
+
             _player.Velocity = intendedVelocity;
             
             if (intendedVelocity != Vector2.Zero)
@@ -283,16 +330,6 @@ public partial class WorldScene : Node2D, IInitializable
         else
         {
             _playerSprite.Play("idle_" + _lastDirection);
-        }
-
-        // Check location trigger for quest encounters at the eastern edge
-        if (_session.CurrentCharacter != null && _player.GlobalPosition.X > 1200)
-        {
-            var triggerStep = _triggerService.CheckLocationTrigger(_session.CurrentCharacter, "SandyShore_East");
-            if (triggerStep != null)
-            {
-                _ = TriggerEncounter(true);
-            }
         }
     }
 
@@ -390,6 +427,25 @@ public partial class WorldScene : Node2D, IInitializable
             GD.Print("[WorldScene] No dialogue lines to display. Hiding dialogue box.");
             _dialogueBox.Hide();
         }
+    }
+
+    private void ShowZoneText(string message)
+    {
+        _targetPosition = null;
+        _player.Velocity = Vector2.Zero;
+        _playerSprite.Play("idle_" + _lastDirection);
+
+        _speakerName = "System";
+        _dialogue = new List<string> { message };
+        _currentChoices.Clear();
+        
+        _currentDialogueIndex = 0;
+        _dialogueBox.Show();
+
+        var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+        prompt.Text = "[TAP TO CONTINUE]";
+
+        UpdateDialogueUI();
     }
 
     private async void NextDialogue()
