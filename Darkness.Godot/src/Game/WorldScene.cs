@@ -27,6 +27,7 @@ public partial class WorldScene : Node2D, IInitializable
     private PauseMenu _pauseMenu = null!;
     private Label _nameLabel = null!;
     private Label _textLabel = null!;
+    private Tween? _textTween = null;
 
     private bool _isEncounterTriggered = false;
     private bool _isReady = false;
@@ -464,6 +465,17 @@ public partial class WorldScene : Node2D, IInitializable
 
     private async void NextDialogue()
     {
+        if (!_isTextFullyDisplayed)
+        {
+            if (_textTween != null && _textTween.IsValid())
+            {
+                _textTween.Kill();
+            }
+            _textLabel.VisibleRatio = 1.0f;
+            _isTextFullyDisplayed = true;
+            return;
+        }
+
         // If we are showing choices, tapping should not advance or close the dialogue
         if (_currentChoices.Count > 0 && _currentDialogueIndex == _dialogue.Count - 1)
         {
@@ -521,6 +533,18 @@ public partial class WorldScene : Node2D, IInitializable
     {
         _nameLabel.Text = _speakerName;
         _textLabel.Text = _dialogue[_currentDialogueIndex];
+
+        if (_textTween != null && _textTween.IsValid())
+        {
+            _textTween.Kill();
+        }
+
+        _textLabel.VisibleRatio = 0.0f;
+        _isTextFullyDisplayed = false;
+
+        _textTween = CreateTween();
+        _textTween.TweenProperty(_textLabel, "visible_ratio", 1.0f, 1.0f);
+        _textTween.Finished += () => _isTextFullyDisplayed = true;
 
         var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
 
