@@ -574,6 +574,16 @@ public partial class BattleScene : Control, IInitializable
     {
         if (!IsInsideTree()) return;
 
+        // Optimization: If counts match, only update health bars to avoid frame hitches
+        if (_partyContainer.GetChildCount() == _party.Count && _enemyContainer.GetChildCount() == _enemies.Count)
+        {
+            for (int i = 0; i < _party.Count; i++)
+                _partyHealthBars[i].UpdateValue(_party[i].CurrentHP, _party[i].MaxHP);
+            for (int i = 0; i < _enemies.Count; i++)
+                _enemyHealthBars[i].UpdateValue(_enemies[i].CurrentHP, (int)_enemies[i].MaxHP);
+            return;
+        }
+
         foreach (Node child in _partyContainer.GetChildren()) child.QueueFree();
         foreach (Node child in _enemyContainer.GetChildren()) child.QueueFree();
 
