@@ -35,6 +35,7 @@ public partial class StealthScene : Control, IInitializable
 
     private string? _questChainId;
     private string? _questStepId;
+    private Vector2? _returnPosition;
 
     public void Initialize(IDictionary<string, object> parameters)
     {
@@ -42,6 +43,7 @@ public partial class StealthScene : Control, IInitializable
         {
             _questChainId = args.QuestChainId;
             _questStepId = args.QuestStepId;
+            _returnPosition = new Vector2(args.ReturnPositionX, args.ReturnPositionY);
         }
     }
 
@@ -157,7 +159,8 @@ public partial class StealthScene : Control, IInitializable
 
         var parameters = new Dictionary<string, object>
         {
-            ["StealthOutcome"] = success ? "Success" : "Failure"
+            ["StealthOutcome"] = success ? "Success" : "Failure",
+            ["PlayerPosition"] = _returnPosition ?? new Vector2(200, 300)
         };
         if (_questChainId != null) parameters["QuestChainId"] = _questChainId;
         if (_questStepId != null) parameters["QuestStepId"] = _questStepId;
