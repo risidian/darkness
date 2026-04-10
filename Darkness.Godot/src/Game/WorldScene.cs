@@ -30,6 +30,7 @@ public partial class WorldScene : Node2D, IInitializable
 
     private bool _isEncounterTriggered = false;
     private bool _isReady = false;
+    private bool _isTextFullyDisplayed = true;
     private float _moveSpeed = 300f;
 
     private enum WorldState { Exploring, Transitioning, InDialogue }
@@ -360,6 +361,7 @@ public partial class WorldScene : Node2D, IInitializable
     {
         GD.Print("StartDialogue called.");
         GD.Print(System.Environment.StackTrace);
+        _state = WorldState.InDialogue;
         _targetPosition = null;
         _player.Velocity = Vector2.Zero;
         _playerSprite.Play("idle_" + _lastDirection);
@@ -435,12 +437,14 @@ public partial class WorldScene : Node2D, IInitializable
         {
             GD.Print("[WorldScene] No dialogue lines to display. Hiding dialogue box.");
             _dialogueBox.Hide();
+            _state = WorldState.Exploring;
         }
     }
 
     private void ShowZoneText(string message)
     {
         _isZoneDialogue = true;
+        _state = WorldState.InDialogue;
         _targetPosition = null;
         _player.Velocity = Vector2.Zero;
         _playerSprite.Play("idle_" + _lastDirection);
@@ -461,9 +465,8 @@ public partial class WorldScene : Node2D, IInitializable
     private async void NextDialogue()
     {
         // If we are showing choices, tapping should not advance or close the dialogue
-        if (_currentDialogueIndex == _dialogue.Count - 1 && _currentChoices.Count > 0)
+        if (_currentChoices.Count > 0 && _currentDialogueIndex == _dialogue.Count - 1)
         {
-            GD.Print("[WorldScene] Last line of dialogue with choices, tap does nothing.");
             return;
         }
 
@@ -580,6 +583,7 @@ public partial class WorldScene : Node2D, IInitializable
             if (nextStep?.Dialogue != null && nextStep.Dialogue.Lines.Count > 0)
             {
                 GD.Print($"[WorldScene] Next step '{nextStep.Id}' has dialogue. Starting immediately.");
+                _state = WorldState.InDialogue;
                 _currentDialogueStep = nextStep;
                 _speakerName = nextStep.Dialogue.Speaker;
                 _dialogue = new List<string>(nextStep.Dialogue.Lines);
