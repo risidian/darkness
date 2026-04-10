@@ -34,6 +34,7 @@ public partial class BattleScene : Control, IInitializable
     private Button _okButton = null!;
     private string? _questChainId;
     private string? _questStepId;
+    private Vector2? _returnPosition;
 
     private ItemList _turnOrderList = null!;
 
@@ -66,6 +67,7 @@ public partial class BattleScene : Control, IInitializable
         {
             _questChainId = args.QuestChainId;
             _questStepId = args.QuestStepId;
+            _returnPosition = new Vector2(args.ReturnPositionX, args.ReturnPositionY);
 
             if (args.Combat != null)
             {
@@ -211,10 +213,10 @@ public partial class BattleScene : Control, IInitializable
 
         _continueButton.Pressed += async () =>
         {
-            // Navigate back to world with a safe start position to avoid trigger loops
+            // Navigate back to world with the passed return position or a safe default
             var parameters = new Dictionary<string, object>
             {
-                { "PlayerPosition", new Vector2(200, 300) }
+                { "PlayerPosition", _returnPosition ?? new Vector2(200, 300) }
             };
             await _navigation.NavigateToAsync("WorldScene", parameters);
         };
