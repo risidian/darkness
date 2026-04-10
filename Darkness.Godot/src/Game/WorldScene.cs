@@ -31,6 +31,10 @@ public partial class WorldScene : Node2D, IInitializable
     private bool _isEncounterTriggered = false;
     private bool _isReady = false;
     private float _moveSpeed = 300f;
+
+    private enum WorldState { Exploring, Transitioning, InDialogue }
+    private WorldState _state = WorldState.Exploring;
+
     private List<string> _dialogue = new();
     private string _speakerName = "Old Man";
     private int _currentDialogueIndex = -1;
@@ -47,6 +51,7 @@ public partial class WorldScene : Node2D, IInitializable
 
     public void Initialize(IDictionary<string, object> parameters)
     {
+        _state = WorldState.Transitioning;
         _isEncounterTriggered = true; // Block triggers during initialization
 
         if (parameters.ContainsKey("PlayerPosition") && parameters["PlayerPosition"] is Vector2 pos)
@@ -180,6 +185,7 @@ public partial class WorldScene : Node2D, IInitializable
         await ToSignal(GetTree(), "process_frame");
         _isReady = true;
         _isEncounterTriggered = false;
+        _state = WorldState.Exploring;
         GD.Print("[WorldScene] Ready and triggers enabled.");
     }
 
@@ -194,7 +200,7 @@ public partial class WorldScene : Node2D, IInitializable
 
     public override void _Process(double delta)
     {
-        if (!IsInsideTree() || !_isReady) return;
+        if (!IsInsideTree() || !_isReady || _state != WorldState.Exploring) return;
         
         if (_textZoneCooldown > 0)
         {
@@ -468,6 +474,7 @@ public partial class WorldScene : Node2D, IInitializable
             _currentDialogueIndex = -1;
             _dialogueBox.Hide();
             _isEncounterTriggered = false; // Release the lock so sequential encounters can trigger
+            _state = WorldState.Exploring;
 
             // If this was a one-off zone message, don't advance the quest!
             if (_isZoneDialogue)
@@ -607,6 +614,7 @@ public partial class WorldScene : Node2D, IInitializable
         _currentDialogueIndex = -1;
         _dialogueBox.Hide();
         _isEncounterTriggered = false; // Add this reset!
+        _state = WorldState.Exploring;
 
         // Clear buttons
         foreach (Node child in _choicesContainer.GetChildren())
@@ -617,14 +625,17 @@ public partial class WorldScene : Node2D, IInitializable
 
     private async Task TriggerEncounter(bool isLocationTrigger = false)
     {
-        GD.Print($"[WorldScene] TriggerEncounter called. isLocationTrigger: {isLocationTrigger}, _isEncounterTriggered: {_isEncounterTriggered}");
-        if (_isEncounterTriggered) return;
+        GD.Print($"[WorldScene] TriggerEncounter called. isLocationTrigger: {isLocationTrigger}, _isEncounterTriggered: {_isEncounterTriggered}, _state: {_state}");
+        if (_state != WorldState.Exploring) return;
+        
+        _state = WorldState.Transitioning;
         _isEncounterTriggered = true; // Block immediately
 
         if (_currentDialogueIndex >= 0)
         {
             GD.Print("[WorldScene] TriggerEncounter aborted: Dialogue is active.");
             _isEncounterTriggered = false; // Dialogue is already showing
+            _state = WorldState.InDialogue;
             return;
         }
 
@@ -633,6 +644,7 @@ public partial class WorldScene : Node2D, IInitializable
         {
             GD.PrintErr("[WorldScene] TriggerEncounter aborted: CurrentCharacter is null.");
             _isEncounterTriggered = false;
+            _state = WorldState.Exploring;
             return;
         }
 
@@ -657,6 +669,7 @@ public partial class WorldScene : Node2D, IInitializable
         {
             GD.Print("[WorldScene] No quest step found to trigger.");
             _isEncounterTriggered = false;
+            _state = WorldState.Exploring;
             return;
         }
 
@@ -667,25 +680,40 @@ public partial class WorldScene : Node2D, IInitializable
             GD.Print($"[WorldScene] Navigating to BattleScene with combat from step '{step.Id}'. Background: {step.Combat.BackgroundKey}");
             _isEncounterTriggered = true; // Keep blocked
             await _navigation.NavigateToAsync(Routes.Battle,
-                new BattleArgs { Combat = step.Combat, QuestChainId = chain.Id, QuestStepId = step.Id });
+                new BattleArgs 
+                { 
+                    Combat = step.Combat, 
+                    QuestChainId = chain.Id, 
+                    QuestStepId = step.Id,
+                    ReturnPositionX = _player.GlobalPosition.X,
+                    ReturnPositionY = _player.GlobalPosition.Y
+                });
         }
         else if (step.Type == "stealth" || (step.Location?.SceneKey == "stealth"))
         {
             GD.Print($"[WorldScene] Navigating to StealthScene for step '{step.Id}'.");
             _isEncounterTriggered = true; 
             await _navigation.NavigateToAsync(Routes.Stealth,
-                new StealthArgs { QuestChainId = chain.Id, QuestStepId = step.Id });
+                new StealthArgs 
+                { 
+                    QuestChainId = chain.Id, 
+                    QuestStepId = step.Id,
+                    ReturnPositionX = _player.GlobalPosition.X,
+                    ReturnPositionY = _player.GlobalPosition.Y
+                });
         }
         else if (!isLocationTrigger && step.Dialogue != null && step.Dialogue.Lines.Count > 0)
         {
             GD.Print($"[WorldScene] Step '{step.Id}' has dialogue. Initiating StartDialogue.");
             _isEncounterTriggered = true;
+            _state = WorldState.InDialogue;
             StartDialogue();
         }
         else
         {
             GD.Print($"[WorldScene] Step '{step.Id}' has no actionable content or is skipped due to location trigger. Resetting lock.");
             _isEncounterTriggered = false;
+            _state = WorldState.Exploring;
         }
     }
 
