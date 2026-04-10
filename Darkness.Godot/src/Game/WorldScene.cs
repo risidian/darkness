@@ -633,6 +633,11 @@ public partial class WorldScene : Node2D, IInitializable
                 // Must reset dialogue index and hide box before triggering
                 _currentDialogueIndex = -1;
                 _dialogueBox.Hide();
+
+                // Fix: Reset state so TriggerEncounter can run
+                _state = WorldState.Exploring;
+                _isEncounterTriggered = false;
+
                 await TriggerEncounter();
                 return;
             }
