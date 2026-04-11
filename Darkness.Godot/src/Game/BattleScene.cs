@@ -35,6 +35,7 @@ public partial class BattleScene : Control, IInitializable
     private string? _questChainId;
     private string? _questStepId;
     private Vector2? _returnPosition;
+    private BattleArgs? _battleArgs;
 
     private ItemList _turnOrderList = null!;
 
@@ -46,6 +47,7 @@ public partial class BattleScene : Control, IInitializable
 
     private List<Character> _party = new();
     private List<Enemy> _enemies = new();
+    private Dictionary<Enemy, EnemySpawn> _enemyMap = new();
     private List<Enemy> _originalEnemies = new(); // For retry
     private List<LayeredSprite> _partySprites = new();
     private List<LayeredSprite> _enemySprites = new();
@@ -65,6 +67,7 @@ public partial class BattleScene : Control, IInitializable
     {
         if (parameters.ContainsKey("Args") && parameters["Args"] is BattleArgs args)
         {
+            _battleArgs = args;
             _questChainId = args.QuestChainId;
             _questStepId = args.QuestStepId;
             _returnPosition = new Vector2(args.ReturnPositionX, args.ReturnPositionY);
@@ -75,30 +78,33 @@ public partial class BattleScene : Control, IInitializable
                 _survivalTurns = combat.SurvivalTurns ?? 0;
                 _backgroundKey = combat.BackgroundKey;
                 _enemies.Clear();
+                _enemyMap.Clear();
                 _originalEnemies.Clear();
-                var enemies = combat.Enemies.Select(e => new Enemy
+                
+                foreach (var e in combat.Enemies)
                 {
-                    Name = e.Name,
-                    Level = e.Level,
-                    MaxHP = e.MaxHP,
-                    CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
-                    Attack = e.Attack > 0 ? e.Attack : 10,
-                    Defense = e.Defense > 0 ? e.Defense : 5,
-                    Speed = e.Speed > 0 ? e.Speed : 10,
-                    Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
-                    Evasion = e.Evasion,
-                    SpriteKey = e.SpriteKey ?? "knight",
-                    SpriteOffsetX = e.SpriteOffsetX,
-                    SpriteOffsetY = e.SpriteOffsetY,
-                    IsInvincible = e.IsInvincible,
-                    MoralityImpact = e.MoralityImpact,
-                    ExperienceReward = e.ExperienceReward,
-                    GoldReward = e.GoldReward
-                }).ToList();
+                    var enemy = new Enemy
+                    {
+                        Name = e.Name,
+                        Level = e.Level,
+                        MaxHP = e.MaxHP,
+                        CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
+                        Attack = e.Attack > 0 ? e.Attack : 10,
+                        Defense = e.Defense > 0 ? e.Defense : 5,
+                        Speed = e.Speed > 0 ? e.Speed : 10,
+                        Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
+                        Evasion = e.Evasion,
+                        SpriteKey = e.SpriteKey ?? "knight",
+                        SpriteOffsetX = e.SpriteOffsetX,
+                        SpriteOffsetY = e.SpriteOffsetY,
+                        IsInvincible = e.IsInvincible,
+                        MoralityImpact = e.MoralityImpact,
+                        ExperienceReward = e.ExperienceReward,
+                        GoldReward = e.GoldReward
+                    };
 
-                foreach (var enemy in enemies)
-                {
                     _enemies.Add(enemy);
+                    _enemyMap[enemy] = e;
                     _originalEnemies.Add(new Enemy
                     {
                         Name = enemy.Name,
@@ -204,7 +210,11 @@ public partial class BattleScene : Control, IInitializable
         _turnOrderList.SetPosition(new Vector2(20, 150));
 
         GetNode<Button>("TopRightMenu/MenuButton").Pressed += () => _pauseMenu.Toggle();
-        GetNode<Button>("TopLeftMenu/InventoryButton").Pressed += () => _navigation.NavigateToAsync("InventoryPage");
+        GetNode<Button>("TopLeftMenu/InventoryButton").Pressed += () => 
+        {
+            SyncCombatState();
+            _navigation.NavigateToAsync("InventoryPage");
+        };
 
         _okButton.Pressed += async () =>
         {
@@ -506,9 +516,11 @@ public partial class BattleScene : Control, IInitializable
     {
         _endBattlePanel.Hide();
         _enemies.Clear();
+        _enemyMap.Clear();
+        
         foreach (var e in _originalEnemies)
         {
-            _enemies.Add(new Enemy
+            var enemy = new Enemy
             {
                 Name = e.Name,
                 MaxHP = e.MaxHP,
@@ -522,7 +534,19 @@ public partial class BattleScene : Control, IInitializable
                 MoralityImpact = e.MoralityImpact,
                 ExperienceReward = e.ExperienceReward,
                 GoldReward = e.GoldReward
-            });
+            };
+            _enemies.Add(enemy);
+            
+            // Link to the original spawn if we have BattleArgs
+            if (_battleArgs?.Combat != null)
+            {
+                var spawn = _battleArgs.Combat.Enemies.FirstOrDefault(s => s.Name == e.Name);
+                if (spawn != null)
+                {
+                    spawn.CurrentHP = e.MaxHP;
+                    _enemyMap[enemy] = spawn;
+                }
+            }
         }
 
         if (_party.Count > 0)
@@ -814,6 +838,7 @@ public partial class BattleScene : Control, IInitializable
             {
                 attacker.CurrentHP -= enemyCombatResult.DamageDealt;
                 _partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
+                SyncCombatState();
 
                 string defendMsg = attacker.IsBlocking ? " (Blocked!)" : "";
                 string eCritMsg = enemyCombatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
@@ -909,6 +934,7 @@ public partial class BattleScene : Control, IInitializable
                 {
                     target.CurrentHP -= combatResult.DamageDealt;
                     _enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
+                    SyncCombatState();
                     
                     string critMsg = combatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
                     _combatLog.AppendText($"\n{critMsg}[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {combatResult.DamageDealt} damage! Rolled {combatResult.D20Roll}");
@@ -1024,5 +1050,17 @@ public partial class BattleScene : Control, IInitializable
         _okButton.Hide();
         
         _endBattlePanel.Show();
+    }
+
+    private void SyncCombatState()
+    {
+        if (_battleArgs?.Combat == null) return;
+
+        foreach (var pair in _enemyMap)
+        {
+            var liveEnemy = pair.Key;
+            var spawn = pair.Value;
+            spawn.CurrentHP = liveEnemy.CurrentHP;
+        }
     }
 }

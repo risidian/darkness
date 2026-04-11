@@ -1,0 +1,39 @@
+{
+  "Id": "beat_4",
+  "Title": "The Tavern",
+  "IsMainStory": true,
+  "SortOrder": 4,
+  "Prerequisites": ["beat_3"],
+  "Steps": [
+    {
+      "Id": "beat_4_intro",
+      "Type": "dialogue",
+      "Visuals": {
+        "GroundColor": "#4a2e19",
+        "Npc": {
+          "Name": "Tavern Keeper",
+          "PositionX": 500,
+          "PositionY": 250,
+          "Appearance": {
+            "HairStyle": "Short",
+            "HairColor": "#442200",
+            "SkinColor": "White",
+            "Head": "Human Male",
+            "Face": "Default",
+            "ArmorType": "None",
+            "Legs": "Pants",
+            "Feet": "Shoes"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tavern Keeper",
+        "Lines": [
+          "Welcome to the Rusty Tankard, traveller.",
+          "You look like you've seen some things. The shadows out there are getting bolder.",
+          "Rest here for a while. You'll need your strength for the road ahead."
+        ]
+      }
+    }
+  ]
+}
