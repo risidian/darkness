@@ -183,6 +183,16 @@ text = "Shield"
 visible = false
 layout_mode = 2
 
+[node name="OffHandLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Off-Hand"
+
+[node name="OffHandOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
+layout_mode = 2
+
 [node name="CreateButton" type="Button" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2

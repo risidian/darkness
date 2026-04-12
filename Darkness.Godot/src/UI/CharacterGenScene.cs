@@ -32,6 +32,7 @@ public partial class CharacterGenScene : Control
     private OptionButton _armorOption = null!;
     private OptionButton _weaponOption = null!;
     private OptionButton _shieldOption = null!;
+    private OptionButton _offHandOption = null!;
 
     private byte[]? _previewBytes;
     private Character _character = new();
@@ -65,12 +66,16 @@ public partial class CharacterGenScene : Control
         _armorOption = GetNode<OptionButton>(container + "ArmorOption");
         _weaponOption = GetNode<OptionButton>(container + "WeaponOption");
         _shieldOption = GetNode<OptionButton>(container + "ShieldOption");
+        _offHandOption = GetNode<OptionButton>(container + "OffHandOption");
 
         SetupOptions();
 
         _classOption.ItemSelected += (idx) => OnClassChanged((int)idx);
         _skinOption.ItemSelected += (_) => UpdatePreview();
-        _headOption.ItemSelected += (_) => UpdatePreview();
+        _headOption.ItemSelected += (_) => {
+            UpdateGenderFiltering();
+            UpdatePreview();
+        };
         _hairStyleOption.ItemSelected += (_) => UpdatePreview();
         _hairColorOption.ItemSelected += (_) => UpdatePreview();
         _faceOption.ItemSelected += (_) => UpdatePreview();
@@ -81,6 +86,7 @@ public partial class CharacterGenScene : Control
         _armorOption.ItemSelected += (_) => UpdatePreview();
         _weaponOption.ItemSelected += (_) => UpdatePreview();
         _shieldOption.ItemSelected += (_) => UpdatePreview();
+        _offHandOption.ItemSelected += (_) => UpdatePreview();
 
         GetNode<Button>(container + "CreateButton").Pressed += OnCreatePressed;
         GetNode<Button>(container + "BackButton").Pressed += () => _navigation.GoBackAsync();
@@ -91,18 +97,45 @@ public partial class CharacterGenScene : Control
     private void SetupOptions()
     {
         Populate(_classOption, new[] { "Knight", "Rogue", "Mage", "Warrior", "Cleric" });
-        Populate(_skinOption, _catalog.GetOptionNames("Skin", "male"));
-        Populate(_headOption, _catalog.GetOptionNames("Head", "male"));
-        Populate(_hairStyleOption, _catalog.GetOptionNames("Hair", "male"));
-        Populate(_hairColorOption, _catalog.GetOptionNames("HairColor", "male"));
-        Populate(_faceOption, _catalog.GetOptionNames("Face", "male"));
-        Populate(_eyesOption, _catalog.GetOptionNames("Eyes", "male"));
-        Populate(_legsOption, _catalog.GetOptionNames("Legs", "male"));
-        Populate(_feetOption, _catalog.GetOptionNames("Feet", "male"));
-        Populate(_armsOption, _catalog.GetOptionNames("Arms", "male"));
-        Populate(_armorOption, _catalog.GetOptionNames("Armor", "male"));
-        Populate(_weaponOption, _catalog.GetOptionNames("Weapon", "male"));
-        Populate(_shieldOption, _catalog.GetOptionNames("Shield", "male"));
+        UpdateGenderFiltering();
+    }
+
+    private void UpdateGenderFiltering()
+    {
+        string head = _headOption.ItemCount > 0 ? _headOption.GetItemText(_headOption.Selected) : "Human Male";
+        string gender = head.ToLower().Contains("female") ? "female" : "male";
+
+        // Preserve current selections if possible
+        string currentSkin = _skinOption.Selected != -1 ? _skinOption.GetItemText(_skinOption.Selected) : "";
+        string currentArmor = _armorOption.Selected != -1 ? _armorOption.GetItemText(_armorOption.Selected) : "";
+        string currentWeapon = _weaponOption.Selected != -1 ? _weaponOption.GetItemText(_weaponOption.Selected) : "";
+        string currentShield = _shieldOption.Selected != -1 ? _shieldOption.GetItemText(_shieldOption.Selected) : "";
+        string currentOffHand = _offHandOption.Selected != -1 ? _offHandOption.GetItemText(_offHandOption.Selected) : "";
+        string currentLegs = _legsOption.Selected != -1 ? _legsOption.GetItemText(_legsOption.Selected) : "";
+
+        // Re-populate everything that is gender-dependent
+        Populate(_skinOption, _catalog.GetOptionNames("Skin", gender));
+        Populate(_headOption, _catalog.GetOptionNames("Head", gender));
+        Populate(_hairStyleOption, _catalog.GetOptionNames("Hair", gender));
+        Populate(_hairColorOption, _catalog.GetOptionNames("HairColor", gender));
+        Populate(_faceOption, _catalog.GetOptionNames("Face", gender));
+        Populate(_eyesOption, _catalog.GetOptionNames("Eyes", gender));
+        Populate(_legsOption, _catalog.GetOptionNames("Legs", gender));
+        Populate(_feetOption, _catalog.GetOptionNames("Feet", gender));
+        Populate(_armsOption, _catalog.GetOptionNames("Arms", gender));
+        Populate(_armorOption, _catalog.GetOptionNames("Armor", gender));
+        Populate(_weaponOption, _catalog.GetOptionNames("Weapon", gender));
+        Populate(_shieldOption, _catalog.GetOptionNames("Shield", gender));
+        Populate(_offHandOption, _catalog.GetOptionNames("Weapon", gender));
+
+        // Restore selections
+        SelectByText(_headOption, head);
+        if (!string.IsNullOrEmpty(currentSkin)) SelectByText(_skinOption, currentSkin);
+        if (!string.IsNullOrEmpty(currentArmor)) SelectByText(_armorOption, currentArmor);
+        if (!string.IsNullOrEmpty(currentWeapon)) SelectByText(_weaponOption, currentWeapon);
+        if (!string.IsNullOrEmpty(currentShield)) SelectByText(_shieldOption, currentShield);
+        if (!string.IsNullOrEmpty(currentOffHand)) SelectByText(_offHandOption, currentOffHand);
+        if (!string.IsNullOrEmpty(currentLegs)) SelectByText(_legsOption, currentLegs);
     }
 
     private void Populate(OptionButton node, List<string> items)
@@ -122,18 +155,27 @@ public partial class CharacterGenScene : Control
         var className = _classOption.GetItemText(index);
         var defaults = _catalog.GetDefaultAppearanceForClass(className);
 
+        UpdateGenderFiltering();
+
         _character.WeaponType = defaults.WeaponType;
         _character.ArmorType = defaults.ArmorType;
         _character.ShieldType = defaults.ShieldType;
+        _character.OffHandType = defaults.OffHandType;
 
         SelectByText(_armorOption, defaults.ArmorType);
         SelectByText(_weaponOption, defaults.WeaponType);
         SelectByText(_shieldOption, defaults.ShieldType);
+        SelectByText(_offHandOption, defaults.OffHandType ?? "None");
         SelectByText(_legsOption, defaults.Legs);
         SelectByText(_feetOption, defaults.Feet);
         SelectByText(_armsOption, defaults.Arms);
         SelectByText(_headOption, defaults.Head);
         SelectByText(_faceOption, defaults.Face);
+
+        // Ensure visibility of relevant equipment slots
+        bool isMage = className == "Mage";
+        GetNode<Label>(_offHandOption.GetParent().GetPath() + "/OffHandLabel").Visible = isMage;
+        _offHandOption.Visible = isMage;
 
         UpdatePreview();
     }
@@ -190,6 +232,7 @@ public partial class CharacterGenScene : Control
             ArmorType = _armorOption.GetItemText(_armorOption.Selected),
             WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
             ShieldType = _shieldOption.GetItemText(_shieldOption.Selected),
+            OffHandType = _offHandOption.GetItemText(_offHandOption.Selected),
             Head = _headOption.GetItemText(_headOption.Selected)
         };
     }
@@ -230,6 +273,7 @@ public partial class CharacterGenScene : Control
             _character.ArmorType = appearance.ArmorType;
             _character.WeaponType = appearance.WeaponType;
             _character.ShieldType = appearance.ShieldType;
+            _character.OffHandType = appearance.OffHandType;
             _character.Thumbnail = _previewBytes;
             _character.Level = 1;
 
@@ -253,6 +297,8 @@ public partial class CharacterGenScene : Control
                 _character.Inventory.Add(new Item { Name = _character.ArmorType, Type = "Armor", Value = 150 });
             if (!string.IsNullOrEmpty(_character.ShieldType) && _character.ShieldType != "None")
                 _character.Inventory.Add(new Item { Name = _character.ShieldType, Type = "Shield", Value = 75 });
+            if (!string.IsNullOrEmpty(_character.OffHandType) && _character.OffHandType != "None")
+                _character.Inventory.Add(new Item { Name = _character.OffHandType, Type = "Weapon", Value = 100 });
 
             // Generate Full Sprite Sheet
             try
