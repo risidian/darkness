@@ -50,7 +50,8 @@ public class SpriteLayerCatalogTests : IDisposable
         var armors = _catalog.GetOptionNames("Armor", "male");
         Assert.Contains("Plate (Steel)", armors);
         Assert.Contains("Leather", armors);
-        Assert.DoesNotContain("Mage Robes (Blue)", armors);
+        // Mage Robes are now "gendered" and should appear for both genders
+        Assert.Contains("Mage Robes (Blue)", armors);
     }
 
     [Fact]
@@ -123,12 +124,12 @@ public class SpriteLayerCatalogTests : IDisposable
     }
 
     [Fact]
-    public void GetDefaultAppearanceForClass_Warrior_ReturnsPlateAndSword()
+    public void GetDefaultAppearanceForClass_Warrior_ReturnsPlateAndAxe()
     {
         var appearance = _catalog.GetDefaultAppearanceForClass("Warrior");
         Assert.Equal("Plate (Steel)", appearance.ArmorType);
-        Assert.Equal("Arming Sword (Steel)", appearance.WeaponType);
-        Assert.Equal("Crusader", appearance.ShieldType);
+        Assert.Equal("Waraxe", appearance.WeaponType);
+        Assert.Equal("None", appearance.ShieldType);
     }
 
     [Fact]
@@ -140,13 +141,41 @@ public class SpriteLayerCatalogTests : IDisposable
     }
 
     [Fact]
-    public void GetStitchLayers_GrayHairColor_UsesGrayAssetAndNoTint()
+    public void GetStitchLayers_MageWithOffHand_ReturnsMirroredDagger()
     {
-        var appearance = new CharacterAppearance { HairColor = "Gray", HairStyle = "Long" };
+        var appearance = new CharacterAppearance 
+        { 
+            WeaponType = "Mage Wand",
+            OffHandType = "Dagger (Steel)"
+        };
         var layers = _catalog.GetStitchLayers(appearance);
-        var hairLayer = layers.FirstOrDefault(l => l.RootPath.Contains("hair"));
-        Assert.NotNull(hairLayer);
-        Assert.Contains("gray.png", hairLayer.FileNameTemplate);
-        Assert.Equal("#FFFFFF", hairLayer.TintHex);
+        
+        // Find dagger layer
+        var daggerLayer = layers.FirstOrDefault(l => l.RootPath.Contains("dagger"));
+        Assert.NotNull(daggerLayer);
+        Assert.True(daggerLayer.IsFlipped);
+    }
+
+    [Fact]
+    public void GetStitchLayers_MaleMageRobes_RedirectsToTabard()
+    {
+        var appearance = new CharacterAppearance 
+        { 
+            Head = "Human Male",
+            ArmorType = "Mage Robes (Blue)"
+        };
+        var layers = _catalog.GetStitchLayers(appearance);
+        
+        var armorLayer = layers.FirstOrDefault(l => l.RootPath.Contains("torso"));
+        Assert.NotNull(armorLayer);
+        Assert.Contains("jacket/tabard/male", armorLayer.RootPath);
+    }
+
+    [Fact]
+    public void GetStitchLayers_Shield_ReturnsShieldLayer()
+    {
+        var appearance = new CharacterAppearance { ShieldType = "Crusader" };
+        var layers = _catalog.GetStitchLayers(appearance);
+        Assert.Contains(layers, l => l.RootPath.Contains("crusader"));
     }
 }
