@@ -128,14 +128,28 @@ public class SpriteSheetGenerator : IDisposable
                 {
                     data = File.ReadAllBytes(fullPath);
                 }
-                else if (anim.Key != "walk")
+                else
                 {
-                    // Fallback to walk
-                    assetPath = layer.RootPath + "/" + layer.FileNameTemplate.Replace("{action}", "walk");
-                    fullPath = Path.Combine(root, "Darkness.Godot", assetPath);
-                    if (File.Exists(fullPath))
+                    // Fallback 1: Try "attack_" prefix (for LPC weapons)
+                    if (anim.Key == "slash" || anim.Key == "thrust" || anim.Key == "shoot")
                     {
-                        data = File.ReadAllBytes(fullPath);
+                        string altPath = layer.RootPath + "/" + layer.FileNameTemplate.Replace("{action}", "attack_" + anim.Key);
+                        string altFullPath = Path.Combine(root, "Darkness.Godot", altPath);
+                        if (File.Exists(altFullPath))
+                        {
+                            data = File.ReadAllBytes(altFullPath);
+                        }
+                    }
+
+                    // Fallback 2: walk
+                    if (data == null && anim.Key != "walk")
+                    {
+                        assetPath = layer.RootPath + "/" + layer.FileNameTemplate.Replace("{action}", "walk");
+                        fullPath = Path.Combine(root, "Darkness.Godot", assetPath);
+                        if (File.Exists(fullPath))
+                        {
+                            data = File.ReadAllBytes(fullPath);
+                        }
                     }
                 }
 

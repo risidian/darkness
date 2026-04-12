@@ -144,10 +144,33 @@ public class GodotSpriteCompositor : ISpriteCompositor
                 ? layer.RootPath + fileName
                 : layer.RootPath + "/" + fileName;
 
-            var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            return ms.ToArray();
+            if (fileSystem.FileExists(fullPath))
+            {
+                var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+                return ms.ToArray();
+            }
+
+            // Fallback 1: Try "attack_" prefix for actions like slash/thrust (LPC weapon structure)
+            if (action == "slash" || action == "thrust" || action == "shoot")
+            {
+                string altAction = "attack_" + action;
+                string altFileName = layer.FileNameTemplate.Replace("{action}", altAction);
+                string altFullPath = layer.RootPath.EndsWith("/")
+                    ? layer.RootPath + altFileName
+                    : layer.RootPath + "/" + altFileName;
+                
+                if (fileSystem.FileExists(altFullPath))
+                {
+                    var stream = await fileSystem.OpenAppPackageFileAsync(altFullPath);
+                    using var ms = new MemoryStream();
+                    await stream.CopyToAsync(ms);
+                    return ms.ToArray();
+                }
+            }
+
+            return null;
         }
         catch
         {
