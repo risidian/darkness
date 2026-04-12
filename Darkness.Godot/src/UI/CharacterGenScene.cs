@@ -4,6 +4,7 @@ using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Darkness.Godot.UI;
@@ -34,6 +35,13 @@ public partial class CharacterGenScene : Control
     private OptionButton _shieldOption = null!;
     private OptionButton _offHandOption = null!;
 
+    private VBoxContainer _step1Container = null!;
+    private VBoxContainer _step2Container = null!;
+    private VBoxContainer _step3Container = null!;
+    private Button _nextButton = null!;
+    private Button _backButton = null!;
+
+    private int _currentStep = 1;
     private byte[]? _previewBytes;
     private Character _character = new();
 
@@ -51,22 +59,38 @@ public partial class CharacterGenScene : Control
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
         var container = "HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/";
+        var step1 = container + "Step1Container/";
+        var step2 = container + "Step2Container/";
+        var step3 = container + "Step3Container/";
+        var hidden = container + "HiddenEquipmentContainer/";
+
         _spritePreview = GetNode<TextureRect>("HSplitContainer/PreviewArea/SpritePreview");
-        _nameEdit = GetNode<LineEdit>(container + "NameEdit");
-        _classOption = GetNode<OptionButton>(container + "ClassOption");
-        _skinOption = GetNode<OptionButton>(container + "SkinOption");
-        _headOption = GetNode<OptionButton>(container + "HeadOption");
-        _hairStyleOption = GetNode<OptionButton>(container + "HairStyleOption");
-        _hairColorOption = GetNode<OptionButton>(container + "HairColorOption");
-        _faceOption = GetNode<OptionButton>(container + "FaceOption");
-        _eyesOption = GetNode<OptionButton>(container + "EyesOption");
-        _legsOption = GetNode<OptionButton>(container + "LegsOption");
-        _feetOption = GetNode<OptionButton>(container + "FeetOption");
-        _armsOption = GetNode<OptionButton>(container + "ArmsOption");
-        _armorOption = GetNode<OptionButton>(container + "ArmorOption");
-        _weaponOption = GetNode<OptionButton>(container + "WeaponOption");
-        _shieldOption = GetNode<OptionButton>(container + "ShieldOption");
-        _offHandOption = GetNode<OptionButton>(container + "OffHandOption");
+        
+        _step1Container = GetNode<VBoxContainer>(container + "Step1Container");
+        _step2Container = GetNode<VBoxContainer>(container + "Step2Container");
+        _step3Container = GetNode<VBoxContainer>(container + "Step3Container");
+        
+        _nextButton = GetNode<Button>(container + "NextButton");
+        _backButton = GetNode<Button>(container + "BackButton");
+
+        _nameEdit = GetNode<LineEdit>(step1 + "NameEdit");
+        
+        _headOption = GetNode<OptionButton>(step2 + "HeadOption");
+
+        _classOption = GetNode<OptionButton>(step3 + "ClassOption");
+        _skinOption = GetNode<OptionButton>(step3 + "SkinOption");
+        _faceOption = GetNode<OptionButton>(step3 + "FaceOption");
+        _eyesOption = GetNode<OptionButton>(step3 + "EyesOption");
+        _hairStyleOption = GetNode<OptionButton>(step3 + "HairStyleOption");
+        _hairColorOption = GetNode<OptionButton>(step3 + "HairColorOption");
+
+        _legsOption = GetNode<OptionButton>(hidden + "LegsOption");
+        _feetOption = GetNode<OptionButton>(hidden + "FeetOption");
+        _armsOption = GetNode<OptionButton>(hidden + "ArmsOption");
+        _armorOption = GetNode<OptionButton>(hidden + "ArmorOption");
+        _weaponOption = GetNode<OptionButton>(hidden + "WeaponOption");
+        _shieldOption = GetNode<OptionButton>(hidden + "ShieldOption");
+        _offHandOption = GetNode<OptionButton>(hidden + "OffHandOption");
 
         SetupOptions();
 
@@ -88,21 +112,83 @@ public partial class CharacterGenScene : Control
         _shieldOption.ItemSelected += (_) => UpdatePreview();
         _offHandOption.ItemSelected += (_) => UpdatePreview();
 
-        GetNode<Button>(container + "CreateButton").Pressed += OnCreatePressed;
-        GetNode<Button>(container + "BackButton").Pressed += () => _navigation.GoBackAsync();
+        _nextButton.Pressed += OnNextPressed;
+        _backButton.Pressed += OnBackPressed;
 
+        SetStep(1);
         OnClassChanged(0);
+    }
+
+    private void SetStep(int step)
+    {
+        _currentStep = step;
+        _step1Container.Visible = _currentStep == 1;
+        _step2Container.Visible = _currentStep == 2;
+        _step3Container.Visible = _currentStep == 3;
+
+        _spritePreview.Visible = _currentStep > 1;
+
+        _nextButton.Text = _currentStep == 3 ? "FINISH" : "NEXT";
+        _backButton.Text = _currentStep == 1 ? "MENU" : "BACK";
+    }
+
+    private async void OnNextPressed()
+    {
+        if (_currentStep == 1)
+        {
+            if (string.IsNullOrWhiteSpace(_nameEdit.Text))
+            {
+                var global = GetNode<Global>("/root/Global");
+                var dialog = global.Services!.GetRequiredService<IDialogService>();
+                await dialog.DisplayAlertAsync("Validation", "Please enter a character name.", "OK");
+                return;
+            }
+            SetStep(2);
+        }
+        else if (_currentStep == 2)
+        {
+            UpdateGenderFiltering();
+            SetStep(3);
+        }
+        else if (_currentStep == 3)
+        {
+            OnCreatePressed();
+        }
+    }
+
+    private void OnBackPressed()
+    {
+        if (_currentStep == 1)
+        {
+            _navigation.GoBackAsync();
+        }
+        else if (_currentStep == 2)
+        {
+            SetStep(1);
+        }
+        else if (_currentStep == 3)
+        {
+            SetStep(2);
+        }
     }
 
     private void SetupOptions()
     {
         Populate(_classOption, new[] { "Knight", "Rogue", "Mage", "Warrior", "Cleric" });
+        
+        // Populate head option with both genders to allow switching via head selection
+        var allHeads = _catalog.GetOptionNames("Head", "male")
+            .Union(_catalog.GetOptionNames("Head", "female"))
+            .ToList();
+        Populate(_headOption, allHeads);
+
         UpdateGenderFiltering();
     }
 
     private void UpdateGenderFiltering()
     {
-        string head = _headOption.ItemCount > 0 ? _headOption.GetItemText(_headOption.Selected) : "Human Male";
+        // Correctly determine gender from currently selected head
+        string head = (_headOption.Selected != -1) ? _headOption.GetItemText(_headOption.Selected) : "Human Male";
         string gender = head.ToLower().Contains("female") ? "female" : "male";
 
         // Preserve current selections if possible
@@ -113,9 +199,8 @@ public partial class CharacterGenScene : Control
         string currentOffHand = _offHandOption.Selected != -1 ? _offHandOption.GetItemText(_offHandOption.Selected) : "";
         string currentLegs = _legsOption.Selected != -1 ? _legsOption.GetItemText(_legsOption.Selected) : "";
 
-        // Re-populate everything that is gender-dependent
+        // Re-populate everything that is gender-dependent (except Head, which is the gender selector)
         Populate(_skinOption, _catalog.GetOptionNames("Skin", gender));
-        Populate(_headOption, _catalog.GetOptionNames("Head", gender));
         Populate(_hairStyleOption, _catalog.GetOptionNames("Hair", gender));
         Populate(_hairColorOption, _catalog.GetOptionNames("HairColor", gender));
         Populate(_faceOption, _catalog.GetOptionNames("Face", gender));
@@ -129,7 +214,6 @@ public partial class CharacterGenScene : Control
         Populate(_offHandOption, _catalog.GetOptionNames("Weapon", gender));
 
         // Restore selections
-        SelectByText(_headOption, head);
         if (!string.IsNullOrEmpty(currentSkin)) SelectByText(_skinOption, currentSkin);
         if (!string.IsNullOrEmpty(currentArmor)) SelectByText(_armorOption, currentArmor);
         if (!string.IsNullOrEmpty(currentWeapon)) SelectByText(_weaponOption, currentWeapon);
@@ -155,6 +239,8 @@ public partial class CharacterGenScene : Control
         var className = _classOption.GetItemText(index);
         var defaults = _catalog.GetDefaultAppearanceForClass(className);
 
+        // Apply head default FIRST so gender filtering respects it
+        SelectByText(_headOption, defaults.Head);
         UpdateGenderFiltering();
 
         _character.WeaponType = defaults.WeaponType;
@@ -169,7 +255,6 @@ public partial class CharacterGenScene : Control
         SelectByText(_legsOption, defaults.Legs);
         SelectByText(_feetOption, defaults.Feet);
         SelectByText(_armsOption, defaults.Arms);
-        SelectByText(_headOption, defaults.Head);
         SelectByText(_faceOption, defaults.Face);
 
         // Ensure visibility of relevant equipment slots

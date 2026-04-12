@@ -74,130 +74,140 @@ theme_override_font_sizes/font_size = 32
 text = "CHARACTER CREATOR"
 horizontal_alignment = 1
 
-[node name="NameEdit" type="LineEdit" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="Step1Container" type="VBoxContainer" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameEdit" type="LineEdit" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step1Container"]
 layout_mode = 2
 placeholder_text = "CHARACTER NAME"
 
-[node name="ClassOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="Step2Container" type="VBoxContainer" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="SkinLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Skin Color"
-
-[node name="SkinOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-layout_mode = 2
-
-[node name="HeadLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="HeadLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step2Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Gender/Base"
 
-[node name="HeadOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="HeadOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step2Container"]
 layout_mode = 2
 
-[node name="HairStyleLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="Step3Container" type="VBoxContainer" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ClassOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
+layout_mode = 2
+
+[node name="SkinLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Hair Style"
+text = "Skin Color"
 
-[node name="HairStyleOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="SkinOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
 layout_mode = 2
 
-[node name="HairColorLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "Hair Color"
-
-[node name="HairColorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-layout_mode = 2
-
-[node name="FaceLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="FaceLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Face Type"
 
-[node name="FaceOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="FaceOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
 layout_mode = 2
 
-[node name="EyesLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="EyesLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Eyes"
 
-[node name="EyesOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="EyesOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
 layout_mode = 2
 
-[node name="LegsLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="HairStyleLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Hair Style"
+
+[node name="HairStyleOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
+layout_mode = 2
+
+[node name="HairColorLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Hair Color"
+
+[node name="HairColorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/Step3Container"]
+layout_mode = 2
+
+[node name="HiddenEquipmentContainer" type="VBoxContainer" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+visible = false
+layout_mode = 2
+
+[node name="LegsLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Legs"
 
-[node name="LegsOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="LegsOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 
-[node name="FeetLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="FeetLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Feet"
 
-[node name="FeetOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="FeetOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 
-[node name="ArmsLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="ArmsLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Arms"
 
-[node name="ArmsOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="ArmsOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 
-[node name="ArmorLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="ArmorLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Armor"
 
-[node name="ArmorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="ArmorOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 
-[node name="WeaponLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="WeaponLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Weapon"
 
-[node name="WeaponOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="WeaponOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 
-[node name="ShieldLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="ShieldLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Shield"
 
-[node name="ShieldOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="ShieldOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 
-[node name="OffHandLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="OffHandLabel" type="Label" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Off-Hand"
 
-[node name="OffHandOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
-visible = false
+[node name="OffHandOption" type="OptionButton" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea/HiddenEquipmentContainer"]
 layout_mode = 2
 
-[node name="CreateButton" type="Button" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
+[node name="NextButton" type="Button" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "FINISH"
+text = "NEXT"
 
 [node name="BackButton" type="Button" parent="HSplitContainer/ScrollContainer/MarginContainer/ControlsArea"]
 custom_minimum_size = Vector2(0, 80)
