@@ -2,7 +2,7 @@ namespace Darkness.Core.Models
 {
     public class CharacterAppearance
     {
-        public string SkinColor { get; set; } = "Light";
+        public string SkinColor { get; set; } = " Light";
         public string HairStyle { get; set; } = "Long";
         public string HairColor { get; set; } = "Black";
         public string Face { get; set; } = "Default";

@@ -281,6 +281,12 @@ public partial class CharacterGenScene : Control
         SelectByText(_feetOption, defaults.Feet);
         SelectByText(_armsOption, defaults.Arms);
         SelectByText(_faceOption, defaults.Face);
+        
+        // Aesthetic defaults
+        if (!string.IsNullOrEmpty(defaults.HairStyle)) SelectByText(_hairStyleOption, defaults.HairStyle);
+        if (!string.IsNullOrEmpty(defaults.HairColor)) SelectByText(_hairColorOption, defaults.HairColor);
+        if (!string.IsNullOrEmpty(defaults.SkinColor)) SelectByText(_skinOption, defaults.SkinColor);
+        if (!string.IsNullOrEmpty(defaults.Eyes)) SelectByText(_eyesOption, defaults.Eyes);
 
         // Ensure visibility of relevant equipment slots
         bool isMage = className == "Mage";
