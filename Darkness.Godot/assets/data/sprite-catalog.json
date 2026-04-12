@@ -73,7 +73,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/blue",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "female",
+      "Gender": "gendered",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -84,7 +84,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/red",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "female",
+      "Gender": "gendered",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -95,7 +95,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/white",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "female",
+      "Gender": "gendered",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -106,7 +106,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/white",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "female",
+      "Gender": "gendered",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -117,7 +117,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/blue",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "female",
+      "Gender": "gendered",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -128,7 +128,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female",
       "FileNameTemplate": "{action}/brown.png",
       "ZOrder": 60,
-      "Gender": "female",
+      "Gender": "gendered",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -339,6 +339,28 @@
       "ZOrder": 40,
       "Gender": "male",
       "FallbackGender": "male",
+      "TintHex": "#FFFFFF"
+    },
+    {
+      "Id": 35,
+      "Slot": "Weapon",
+      "DisplayName": "Mace",
+      "AssetPath": "assets/sprites/full/weapons/blunt/mace",
+      "FileNameTemplate": "{action}/mace.png",
+      "ZOrder": 140,
+      "Gender": "universal",
+      "FallbackGender": null,
+      "TintHex": "#FFFFFF"
+    },
+    {
+      "Id": 36,
+      "Slot": "Weapon",
+      "DisplayName": "Waraxe",
+      "AssetPath": "assets/sprites/full/weapons/blunt/waraxe",
+      "FileNameTemplate": "{action}/waraxe.png",
+      "ZOrder": 140,
+      "Gender": "universal",
+      "FallbackGender": null,
       "TintHex": "#FFFFFF"
     }
   ],
@@ -721,13 +743,14 @@
   "ClassDefaults": {
     "Warrior": {
       "ArmorType": "Plate (Steel)",
-      "WeaponType": "Arming Sword (Steel)",
+      "WeaponType": "Waraxe",
       "Feet": "Boots (Basic)",
       "Arms": "Gloves",
       "Legs": "Slacks",
-      "ShieldType": "Crusader",
+      "ShieldType": "None",
       "Head": "Human Male",
-      "Face": "Default"
+      "Face": "Default",
+      "OffHandType": "None"
     },
     "Mage": {
       "ArmorType": "Mage Robes (Blue)",
@@ -737,7 +760,8 @@
       "Legs": "Formal",
       "ShieldType": "None",
       "Head": "Human Female",
-      "Face": "Female"
+      "Face": "Female",
+      "OffHandType": "Dagger (Steel)"
     },
     "Rogue": {
       "ArmorType": "Leather (Black)",
@@ -747,7 +771,8 @@
       "Legs": "Leggings",
       "ShieldType": "None",
       "Head": "Human Male",
-      "Face": "Default"
+      "Face": "Default",
+      "OffHandType": "None"
     },
     "Knight": {
       "ArmorType": "Plate (Steel)",
@@ -757,17 +782,19 @@
       "Legs": "Formal",
       "ShieldType": "Spartan",
       "Head": "Human Male",
-      "Face": "Default"
+      "Face": "Default",
+      "OffHandType": "None"
     },
     "Cleric": {
       "ArmorType": "Longsleeve (White)",
-      "WeaponType": "Arming Sword (Iron)",
+      "WeaponType": "Mace",
       "Feet": "Shoes",
       "Arms": "None",
       "Legs": "Slacks",
       "ShieldType": "Crusader",
       "Head": "Human Female",
-      "Face": "Female"
+      "Face": "Female",
+      "OffHandType": "None"
     }
   }
 }
