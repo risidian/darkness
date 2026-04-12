@@ -73,7 +73,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/blue",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "gendered",
+      "Gender": "universal",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -84,7 +84,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/red",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "gendered",
+      "Gender": "universal",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -95,7 +95,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/white",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "gendered",
+      "Gender": "universal",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -106,7 +106,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/white",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "gendered",
+      "Gender": "universal",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -117,7 +117,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female/blue",
       "FileNameTemplate": "{action}.png",
       "ZOrder": 60,
-      "Gender": "gendered",
+      "Gender": "universal",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -128,7 +128,7 @@
       "AssetPath": "assets/sprites/full/torso/robes/female",
       "FileNameTemplate": "{action}/brown.png",
       "ZOrder": 60,
-      "Gender": "gendered",
+      "Gender": "universal",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },
@@ -194,7 +194,7 @@
       "AssetPath": "assets/sprites/full/weapons/magic/wand",
       "FileNameTemplate": "slash/wand.png",
       "ZOrder": 140,
-      "Gender": "gendered",
+      "Gender": "universal",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },

@@ -239,8 +239,33 @@ public partial class CharacterGenScene : Control
         var className = _classOption.GetItemText(index);
         var defaults = _catalog.GetDefaultAppearanceForClass(className);
 
-        // Apply head default FIRST so gender filtering respects it
-        SelectByText(_headOption, defaults.Head);
+        // Preserve current gender if we are already in Step 2 or 3
+        string currentHead = (_headOption.Selected != -1) ? _headOption.GetItemText(_headOption.Selected) : "";
+        
+        if (string.IsNullOrEmpty(currentHead))
+        {
+            SelectByText(_headOption, defaults.Head);
+        }
+        else
+        {
+            // We have a selection, keep the user's gender but maybe use the class's default head type (if they differ)
+            // Most classes use "Human Male" or "Human Female". 
+            // We'll keep the user's gender but pick the class default's head if it's for the same gender.
+            string currentGender = currentHead.ToLower().Contains("female") ? "female" : "male";
+            string defaultGender = defaults.Head.ToLower().Contains("female") ? "female" : "male";
+            
+            if (currentGender != defaultGender)
+            {
+                // Find the appropriate head for the current gender
+                string newHead = currentGender == "female" ? "Human Female" : "Human Male";
+                SelectByText(_headOption, newHead);
+            }
+            else
+            {
+                SelectByText(_headOption, defaults.Head);
+            }
+        }
+
         UpdateGenderFiltering();
 
         _character.WeaponType = defaults.WeaponType;
@@ -259,7 +284,8 @@ public partial class CharacterGenScene : Control
 
         // Ensure visibility of relevant equipment slots
         bool isMage = className == "Mage";
-        GetNode<Label>(_offHandOption.GetParent().GetPath() + "/OffHandLabel").Visible = isMage;
+        var offHandLabel = GetNodeOrNull<Label>(_offHandOption.GetParent().GetPath() + "/OffHandLabel");
+        if (offHandLabel != null) offHandLabel.Visible = isMage;
         _offHandOption.Visible = isMage;
 
         UpdatePreview();

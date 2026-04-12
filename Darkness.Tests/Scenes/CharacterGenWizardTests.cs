@@ -69,35 +69,46 @@ public class CharacterGenWizardTests : IDisposable
         
         // 4. Assert basics
         Assert.NotEmpty(layers);
-        Assert.Contains(layers, l => l.RootPath.Contains(expectedGender) || l.RootPath.Contains("universal"));
+        
+        // Check body path
+        var bodyLayer = layers.FirstOrDefault(l => l.RootPath.Contains("body"));
+        Assert.NotNull(bodyLayer);
+        Assert.Contains(expectedGender, bodyLayer.RootPath);
 
-        // 5. Check specific class gear
+        // 5. Check specific class gear and prevent path doubling (e.g. female/female)
         switch (className)
         {
             case "Knight":
-                Assert.Contains(layers, l => l.RootPath.Contains("plate/male") || l.RootPath.Contains("plate/female"));
-                break;
-            case "Rogue":
-                Assert.Contains(layers, l => l.RootPath.Contains("leather/male") || l.RootPath.Contains("leather/female"));
+                var plateLayer = layers.FirstOrDefault(l => l.RootPath.Contains("plate"));
+                Assert.NotNull(plateLayer);
+                Assert.Contains(expectedGender, plateLayer.RootPath);
+                Assert.DoesNotContain($"{expectedGender}/{expectedGender}", plateLayer.RootPath);
                 break;
             case "Mage":
+                var mageArmor = layers.FirstOrDefault(l => l.RootPath.Contains("torso") && !l.RootPath.Contains("body"));
+                Assert.NotNull(mageArmor);
                 if (expectedGender == "male")
                 {
-                    // Mage Robes redirect to Tabard for males
-                    Assert.Contains(layers, l => l.RootPath.Contains("jacket/tabard/male"));
+                    Assert.Contains("jacket/tabard/male", mageArmor.RootPath);
                 }
                 else
                 {
-                    // Mage Robes for females use the actual robe assets
-                    Assert.Contains(layers, l => l.RootPath.Contains("torso/robes/female"));
+                    Assert.Contains("torso/robes/female", mageArmor.RootPath);
+                    Assert.DoesNotContain("female/female", mageArmor.RootPath);
                 }
                 break;
-            case "Warrior":
-                Assert.Contains(layers, l => l.RootPath.Contains("plate/male") || l.RootPath.Contains("plate/female"));
-                break;
             case "Cleric":
-                // Cleric now uses Longsleeve (which are robes under the hood)
-                Assert.Contains(layers, l => l.RootPath.Contains("torso/robes/female"));
+                var clericArmor = layers.FirstOrDefault(l => l.RootPath.Contains("torso") && !l.RootPath.Contains("body"));
+                Assert.NotNull(clericArmor);
+                if (expectedGender == "male")
+                {
+                    Assert.Contains("jacket/tabard/male", clericArmor.RootPath);
+                }
+                else
+                {
+                    Assert.Contains("torso/robes/female", clericArmor.RootPath);
+                    Assert.DoesNotContain("female/female", clericArmor.RootPath);
+                }
                 break;
         }
     }

@@ -131,11 +131,15 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
             ? sprite.AssetPath
             : $"{sprite.AssetPath}/{resolvedGender}";
 
-        // Male Mage Robes -> Tabard mapping
-        if (gender == "male" && displayName.Contains("Mage Robes") && slot == "Armor")
+        // Male Mage Robes or Longsleeve -> Tabard mapping
+        if (gender == "male" && slot == "Armor" && (displayName.Contains("Mage Robes") || displayName.Contains("Longsleeve")))
         {
-            // Redirect to tabard assets. Mage Robes usually have color in name, e.g. "Mage Robes (Blue)"
-            string color = displayName.Contains("Blue") ? "blue" : (displayName.Contains("Red") ? "red" : "white");
+            // Redirect to tabard assets. Mage Robes/Longsleeves usually have color in name, e.g. "Mage Robes (Blue)"
+            string color = "white";
+            if (displayName.Contains("Blue")) color = "blue";
+            else if (displayName.Contains("Red")) color = "red";
+            else if (displayName.Contains("Brown")) color = "brown";
+            
             // The LPC tabard set has a specific folder structure. We'll map to it.
             basePath = $"assets/sprites/full/torso/jacket/tabard/male";
             layers.Add((new StitchLayer(basePath, "{action}/" + color + ".png", sprite.TintHex, isFlipped), sprite.ZOrder));
