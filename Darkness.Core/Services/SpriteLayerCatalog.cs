@@ -44,7 +44,8 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
         }
 
         var optCol = _db.GetCollection<AppearanceOption>("appearance_options");
-        return optCol.Find(o => o.Category == category).Select(o => o.DisplayName).ToList();
+        return optCol.Find(o => o.Category == category && (o.Gender == gender || o.Gender == "universal" || o.Gender == "gendered"))
+            .Select(o => o.DisplayName).ToList();
     }
 
     public List<StitchLayer> GetStitchLayers(CharacterAppearance appearance)
@@ -136,8 +137,9 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
             // Redirect to tabard assets. Mage Robes usually have color in name, e.g. "Mage Robes (Blue)"
             string color = displayName.Contains("Blue") ? "blue" : (displayName.Contains("Red") ? "red" : "white");
             // The LPC tabard set has a specific folder structure. We'll map to it.
-            // For now, we'll use a generic path that matches our import.
             basePath = $"assets/sprites/full/torso/jacket/tabard/male";
+            layers.Add((new StitchLayer(basePath, "{action}/" + color + ".png", sprite.TintHex, isFlipped), sprite.ZOrder));
+            return;
         }
 
         // LPC weapons/shields have separate bg (behind body) and fg (in front of body) layers.
