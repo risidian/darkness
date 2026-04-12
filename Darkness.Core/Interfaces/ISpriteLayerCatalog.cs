@@ -6,6 +6,6 @@ namespace Darkness.Core.Interfaces
     {
         List<StitchLayer> GetStitchLayers(CharacterAppearance appearance);
         CharacterAppearance GetDefaultAppearanceForClass(string className);
-        List<string> GetOptionNames(string category);
+        List<string> GetOptionNames(string category, string gender);
     }
 }

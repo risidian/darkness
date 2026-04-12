@@ -31,12 +31,13 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
         }
     }
 
-    public List<string> GetOptionNames(string category)
+    public List<string> GetOptionNames(string category, string gender)
     {
         if (category is "Armor" or "Weapon" or "Shield" or "Feet" or "Legs" or "Arms")
         {
             var col = _db.GetCollection<EquipmentSprite>("equipment_sprites");
-            var names = col.Find(s => s.Slot == category).Select(s => s.DisplayName).ToList();
+            var names = col.Find(s => s.Slot == category && (s.Gender == gender || s.Gender == "universal" || s.Gender == "gendered"))
+                .Select(s => s.DisplayName).ToList();
             if (category is "Weapon" or "Shield" or "Feet" or "Arms" or "Legs" && !names.Contains("None"))
                 names.Add("None");
             return names;

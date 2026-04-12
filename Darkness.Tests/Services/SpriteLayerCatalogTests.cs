@@ -45,9 +45,18 @@ public class SpriteLayerCatalogTests : IDisposable
     }
 
     [Fact]
-    public void GetOptionNames_ReturnsArmorTypes()
+    public void GetOptionNames_ReturnsArmorTypes_Male()
     {
-        var armors = _catalog.GetOptionNames("Armor");
+        var armors = _catalog.GetOptionNames("Armor", "male");
+        Assert.Contains("Plate (Steel)", armors);
+        Assert.Contains("Leather", armors);
+        Assert.DoesNotContain("Mage Robes (Blue)", armors);
+    }
+
+    [Fact]
+    public void GetOptionNames_ReturnsArmorTypes_Female()
+    {
+        var armors = _catalog.GetOptionNames("Armor", "female");
         Assert.Contains("Plate (Steel)", armors);
         Assert.Contains("Leather", armors);
         Assert.Contains("Mage Robes (Blue)", armors);
@@ -56,7 +65,7 @@ public class SpriteLayerCatalogTests : IDisposable
     [Fact]
     public void GetOptionNames_ReturnsWeaponTypesWithNone()
     {
-        var weapons = _catalog.GetOptionNames("Weapon");
+        var weapons = _catalog.GetOptionNames("Weapon", "male");
         Assert.Contains("Arming Sword (Steel)", weapons);
         Assert.Contains("None", weapons);
     }
@@ -64,7 +73,7 @@ public class SpriteLayerCatalogTests : IDisposable
     [Fact]
     public void GetOptionNames_ReturnsHairStyles()
     {
-        var styles = _catalog.GetOptionNames("Hair");
+        var styles = _catalog.GetOptionNames("Hair", "male");
         Assert.Contains("Long", styles);
         Assert.Contains("Afro", styles);
     }
