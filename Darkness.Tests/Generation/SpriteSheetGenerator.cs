@@ -73,7 +73,7 @@ public class SpriteSheetGenerator : IDisposable
         var appearance = _catalog.GetDefaultAppearanceForClass(className);
         appearance.Head = head;
         
-        var layers = _catalog.GetStitchLayers(appearance);
+        var layers = _catalog.GetStitchLayers(appearance).Where(l => !l.RootPath.Contains("weapons/") && !l.RootPath.Contains("shields/")).ToList();
         
         var root = GetProjectRoot();
         var outDir = Path.Combine(root, "GeneratedSpriteSheets");

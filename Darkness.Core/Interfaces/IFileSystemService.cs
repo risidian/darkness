@@ -8,6 +8,7 @@ namespace Darkness.Core.Interfaces
         string AppDataDirectory { get; }
         Task<Stream> OpenAppPackageFileAsync(string filename);
         string ReadAllText(string filename);
+        bool FileExists(string path);
         bool DirectoryExists(string path);
         string[] GetFiles(string path, string searchPattern);
     }

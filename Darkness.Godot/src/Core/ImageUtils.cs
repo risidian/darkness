@@ -117,6 +117,11 @@ public static class ImageUtils
         }
     }
 
+    public static void AddLpcRowWeapon(SpriteFrames frames, Texture2D tex, string animName, int row, int count, int frameW, int frameH, double speed = 12.0, bool loop = true)
+    {
+        AddLpcRow(frames, tex, animName, row, count, frameW, frameH, speed, loop);
+    }
+
     private static void AddSingleFrame(SpriteFrames frames, Texture2D tex, string animName, int row, int col,
         int frameW, int frameH)
     {

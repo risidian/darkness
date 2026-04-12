@@ -95,6 +95,12 @@ public class GodotFileSystemService : IFileSystemService
         throw new FileNotFoundException($"Could not find file: {path}");
     }
 
+    public bool FileExists(string path)
+    {
+        string resPath = path.StartsWith("res://") ? path : $"res://{path}";
+        return global::Godot.FileAccess.FileExists(resPath) || ResourceLoader.Exists(resPath);
+    }
+
     public bool DirectoryExists(string path)
     {
         string resPath = path.StartsWith("res://") ? path : $"res://{path}";

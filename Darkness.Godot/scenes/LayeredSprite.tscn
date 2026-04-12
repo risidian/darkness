@@ -32,5 +32,8 @@ centered = false
 [node name="Hair" type="AnimatedSprite2D" parent="."]
 centered = false
 
+[node name="Shield" type="AnimatedSprite2D" parent="."]
+centered = false
+
 [node name="Weapon" type="AnimatedSprite2D" parent="."]
 centered = false

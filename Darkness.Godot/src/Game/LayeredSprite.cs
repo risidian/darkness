@@ -5,6 +5,7 @@ using Darkness.Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace Darkness.Godot.Game;
 
@@ -67,16 +68,6 @@ public partial class LayeredSprite : Node2D
     {
         EnsureLayers();
 
-        if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
-        {
-            GD.Print($"[LayeredSprite] Using FullSpriteSheet for {c.Name} ({c.FullSpriteSheet.Length} bytes)");
-            await SetupFromBytes(c.FullSpriteSheet);
-            return;
-        }
-
-        // Generate sprite sheet on the fly from appearance data
-        GD.Print($"[LayeredSprite] Generating sprite sheet for {c.Name}...");
-
         var appearance = new CharacterAppearance
         {
             SkinColor = c.SkinColor,
@@ -93,17 +84,27 @@ public partial class LayeredSprite : Node2D
             ShieldType = c.ShieldType ?? "None"
         };
 
-        if (compositor != null)
+        if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
         {
+            GD.Print($"[LayeredSprite] Using FullSpriteSheet for {c.Name} ({c.FullSpriteSheet.Length} bytes)");
+            await SetupFromBytes(c.FullSpriteSheet);
+        }
+        else if (compositor != null)
+        {
+            // Generate sprite sheet on the fly from appearance data
+            GD.Print($"[LayeredSprite] Generating base sprite sheet for {c.Name}...");
+
             try
             {
-                var layers = catalog.GetStitchLayers(appearance);
-                c.FullSpriteSheet = await compositor.CompositeFullSheet(layers, fileSystem);
+                var allLayers = catalog.GetStitchLayers(appearance);
+                var baseLayers = allLayers.Where(l => !l.RootPath.Contains("weapons/") && !l.RootPath.Contains("shields/")).ToList();
+                
+                c.FullSpriteSheet = await compositor.CompositeFullSheet(baseLayers, fileSystem);
                 GD.Print($"[LayeredSprite] Generated sheet for {c.Name}: {c.FullSpriteSheet?.Length ?? 0} bytes");
+                
                 if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
                 {
                     await SetupFromBytes(c.FullSpriteSheet);
-                    return;
                 }
             }
             catch (Exception ex)
@@ -114,6 +115,25 @@ public partial class LayeredSprite : Node2D
         else
         {
             GD.PrintErr($"[LayeredSprite] No compositor provided for {c.Name} — cannot generate sprite sheet.");
+        }
+        
+        // Dynamically load oversized equipment (weapons, shields) without baking them into base sheet
+        if (appearance.ShieldType != "None" && !string.IsNullOrEmpty(appearance.ShieldType))
+        {
+            await AddEquipmentOverlay("Shield", appearance.ShieldType, "Shield", catalog, fileSystem);
+        }
+        else if (_layers.TryGetValue("Shield", out var shieldLayer))
+        {
+            shieldLayer.Hide();
+        }
+        
+        if (appearance.WeaponType != "None" && !string.IsNullOrEmpty(appearance.WeaponType))
+        {
+            await AddEquipmentOverlay("Weapon", appearance.WeaponType, "Weapon", catalog, fileSystem);
+        }
+        else if (_layers.TryGetValue("Weapon", out var weaponLayer))
+        {
+            weaponLayer.Hide();
         }
     }
 
@@ -131,8 +151,7 @@ public partial class LayeredSprite : Node2D
         var frames = ImageUtils.CreateSpriteFrames(data, 64, 64);
         if (frames != null)
         {
-            GD.Print(
-                $"[LayeredSprite] Created SpriteFrames from bytes. Animations: {string.Join(", ", frames.GetAnimationNames())}");
+            GD.Print($"[LayeredSprite] Created SpriteFrames from bytes. Animations: {string.Join(", ", frames.GetAnimationNames())}");
             bodySprite.SpriteFrames = frames;
             bodySprite.FlipH = _flipH;
             bodySprite.Show();
@@ -165,7 +184,6 @@ public partial class LayeredSprite : Node2D
         string basePath = $"sprites/monsters/{monsterType.ToLower()}/";
         GD.Print($"[LayeredSprite] Base path: {basePath}");
 
-        // Try to load common animations
         await LoadIfExists(frames, "idle", basePath + "idle.png", fileSystem);
         await LoadIfExists(frames, "walk", basePath + "walk.png", fileSystem);
         await LoadIfExists(frames, "run", basePath + "run.png", fileSystem);
@@ -207,42 +225,111 @@ public partial class LayeredSprite : Node2D
         }
     }
 
-    public async Task AddWeaponOverlay(string weaponType, ISpriteLayerCatalog catalog, IFileSystemService fileSystem, ISpriteCompositor compositor)
+    public async Task AddEquipmentOverlay(string slotType, string equipmentName, string nodeName, ISpriteLayerCatalog catalog, IFileSystemService fileSystem)
     {
         EnsureLayers();
+        if (!_layers.TryGetValue(nodeName, out var equipSprite)) return;
 
-        var appearance = new CharacterAppearance { WeaponType = weaponType };
+        var appearance = new CharacterAppearance();
+        if (slotType == "Weapon") appearance.WeaponType = equipmentName;
+        else if (slotType == "Shield") appearance.ShieldType = equipmentName;
+        else return;
+
         var layers = catalog.GetStitchLayers(appearance);
-        
-        var weaponLayers = new List<StitchLayer>();
-        foreach (var l in layers)
+        var equipLayer = layers.FirstOrDefault(l => l.RootPath.Contains(slotType.ToLower() + "s/"));
+        if (equipLayer == null)
         {
-            if (l.RootPath.Contains("weapons/"))
-            {
-                weaponLayers.Add(l);
-            }
-        }
-
-        if (weaponLayers.Count == 0)
-        {
-            GD.PrintErr($"[LayeredSprite] No weapon layers found for {weaponType}");
+            equipSprite.SpriteFrames = null;
+            equipSprite.Hide();
             return;
         }
 
-        GD.Print($"[LayeredSprite] Compositing weapon overlay: {weaponType}");
-        var sheetBytes = await compositor.CompositeFullSheet(weaponLayers, fileSystem);
-        
-        if (sheetBytes != null && sheetBytes.Length > 0)
+        GD.Print($"[LayeredSprite] Constructing {nodeName} dynamically: {equipmentName}");
+        var frames = new SpriteFrames();
+        if (frames.HasAnimation("default")) frames.RemoveAnimation("default");
+
+        await TryLoadLpcAction(frames, equipLayer, "walk", fileSystem, 9);
+        await TryLoadLpcAction(frames, equipLayer, "slash", fileSystem, 6);
+        await TryLoadLpcAction(frames, equipLayer, "thrust", fileSystem, 8);
+        await TryLoadLpcAction(frames, equipLayer, "shoot", fileSystem, 13);
+        await TryLoadLpcAction(frames, equipLayer, "spellcast", fileSystem, 7);
+        await TryLoadLpcAction(frames, equipLayer, "hurt", fileSystem, 6, isSingleRow: true);
+
+        if (frames.HasAnimation("walk_up"))
         {
-            var frames = ImageUtils.CreateSpriteFrames(sheetBytes, 64, 64);
-            if (frames != null && _layers.TryGetValue("Weapon", out var weaponSprite))
+            CopyFirstFrame(frames, "walk_up", "idle_up");
+            CopyFirstFrame(frames, "walk_left", "idle_left");
+            CopyFirstFrame(frames, "walk_down", "idle_down");
+            CopyFirstFrame(frames, "walk_right", "idle_right");
+        }
+
+        equipSprite.SpriteFrames = frames;
+        equipSprite.FlipH = _flipH;
+        equipSprite.Show();
+        
+        // Let it sync up to whatever the body is doing if applicable
+        if (HasAnimation("idle_down"))
+        {
+            equipSprite.Play("idle_down");
+        }
+    }
+
+    private async Task TryLoadLpcAction(SpriteFrames frames, StitchLayer layer, string action, IFileSystemService fileSystem, int expectedCols, bool isSingleRow = false)
+    {
+        string fileName = layer.FileNameTemplate.Replace("{action}", action);
+        string fullPath = layer.RootPath.EndsWith("/") ? layer.RootPath + fileName : layer.RootPath + "/" + fileName;
+
+        byte[]? data = null;
+        if (fileSystem.FileExists(fullPath))
+        {
+            using var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
+            using var ms = new System.IO.MemoryStream();
+            await stream.CopyToAsync(ms);
+            data = ms.ToArray();
+        }
+        else if (action == "slash" || action == "thrust" || action == "shoot")
+        {
+            string altAction = "attack_" + action;
+            fileName = layer.FileNameTemplate.Replace("{action}", altAction);
+            fullPath = layer.RootPath.EndsWith("/") ? layer.RootPath + fileName : layer.RootPath + "/" + fileName;
+            if (fileSystem.FileExists(fullPath))
             {
-                weaponSprite.SpriteFrames = frames;
-                weaponSprite.FlipH = _flipH;
-                weaponSprite.Show();
-                GD.Print($"[LayeredSprite] Weapon overlay applied successfully.");
+                using var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
+                using var ms = new System.IO.MemoryStream();
+                await stream.CopyToAsync(ms);
+                data = ms.ToArray();
             }
         }
+
+        if (data == null) return;
+
+        var tex = ImageUtils.ByteArrayToTexture(data);
+        if (tex == null) return;
+
+        int rows = isSingleRow ? 1 : 4;
+        int frameW = (int)tex.GetSize().X / expectedCols;
+        int frameH = (int)tex.GetSize().Y / rows;
+
+        if (isSingleRow)
+        {
+            ImageUtils.AddLpcRowWeapon(frames, tex, action, 0, expectedCols, frameW, frameH);
+        }
+        else
+        {
+            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_up", 0, expectedCols, frameW, frameH);
+            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_left", 1, expectedCols, frameW, frameH);
+            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_down", 2, expectedCols, frameW, frameH);
+            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_right", 3, expectedCols, frameW, frameH);
+        }
+    }
+
+    private void CopyFirstFrame(SpriteFrames frames, string sourceAnim, string targetAnim)
+    {
+        if (!frames.HasAnimation(sourceAnim)) return;
+        if (frames.HasAnimation(targetAnim)) frames.RemoveAnimation(targetAnim);
+        frames.AddAnimation(targetAnim);
+        frames.SetAnimationLoop(targetAnim, false);
+        frames.AddFrame(targetAnim, frames.GetFrameTexture(sourceAnim, 0));
     }
 
     private async Task LoadIfExists(SpriteFrames frames, string animName, string path, IFileSystemService fileSystem)
@@ -259,11 +346,9 @@ public partial class LayeredSprite : Node2D
             img.LoadPngFromBuffer(data);
             int frameH = img.GetHeight();
 
-            // Heuristic for hound sprites: they are 64px wide even if only 32px tall
             int frameW = (frameH <= 48) ? 64 : frameH;
 
-            GD.Print(
-                $"[LayeredSprite] Successfully read {data.Length} bytes for {animName}. Detected Frame Size: {frameW}x{frameH}");
+            GD.Print($"[LayeredSprite] Successfully read {data.Length} bytes for {animName}. Detected Frame Size: {frameW}x{frameH}");
             ImageUtils.AddAnimationFromBytes(frames, animName, data, frameW, frameH);
         }
         catch (Exception ex)
@@ -272,25 +357,8 @@ public partial class LayeredSprite : Node2D
         }
     }
 
-    private string GetNodeNameForPath(string path)
-    {
-        var lowerPath = path.ToLower();
-        if (lowerPath.Contains("body/")) return "Body";
-        if (lowerPath.Contains("head/")) return "Head";
-        if (lowerPath.Contains("face/")) return "Face";
-        if (lowerPath.Contains("eyes/")) return "Eyes";
-        if (lowerPath.Contains("hair/")) return "Hair";
-        if (lowerPath.Contains("armor/") || lowerPath.Contains("torso/")) return "Armor";
-        if (lowerPath.Contains("feet/")) return "Feet";
-        if (lowerPath.Contains("legs/")) return "Legs";
-        if (lowerPath.Contains("arms/")) return "Arms";
-        if (lowerPath.Contains("weapons/") || lowerPath.Contains("weapon/")) return "Weapon";
-        return "Body";
-    }
-
     private async Task<SpriteFrames?> LoadFrames(string path, IFileSystemService fileSystem)
     {
-        // We use the filesystem service to get the PNG bytes, then ImageUtils to slice them
         var stream = await fileSystem.OpenAppPackageFileAsync(path);
         using var ms = new System.IO.MemoryStream();
         await stream.CopyToAsync(ms);
@@ -300,23 +368,38 @@ public partial class LayeredSprite : Node2D
     public void Play(string animation)
     {
         if (!GodotObject.IsInstanceValid(this) || !IsInsideTree()) return;
-        foreach (var sprite in _layers.Values)
+        foreach (var kvp in _layers)
         {
+            var sprite = kvp.Value;
             if (sprite.Visible && sprite.SpriteFrames != null && sprite.SpriteFrames.HasAnimation(animation))
             {
                 sprite.Play(animation);
+                
+                if (kvp.Key == "Weapon" || kvp.Key == "Shield")
+                {
+                    var tex = sprite.SpriteFrames.GetFrameTexture(animation, 0) as AtlasTexture;
+                    if (tex != null)
+                    {
+                        if (tex.Region.Size.X > 64)
+                        {
+                            sprite.Position = new Vector2(-64, -64);
+                        }
+                        else
+                        {
+                            sprite.Position = Vector2.Zero;
+                        }
+                    }
+                }
             }
         }
     }
 
     public bool HasAnimation(string animation)
     {
-        // We check the Body layer as the primary indicator for animation existence
         if (_layers.TryGetValue("Body", out var bodySprite))
         {
             return bodySprite.SpriteFrames != null && bodySprite.SpriteFrames.HasAnimation(animation);
         }
-
         return false;
     }
 }
