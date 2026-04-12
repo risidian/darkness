@@ -54,6 +54,11 @@ public class GodotSpriteCompositor : ISpriteCompositor
                         if (img.IsCompressed()) img.Decompress();
                         img.Convert(Image.Format.Rgba8);
 
+                        if (layer.IsFlipped)
+                        {
+                            img.FlipX();
+                        }
+
                         // Apply Tint if not White
                         if (tint.R < 0.99f || tint.G < 0.99f || tint.B < 0.99f)
                         {
@@ -165,6 +170,11 @@ public class GodotSpriteCompositor : ISpriteCompositor
                 {
                     if (img.IsCompressed()) img.Decompress();
                     img.Convert(Image.Format.Rgba8);
+
+                    if (layer.IsFlipped)
+                    {
+                        img.FlipX();
+                    }
 
                     var tint = Color.FromHtml(layer.TintHex);
                     if (tint.R < 0.99f || tint.G < 0.99f || tint.B < 0.99f)

@@ -104,16 +104,19 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
         AddEquipmentLayer(spriteCol, layers, "Arms", appearance.Arms ?? "None", gender);
         AddEquipmentLayer(spriteCol, layers, "Weapon", appearance.WeaponType ?? "None", gender);
         AddEquipmentLayer(spriteCol, layers, "Shield", appearance.ShieldType ?? "None", gender);
+        AddEquipmentLayer(spriteCol, layers, "OffHand", appearance.OffHandType ?? "None", gender, isFlipped: true);
 
         return layers.OrderBy(l => l.Z).Select(l => l.Layer).ToList();
     }
 
     private void AddEquipmentLayer(ILiteCollection<EquipmentSprite> col,
-        List<(StitchLayer Layer, int Z)> layers, string slot, string displayName, string gender)
+        List<(StitchLayer Layer, int Z)> layers, string slot, string displayName, string gender, bool isFlipped = false)
     {
         if (displayName == "None") return;
 
-        var sprite = col.FindOne(s => s.Slot == slot && s.DisplayName == displayName);
+        // Slot "OffHand" is logically "Weapon" slot in the catalog.
+        string catalogSlot = slot == "OffHand" ? "Weapon" : slot;
+        var sprite = col.FindOne(s => s.Slot == catalogSlot && s.DisplayName == displayName);
         if (sprite == null) return;
 
         string resolvedGender = sprite.Gender switch
@@ -127,17 +130,27 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
             ? sprite.AssetPath
             : $"{sprite.AssetPath}/{resolvedGender}";
 
+        // Male Mage Robes -> Tabard mapping
+        if (gender == "male" && displayName.Contains("Mage Robes") && slot == "Armor")
+        {
+            // Redirect to tabard assets. Mage Robes usually have color in name, e.g. "Mage Robes (Blue)"
+            string color = displayName.Contains("Blue") ? "blue" : (displayName.Contains("Red") ? "red" : "white");
+            // The LPC tabard set has a specific folder structure. We'll map to it.
+            // For now, we'll use a generic path that matches our import.
+            basePath = $"assets/sprites/full/torso/jacket/tabard/male";
+        }
+
         // LPC weapons/shields have separate bg (behind body) and fg (in front of body) layers.
         // If the asset path ends with /bg, add both bg and fg layers.
         if (basePath.EndsWith("/bg"))
         {
             string fgPath = basePath[..^3] + "/fg";
-            layers.Add((new StitchLayer(basePath, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder));
-            layers.Add((new StitchLayer(fgPath, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder + 1));
+            layers.Add((new StitchLayer(basePath, sprite.FileNameTemplate, sprite.TintHex, isFlipped), sprite.ZOrder));
+            layers.Add((new StitchLayer(fgPath, sprite.FileNameTemplate, sprite.TintHex, isFlipped), sprite.ZOrder + 1));
         }
         else
         {
-            layers.Add((new StitchLayer(basePath, sprite.FileNameTemplate, sprite.TintHex), sprite.ZOrder));
+            layers.Add((new StitchLayer(basePath, sprite.FileNameTemplate, sprite.TintHex, isFlipped), sprite.ZOrder));
         }
     }
 
