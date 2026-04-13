@@ -15,6 +15,7 @@ public partial class MainMenuScene : Control
     private ICharacterService _characterService = null!;
     private IDialogService _dialogService = null!;
     private ISettingsService _settingsService = null!;
+    private Button _talentsButton = null!;
 
     public override async void _Ready()
     {
@@ -48,11 +49,20 @@ public partial class MainMenuScene : Control
             () => _navigation.NavigateToAsync("StudyPage");
         GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/AlliesButton").Pressed +=
             () => _navigation.NavigateToAsync("AlliesPage");
+        
+        _talentsButton = GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/TalentsButton");
+        _talentsButton.Pressed += OnTalentsPressed;
+
         GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/SettingsButton").Pressed +=
             () => _navigation.NavigateToAsync("SettingsPage");
         GetNode<Button>("TopRightMenu/LogoutButton").Pressed += OnLogoutPressed;
 
         await RunStartupChecks();
+    }
+
+    private void OnTalentsPressed()
+    {
+        _navigation.NavigateToAsync("TalentTreePage");
     }
 
     private async Task RunStartupChecks()

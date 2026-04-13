@@ -98,6 +98,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "ALLIES"
 
+[node name="TalentsButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "TALENTS"
+
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
