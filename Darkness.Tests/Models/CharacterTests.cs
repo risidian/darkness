@@ -13,4 +13,13 @@ public class CharacterTests
         Assert.NotNull(character.Hotbar);
         Assert.Equal(5, character.Hotbar.Length);
     }
+
+    [Fact]
+    public void Character_InitializesWithZeroTalentPointsAndEmptyUnlockedTalentIds()
+    {
+        var character = new Character();
+        Assert.Equal(0, character.TalentPoints);
+        Assert.NotNull(character.UnlockedTalentIds);
+        Assert.Empty(character.UnlockedTalentIds);
+    }
 }

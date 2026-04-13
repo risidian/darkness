@@ -192,9 +192,9 @@
       "Slot": "Weapon",
       "DisplayName": "Mage Wand",
       "AssetPath": "assets/sprites/full/weapons/magic/wand",
-      "FileNameTemplate": "slash/wand.png",
+      "FileNameTemplate": "{action}/wand.png",
       "ZOrder": 140,
-      "Gender": "universal",
+      "Gender": "gendered",
       "FallbackGender": null,
       "TintHex": "#FFFFFF"
     },

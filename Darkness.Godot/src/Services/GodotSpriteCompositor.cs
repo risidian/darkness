@@ -170,6 +170,24 @@ public class GodotSpriteCompositor : ISpriteCompositor
                 }
             }
 
+            // Fallback 2: If we requested "walk" but it doesn't exist (like for wands), try "shoot", "slash", etc.
+            if (action == "walk")
+            {
+                string[] fallbacks = { "shoot", "slash", "thrust", "spellcast" };
+                foreach (var fb in fallbacks)
+                {
+                    string fbFileName = layer.FileNameTemplate.Replace("{action}", fb);
+                    string fbFullPath = layer.RootPath.EndsWith("/") ? layer.RootPath + fbFileName : layer.RootPath + "/" + fbFileName;
+                    if (fileSystem.FileExists(fbFullPath))
+                    {
+                        var stream = await fileSystem.OpenAppPackageFileAsync(fbFullPath);
+                        using var ms = new MemoryStream();
+                        await stream.CopyToAsync(ms);
+                        return ms.ToArray();
+                    }
+                }
+            }
+
             return null;
         }
         catch
@@ -224,9 +242,30 @@ public class GodotSpriteCompositor : ISpriteCompositor
                     }
                     else
                     {
-                        // "walk" sheet is 576x256. Down idle frame is Row 2 (y=128), Col 0 (x=0).
-                        var walkFrame = img.GetRegion(new Rect2I(0, 128, 64, 64));
-                        composite.BlendRect(walkFrame, new Rect2I(0, 0, 64, 64), Vector2I.Zero);
+                        int frameW = img.GetWidth() >= 1536 ? 64 : img.GetWidth() / (img.GetWidth() >= 576 ? 9 : 13);
+                        if (img.GetWidth() >= 576 && img.GetWidth() < 832) frameW = 64; // 9 cols * 64 = 576
+                        if (img.GetWidth() == 832) frameW = 64; // 13 cols * 64 = 832
+                        
+                        int cols = img.GetWidth() / frameW;
+                        int rows = img.GetHeight() / frameW;
+                        
+                        // Determine if it's oversize (e.g. 192x192 frames)
+                        if (frameW > 64)
+                        {
+                            // "walk" equivalent down frame is usually row 2. 
+                            int rowOffset = rows >= 4 ? 2 : 0;
+                            // the character is centered in the 192x192 frame, so offset by (frameW-64)/2
+                            int cropOffset = (frameW - 64) / 2;
+                            var walkFrame = img.GetRegion(new Rect2I(cropOffset, rowOffset * frameW + cropOffset, 64, 64));
+                            composite.BlendRect(walkFrame, new Rect2I(0, 0, 64, 64), Vector2I.Zero);
+                        }
+                        else
+                        {
+                            // 64x64 frame
+                            int rowOffset = rows >= 4 ? 2 : 0;
+                            var walkFrame = img.GetRegion(new Rect2I(0, rowOffset * 64, 64, 64));
+                            composite.BlendRect(walkFrame, new Rect2I(0, 0, 64, 64), Vector2I.Zero);
+                        }
                     }
                 }
             }

@@ -46,6 +46,8 @@ namespace Darkness.Core.Models
         public int Level { get; set; }
         public int Experience { get; set; }
         public int AttributePoints { get; set; } = 5;
+        public int TalentPoints { get; set; } = 0;
+        public List<string> UnlockedTalentIds { get; set; } = new();
         public byte[]? Thumbnail { get; set; }
         public byte[]? FullSpriteSheet { get; set; }
         public List<Item> Inventory { get; set; } = new();

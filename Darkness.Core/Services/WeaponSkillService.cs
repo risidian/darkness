@@ -22,13 +22,13 @@ public class WeaponSkillService : IWeaponSkillService
                 baseSkills.Add(new Skill
                 {
                     Name = "Arcane Bolt", Description = "A standard magical bolt. (1.1x Magic Dmg)", SkillType = "Magical",
-                    DamageMultiplier = 1.1f, AssociatedAction = ActionType.Cast
+                    DamageMultiplier = 1.1f, AssociatedAction = ActionType.Shoot
                 });
                 baseSkills.Add(new Skill
                 {
                     Name = "Fireball", Description = "A powerful blast of fire. (1.5x Magic Dmg, -10 Accuracy)",
                     SkillType = "Magical", DamageMultiplier = 1.5f, AccuracyModifier = -10,
-                    AssociatedAction = ActionType.Cast
+                    AssociatedAction = ActionType.Shoot
                 });
             }
             else if (type.Contains("Bow", System.StringComparison.OrdinalIgnoreCase))

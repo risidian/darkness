@@ -910,7 +910,7 @@ public partial class BattleScene : Control, IInitializable
                     ActionType.Slash => "slash_right",
                     ActionType.Thrust => "thrust_right",
                     ActionType.Cast => "spellcast_right",
-                    ActionType.Shoot => "bow_right",
+                    ActionType.Shoot => "shoot_right",
                     _ => "walk_right"
                 };
 
@@ -921,12 +921,38 @@ public partial class BattleScene : Control, IInitializable
                 }
 
                 var originalPos = attackerSprite.Position;
-                var lungePos = originalPos + new Vector2(50, 0);
-                var tween = GetTree().CreateTween();
-                tween.TweenProperty(attackerSprite, "position", lungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
-                    .SetEase(Tween.EaseType.Out);
+                var targetPos = targetSprite.Position;
+                bool isRanged = skill.AssociatedAction == ActionType.Cast || skill.AssociatedAction == ActionType.Shoot;
 
                 attackerSprite.Play(attackAnim);
+
+                if (isRanged)
+                {
+                    string colorHex = skill.SkillType == "Magical" ? "#00FFFF" : "#CCCCCC";
+                    var proj = new ColorRect
+                    {
+                        Color = new Color(colorHex),
+                        Size = new Vector2(10, 10),
+                        GlobalPosition = attackerSprite.GlobalPosition + new Vector2(100, 100)
+                    };
+                    AddChild(proj);
+
+                    var projTween = GetTree().CreateTween();
+                    projTween.TweenProperty(proj, "global_position", targetSprite.GlobalPosition + new Vector2(100, 100), 0.3f)
+                        .SetTrans(Tween.TransitionType.Linear);
+
+                    await ToSignal(projTween, "finished");
+                    proj.QueueFree();
+                }
+                else
+                {
+                    var lungePos = originalPos + new Vector2(50, 0);
+                    var tween = GetTree().CreateTween();
+                    tween.TweenProperty(attackerSprite, "position", lungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
+                        .SetEase(Tween.EaseType.Out);
+                    await ToSignal(tween, "finished");
+                    await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+                }
 
                 var combatResult = _combat.CalculateDamage(attacker, target, skill: skill);
                 
@@ -945,13 +971,14 @@ public partial class BattleScene : Control, IInitializable
                     _combatLog.AppendText($"\n{missMsg}[color=red]{attacker.Name}[/color] tried to use [b]{skill.Name}[/b] on {target.Name} but missed! Rolled { combatResult.D20Roll}");
                 }
 
-                await ToSignal(tween, "finished");
-                await ToSignal(GetTree().CreateTimer(0.2), "timeout");
-
-                var returnTween = GetTree().CreateTween();
-                returnTween.TweenProperty(attackerSprite, "position", originalPos, 0.15f)
-                    .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-                await ToSignal(returnTween, "finished");
+                if (!isRanged)
+                {
+                    var returnTween = GetTree().CreateTween();
+                    returnTween.TweenProperty(attackerSprite, "position", originalPos, 0.15f)
+                        .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+                    await ToSignal(returnTween, "finished");
+                }
+                
                 attackerSprite.Play("idle_right");
             }
 

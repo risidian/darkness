@@ -263,6 +263,15 @@ public partial class LayeredSprite : Node2D
             CopyFirstFrame(frames, "walk_right", "idle_right");
         }
 
+        // If a weapon has shoot but no spellcast (like wands), map shoot's first frame to spellcast
+        if (!frames.HasAnimation("spellcast_up") && frames.HasAnimation("shoot_up"))
+        {
+            CopyFirstFrame(frames, "shoot_up", "spellcast_up");
+            CopyFirstFrame(frames, "shoot_left", "spellcast_left");
+            CopyFirstFrame(frames, "shoot_down", "spellcast_down");
+            CopyFirstFrame(frames, "shoot_right", "spellcast_right");
+        }
+
         equipSprite.SpriteFrames = frames;
         equipSprite.FlipH = _flipH;
         equipSprite.Show();
