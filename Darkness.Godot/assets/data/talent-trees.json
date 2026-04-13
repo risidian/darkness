@@ -3,11 +3,81 @@
     "Id": "knight_tree",
     "Name": "Knight",
     "Tier": 1,
-    "Prerequisites": { "Level": 1 },
+    "RequiredClass": "Knight",
+    "Prerequisites": {
+      "Level": 1
+    },
     "Nodes": [
       {
-        "Id": "k1_str", "Name": "Iron Grip", "Description": "+5 Strength",
-        "Effect": { "Stat": "Strength", "Value": 5 }
+        "Id": "k_toughness",
+        "Name": "Toughness",
+        "Description": "Increases Constitution by 1.",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Constitution",
+          "Value": 1
+        }
+      },
+      {
+        "Id": "k_strength",
+        "Name": "Strength",
+        "Description": "Increases Strength by 1.",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Strength",
+          "Value": 1
+        }
+      },
+      {
+        "Id": "k_defense",
+        "Name": "Iron Skin",
+        "Description": "Hardens your skin, increasing Armor by 2.",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "k_toughness"
+        ],
+        "Effect": {
+          "Stat": "Armor",
+          "Value": 2
+        }
+      },
+      {
+        "Id": "k_offense",
+        "Name": "Blade Training",
+        "Description": "Improves your sword skills, increasing Attack by 2.",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 2,
+        "PrerequisiteNodeIds": [
+          "k_strength"
+        ],
+        "Effect": {
+          "Stat": "Attack",
+          "Value": 2
+        }
+      },
+      {
+        "Id": "k_mastery",
+        "Name": "Shield Mastery",
+        "Description": "Master the art of defense, increasing Block by 5.",
+        "PointsRequired": 1,
+        "Row": 3,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "k_defense"
+        ],
+        "Effect": {
+          "Stat": "Block",
+          "Value": 5
+        }
       }
     ]
   },
@@ -15,19 +85,696 @@
     "Id": "holy_knight_tree",
     "Name": "Holy Knight",
     "Tier": 2,
-    "Prerequisites": { "Level": 20, "SpentInTree:knight_tree": 5 },
+    "RequiredClass": "Knight",
+    "Prerequisites": {
+      "Level": 20,
+      "SpentInTree:knight_tree": 5
+    },
     "Nodes": [
       {
-        "Id": "hk1_holy_strike", "Name": "Holy Strike", "Description": "Unlocks Holy Strike",
-        "Effect": { "Skill": "Holy Strike" }
+        "Id": "hk_faith",
+        "Name": "Divine Faith",
+        "Description": "Increases Wisdom by 2.",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Wisdom",
+          "Value": 2
+        }
+      },
+      {
+        "Id": "hk_smite",
+        "Name": "Holy Smite",
+        "Description": "Imbues your weapon with holy light (+5 Holy Damage).",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "hk_faith"
+        ],
+        "Effect": {
+          "Stat": "HolyDamage",
+          "Value": 5
+        }
       }
     ]
   },
   {
     "Id": "crusader_tree",
     "Name": "Crusader",
-    "Tier": 3, "IsHidden": true,
-    "Prerequisites": { "Level": 40, "Strength": 20, "SpentInTree:holy_knight_tree": 20 },
-    "Nodes": []
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Knight",
+    "ExclusiveGroupId": "Knight_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Strength": 20,
+      "SpentInTree:holy_knight_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "c_righteousness",
+        "Name": "Righteousness",
+        "Description": "Aura of righteousness increases Strength by 5.",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Strength",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "kingsguard_tree",
+    "Name": "Kingsguard",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Knight",
+    "ExclusiveGroupId": "Knight_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Constitution": 20,
+      "SpentInTree:holy_knight_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "kg_loyalty",
+        "Name": "Royal Loyalty",
+        "Description": "Absolute loyalty increases Constitution by 5.",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Constitution",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "warrior_tree",
+    "Name": "Warrior",
+    "Tier": 1,
+    "RequiredClass": "Warrior",
+    "Prerequisites": {
+      "Level": 1
+    },
+    "Nodes": [
+      {
+        "Id": "w_brute_force",
+        "Name": "Brute Force",
+        "Description": "Raw power (+1 Strength).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Strength",
+          "Value": 1
+        }
+      },
+      {
+        "Id": "w_vitals",
+        "Name": "Vitals Training",
+        "Description": "Focus on survivability (+1 Constitution).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Constitution",
+          "Value": 1
+        }
+      },
+      {
+        "Id": "w_rage",
+        "Name": "Combat Rage",
+        "Description": "Enter a state of rage (+3 Attack).",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "w_brute_force"
+        ],
+        "Effect": {
+          "Stat": "Attack",
+          "Value": 3
+        }
+      },
+      {
+        "Id": "w_endurance",
+        "Name": "Endurance",
+        "Description": "Last longer in combat (+3 Constitution).",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 2,
+        "PrerequisiteNodeIds": [
+          "w_vitals"
+        ],
+        "Effect": {
+          "Stat": "Constitution",
+          "Value": 3
+        }
+      },
+      {
+        "Id": "w_executioner",
+        "Name": "Executioner",
+        "Description": "Deal finishing blows (+5 Attack).",
+        "PointsRequired": 1,
+        "Row": 3,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "w_rage",
+          "w_endurance"
+        ],
+        "Effect": {
+          "Stat": "Attack",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "berserker_tree",
+    "Name": "Berserker",
+    "Tier": 2,
+    "RequiredClass": "Warrior",
+    "Prerequisites": {
+      "Level": 20,
+      "SpentInTree:warrior_tree": 5
+    },
+    "Nodes": [
+      {
+        "Id": "b_bloodlust",
+        "Name": "Bloodlust",
+        "Description": "Thirst for battle (+2 Strength).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Strength",
+          "Value": 2
+        }
+      }
+    ]
+  },
+  {
+    "Id": "warlord_tree",
+    "Name": "Warlord",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Warrior",
+    "ExclusiveGroupId": "Warrior_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Constitution": 20,
+      "SpentInTree:berserker_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "wl_leadership",
+        "Name": "Battle Leadership",
+        "Description": "Inspire allies (+5 Constitution).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Constitution",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "juggernaut_tree",
+    "Name": "Juggernaut",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Warrior",
+    "ExclusiveGroupId": "Warrior_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Strength": 25,
+      "SpentInTree:berserker_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "jn_unstoppable",
+        "Name": "Unstoppable",
+        "Description": "Unmatched strength (+10 Strength).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Strength",
+          "Value": 10
+        }
+      }
+    ]
+  },
+  {
+    "Id": "mage_tree",
+    "Name": "Mage",
+    "Tier": 1,
+    "RequiredClass": "Mage",
+    "Prerequisites": {
+      "Level": 1
+    },
+    "Nodes": [
+      {
+        "Id": "m_intellect",
+        "Name": "Arcane Intellect",
+        "Description": "Sharpens the mind (+1 Intelligence).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Intelligence",
+          "Value": 1
+        }
+      },
+      {
+        "Id": "m_fireball",
+        "Name": "Fireball",
+        "Description": "Basic fire magic (+2 Fire Damage).",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "m_intellect"
+        ],
+        "Effect": {
+          "Stat": "FireDamage",
+          "Value": 2
+        }
+      },
+      {
+        "Id": "m_frostbolt",
+        "Name": "Frostbolt",
+        "Description": "Basic ice magic (+2 Frost Damage).",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 3,
+        "PrerequisiteNodeIds": [
+          "m_intellect"
+        ],
+        "Effect": {
+          "Stat": "FrostDamage",
+          "Value": 2
+        }
+      },
+      {
+        "Id": "m_elementalist",
+        "Name": "Elementalist",
+        "Description": "Master of elements (+5 Intelligence).",
+        "PointsRequired": 1,
+        "Row": 3,
+        "Column": 2,
+        "PrerequisiteNodeIds": [
+          "m_fireball",
+          "m_frostbolt"
+        ],
+        "Effect": {
+          "Stat": "Intelligence",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "wizard_tree",
+    "Name": "Wizard",
+    "Tier": 2,
+    "RequiredClass": "Mage",
+    "Prerequisites": {
+      "Level": 20,
+      "SpentInTree:mage_tree": 5
+    },
+    "Nodes": [
+      {
+        "Id": "wiz_power",
+        "Name": "Arcane Power",
+        "Description": "Surge of magic (+2 Intelligence).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Intelligence",
+          "Value": 2
+        }
+      }
+    ]
+  },
+  {
+    "Id": "archmage_tree",
+    "Name": "Archmage",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Mage",
+    "ExclusiveGroupId": "Mage_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Intelligence": 20,
+      "SpentInTree:wizard_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "am_eternity",
+        "Name": "Arcane Eternity",
+        "Description": "Unlimited power (+5 Intelligence).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Intelligence",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "necromancer_tree",
+    "Name": "Necromancer",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Mage",
+    "ExclusiveGroupId": "Mage_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Wisdom": 20,
+      "SpentInTree:wizard_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "nm_death",
+        "Name": "Death Mastery",
+        "Description": "Control over death (+5 Wisdom).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Wisdom",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "rogue_tree",
+    "Name": "Rogue",
+    "Tier": 1,
+    "RequiredClass": "Rogue",
+    "Prerequisites": {
+      "Level": 1
+    },
+    "Nodes": [
+      {
+        "Id": "r_agility",
+        "Name": "Agility",
+        "Description": "Swift movements (+1 Dexterity).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Dexterity",
+          "Value": 1
+        }
+      },
+      {
+        "Id": "r_stealth",
+        "Name": "Stealth",
+        "Description": "Move unseen (+2 Stealth).",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "r_agility"
+        ],
+        "Effect": {
+          "Stat": "Stealth",
+          "Value": 2
+        }
+      },
+      {
+        "Id": "r_backstab",
+        "Name": "Backstab",
+        "Description": "Strike from behind (+5 Attack).",
+        "PointsRequired": 1,
+        "Row": 3,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "r_stealth"
+        ],
+        "Effect": {
+          "Stat": "Attack",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "assassin_tree",
+    "Name": "Assassin",
+    "Tier": 2,
+    "RequiredClass": "Rogue",
+    "Prerequisites": {
+      "Level": 20,
+      "SpentInTree:rogue_tree": 5
+    },
+    "Nodes": [
+      {
+        "Id": "as_lethality",
+        "Name": "Lethality",
+        "Description": "Deadly precision (+2 Dexterity).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Dexterity",
+          "Value": 2
+        }
+      }
+    ]
+  },
+  {
+    "Id": "shadowblade_tree",
+    "Name": "Shadowblade",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Rogue",
+    "ExclusiveGroupId": "Rogue_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Dexterity": 20,
+      "SpentInTree:assassin_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "sb_shadows",
+        "Name": "Master of Shadows",
+        "Description": "One with the dark (+5 Dexterity).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Dexterity",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "nightstalker_tree",
+    "Name": "Nightstalker",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Rogue",
+    "ExclusiveGroupId": "Rogue_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Stealth": 20,
+      "SpentInTree:assassin_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "ns_night",
+        "Name": "Night's Embrace",
+        "Description": "Thrive in darkness (+10 Stealth).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Stealth",
+          "Value": 10
+        }
+      }
+    ]
+  },
+  {
+    "Id": "cleric_tree",
+    "Name": "Cleric",
+    "Tier": 1,
+    "RequiredClass": "Cleric",
+    "Prerequisites": {
+      "Level": 1
+    },
+    "Nodes": [
+      {
+        "Id": "cl_devotion",
+        "Name": "Devotion",
+        "Description": "Spiritual focus (+1 Wisdom).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Wisdom",
+          "Value": 1
+        }
+      },
+      {
+        "Id": "cl_heal",
+        "Name": "Lesser Heal",
+        "Description": "Basic restoration (+5 Healing).",
+        "PointsRequired": 1,
+        "Row": 2,
+        "Column": 2,
+        "PrerequisiteNodeIds": [
+          "cl_devotion"
+        ],
+        "Effect": {
+          "Stat": "Healing",
+          "Value": 5
+        }
+      },
+      {
+        "Id": "cl_protection",
+        "Name": "Protection",
+        "Description": "Divine shield (+2 Armor).",
+        "PointsRequired": 1,
+        "Row": 3,
+        "Column": 1,
+        "PrerequisiteNodeIds": [
+          "cl_heal"
+        ],
+        "Effect": {
+          "Stat": "Armor",
+          "Value": 2
+        }
+      },
+      {
+        "Id": "cl_blessing",
+        "Name": "Blessing",
+        "Description": "Divine favor (+2 Attack).",
+        "PointsRequired": 1,
+        "Row": 3,
+        "Column": 3,
+        "PrerequisiteNodeIds": [
+          "cl_heal"
+        ],
+        "Effect": {
+          "Stat": "Attack",
+          "Value": 2
+        }
+      }
+    ]
+  },
+  {
+    "Id": "priest_tree",
+    "Name": "Priest",
+    "Tier": 2,
+    "RequiredClass": "Cleric",
+    "Prerequisites": {
+      "Level": 20,
+      "SpentInTree:cleric_tree": 5
+    },
+    "Nodes": [
+      {
+        "Id": "p_spirituality",
+        "Name": "Spirituality",
+        "Description": "Deeper connection (+2 Wisdom).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Wisdom",
+          "Value": 2
+        }
+      }
+    ]
+  },
+  {
+    "Id": "oracle_tree",
+    "Name": "Oracle",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Cleric",
+    "ExclusiveGroupId": "Cleric_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Wisdom": 20,
+      "SpentInTree:priest_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "o_vision",
+        "Name": "Divine Vision",
+        "Description": "See the future (+5 Wisdom).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Wisdom",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
+    "Id": "inquisitor_tree",
+    "Name": "Inquisitor",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Cleric",
+    "ExclusiveGroupId": "Cleric_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Strength": 20,
+      "SpentInTree:priest_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "in_zeal",
+        "Name": "Holy Zeal",
+        "Description": "Burn the heretics (+5 Strength).",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 2,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Strength",
+          "Value": 5
+        }
+      }
+    ]
   }
 ]
