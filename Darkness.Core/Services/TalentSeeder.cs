@@ -18,14 +18,22 @@ public class TalentSeeder
 
     public void Seed(LiteDatabase db)
     {
+        const string jsonPath = "assets/data/talent-trees.json";
+        
+        if (!_fileSystem.FileExists(jsonPath))
+        {
+            Console.Error.WriteLine($"[TalentSeeder] ERROR: File not found: {jsonPath}");
+            return;
+        }
+
         string json;
         try
         {
-            json = _fileSystem.ReadAllText("assets/data/talent-trees.json");
+            json = _fileSystem.ReadAllText(jsonPath);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[TalentSeeder] ERROR: Failed to read talent-trees.json — {ex.Message}");
+            Console.Error.WriteLine($"[TalentSeeder] ERROR: Failed to read talent-trees.json — {ex.Message}");
             return;
         }
 
@@ -39,13 +47,13 @@ public class TalentSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[TalentSeeder] ERROR: Failed to parse talent-trees.json — {ex.Message}");
+            Console.Error.WriteLine($"[TalentSeeder] ERROR: Failed to parse talent-trees.json — {ex.Message}");
             return;
         }
 
         if (trees == null || trees.Count == 0)
         {
-            Console.WriteLine("[TalentSeeder] WARN: talent-trees.json is empty or null");
+            Console.Error.WriteLine("[TalentSeeder] WARN: talent-trees.json is empty or null");
             return;
         }
 
@@ -54,6 +62,6 @@ public class TalentSeeder
         col.InsertBulk(trees);
         col.EnsureIndex(t => t.Id);
 
-        Console.WriteLine($"[TalentSeeder] INFO: Loaded {col.Count()} talent trees");
+        Console.Error.WriteLine($"[TalentSeeder] INFO: Loaded {col.Count()} talent trees");
     }
 }

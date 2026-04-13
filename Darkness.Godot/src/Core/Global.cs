@@ -50,27 +50,30 @@ public partial class Global : Node
             services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();
             services.AddSingleton<IWeaponSkillService, WeaponSkillService>();
             services.AddSingleton<ILevelingService, LevelingService>();
+            services.AddSingleton<ITalentService, TalentService>();
             services.AddSingleton<ITriggerService, TriggerService>();
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
-Services = services.BuildServiceProvider();
-GD.Print("[Global] DI Container initialized.");
 
-// Initialize Transition Overlay
-Transition = new TransitionLayer();
-AddChild(Transition);
+            Services = services.BuildServiceProvider();
+            GD.Print("[Global] DI Container initialized.");
 
-// Seed data synchronously to ensure it's available before scenes load
-try 
-{
-    var db = Services.GetRequiredService<LiteDatabase>();
-    var fs = Services.GetRequiredService<IFileSystemService>();
+            // Initialize Transition Overlay
+            Transition = new TransitionLayer();
+            AddChild(Transition);
 
-    GD.Print("[Global] Seeding data...");
-    new SpriteSeeder(fs).Seed(db);
-    new QuestSeeder(fs).Seed(db);
-    new LevelSeeder(fs).Seed(db);
-    GD.Print("[Global] Data seeding complete.");
-}
+            // Seed data synchronously to ensure it's available before scenes load
+            try 
+            {
+                var db = Services.GetRequiredService<LiteDatabase>();
+                var fs = Services.GetRequiredService<IFileSystemService>();
+
+                GD.Print("[Global] Seeding data...");
+                new SpriteSeeder(fs).Seed(db);
+                new QuestSeeder(fs).Seed(db);
+                new LevelSeeder(fs).Seed(db);
+                new TalentSeeder(fs).Seed(db);
+                GD.Print("[Global] Data seeding complete.");
+            }
 catch (Exception ex)
 {
     GD.PrintErr($"[Global] Data seeding failed: {ex.Message}");
