@@ -96,7 +96,7 @@ public partial class TalentTreeScene : Control
             TalentLayoutHelper.CalculateLayout(tree.Nodes);
 
             // Draw Lines First (so they are behind nodes)
-            DrawConnections(treeCanvas, tree.Nodes);
+            DrawConnections(treeCanvas, tree.Nodes, tree.Id);
 
             // Create Nodes
             foreach (var node in tree.Nodes)
@@ -128,7 +128,7 @@ public partial class TalentTreeScene : Control
         }
     }
 
-    private void DrawConnections(Control canvas, List<TalentNode> nodes)
+    private void DrawConnections(Control canvas, List<TalentNode> nodes, string treeId)
     {
         var nodeDict = nodes.ToDictionary(n => n.Id);
 
@@ -141,7 +141,7 @@ public partial class TalentTreeScene : Control
                     var line = new Line2D
                     {
                         Width = 4,
-                        DefaultColor = new Color(0.4f, 0.4f, 0.4f, 1) // Gray line
+                        DefaultColor = new Color(0.3f, 0.3f, 0.3f, 1) // Gray line (Locked)
                     };
 
                     // Parent center (bottom)
@@ -155,10 +155,20 @@ public partial class TalentTreeScene : Control
                     line.AddPoint(new Vector2(px, py));
                     line.AddPoint(new Vector2(cx, cy));
 
-                    // If child is unlocked, make line brighter
-                    if (_session.CurrentCharacter!.UnlockedTalentIds.Contains(node.Id))
+                    // Color logic
+                    bool childUnlocked = _session.CurrentCharacter!.UnlockedTalentIds.Contains(node.Id);
+                    
+                    if (childUnlocked)
                     {
-                        line.DefaultColor = new Color(0.2f, 0.8f, 0.2f, 1); // Green line
+                        line.DefaultColor = new Color(0.2f, 0.8f, 0.2f, 1); // Green (Unlocked)
+                    }
+                    else
+                    {
+                        var purchaseResult = _talentService.CanPurchaseTalent(_session.CurrentCharacter, treeId, node.Id);
+                        if (purchaseResult.Success)
+                        {
+                            line.DefaultColor = new Color(1.0f, 0.9f, 0.2f, 1); // Yellow (Available)
+                        }
                     }
 
                     canvas.AddChild(line);
