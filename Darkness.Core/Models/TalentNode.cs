@@ -6,6 +6,8 @@ namespace Darkness.Core.Models
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int PointsRequired { get; set; } = 1;
+        public int Row { get; set; }
+        public int Column { get; set; }
         public string? PrerequisiteNodeId { get; set; }
         public TalentEffect Effect { get; set; } = new();
     }

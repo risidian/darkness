@@ -30,6 +30,8 @@ public class TalentModelTests
             Name = "Strength I",
             Description = "Increases Strength by 5",
             PointsRequired = 1,
+            Row = 2,
+            Column = 3,
             PrerequisiteNodeId = null,
             Effect = new TalentEffect { Stat = "Strength", Value = 5 }
         };
@@ -38,6 +40,8 @@ public class TalentModelTests
         Assert.Equal("Strength I", node.Name);
         Assert.Equal("Increases Strength by 5", node.Description);
         Assert.Equal(1, node.PointsRequired);
+        Assert.Equal(2, node.Row);
+        Assert.Equal(3, node.Column);
         Assert.Null(node.PrerequisiteNodeId);
         Assert.NotNull(node.Effect);
         Assert.Equal("Strength", node.Effect.Stat);
@@ -51,6 +55,8 @@ public class TalentModelTests
             Id = "tree_1",
             Name = "Warrior Tree",
             Tier = 1,
+            RequiredClass = "Warrior",
+            ExclusiveGroupId = "core_combat",
             IsHidden = false,
             Prerequisites = new Dictionary<string, int> { { "tree_0", 5 } },
             Nodes = new List<TalentNode> { new TalentNode { Id = "node_1", Name = "Strength I" } }
@@ -59,6 +65,8 @@ public class TalentModelTests
         Assert.Equal("tree_1", tree.Id);
         Assert.Equal("Warrior Tree", tree.Name);
         Assert.Equal(1, tree.Tier);
+        Assert.Equal("Warrior", tree.RequiredClass);
+        Assert.Equal("core_combat", tree.ExclusiveGroupId);
         Assert.False(tree.IsHidden);
         Assert.Single(tree.Prerequisites);
         Assert.Equal(5, tree.Prerequisites["tree_0"]);
