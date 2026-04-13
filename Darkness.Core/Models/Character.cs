@@ -1,3 +1,7 @@
+using LiteDB;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Darkness.Core.Models
 {
     public class Character
@@ -21,12 +25,57 @@ namespace Darkness.Core.Models
         public string? OffHandType { get; set; } = "None";
 
         // Base Stats
-        public int Strength { get; set; }
-        public int Dexterity { get; set; }
-        public int Constitution { get; set; }
-        public int Intelligence { get; set; }
-        public int Wisdom { get; set; }
-        public int Charisma { get; set; }
+        public int BaseStrength { get; set; }
+        public int BaseDexterity { get; set; }
+        public int BaseConstitution { get; set; }
+        public int BaseIntelligence { get; set; }
+        public int BaseWisdom { get; set; }
+        public int BaseCharisma { get; set; }
+
+        public Dictionary<string, int> StatBonuses { get; set; } = new();
+
+        // Effective Stats (Computed)
+        [BsonIgnore]
+        public int Strength
+        {
+            get => BaseStrength + (StatBonuses.TryGetValue("Strength", out var b) ? b : 0);
+            set => BaseStrength = value;
+        }
+
+        [BsonIgnore]
+        public int Dexterity
+        {
+            get => BaseDexterity + (StatBonuses.TryGetValue("Dexterity", out var b) ? b : 0);
+            set => BaseDexterity = value;
+        }
+
+        [BsonIgnore]
+        public int Constitution
+        {
+            get => BaseConstitution + (StatBonuses.TryGetValue("Constitution", out var b) ? b : 0);
+            set => BaseConstitution = value;
+        }
+
+        [BsonIgnore]
+        public int Intelligence
+        {
+            get => BaseIntelligence + (StatBonuses.TryGetValue("Intelligence", out var b) ? b : 0);
+            set => BaseIntelligence = value;
+        }
+
+        [BsonIgnore]
+        public int Wisdom
+        {
+            get => BaseWisdom + (StatBonuses.TryGetValue("Wisdom", out var b) ? b : 0);
+            set => BaseWisdom = value;
+        }
+
+        [BsonIgnore]
+        public int Charisma
+        {
+            get => BaseCharisma + (StatBonuses.TryGetValue("Charisma", out var b) ? b : 0);
+            set => BaseCharisma = value;
+        }
 
         // Derived Stats
         public int CurrentHP { get; set; }

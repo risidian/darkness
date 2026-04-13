@@ -1,12 +1,20 @@
 using System.Collections.Generic;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
+using LiteDB;
 
 namespace Darkness.Core.Services;
 
 public class WeaponSkillService : IWeaponSkillService
 {
-    public List<Skill> GetSkillsForWeapon(string? weaponType, string? offHandType, string? shieldType)
+    private readonly LiteDatabase _db;
+
+    public WeaponSkillService(LiteDatabase db)
+    {
+        _db = db;
+    }
+
+    public List<Skill> GetSkillsForWeapon(string? weaponType, string? offHandType, string? shieldType, List<string>? unlockedTalentIds = null)
     {
         var skills = new List<Skill>();
         weaponType ??= "None";
@@ -168,6 +176,40 @@ public class WeaponSkillService : IWeaponSkillService
                 Name = blockName, Description = blockDesc, SkillType = "Defensive", BlockReduction = blockVal,
                 AssociatedAction = ActionType.Block
             });
+        }
+
+        // Add skills from unlocked talents
+        if (unlockedTalentIds != null && unlockedTalentIds.Count > 0)
+        {
+            var trees = _db.GetCollection<TalentTree>("talent_trees").FindAll();
+            foreach (var tree in trees)
+            {
+                foreach (var node in tree.Nodes)
+                {
+                    if (unlockedTalentIds.Contains(node.Id) && !string.IsNullOrEmpty(node.Effect.Skill))
+                    {
+                        // Create a skill for the talent
+                        var talentSkill = new Skill
+                        {
+                            Name = node.Effect.Skill,
+                            Description = node.Description,
+                            SkillType = "Magical", // Defaulting to Magical for talent-based skills
+                            DamageMultiplier = 1.5f,
+                            AssociatedAction = ActionType.Slash
+                        };
+
+                        // Specific logic for Holy Strike as an example
+                        if (node.Effect.Skill == "Holy Strike")
+                        {
+                            talentSkill.Description = "A strike imbued with holy energy. (1.8x Dmg)";
+                            talentSkill.DamageMultiplier = 1.8f;
+                            talentSkill.ManaCost = 15;
+                        }
+
+                        skills.Add(talentSkill);
+                    }
+                }
+            }
         }
 
         return skills;

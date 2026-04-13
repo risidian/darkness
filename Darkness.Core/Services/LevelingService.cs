@@ -25,12 +25,24 @@ public class LevelingService : ILevelingService
         int newLevel = GetLevelForXp(character.Experience);
         int levelsGained = newLevel - previousLevel;
         int pointsAwarded = 0;
+        int talentPointsAwarded = 0;
 
         if (levelsGained > 0)
         {
             character.Level = newLevel;
             pointsAwarded = levelsGained * AttributePointsPerLevel;
             character.AttributePoints += pointsAwarded;
+
+            // Award 1 talent point for every even level gained
+            for (int i = previousLevel + 1; i <= newLevel; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    character.TalentPoints++;
+                    talentPointsAwarded++;
+                }
+            }
+
             character.CurrentHP = character.MaxHP;
         }
 
@@ -40,7 +52,8 @@ public class LevelingService : ILevelingService
             TotalXp = character.Experience,
             PreviousLevel = previousLevel,
             NewLevel = newLevel,
-            AttributePointsAwarded = pointsAwarded
+            AttributePointsAwarded = pointsAwarded,
+            TalentPointsAwarded = talentPointsAwarded
         };
     }
 

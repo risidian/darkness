@@ -361,7 +361,7 @@ public partial class BattleScene : Control, IInitializable
         var character = _session.CurrentCharacter;
 
         _currentWeaponSkills =
-            _weaponSkillService.GetSkillsForWeapon(character.WeaponType ?? "None", character.OffHandType ?? "None", character.ShieldType ?? "None");
+            _weaponSkillService.GetSkillsForWeapon(character.WeaponType ?? "None", character.OffHandType ?? "None", character.ShieldType ?? "None", character.UnlockedTalentIds);
 
         var buttons = new[]
         {

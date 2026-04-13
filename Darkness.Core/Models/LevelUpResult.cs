@@ -9,4 +9,5 @@ public class LevelUpResult
     public bool DidLevelUp => NewLevel > PreviousLevel;
     public int LevelsGained => NewLevel - PreviousLevel;
     public int AttributePointsAwarded { get; set; }
+    public int TalentPointsAwarded { get; set; }
 }

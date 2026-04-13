@@ -105,4 +105,40 @@ public class LevelingServiceTests : IDisposable
         Assert.Equal(3, _levelingService.GetLevelForXp(250));
         Assert.Equal(5, _levelingService.GetLevelForXp(10000));
     }
+
+    [Fact]
+    public void AwardExperience_EvenLevels_AwardsTalentPoints()
+    {
+        var character = new Character { Level = 1, Experience = 0, TalentPoints = 0 };
+        
+        // Level 1 -> 2 (Even)
+        var result = _levelingService.AwardExperience(character, 100);
+        Assert.Equal(2, character.Level);
+        Assert.Equal(1, character.TalentPoints);
+        Assert.Equal(1, result.TalentPointsAwarded);
+
+        // Level 2 -> 3 (Odd)
+        result = _levelingService.AwardExperience(character, 150);
+        Assert.Equal(3, character.Level);
+        Assert.Equal(1, character.TalentPoints);
+        Assert.Equal(0, result.TalentPointsAwarded);
+
+        // Level 3 -> 4 (Even)
+        result = _levelingService.AwardExperience(character, 250);
+        Assert.Equal(4, character.Level);
+        Assert.Equal(2, character.TalentPoints);
+        Assert.Equal(1, result.TalentPointsAwarded);
+    }
+
+    [Fact]
+    public void AwardExperience_MultiLevel_AwardsCorrectTalentPoints()
+    {
+        var character = new Character { Level = 1, Experience = 0, TalentPoints = 0 };
+        
+        // Level 1 -> 4 (2 and 4 are even)
+        var result = _levelingService.AwardExperience(character, 500);
+        Assert.Equal(4, character.Level);
+        Assert.Equal(2, character.TalentPoints);
+        Assert.Equal(2, result.TalentPointsAwarded);
+    }
 }
