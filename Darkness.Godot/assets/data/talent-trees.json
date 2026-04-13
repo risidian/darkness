@@ -1,0 +1,33 @@
+[
+  {
+    "Id": "knight_tree",
+    "Name": "Knight",
+    "Tier": 1,
+    "Prerequisites": { "Level": "1" },
+    "Nodes": [
+      {
+        "Id": "k1_str", "Name": "Iron Grip", "Description": "+5 Strength",
+        "Effect": { "Stat": "Strength", "Value": 5 }
+      }
+    ]
+  },
+  {
+    "Id": "holy_knight_tree",
+    "Name": "Holy Knight",
+    "Tier": 2,
+    "Prerequisites": { "Level": "20", "SpentInTree:knight_tree": "5" },
+    "Nodes": [
+      {
+        "Id": "hk1_holy_strike", "Name": "Holy Strike", "Description": "Unlocks Holy Strike",
+        "Effect": { "Skill": "Holy Strike" }
+      }
+    ]
+  },
+  {
+    "Id": "crusader_tree",
+    "Name": "Crusader",
+    "Tier": 3, "IsHidden": true,
+    "Prerequisites": { "Level": "40", "Strength": "20", "SpentInTree:holy_knight_tree": "20" },
+    "Nodes": []
+  }
+]
