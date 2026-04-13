@@ -18,12 +18,43 @@ public class TalentService : ITalentService
 
     public List<TalentTree> GetAvailableTrees(Character character)
     {
-        var allTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll();
-        return allTrees.Where(tree => IsTreeAvailable(character, tree)).ToList();
+        var allTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();
+        return allTrees.Where(tree => 
+        {
+            var available = IsTreeAvailable(character, tree);
+            if (tree.IsHidden)
+            {
+                // Hidden trees show up if prerequisites are met OR if points are already spent
+                var metPrereqs = IsTreeAvailable(character, tree);
+                var hasPoints = character.UnlockedTalentIds.Any(id => tree.Nodes.Any(n => n.Id == id));
+                return metPrereqs || hasPoints;
+            }
+            return available;
+        }).ToList();
     }
 
     private bool IsTreeAvailable(Character character, TalentTree tree)
     {
+        if (!string.IsNullOrEmpty(tree.RequiredClass) && character.Class != tree.RequiredClass)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrEmpty(tree.ExclusiveGroupId))
+        {
+            var otherTreesInGroup = _db.GetCollection<TalentTree>("talent_trees")
+                .Find(t => t.ExclusiveGroupId == tree.ExclusiveGroupId && t.Id != tree.Id)
+                .ToList();
+
+            foreach (var otherTree in otherTreesInGroup)
+            {
+                if (character.UnlockedTalentIds.Any(id => otherTree.Nodes.Any(n => n.Id == id)))
+                {
+                    return false;
+                }
+            }
+        }
+
         foreach (var prereq in tree.Prerequisites)
         {
             if (prereq.Key == "Level" && character.Level < prereq.Value) return false;
@@ -59,8 +90,11 @@ public class TalentService : ITalentService
         if (character.UnlockedTalentIds.Contains(nodeId)) return false;
         if (!IsTreeAvailable(character, tree)) return false;
 
-        if (!string.IsNullOrEmpty(node.PrerequisiteNodeId) && !character.UnlockedTalentIds.Contains(node.PrerequisiteNodeId))
-            return false;
+        foreach (var prereqId in node.PrerequisiteNodeIds)
+        {
+            if (!character.UnlockedTalentIds.Contains(prereqId))
+                return false;
+        }
 
         return true;
     }
@@ -82,19 +116,18 @@ public class TalentService : ITalentService
         var allTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();
         var allNodes = allTrees.SelectMany(t => t.Nodes).ToList();
 
-        // Clear existing bonuses
-        character.StatBonuses.Clear();
+        character.TalentStatBonuses.Clear();
 
         foreach (var talentId in character.UnlockedTalentIds)
         {
             var node = allNodes.FirstOrDefault(n => n.Id == talentId);
             if (node?.Effect != null && !string.IsNullOrEmpty(node.Effect.Stat))
             {
-                if (!character.StatBonuses.ContainsKey(node.Effect.Stat))
+                if (!character.TalentStatBonuses.ContainsKey(node.Effect.Stat))
                 {
-                    character.StatBonuses[node.Effect.Stat] = 0;
+                    character.TalentStatBonuses[node.Effect.Stat] = 0;
                 }
-                character.StatBonuses[node.Effect.Stat] += node.Effect.Value;
+                character.TalentStatBonuses[node.Effect.Stat] += node.Effect.Value;
             }
         }
         

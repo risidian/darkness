@@ -33,53 +33,67 @@ namespace Darkness.Core.Models
         public int BaseCharisma { get; set; }
 
         public Dictionary<string, int> StatBonuses { get; set; } = new();
+        public Dictionary<string, int> TalentStatBonuses { get; set; } = new();
 
         // Effective Stats (Computed)
         [BsonIgnore]
         public int Strength
         {
-            get => BaseStrength + (StatBonuses.TryGetValue("Strength", out var b) ? b : 0);
+            get => BaseStrength + 
+                   (StatBonuses.TryGetValue("Strength", out var b) ? b : 0) +
+                   (TalentStatBonuses.TryGetValue("Strength", out var tb) ? tb : 0);
             set => BaseStrength = value;
         }
 
         [BsonIgnore]
         public int Dexterity
         {
-            get => BaseDexterity + (StatBonuses.TryGetValue("Dexterity", out var b) ? b : 0);
+            get => BaseDexterity + 
+                   (StatBonuses.TryGetValue("Dexterity", out var b) ? b : 0) +
+                   (TalentStatBonuses.TryGetValue("Dexterity", out var tb) ? tb : 0);
             set => BaseDexterity = value;
         }
 
         [BsonIgnore]
         public int Constitution
         {
-            get => BaseConstitution + (StatBonuses.TryGetValue("Constitution", out var b) ? b : 0);
+            get => BaseConstitution + 
+                   (StatBonuses.TryGetValue("Constitution", out var b) ? b : 0) +
+                   (TalentStatBonuses.TryGetValue("Constitution", out var tb) ? tb : 0);
             set => BaseConstitution = value;
         }
 
         [BsonIgnore]
         public int Intelligence
         {
-            get => BaseIntelligence + (StatBonuses.TryGetValue("Intelligence", out var b) ? b : 0);
+            get => BaseIntelligence + 
+                   (StatBonuses.TryGetValue("Intelligence", out var b) ? b : 0) +
+                   (TalentStatBonuses.TryGetValue("Intelligence", out var tb) ? tb : 0);
             set => BaseIntelligence = value;
         }
 
         [BsonIgnore]
         public int Wisdom
         {
-            get => BaseWisdom + (StatBonuses.TryGetValue("Wisdom", out var b) ? b : 0);
+            get => BaseWisdom + 
+                   (StatBonuses.TryGetValue("Wisdom", out var b) ? b : 0) +
+                   (TalentStatBonuses.TryGetValue("Wisdom", out var tb) ? tb : 0);
             set => BaseWisdom = value;
         }
 
         [BsonIgnore]
         public int Charisma
         {
-            get => BaseCharisma + (StatBonuses.TryGetValue("Charisma", out var b) ? b : 0);
+            get => BaseCharisma + 
+                   (StatBonuses.TryGetValue("Charisma", out var b) ? b : 0) +
+                   (TalentStatBonuses.TryGetValue("Charisma", out var tb) ? tb : 0);
             set => BaseCharisma = value;
         }
 
         // Derived Stats
         public int CurrentHP { get; set; }
         public int MaxHP { get; set; }
+        public int Attack { get; set; }
         public int Stamina { get; set; }
         public int Mana { get; set; }
         public int Speed { get; set; }
@@ -143,20 +157,31 @@ namespace Darkness.Core.Models
         public void RecalculateDerivedStats()
         {
             int oldMaxHP = MaxHP;
-            MaxHP = Constitution * 10;
+            MaxHP = Constitution * 10 + GetTotalBonus("MaxHP");
             if (MaxHP > oldMaxHP)
             {
                 CurrentHP += (MaxHP - oldMaxHP);
             }
             
-            Mana = Wisdom * 5;
-            Stamina = Constitution * 5;
-            Speed = Dexterity;
-            Accuracy = 80 + Dexterity / 2;
-            Evasion = Dexterity / 2;
-            Defense = Constitution / 2;
-            MagicDefense = Wisdom / 2;
+            Mana = Wisdom * 5 + GetTotalBonus("Mana");
+            Stamina = Constitution * 5 + GetTotalBonus("Stamina");
+            Speed = Dexterity + GetTotalBonus("Speed");
+            Attack = Strength * 2 + GetTotalBonus("Attack");
+            Accuracy = 80 + Dexterity / 2 + GetTotalBonus("Accuracy");
+            Evasion = Dexterity / 2 + GetTotalBonus("Evasion");
+            Defense = Constitution / 2 + GetTotalBonus("Defense");
+            MagicDefense = Wisdom / 2 + GetTotalBonus("MagicDefense");
+            ArmorClass = Constitution / 2 + GetTotalBonus("ArmorClass");
+            CriticalChance = GetTotalBonus("CriticalChance");
+            CriticalDamage = GetTotalBonus("CriticalDamage");
+            CriticalDefense = GetTotalBonus("CriticalDefense");
         }
+
+        public int GetTotalBonus(string key) =>
+            (StatBonuses.TryGetValue(key, out var b) ? b : 0) +
+            (TalentStatBonuses.TryGetValue(key, out var tb) ? tb : 0);
+
+        private int GetTalentBonus(string key) => TalentStatBonuses.TryGetValue(key, out var val) ? val : 0;
 
         public CharacterSnapshot ToSnapshot() => new CharacterSnapshot(
             Name, Class, CurrentHP, MaxHP, Level, Thumbnail, HairColor, HairStyle, SkinColor

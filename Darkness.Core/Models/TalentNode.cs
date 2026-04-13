@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Darkness.Core.Models
 {
     public class TalentNode
@@ -8,7 +10,8 @@ namespace Darkness.Core.Models
         public int PointsRequired { get; set; } = 1;
         public int Row { get; set; }
         public int Column { get; set; }
-        public string? PrerequisiteNodeId { get; set; }
+        public List<string> PrerequisiteNodeIds { get; set; } = new();
+        public string? IconPath { get; set; }
         public TalentEffect Effect { get; set; } = new();
     }
 }
