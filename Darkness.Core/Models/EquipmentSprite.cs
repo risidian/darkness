@@ -11,4 +11,10 @@ public class EquipmentSprite
     public string Gender { get; set; } = "universal";
     public string? FallbackGender { get; set; }
     public string TintHex { get; set; } = "#FFFFFF";
+
+    // Stat requirements
+    public int RequiredStrength { get; set; }
+    public int RequiredDexterity { get; set; }
+    public int RequiredIntelligence { get; set; }
+    public int RequiredLevel { get; set; }
 }

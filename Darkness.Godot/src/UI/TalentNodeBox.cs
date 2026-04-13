@@ -16,6 +16,7 @@ public partial class TalentNodeBox : PanelContainer
     private TalentNode? _node;
     private bool _isUnlocked;
     private bool _canPurchase;
+    private string? _failureReason;
 
     public override void _Ready()
     {
@@ -26,11 +27,12 @@ public partial class TalentNodeBox : PanelContainer
         _iconButton.Pressed += OnIconButtonPressed;
     }
 
-    public void SetTalent(TalentNode node, bool isUnlocked, bool canPurchase)
+    public void SetTalent(TalentNode node, bool isUnlocked, TalentPurchaseResult purchaseResult)
     {
         _node = node;
         _isUnlocked = isUnlocked;
-        _canPurchase = canPurchase;
+        _canPurchase = purchaseResult.Success;
+        _failureReason = purchaseResult.FailureReason;
 
         UpdateUI();
     }
@@ -40,13 +42,10 @@ public partial class TalentNodeBox : PanelContainer
         if (_node == null) return;
 
         _nameLabel.Text = _node.Name;
-        TooltipText = _node.Description;
-        
-        string iconPath = !string.IsNullOrEmpty(_node.IconPath) ? _node.IconPath : "res://icon.svg";
-        _iconButton.TextureNormal = GD.Load<Texture2D>(iconPath);
         
         if (_isUnlocked)
         {
+            TooltipText = _node.Description;
             _statusLabel.Text = "Unlocked";
             _iconButton.Disabled = true;
             _iconButton.Modulate = new Color(1, 1, 1, 1); // Normal
@@ -54,6 +53,7 @@ public partial class TalentNodeBox : PanelContainer
         }
         else if (_canPurchase)
         {
+            TooltipText = _node.Description;
             _statusLabel.Text = $"Available (0/{_node.PointsRequired})";
             _iconButton.Disabled = false;
             _iconButton.Modulate = new Color(1, 1, 1, 1); // Normal
@@ -61,11 +61,15 @@ public partial class TalentNodeBox : PanelContainer
         }
         else
         {
+            TooltipText = $"{_node.Description}\n\n[LOCKED]\n{_failureReason}";
             _statusLabel.Text = "Locked";
             _iconButton.Disabled = true;
             _iconButton.Modulate = new Color(0.5f, 0.5f, 0.5f, 1); // Greyed out
             SelfModulate = new Color(0.3f, 0.3f, 0.3f, 1); // Greyish background for locked
         }
+
+        string iconPath = !string.IsNullOrEmpty(_node.IconPath) ? _node.IconPath : "res://icon.svg";
+        _iconButton.TextureNormal = GD.Load<Texture2D>(iconPath);
     }
 
     private void OnIconButtonPressed()

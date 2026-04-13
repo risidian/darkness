@@ -32,7 +32,7 @@ public class TalentModelTests
             PointsRequired = 1,
             Row = 2,
             Column = 3,
-            PrerequisiteNodeId = null,
+            PrerequisiteNodeIds = new List<string>(),
             Effect = new TalentEffect { Stat = "Strength", Value = 5 }
         };
 
@@ -42,7 +42,7 @@ public class TalentModelTests
         Assert.Equal(1, node.PointsRequired);
         Assert.Equal(2, node.Row);
         Assert.Equal(3, node.Column);
-        Assert.Null(node.PrerequisiteNodeId);
+        Assert.Empty(node.PrerequisiteNodeIds);
         Assert.NotNull(node.Effect);
         Assert.Equal("Strength", node.Effect.Stat);
     }

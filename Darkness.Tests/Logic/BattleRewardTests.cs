@@ -15,7 +15,7 @@ public class BattleRewardTests
     {
         // Arrange
         // We need a dummy LiteDatabase for RewardService constructor
-        var db = new LiteDB.LiteDatabase(":memory:");
+        var db = new LiteDB.LiteDatabase(new System.IO.MemoryStream());
         
         // Seed items
         var itemCol = db.GetCollection<Item>("items");

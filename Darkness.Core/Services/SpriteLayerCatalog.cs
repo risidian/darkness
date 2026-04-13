@@ -48,6 +48,12 @@ public class SpriteLayerCatalog : ISpriteLayerCatalog
             .Select(o => o.DisplayName).ToList();
     }
 
+    public EquipmentSprite? GetEquipmentSpriteByName(string slot, string displayName)
+    {
+        var col = _db.GetCollection<EquipmentSprite>("equipment_sprites");
+        return col.FindOne(s => s.Slot == slot && s.DisplayName == displayName);
+    }
+
     public List<StitchLayer> GetStitchLayers(CharacterAppearance appearance)
     {
         var spriteCol = _db.GetCollection<EquipmentSprite>("equipment_sprites");

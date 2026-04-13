@@ -408,14 +408,10 @@ public partial class CharacterGenScene : Control
             }
 
             // Starter Gear in Inventory
-            if (!string.IsNullOrEmpty(_character.WeaponType) && _character.WeaponType != "None")
-                _character.Inventory.Add(new Item { Name = _character.WeaponType, Type = "Weapon", Value = 100 });
-            if (!string.IsNullOrEmpty(_character.ArmorType) && _character.ArmorType != "None")
-                _character.Inventory.Add(new Item { Name = _character.ArmorType, Type = "Armor", Value = 150 });
-            if (!string.IsNullOrEmpty(_character.ShieldType) && _character.ShieldType != "None")
-                _character.Inventory.Add(new Item { Name = _character.ShieldType, Type = "Shield", Value = 75 });
-            if (!string.IsNullOrEmpty(_character.OffHandType) && _character.OffHandType != "None")
-                _character.Inventory.Add(new Item { Name = _character.OffHandType, Type = "Weapon", Value = 100 });
+            AddStarterGear(_character.WeaponType, "Weapon", 100);
+            AddStarterGear(_character.ArmorType, "Armor", 150);
+            AddStarterGear(_character.ShieldType, "Shield", 75);
+            AddStarterGear(_character.OffHandType, "Weapon", 100);
 
             // Generate Full Sprite Sheet
             try
@@ -445,6 +441,25 @@ public partial class CharacterGenScene : Control
             GD.PrintErr($"[CharacterGen] EXCEPTION in OnCreatePressed: {ex.Message}");
             GD.PrintErr(ex.StackTrace);
         }
+    }
+
+    private void AddStarterGear(string? name, string type, int value)
+    {
+        if (string.IsNullOrEmpty(name) || name == "None") return;
+
+        var item = new Item { Name = name, Type = type, Value = value };
+
+        // Try to look up requirements from catalog
+        var sprite = _catalog.GetEquipmentSpriteByName(type, name);
+        if (sprite != null)
+        {
+            item.RequiredStrength = sprite.RequiredStrength;
+            item.RequiredDexterity = sprite.RequiredDexterity;
+            item.RequiredIntelligence = sprite.RequiredIntelligence;
+            item.RequiredLevel = sprite.RequiredLevel;
+        }
+
+        _character.Inventory.Add(item);
     }
 
     private void SetStats(Character c, string cls)

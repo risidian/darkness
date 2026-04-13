@@ -25,6 +25,23 @@ namespace Darkness.Core.Models
         public string? EquipmentSlot { get; set; }
         public int? EquipmentSpriteId { get; set; }
 
+        // Stat requirements
+        public int RequiredStrength { get; set; }
+        public int RequiredDexterity { get; set; }
+        public int RequiredIntelligence { get; set; }
+        public int RequiredLevel { get; set; }
+
+        public bool CanEquip(Character character, out List<string> missingRequirements)
+        {
+            missingRequirements = new List<string>();
+            if (character.Strength < RequiredStrength) missingRequirements.Add($"Strength {RequiredStrength}");
+            if (character.Dexterity < RequiredDexterity) missingRequirements.Add($"Dexterity {RequiredDexterity}");
+            if (character.Intelligence < RequiredIntelligence) missingRequirements.Add($"Intelligence {RequiredIntelligence}");
+            if (character.Level < RequiredLevel) missingRequirements.Add($"Level {RequiredLevel}");
+
+            return missingRequirements.Count == 0;
+        }
+
         public int Tier { get; set; } = 0; // 0 = normal, 1 = +1, 2 = +2, etc.
         public string? Infusion { get; set; } // Elemental/Bonus effect (e.g., "Fire", "Life Steal")
         public int Quantity { get; set; } = 1;

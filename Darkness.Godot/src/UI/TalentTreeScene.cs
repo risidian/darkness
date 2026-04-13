@@ -105,9 +105,9 @@ public partial class TalentTreeScene : Control
                 treeCanvas.AddChild(nodeBox);
 
                 var isUnlocked = _session.CurrentCharacter.UnlockedTalentIds.Contains(node.Id);
-                var canPurchase = _talentService.CanPurchaseTalent(_session.CurrentCharacter, tree.Id, node.Id);
+                var purchaseResult = _talentService.CanPurchaseTalent(_session.CurrentCharacter, tree.Id, node.Id);
 
-                nodeBox.SetTalent(node, isUnlocked, canPurchase);
+                nodeBox.SetTalent(node, isUnlocked, purchaseResult);
                 
                 // Position node
                 float x = node.Column * COL_GAP + (COL_GAP - NODE_WIDTH) / 2f;
@@ -174,7 +174,8 @@ public partial class TalentTreeScene : Control
         var confirmed = await _dialogService.DisplayConfirmAsync("Purchase Talent", $"Unlock {node.Name} for {node.PointsRequired} point(s)?", "Unlock", "Cancel");
         if (confirmed)
         {
-            if (_talentService.CanPurchaseTalent(_session.CurrentCharacter, treeId, node.Id))
+            var result = _talentService.CanPurchaseTalent(_session.CurrentCharacter, treeId, node.Id);
+            if (result.Success)
             {
                 _talentService.PurchaseTalent(_session.CurrentCharacter, treeId, node.Id);
                 _talentService.ApplyTalentPassives(_session.CurrentCharacter);
@@ -185,7 +186,7 @@ public partial class TalentTreeScene : Control
             }
             else
             {
-                await _dialogService.DisplayAlertAsync("Purchase Failed", "You do not have enough talent points or prerequisites met.", "OK");
+                await _dialogService.DisplayAlertAsync("Purchase Failed", result.FailureReason ?? "Unknown error", "OK");
             }
         }
     }

@@ -13,7 +13,7 @@ public class WeaponSkillServiceTests
 
     public WeaponSkillServiceTests()
     {
-        _db = new LiteDatabase("Filename=:memory:;");
+        _db = new LiteDatabase(new System.IO.MemoryStream());
         _service = new WeaponSkillService(_db);
     }
 

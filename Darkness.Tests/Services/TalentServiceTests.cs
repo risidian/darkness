@@ -49,7 +49,7 @@ public class TalentServiceTests
         var result = service.CanPurchaseTalent(character, "tree1", "node1");
 
         // Assert
-        Assert.False(result);
+        Assert.False(result.Success);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class TalentServiceTests
         var result = service.CanPurchaseTalent(character, "tree1", "node1");
 
         // Assert
-        Assert.True(result);
+        Assert.True(result.Success);
     }
 
     [Fact]
@@ -95,7 +95,7 @@ public class TalentServiceTests
         var result = service.CanPurchaseTalent(character, "tree1", "node1");
 
         // Assert
-        Assert.False(result);
+        Assert.False(result.Success);
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public class TalentServiceTests
         var result = service.CanPurchaseTalent(character, "tree1", "node2");
 
         // Assert
-        Assert.False(result);
+        Assert.False(result.Success);
     }
 
     [Fact]

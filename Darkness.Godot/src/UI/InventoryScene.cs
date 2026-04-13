@@ -71,11 +71,11 @@ public partial class InventoryScene : Control
         if (_session.CurrentCharacter == null) return;
         if (_session.CurrentCharacter.Inventory.Count > 0) return;
 
-        // Add starter equipment with ArmorClass restrictions
-        // ArmorClass: 0=Cloth, 1=Leather, 2=Plate
+        // Add starter equipment with requirements
         _session.CurrentCharacter.Inventory.Add(new Item { Name = "Dagger (Steel)", Type = "Weapon", AttackBonus = 5 });
-        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Recurve Bow", Type = "Weapon", AttackBonus = 6 });
-        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Mage Wand", Type = "Weapon", AttackBonus = 4 });
+        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Recurve Bow", Type = "Weapon", AttackBonus = 6, RequiredDexterity = 12 });
+        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Mage Wand", Type = "Weapon", AttackBonus = 4, RequiredIntelligence = 10 });
+        _session.CurrentCharacter.Inventory.Add(new Item { Name = "Greatsword", Type = "Weapon", AttackBonus = 12, RequiredStrength = 15 });
 
         _session.CurrentCharacter.Inventory.Add(new Item { Name = "Health Potion", Type = "Consumable", Value = 50, Quantity = 5 });
 
@@ -123,12 +123,24 @@ public partial class InventoryScene : Control
                 { Text = isConsumable ? "USE" : (isEquipped ? "UNEQUIP" : "EQUIP"), CustomMinimumSize = new Vector2(180, 0) };
             equipBtn.AddThemeFontSizeOverride("font_size", 20);
 
-            // Disable if character doesn't have required ArmorClass proficiency
-            if (!isEquipped && item.Type == "Armor" && item.ArmorClass > _session.CurrentCharacter.ArmorClass)
+            // Check stat and proficiency requirements
+            bool meetsStats = item.CanEquip(_session.CurrentCharacter, out var missing);
+            bool meetsAC = !(item.Type == "Armor" && item.ArmorClass > _session.CurrentCharacter.ArmorClass);
+
+            if (!isEquipped && (!meetsStats || !meetsAC))
             {
                 equipBtn.Disabled = true;
                 equipBtn.Text = "LOCKED";
                 label.Modulate = new Color(0.5f, 0.5f, 0.5f);
+                
+                if (!meetsStats)
+                {
+                    label.TooltipText = $"Requires: {string.Join(", ", missing)}";
+                }
+                else if (!meetsAC)
+                {
+                    label.TooltipText = $"Requires Armor Proficiency Level {item.ArmorClass}";
+                }
             }
             else
             {
