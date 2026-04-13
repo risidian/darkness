@@ -124,4 +124,64 @@ public class TalentServiceTests
         // Assert
         Assert.False(result);
     }
+
+    [Fact]
+    public void PurchaseTalent_DeductsPoint_And_AddsId()
+    {
+        // Arrange
+        using var db = new LiteDatabase(new MemoryStream());
+        var col = db.GetCollection<TalentTree>("talent_trees");
+        var tree = new TalentTree 
+        { 
+            Id = "tree1", 
+            Nodes = new List<TalentNode> { new TalentNode { Id = "node1", PointsRequired = 1 } } 
+        };
+        col.Insert(tree);
+        
+        var service = new TalentService(db);
+        var character = new Character { TalentPoints = 1, Level = 1 };
+
+        // Act
+        service.PurchaseTalent(character, "tree1", "node1");
+
+        // Assert
+        Assert.Contains("node1", character.UnlockedTalentIds);
+        Assert.Equal(0, character.TalentPoints);
+    }
+
+    [Fact]
+    public void ApplyTalentPassives_AddsStats_And_UpdatesDerived()
+    {
+        // Arrange
+        using var db = new LiteDatabase(new MemoryStream());
+        var col = db.GetCollection<TalentTree>("talent_trees");
+        var tree = new TalentTree 
+        { 
+            Id = "tree1", 
+            Nodes = new List<TalentNode> 
+            { 
+                new TalentNode 
+                { 
+                    Id = "node1", 
+                    Effect = new TalentEffect { Stat = "Strength", Value = 5 } 
+                } 
+            } 
+        };
+        col.Insert(tree);
+        
+        var service = new TalentService(db);
+        var character = new Character 
+        { 
+            Strength = 10, 
+            Constitution = 10,
+            UnlockedTalentIds = new List<string> { "node1" } 
+        };
+        character.RecalculateDerivedStats(); 
+
+        // Act
+        service.ApplyTalentPassives(character);
+
+        // Assert
+        Assert.Equal(15, character.Strength);
+    }
 }

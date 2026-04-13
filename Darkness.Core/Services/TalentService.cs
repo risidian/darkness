@@ -67,11 +67,38 @@ public class TalentService : ITalentService
 
     public void PurchaseTalent(Character character, string treeId, string nodeId)
     {
-        throw new NotImplementedException();
+        if (CanPurchaseTalent(character, treeId, nodeId))
+        {
+            var tree = _db.GetCollection<TalentTree>("talent_trees").FindById(treeId);
+            var node = tree.Nodes.First(n => n.Id == nodeId);
+            
+            character.UnlockedTalentIds.Add(nodeId);
+            character.TalentPoints -= node.PointsRequired;
+        }
     }
 
     public void ApplyTalentPassives(Character character)
     {
-        // Skeletal implementation
+        var allTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();
+        var allNodes = allTrees.SelectMany(t => t.Nodes).ToList();
+
+        foreach (var talentId in character.UnlockedTalentIds)
+        {
+            var node = allNodes.FirstOrDefault(n => n.Id == talentId);
+            if (node?.Effect != null && !string.IsNullOrEmpty(node.Effect.Stat))
+            {
+                switch (node.Effect.Stat)
+                {
+                    case "Strength": character.Strength += node.Effect.Value; break;
+                    case "Dexterity": character.Dexterity += node.Effect.Value; break;
+                    case "Constitution": character.Constitution += node.Effect.Value; break;
+                    case "Intelligence": character.Intelligence += node.Effect.Value; break;
+                    case "Wisdom": character.Wisdom += node.Effect.Value; break;
+                    case "Charisma": character.Charisma += node.Effect.Value; break;
+                }
+            }
+        }
+        
+        character.RecalculateDerivedStats();
     }
 }
