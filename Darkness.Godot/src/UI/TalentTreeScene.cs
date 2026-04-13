@@ -2,6 +2,7 @@ using Godot;
 using Darkness.Godot.Core;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
+using Darkness.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,12 @@ namespace Darkness.Godot.UI;
 
 public partial class TalentTreeScene : Control
 {
+    private const int ROW_GAP = 160;
+    private const int COL_GAP = 200;
+    private const int CANVAS_WIDTH = 600; // 3 columns * 200
+    private const int NODE_WIDTH = 180;
+    private const int NODE_HEIGHT = 120;
+
     private ITalentService _talentService = null!;
     private ISessionService _session = null!;
     private INavigationService _navigation = null!;
@@ -20,6 +27,8 @@ public partial class TalentTreeScene : Control
     private TabContainer _tabContainer = null!;
     private Button _backButton = null!;
 
+    private PackedScene _nodeBoxScene = null!;
+
     public override void _Ready()
     {
         if (!IsInsideTree()) return;
@@ -29,6 +38,8 @@ public partial class TalentTreeScene : Control
         _navigation = global.Services!.GetRequiredService<INavigationService>();
         _dialogService = global.Services!.GetRequiredService<IDialogService>();
         _characterService = global.Services!.GetRequiredService<ICharacterService>();
+
+        _nodeBoxScene = GD.Load<PackedScene>("res://scenes/UI/TalentNodeBox.tscn");
 
         _pointsLabel = GetNode<Label>("MarginContainer/VBoxContainer/PointsLabel");
         _tabContainer = GetNode<TabContainer>("MarginContainer/VBoxContainer/TabContainer");
@@ -52,6 +63,8 @@ public partial class TalentTreeScene : Control
     {
         if (_session.CurrentCharacter == null) return;
 
+        int currentTab = _tabContainer.CurrentTab;
+
         // Clear existing tabs
         foreach (Node child in _tabContainer.GetChildren())
         {
@@ -70,47 +83,86 @@ public partial class TalentTreeScene : Control
                 HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled
             };
 
-            var grid = new GridContainer
+            var treeCanvas = new Control
             {
-                Columns = 1,
-                SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
+                CustomMinimumSize = new Vector2(CANVAS_WIDTH, 800),
+                SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter | Control.SizeFlags.Expand
             };
-            grid.AddThemeConstantOverride("v_separation", 10);
-
-            scroll.AddChild(grid);
+            
+            scroll.AddChild(treeCanvas);
             _tabContainer.AddChild(scroll);
 
+            // Calculate Layout
+            TalentLayoutHelper.CalculateLayout(tree.Nodes);
+
+            // Draw Lines First (so they are behind nodes)
+            DrawConnections(treeCanvas, tree.Nodes);
+
+            // Create Nodes
             foreach (var node in tree.Nodes)
             {
-                var hBox = new HBoxContainer();
-                grid.AddChild(hBox);
+                var nodeBox = _nodeBoxScene.Instantiate<TalentNodeBox>();
+                treeCanvas.AddChild(nodeBox);
 
                 var isUnlocked = _session.CurrentCharacter.UnlockedTalentIds.Contains(node.Id);
                 var canPurchase = _talentService.CanPurchaseTalent(_session.CurrentCharacter, tree.Id, node.Id);
 
-                var button = new Button
-                {
-                    Text = node.Name,
-                    CustomMinimumSize = new Vector2(250, 60),
-                    Disabled = isUnlocked || !canPurchase,
-                    TooltipText = node.Description
-                };
+                nodeBox.SetTalent(node, isUnlocked, canPurchase);
+                
+                // Position node
+                float x = node.Column * COL_GAP + (COL_GAP - NODE_WIDTH) / 2f;
+                float y = node.Row * ROW_GAP + 50; // Top margin
+                nodeBox.Position = new Vector2(x, y);
 
-                if (isUnlocked)
+                nodeBox.PurchaseRequested += (talentId) => OnNodePressed(tree.Id, node);
+            }
+
+            // Update canvas height based on max row
+            int maxRow = tree.Nodes.Any() ? tree.Nodes.Max(n => n.Row) : 0;
+            treeCanvas.CustomMinimumSize = new Vector2(CANVAS_WIDTH, (maxRow + 1) * ROW_GAP + 100);
+        }
+
+        if (currentTab >= 0 && currentTab < _tabContainer.GetTabCount())
+        {
+            _tabContainer.CurrentTab = currentTab;
+        }
+    }
+
+    private void DrawConnections(Control canvas, List<TalentNode> nodes)
+    {
+        var nodeDict = nodes.ToDictionary(n => n.Id);
+
+        foreach (var node in nodes)
+        {
+            foreach (var prereqId in node.PrerequisiteNodeIds)
+            {
+                if (nodeDict.TryGetValue(prereqId, out var parent))
                 {
-                    button.Text += " (Unlocked)";
+                    var line = new Line2D
+                    {
+                        Width = 4,
+                        DefaultColor = new Color(0.4f, 0.4f, 0.4f, 1) // Gray line
+                    };
+
+                    // Parent center (bottom)
+                    float px = parent.Column * COL_GAP + COL_GAP / 2f;
+                    float py = parent.Row * ROW_GAP + 50 + NODE_HEIGHT;
+
+                    // Child center (top)
+                    float cx = node.Column * COL_GAP + COL_GAP / 2f;
+                    float cy = node.Row * ROW_GAP + 50;
+
+                    line.AddPoint(new Vector2(px, py));
+                    line.AddPoint(new Vector2(cx, cy));
+
+                    // If child is unlocked, make line brighter
+                    if (_session.CurrentCharacter!.UnlockedTalentIds.Contains(node.Id))
+                    {
+                        line.DefaultColor = new Color(0.2f, 0.8f, 0.2f, 1); // Green line
+                    }
+
+                    canvas.AddChild(line);
                 }
-
-                button.Pressed += () => OnNodePressed(tree.Id, node);
-                hBox.AddChild(button);
-
-                var descLabel = new Label
-                {
-                    Text = node.Description,
-                    SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-                    AutowrapMode = TextServer.AutowrapMode.WordSmart
-                };
-                hBox.AddChild(descLabel);
             }
         }
     }
@@ -122,12 +174,19 @@ public partial class TalentTreeScene : Control
         var confirmed = await _dialogService.DisplayConfirmAsync("Purchase Talent", $"Unlock {node.Name} for {node.PointsRequired} point(s)?", "Unlock", "Cancel");
         if (confirmed)
         {
-            _talentService.PurchaseTalent(_session.CurrentCharacter, treeId, node.Id);
-            _talentService.ApplyTalentPassives(_session.CurrentCharacter);
-            await _characterService.SaveCharacterAsync(_session.CurrentCharacter);
-            
-            UpdatePointsLabel();
-            LoadTrees();
+            if (_talentService.CanPurchaseTalent(_session.CurrentCharacter, treeId, node.Id))
+            {
+                _talentService.PurchaseTalent(_session.CurrentCharacter, treeId, node.Id);
+                _talentService.ApplyTalentPassives(_session.CurrentCharacter);
+                await _characterService.SaveCharacterAsync(_session.CurrentCharacter);
+                
+                UpdatePointsLabel();
+                LoadTrees();
+            }
+            else
+            {
+                await _dialogService.DisplayAlertAsync("Purchase Failed", "You do not have enough talent points or prerequisites met.", "OK");
+            }
         }
     }
 }
