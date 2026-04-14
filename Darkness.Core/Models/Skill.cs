@@ -23,5 +23,6 @@ namespace Darkness.Core.Models
         public int CurrentCooldown { get; set; } = 0;
         public string WeaponRequirement { get; set; } = "None";
         public string? TalentRequirement { get; set; }
+        public bool IsPassive { get; set; } = false;
     }
 }
