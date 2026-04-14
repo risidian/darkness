@@ -180,6 +180,34 @@
     ]
   },
   {
+    "Id": "kingsguard_tree",
+    "Name": "Kingsguard",
+    "Tier": 3,
+    "IsHidden": true,
+    "RequiredClass": "Knight",
+    "ExclusiveGroupId": "Knight_EndGame",
+    "Prerequisites": {
+      "Level": 40,
+      "Constitution": 20,
+      "SpentInTree:holy_knight_tree": 20
+    },
+    "Nodes": [
+      {
+        "Id": "kg_loyalty",
+        "Name": "Royal Loyalty",
+        "Description": "Absolute loyalty increases Constitution by 5.",
+        "PointsRequired": 1,
+        "Row": 1,
+        "Column": 1,
+        "PrerequisiteNodeIds": [],
+        "Effect": {
+          "Stat": "Constitution",
+          "Value": 5
+        }
+      }
+    ]
+  },
+  {
     "Id": "warrior_tree",
     "Name": "Warrior",
     "Tier": 1,
