@@ -1,0 +1,40 @@
+{
+  "name": "Arming Sword (Steel)",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/arming/",
+        "female": "weapons/sword/arming/"
+      }
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/sword/arming/universal_behind/",
+        "female": "weapons/sword/arming/universal_behind/"
+      }
+    },
+    "slash_behind": {
+      "custom_animation": "slash_oversize",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/sword/arming/attack_slash/behind/",
+        "female": "weapons/sword/arming/attack_slash/behind/"
+      }
+    },
+    "slash_front": {
+      "custom_animation": "slash_oversize",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/sword/arming/attack_slash/",
+        "female": "weapons/sword/arming/attack_slash/"
+      }
+    }
+  },
+  "variants": ["steel", "iron", "gold"],
+  "animations": ["walk", "idle", "slash_oversize", "thrust_oversize"],
+  "preview_row": 10,
+  "preview_column": 1
+}
