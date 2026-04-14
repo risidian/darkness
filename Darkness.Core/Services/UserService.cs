@@ -1,84 +1,65 @@
-using Darkness.Core.Data;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using LiteDB;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Darkness.Core.Services
+namespace Darkness.Core.Services;
+
+public class UserService : IUserService
 {
-    public class UserService : IUserService
+    private readonly LiteDatabase _db;
+    private readonly SemaphoreSlim _initLock = new(1, 1);
+    private bool _initialized;
+
+    public UserService(LiteDatabase db)
     {
-        private readonly LiteDatabase _db;
-        private bool _initialized;
+        _db = db;
+    }
 
-        public UserService(LiteDatabase db)
+    public async Task InitializeAsync()
+    {
+        if (_initialized) return;
+
+        await _initLock.WaitAsync();
+        try
         {
-            _db = db;
+            if (_initialized) return;
+            var col = _db.GetCollection<User>("users");
+            col.EnsureIndex(u => u.Username, unique: true);
+            _initialized = true;
         }
-
-        public Task InitializeAsync()
+        finally
         {
-            if (_initialized)
-                return Task.CompletedTask;
-
-            return Task.Run(() =>
-            {
-                try 
-                {
-                    var col = _db.GetCollection<User>("users");
-                    col.EnsureIndex(u => u.Username, unique: true);
-                    _initialized = true;
-                }
-                catch (System.Exception ex)
-                {
-                    System.Console.WriteLine($"[UserService] CRITICAL: Initialization FAILED: {ex.Message}");
-                    throw; // Re-throw so the UI can handle it
-                }
-            });
+            _initLock.Release();
         }
+    }
 
-        public Task<bool> CreateUserAsync(User user)
-        {
-            return Task.Run(async () =>
-            {
-                await InitializeAsync();
-                var col = _db.GetCollection<User>("users");
-                var id = col.Insert(user);
-                user.Id = id.AsInt32;
-                return true;
-            });
-        }
+    public async Task<bool> CreateUserAsync(User user)
+    {
+        await InitializeAsync();
+        var col = _db.GetCollection<User>("users");
+        var id = col.Insert(user);
+        user.Id = id.AsInt32;
+        return true;
+    }
 
-        public Task<User?> GetUserAsync(string username, string password)
-        {
-            return Task.Run<User?>(async () =>
-            {
-                await InitializeAsync();
-                var col = _db.GetCollection<User>("users");
-                return col.FindOne(u => u.Username == username && u.Password == password);
-            });
-        }
+    public async Task<User?> GetUserAsync(string username, string password)
+    {
+        await InitializeAsync();
+        var col = _db.GetCollection<User>("users");
+        return col.FindOne(u => u.Username == username && u.Password == password);
+    }
 
-        public Task<User?> GetUserByIdAsync(int userId)
-        {
-            return Task.Run<User?>(async () =>
-            {
-                await InitializeAsync();
-                var col = _db.GetCollection<User>("users");
-                return col.FindById(userId);
-            });
-        }
+    public async Task<User?> GetUserByIdAsync(int userId)
+    {
+        await InitializeAsync();
+        var col = _db.GetCollection<User>("users");
+        return col.FindById(userId);
+    }
 
-        public Task<List<User>> GetAllUsersAsync()
-        {
-            return Task.Run(async () =>
-            {
-                await InitializeAsync();
-                var col = _db.GetCollection<User>("users");
-                return col.FindAll().ToList();
-            });
-        }
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        await InitializeAsync();
+        var col = _db.GetCollection<User>("users");
+        return col.FindAll().ToList();
     }
 }

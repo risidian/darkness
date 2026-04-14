@@ -48,7 +48,7 @@ public partial class CharactersScene : Control
 
         try
         {
-            var characters = await _characterService.GetCharactersForUserAsync(_session.CurrentUser.Id);
+            var characters = await Task.Run(() => _characterService.GetCharactersForUser(_session.CurrentUser.Id));
             GD.Print($"[CharactersScene] Loaded {characters?.Count ?? 0} characters.");
 
             if (characters != null)

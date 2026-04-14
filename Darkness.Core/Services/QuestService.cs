@@ -20,21 +20,14 @@ public class QuestService : IQuestService
     {
         var chainCol = _db.GetCollection<QuestChain>("quest_chains");
         var stateCol = _db.GetCollection<QuestState>("quest_states");
-        stateCol.EnsureIndex(s => s.CharacterId);
-        stateCol.EnsureIndex(s => s.Status);
 
         var completedIds = GetCompletedChainIds(character.Id);
         var allChains = chainCol.FindAll().ToList();
-
-        Console.Error.WriteLine($"[QuestService] GetAvailableChains for Char {character.Id} ({character.Name})");
-        Console.Error.WriteLine($"[QuestService]   Completed IDs found: [{string.Join(", ", completedIds)}]");
 
         var available = allChains.Where(c =>
             !completedIds.Contains(c.Id) &&
             c.Prerequisites.All(p => completedIds.Contains(p))
         ).OrderBy(c => c.SortOrder).ToList();
-
-        Console.Error.WriteLine($"[QuestService]   Available Chains: [{string.Join(", ", available.Select(a => a.Id))}]");
 
         return available;
     }
@@ -53,22 +46,18 @@ public class QuestService : IQuestService
         var state = GetQuestState(character.Id, chainId);
         if (state == null)
         {
-            Console.Error.WriteLine($"[QuestService] GetCurrentStep: No state for {chainId}, returning first step {chain.Steps[0].Id}");
             return chain.Steps[0];
         }
 
         var step = chain.Steps.FirstOrDefault(s => s.Id == state.CurrentStepId);
-        Console.Error.WriteLine($"[QuestService] GetCurrentStep: {chainId} state exists. CurrentStepId={state.CurrentStepId}, Status={state.Status}. Returning step: {step?.Id ?? "NULL"}");
         return step;
     }
 
     public QuestStep? AdvanceStep(Character character, string chainId, string? choiceStepId = null)
     {
-        Console.Error.WriteLine($"[QuestService] AdvanceStep START: Char={character.Id}, Chain={chainId}, Choice={choiceStepId ?? "None"}");
         var chain = GetChainById(chainId);
-        if (chain == null) 
+        if (chain == null)
         {
-            Console.Error.WriteLine($"[QuestService] AdvanceStep ERROR: Chain {chainId} not found!");
             return null;
         }
 
@@ -78,9 +67,8 @@ public class QuestService : IQuestService
             ? chain.Steps.FirstOrDefault(s => s.Id == state.CurrentStepId)
             : chain.Steps.FirstOrDefault();
 
-        if (currentStep == null) 
+        if (currentStep == null)
         {
-            Console.Error.WriteLine($"[QuestService] AdvanceStep ERROR: Current step not found for chain {chainId}");
             return null;
         }
 
@@ -88,7 +76,10 @@ public class QuestService : IQuestService
 
         if (choiceStepId != null && currentStep.Branch != null)
         {
-            var option = currentStep.Branch.Options.FirstOrDefault(o => o.NextStepId == choiceStepId);
+            var completedChainIds = GetCompletedChainIds(character.Id);
+            var option = currentStep.Branch.Options.FirstOrDefault(o =>
+                o.NextStepId == choiceStepId &&
+                ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds));
             if (option != null)
             {
                 character.Morality += option.MoralityImpact;
@@ -114,22 +105,19 @@ public class QuestService : IQuestService
                         CurrentStepId = nextStepId,
                         Status = "in_progress"
                     };
-                    var newId = stateCol.Insert(state);
-                    Console.Error.WriteLine($"[QuestService] AdvanceStep: Inserted new state for {chainId}. Step={nextStepId}. DB ID={newId}");
+                    stateCol.Insert(state);
                 }
                 else
                 {
                     state.CurrentStepId = nextStepId;
                     state.Status = "in_progress";
-                    bool ok = stateCol.Update(state);
-                    Console.Error.WriteLine($"[QuestService] AdvanceStep: Updated state for {chainId} to {nextStepId}. Success={ok}");
+                    stateCol.Update(state);
                 }
                 return nextStep;
             }
         }
 
         // No next step — chain is complete
-        Console.Error.WriteLine($"[QuestService] AdvanceStep: No next step. Marking chain {chainId} as COMPLETED.");
         if (state == null)
         {
             state = new QuestState
@@ -139,15 +127,13 @@ public class QuestService : IQuestService
                 CurrentStepId = currentStep.Id,
                 Status = "completed"
             };
-            var newId = stateCol.Insert(state);
-            Console.Error.WriteLine($"[QuestService] AdvanceStep: Inserted COMPLETED state for {chainId}. DB ID={newId}");
+            stateCol.Insert(state);
         }
         else
         {
             state.Status = "completed";
             state.CurrentStepId = currentStep.Id;
-            bool ok = stateCol.Update(state);
-            Console.Error.WriteLine($"[QuestService] AdvanceStep: Updated state for {chainId} to COMPLETED. Success={ok}");
+            stateCol.Update(state);
         }
 
         return null;
@@ -156,10 +142,7 @@ public class QuestService : IQuestService
     public QuestState? GetQuestState(int characterId, string chainId)
     {
         var col = _db.GetCollection<QuestState>("quest_states");
-        var state = col.FindOne(s => s.CharacterId == characterId && s.ChainId == chainId);
-        if (state != null)
-            Console.Error.WriteLine($"[QuestService] GetQuestState Found: Chain={state.ChainId}, Char={state.CharacterId}, Step={state.CurrentStepId}, Status={state.Status}");
-        return state;
+        return col.FindOne(s => s.CharacterId == characterId && s.ChainId == chainId);
     }
 
     public bool IsMainStoryComplete(Character character)
@@ -175,25 +158,20 @@ public class QuestService : IQuestService
     public List<string> GetCompletedChainIds(int characterId)
     {
         var col = _db.GetCollection<QuestState>("quest_states");
-        var completed = col.Find(s => s.CharacterId == characterId && s.Status == "completed").ToList();
-        
-        Console.Error.WriteLine($"[QuestService] GetCompletedChainIds for Char {characterId}: Found {completed.Count} records.");
-        foreach(var s in completed)
-        {
-            Console.Error.WriteLine($"[QuestService]   -> {s.ChainId} (Status: {s.Status})");
-        }
+        return col.Find(s => s.CharacterId == characterId && s.Status == "completed")
+            .Select(s => s.ChainId)
+            .ToList();
+    }
 
-        // Diagnostic: What about other states?
-        var allStates = col.Find(s => s.CharacterId == characterId).ToList();
-        if (allStates.Count > completed.Count)
-        {
-            Console.Error.WriteLine($"[QuestService]   (Total states for char: {allStates.Count})");
-            foreach(var s in allStates.Where(x => x.Status != "completed"))
-            {
-                Console.Error.WriteLine($"[QuestService]   (Other: {s.ChainId} Status={s.Status} Step={s.CurrentStepId})");
-            }
-        }
+    public List<BranchOption> GetAvailableBranchOptions(Character character, string chainId, string stepId)
+    {
+        var chain = GetChainById(chainId);
+        var step = chain?.Steps.FirstOrDefault(s => s.Id == stepId);
+        if (step?.Branch == null) return new List<BranchOption>();
 
-        return completed.Select(s => s.ChainId).ToList();
+        var completedChainIds = GetCompletedChainIds(character.Id);
+        return step.Branch.Options
+            .Where(o => ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds))
+            .ToList();
     }
 }

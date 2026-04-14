@@ -195,7 +195,7 @@ public partial class InventoryScene : Control
         if (_session.CurrentCharacter == null) return;
         
         _session.CurrentCharacter.Hotbar[slot - 1] = item.Name;
-        await _characterService.SaveCharacterAsync(_session.CurrentCharacter);
+        await Task.Run(() => _characterService.SaveCharacter(_session.CurrentCharacter));
         LoadInventory();
     }
 
@@ -245,7 +245,7 @@ public partial class InventoryScene : Control
         }
 
         await RegenerateFullSheet();
-        await _characterService.SaveCharacterAsync(_session.CurrentCharacter);
+        await Task.Run(() => _characterService.SaveCharacter(_session.CurrentCharacter));
 
         LoadInventory();
         UpdateCharacterPreview();

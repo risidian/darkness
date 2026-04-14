@@ -14,11 +14,51 @@ public class WeaponSkillService : IWeaponSkillService
         _db = db;
     }
 
+    // Seed canonical skills if the collection is empty (covers test environments
+    // where SkillSeeder has not run against the in-memory database).
+    // Called lazily from GetSkillsForWeapon only, so tests that pre-populate
+    // specific skill IDs via GetEquippedSkills won't encounter duplicate-key conflicts.
+    private void EnsureSkillsSeeded()
+    {
+        var col = _db.GetCollection<Skill>("skills");
+        if (col.Count() > 0) return;
+
+        var defaults = new List<Skill>
+        {
+            new() { Id = 1,  Name = "Arcane Bolt",   Description = "A standard magical bolt. (1.1x Magic Dmg)",          SkillType = "Magical",   DamageMultiplier = 1.1f,  AssociatedAction = ActionType.Shoot,  WeaponRequirement = "Wand" },
+            new() { Id = 2,  Name = "Fireball",       Description = "A powerful blast of fire. (1.5x Magic Dmg, -10 Accuracy)", SkillType = "Magical", DamageMultiplier = 1.5f, AccuracyModifier = -10, AssociatedAction = ActionType.Shoot, WeaponRequirement = "Wand" },
+            new() { Id = 3,  Name = "Quick Shot",     Description = "A fast arrow shot. (1.0x Dmg, +10 Accuracy)",        SkillType = "Physical",  DamageMultiplier = 1.0f,  AccuracyModifier = 10,  AssociatedAction = ActionType.Shoot,  WeaponRequirement = "Bow" },
+            new() { Id = 4,  Name = "Snipe",          Description = "A precise shot to a weak point. (1.3x Dmg, 20% Armor Pen)", SkillType = "Physical", DamageMultiplier = 1.3f, ArmorPenetration = 0.2f, AssociatedAction = ActionType.Shoot, WeaponRequirement = "Bow" },
+            new() { Id = 5,  Name = "Quick Stab",     Description = "A lightning-fast strike. (1.0x Dmg, +20 Accuracy)", SkillType = "Physical",  DamageMultiplier = 1.0f,  AccuracyModifier = 20,  AssociatedAction = ActionType.Thrust, WeaponRequirement = "Dagger" },
+            new() { Id = 6,  Name = "Vitals",         Description = "Targets a weak point in armor. (0.8x Dmg, 50% Armor Pen)", SkillType = "Physical", DamageMultiplier = 0.8f, ArmorPenetration = 0.5f, AssociatedAction = ActionType.Thrust, WeaponRequirement = "Dagger" },
+            new() { Id = 7,  Name = "Cleave",         Description = "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)", SkillType = "Physical", DamageMultiplier = 1.2f, AccuracyModifier = -10, AssociatedAction = ActionType.Slash, WeaponRequirement = "Axe" },
+            new() { Id = 8,  Name = "Crush",          Description = "A heavy overhead blow. (1.3x Dmg, -15 Accuracy)",   SkillType = "Physical",  DamageMultiplier = 1.3f,  AccuracyModifier = -15, AssociatedAction = ActionType.Slash, WeaponRequirement = "Axe" },
+            new() { Id = 9,  Name = "Smash",          Description = "A heavy blunt strike. (1.1x Dmg, 20% Armor Pen)",   SkillType = "Physical",  DamageMultiplier = 1.1f,  ArmorPenetration = 0.2f, AssociatedAction = ActionType.Slash, WeaponRequirement = "Mace" },
+            new() { Id = 10, Name = "Stun",           Description = "Attempts to daze the target. (0.9x Dmg, +10 Accuracy)", SkillType = "Physical", DamageMultiplier = 0.9f, AccuracyModifier = 10, AssociatedAction = ActionType.Slash, WeaponRequirement = "Mace" },
+            new() { Id = 11, Name = "Slash",          Description = "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)", SkillType = "Physical", DamageMultiplier = 1.2f, AccuracyModifier = -10, AssociatedAction = ActionType.Slash, WeaponRequirement = "Sword" },
+            new() { Id = 12, Name = "Thrust",         Description = "A precise armor-piercing jab. (0.9x Dmg, 30% Armor Pen)", SkillType = "Physical", DamageMultiplier = 0.9f, ArmorPenetration = 0.3f, AssociatedAction = ActionType.Thrust, WeaponRequirement = "Sword" },
+            new() { Id = 13, Name = "Punch",          Description = "A basic unarmed strike. (0.5x Dmg)",                SkillType = "Physical",  DamageMultiplier = 0.5f,  AssociatedAction = ActionType.Punch,  WeaponRequirement = "None" },
+            new() { Id = 14, Name = "Kick",           Description = "A strong unarmed strike. (0.8x Dmg, -10 Accuracy)", SkillType = "Physical",  DamageMultiplier = 0.8f,  AccuracyModifier = -10, AssociatedAction = ActionType.Kick, WeaponRequirement = "None" },
+            new() { Id = 15, Name = "Mana Shield",    Description = "Creates a barrier of pure energy. (40% Block)",    SkillType = "Defensive", BlockReduction = 0.4f,    AssociatedAction = ActionType.Block,  WeaponRequirement = "Wand" },
+            new() { Id = 16, Name = "Dodge",          Description = "Prepares to evade incoming attacks. (20% Block)",  SkillType = "Defensive", BlockReduction = 0.2f,    AssociatedAction = ActionType.Block,  WeaponRequirement = "Bow" },
+            new() { Id = 17, Name = "Parry",          Description = "Attempts to deflect an incoming blow. (25% Block)", SkillType = "Defensive", BlockReduction = 0.25f,   AssociatedAction = ActionType.Block,  WeaponRequirement = "Dagger" },
+            new() { Id = 18, Name = "Shield Block",   Description = "Uses shield to negate most damage. (60% Block)",  SkillType = "Defensive", BlockReduction = 0.6f,    AssociatedAction = ActionType.Block,  WeaponRequirement = "Shield" },
+            new() { Id = 19, Name = "Deflect",        Description = "Braces for impact with the weapon. (20% Block)",  SkillType = "Defensive", BlockReduction = 0.2f,    AssociatedAction = ActionType.Block,  WeaponRequirement = "Sword" },
+            new() { Id = 20, Name = "Brace",          Description = "Braces for impact with the weapon. (20% Block)",  SkillType = "Defensive", BlockReduction = 0.2f,    AssociatedAction = ActionType.Block,  WeaponRequirement = "None" },
+            new() { Id = 21, Name = "Holy Strike",    Description = "A strike imbued with holy energy. (1.8x Dmg)",    SkillType = "Magical",   DamageMultiplier = 1.8f,  ManaCost = 15, AssociatedAction = ActionType.Slash, WeaponRequirement = "None", TalentRequirement = "holy_strike_node" },
+            new() { Id = 22, Name = "Offhand Stab",  Description = "A lightning-fast off-hand strike. (1.0x Dmg, +20 Accuracy)", SkillType = "Physical", DamageMultiplier = 1.0f, AccuracyModifier = 20, AssociatedAction = ActionType.Thrust, WeaponRequirement = "Dagger", IsOffHand = true },
+        };
+
+        foreach (var skill in defaults)
+            col.Insert(skill);
+        col.EnsureIndex(s => s.Id);
+    }
+
     public List<Skill> GetAvailableSkills(Character character)
     {
         var allSkills = _db.GetCollection<Skill>("skills").FindAll().ToList();
-        return allSkills.Where(s => 
-            (s.WeaponRequirement == "None" || s.WeaponRequirement == character.WeaponType) || 
+        return allSkills.Where(s =>
+            (s.WeaponRequirement == "None" || s.WeaponRequirement == character.WeaponType) ||
             (s.TalentRequirement != null && character.UnlockedTalentIds.Contains(s.TalentRequirement))
         ).ToList();
     }
@@ -43,200 +83,92 @@ public class WeaponSkillService : IWeaponSkillService
 
     public List<Skill> GetSkillsForWeapon(string? weaponType, string? offHandType, string? shieldType, List<string>? unlockedTalentIds = null)
     {
-        var skills = new List<Skill>();
         weaponType ??= "None";
         offHandType ??= "None";
         shieldType ??= "None";
 
-        // Helper to get skills for a single weapon
-        List<Skill> GetBaseSkills(string type, bool isOffHand)
+        EnsureSkillsSeeded();
+        var skillCol = _db.GetCollection<Skill>("skills");
+        var skills = new List<Skill>();
+
+        // Primary weapon skills (non-defensive, non-passive, non-off-hand, not unarmed/generic)
+        var primarySkills = skillCol.FindAll()
+            .Where(s => s.WeaponRequirement != "None" &&
+                         s.WeaponRequirement != "Shield" &&
+                         s.SkillType != "Defensive" &&
+                         !s.IsPassive &&
+                         !s.IsOffHand &&
+                         weaponType.Contains(s.WeaponRequirement, System.StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        skills.AddRange(primarySkills);
+
+        // Off-hand skills (prefer IsOffHand=true variants)
+        if (offHandType != "None" && offHandType != weaponType && skills.Count < 3)
         {
-            var baseSkills = new List<Skill>();
-            if (type.Contains("Wand", System.StringComparison.OrdinalIgnoreCase))
+            var offHandSkills = skillCol.FindAll()
+                .Where(s => s.WeaponRequirement != "None" &&
+                             s.WeaponRequirement != "Shield" &&
+                             s.SkillType != "Defensive" &&
+                             !s.IsPassive &&
+                             s.IsOffHand &&
+                             offHandType.Contains(s.WeaponRequirement, System.StringComparison.OrdinalIgnoreCase))
+                .Take(3 - skills.Count)
+                .ToList();
+
+            // If no off-hand-specific skills, fall back to generic weapon skills
+            if (offHandSkills.Count == 0)
             {
-                baseSkills.Add(new Skill
-                {
-                    Name = "Arcane Bolt", Description = "A standard magical bolt. (1.1x Magic Dmg)", SkillType = "Magical",
-                    DamageMultiplier = 1.1f, AssociatedAction = ActionType.Shoot
-                });
-                baseSkills.Add(new Skill
-                {
-                    Name = "Fireball", Description = "A powerful blast of fire. (1.5x Magic Dmg, -10 Accuracy)",
-                    SkillType = "Magical", DamageMultiplier = 1.5f, AccuracyModifier = -10,
-                    AssociatedAction = ActionType.Shoot
-                });
+                offHandSkills = skillCol.FindAll()
+                    .Where(s => s.WeaponRequirement != "None" &&
+                                 s.WeaponRequirement != "Shield" &&
+                                 s.SkillType != "Defensive" &&
+                                 !s.IsPassive &&
+                                 !s.IsOffHand &&
+                                 offHandType.Contains(s.WeaponRequirement, System.StringComparison.OrdinalIgnoreCase))
+                    .Take(3 - skills.Count)
+                    .ToList();
             }
-            else if (type.Contains("Bow", System.StringComparison.OrdinalIgnoreCase))
-            {
-                baseSkills.Add(new Skill
-                {
-                    Name = "Quick Shot", Description = "A fast arrow shot. (1.0x Dmg, +10 Accuracy)",
-                    DamageMultiplier = 1.0f, AccuracyModifier = 10, AssociatedAction = ActionType.Shoot
-                });
-                baseSkills.Add(new Skill
-                {
-                    Name = "Snipe", Description = "A precise shot to a weak point. (1.3x Dmg, 20% Armor Pen)",
-                    DamageMultiplier = 1.3f, ArmorPenetration = 0.2f, AssociatedAction = ActionType.Shoot
-                });
-            }
-            else if (type.Contains("Dagger", System.StringComparison.OrdinalIgnoreCase))
-            {
-                baseSkills.Add(new Skill
-                {
-                    Name = isOffHand ? "Offhand Stab" : "Quick Stab", 
-                    Description = "A lightning-fast strike. (1.0x Dmg, +20 Accuracy)",
-                    DamageMultiplier = 1.0f, AccuracyModifier = 20, AssociatedAction = ActionType.Thrust
-                });
-                if (!isOffHand)
-                {
-                    baseSkills.Add(new Skill
-                    {
-                        Name = "Vitals", Description = "Targets a weak point in armor. (0.8x Dmg, 50% Armor Pen)",
-                        DamageMultiplier = 0.8f, ArmorPenetration = 0.5f, AssociatedAction = ActionType.Thrust
-                    });
-                }
-            }
-            else if (type.Contains("Axe", System.StringComparison.OrdinalIgnoreCase))
-            {
-                baseSkills.Add(new Skill
-                {
-                    Name = "Cleave", Description = "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)",
-                    DamageMultiplier = 1.2f, AccuracyModifier = -10, AssociatedAction = ActionType.Slash
-                });
-                baseSkills.Add(new Skill
-                {
-                    Name = "Crush", Description = "A heavy overhead blow. (1.3x Dmg, -15 Accuracy)",
-                    DamageMultiplier = 1.3f, AccuracyModifier = -15, AssociatedAction = ActionType.Slash
-                });
-            }
-            else if (type.Contains("Mace", System.StringComparison.OrdinalIgnoreCase))
-            {
-                baseSkills.Add(new Skill
-                {
-                    Name = "Smash", Description = "A heavy blunt strike. (1.1x Dmg, 20% Armor Pen)",
-                    DamageMultiplier = 1.1f, ArmorPenetration = 0.2f, AssociatedAction = ActionType.Slash
-                });
-                baseSkills.Add(new Skill
-                {
-                    Name = "Stun", Description = "Attempts to daze the target. (0.9x Dmg, +10 Accuracy)",
-                    DamageMultiplier = 0.9f, AccuracyModifier = 10, AssociatedAction = ActionType.Slash
-                });
-            }
-            else if (type.Contains("Sword", System.StringComparison.OrdinalIgnoreCase))
-            {
-                baseSkills.Add(new Skill
-                {
-                    Name = "Slash", Description = "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)",
-                    DamageMultiplier = 1.2f, AccuracyModifier = -10, AssociatedAction = ActionType.Slash
-                });
-                baseSkills.Add(new Skill
-                {
-                    Name = "Thrust", Description = "A precise armor-piercing jab. (0.9x Dmg, 30% Armor Pen)",
-                    DamageMultiplier = 0.9f, ArmorPenetration = 0.3f, AssociatedAction = ActionType.Thrust
-                });
-            }
-            
-            return baseSkills;
+
+            skills.AddRange(offHandSkills);
         }
 
-        // Add primary weapon skills
-        skills.AddRange(GetBaseSkills(weaponType, false));
-
-        // Add off-hand skills if applicable
-        if (offHandType != "None" && offHandType != weaponType)
-        {
-            var offHandSkills = GetBaseSkills(offHandType, true);
-            // Limit to 3 total active skills for now
-            if (skills.Count < 3) skills.AddRange(offHandSkills);
-        }
-
-        // Default to punch/kick if still empty
+        // Unarmed fallback — skills with WeaponRequirement "None" that are not Defensive
         if (skills.Count == 0)
         {
-            skills.Add(new Skill
-            {
-                Name = "Punch", Description = "A basic unarmed strike. (0.5x Dmg)", DamageMultiplier = 0.5f,
-                AssociatedAction = ActionType.Punch
-            });
-            skills.Add(new Skill
-            {
-                Name = "Kick", Description = "A strong unarmed strike. (0.8x Dmg, -10 Accuracy)",
-                DamageMultiplier = 0.8f, AccuracyModifier = -10, AssociatedAction = ActionType.Kick
-            });
+            skills.AddRange(skillCol.FindAll()
+                .Where(s => s.WeaponRequirement == "None" && s.SkillType != "Defensive" && s.TalentRequirement == null)
+                .ToList());
         }
 
-        // Add defensive skill based on setup
-        if (weaponType.Contains("Wand", System.StringComparison.OrdinalIgnoreCase))
+        // Defensive skill — priority: shield > weapon-specific > generic (WeaponRequirement "None")
+        Skill? defSkill = null;
+        if (shieldType != "None")
         {
-            skills.Add(new Skill
-            {
-                Name = "Mana Shield", Description = "Creates a barrier of pure energy. (40% Block)",
-                SkillType = "Defensive", BlockReduction = 0.4f, AssociatedAction = ActionType.Block
-            });
+            defSkill = skillCol.FindAll()
+                .FirstOrDefault(s => s.SkillType == "Defensive" && s.WeaponRequirement == "Shield");
         }
-        else if (weaponType.Contains("Bow", System.StringComparison.OrdinalIgnoreCase))
+        if (defSkill == null)
         {
-            skills.Add(new Skill
-            {
-                Name = "Dodge", Description = "Prepares to evade incoming attacks. (20% Block)",
-                SkillType = "Defensive", BlockReduction = 0.2f, AssociatedAction = ActionType.Block
-            });
+            defSkill = skillCol.FindAll()
+                .FirstOrDefault(s => s.SkillType == "Defensive" &&
+                                      s.WeaponRequirement != "Shield" &&
+                                      s.WeaponRequirement != "None" &&
+                                      weaponType.Contains(s.WeaponRequirement, System.StringComparison.OrdinalIgnoreCase));
         }
-        else if (weaponType.Contains("Dagger", System.StringComparison.OrdinalIgnoreCase) && offHandType == "None")
+        if (defSkill == null)
         {
-            skills.Add(new Skill
-            {
-                Name = "Parry", Description = "Attempts to deflect an incoming blow. (25% Block)",
-                SkillType = "Defensive", BlockReduction = 0.25f, AssociatedAction = ActionType.Block
-            });
+            defSkill = skillCol.FindAll()
+                .FirstOrDefault(s => s.SkillType == "Defensive" && s.WeaponRequirement == "None");
         }
-        else
-        {
-            string blockName = shieldType != "None" ? "Shield Block" : (weaponType.Contains("Sword") ? "Deflect" : "Brace");
-            float blockVal = shieldType != "None" ? 0.6f : 0.2f;
-            string blockDesc = shieldType != "None"
-                ? $"Uses shield to negate most damage. ({blockVal * 100}% Block)"
-                : $"Braces for impact with the weapon. ({blockVal * 100}% Block)";
+        if (defSkill != null) skills.Add(defSkill);
 
-            skills.Add(new Skill
-            {
-                Name = blockName, Description = blockDesc, SkillType = "Defensive", BlockReduction = blockVal,
-                AssociatedAction = ActionType.Block
-            });
-        }
-
-        // Add skills from unlocked talents
+        // Talent-based skills
         if (unlockedTalentIds != null && unlockedTalentIds.Count > 0)
         {
-            var trees = _db.GetCollection<TalentTree>("talent_trees").FindAll();
-            foreach (var tree in trees)
-            {
-                foreach (var node in tree.Nodes)
-                {
-                    if (unlockedTalentIds.Contains(node.Id) && !string.IsNullOrEmpty(node.Effect.Skill))
-                    {
-                        // Create a skill for the talent
-                        var talentSkill = new Skill
-                        {
-                            Name = node.Effect.Skill,
-                            Description = node.Description,
-                            SkillType = "Magical", // Defaulting to Magical for talent-based skills
-                            DamageMultiplier = 1.5f,
-                            AssociatedAction = ActionType.Slash
-                        };
-
-                        // Specific logic for Holy Strike as an example
-                        if (node.Effect.Skill == "Holy Strike")
-                        {
-                            talentSkill.Description = "A strike imbued with holy energy. (1.8x Dmg)";
-                            talentSkill.DamageMultiplier = 1.8f;
-                            talentSkill.ManaCost = 15;
-                        }
-
-                        skills.Add(talentSkill);
-                    }
-                }
-            }
+            var talentSkills = skillCol.FindAll()
+                .Where(s => s.TalentRequirement != null && unlockedTalentIds.Contains(s.TalentRequirement))
+                .ToList();
+            skills.AddRange(talentSkills);
         }
 
         return skills;

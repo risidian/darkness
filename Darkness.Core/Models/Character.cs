@@ -116,6 +116,7 @@ namespace Darkness.Core.Models
         public byte[]? Thumbnail { get; set; }
         public byte[]? FullSpriteSheet { get; set; }
         public List<Item> Inventory { get; set; } = new();
+        public Dictionary<string, string> EquipmentSlots { get; set; } = new();
         public int Morality { get; set; } = 0;
         public int Gold { get; set; } = 0;
         public string?[] Hotbar { get; set; } = new string?[5];

@@ -1,6 +1,7 @@
 using Xunit;
 using Darkness.Core.Models;
 using Darkness.Core.Services;
+using LiteDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
@@ -9,10 +10,12 @@ namespace Darkness.Tests.Services
 {
     public class CraftingServiceTests
     {
+        private static LiteDatabase CreateEmptyDb() => new LiteDatabase(new MemoryStream());
+
         [Fact]
         public async Task CraftItem_Success_With_Materials()
         {
-            var service = new CraftingService();
+            var service = new CraftingService(CreateEmptyDb());
             var character = new Character 
             { 
                 Inventory = new List<Item> 
@@ -38,7 +41,7 @@ namespace Darkness.Tests.Services
         [Fact]
         public async Task CraftItem_Fails_If_Insufficient_Materials()
         {
-            var service = new CraftingService();
+            var service = new CraftingService(CreateEmptyDb());
             var character = new Character 
             { 
                 Inventory = new List<Item> { new Item { Name = "Iron Ore" } } 
@@ -58,7 +61,7 @@ namespace Darkness.Tests.Services
         [Fact]
         public async Task UpgradeItem_Increases_Tier_And_Stats()
         {
-            var service = new CraftingService();
+            var service = new CraftingService(CreateEmptyDb());
             var character = new Character { Gold = 1000 };
             var item = new Item { Name = "Steel Sword", AttackBonus = 10, Tier = 0, Type = "Weapon" };
             
@@ -74,7 +77,7 @@ namespace Darkness.Tests.Services
         [Fact]
         public async Task UpgradeItem_Handles_Multiple_Upgrades_Correctly()
         {
-            var service = new CraftingService();
+            var service = new CraftingService(CreateEmptyDb());
             var character = new Character { Gold = 2000 };
             var item = new Item { Name = "Steel Sword", AttackBonus = 10, Tier = 0, Type = "Weapon" };
             
@@ -89,7 +92,7 @@ namespace Darkness.Tests.Services
         [Fact]
         public async Task UpgradeItem_Fails_Insufficient_Gold()
         {
-            var service = new CraftingService();
+            var service = new CraftingService(CreateEmptyDb());
             var character = new Character { Gold = 100 };
             var item = new Item { Name = "Steel Sword", AttackBonus = 10, Tier = 0, Type = "Weapon" };
             
@@ -103,7 +106,7 @@ namespace Darkness.Tests.Services
         [Fact]
         public async Task InfuseItem_Sets_Infusion_And_Consumes_Essence()
         {
-            var service = new CraftingService();
+            var service = new CraftingService(CreateEmptyDb());
             var character = new Character 
             { 
                 Inventory = new List<Item> { new Item { Name = "Fire Essence" } } 

@@ -177,7 +177,7 @@ public partial class ForgeScene : Control
         var success = await _craftingService.CraftItemAsync(_currentCharacter, _selectedRecipe);
         if (success)
         {
-            await _characterService.SaveCharacterAsync(_currentCharacter);
+            await Task.Run(() => _characterService.SaveCharacter(_currentCharacter));
             await _dialogService.DisplayAlertAsync("Success", $"Crafted {_selectedRecipe.Name}!", "OK");
             await LoadData();
         }
@@ -210,7 +210,7 @@ public partial class ForgeScene : Control
         
         if (success)
         {
-            await _characterService.SaveCharacterAsync(_currentCharacter);
+            await Task.Run(() => _characterService.SaveCharacter(_currentCharacter));
             await _dialogService.DisplayAlertAsync("Success", $"Upgraded {_selectedUpgradeItem.Name} to Tier {_selectedUpgradeItem.Tier}!", "OK");
             await LoadData();
         }
@@ -259,7 +259,7 @@ public partial class ForgeScene : Control
         var success = await _craftingService.InfuseItemAsync(_currentCharacter, _selectedInfuseEquip, _selectedInfuseEssence);
         if (success)
         {
-            await _characterService.SaveCharacterAsync(_currentCharacter);
+            await Task.Run(() => _characterService.SaveCharacter(_currentCharacter));
             await _dialogService.DisplayAlertAsync("Success", $"Infused {_selectedInfuseEquip.Name} with {_selectedInfuseEquip.Infusion}!", "OK");
             await LoadData();
         }

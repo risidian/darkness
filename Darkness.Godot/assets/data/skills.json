@@ -200,6 +200,17 @@
     "ManaCost": 15,
     "AssociatedAction": "Slash",
     "WeaponRequirement": "None",
-    "TalentRequirement": "holy_strike_talent_id"
+    "TalentRequirement": "holy_strike_node"
+  },
+  {
+    "Id": 22,
+    "Name": "Offhand Stab",
+    "Description": "A lightning-fast off-hand strike. (1.0x Dmg, +20 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.0,
+    "AccuracyModifier": 20,
+    "AssociatedAction": "Thrust",
+    "WeaponRequirement": "Dagger",
+    "IsOffHand": true
   }
 ]

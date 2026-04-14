@@ -1,52 +1,33 @@
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
+using LiteDB;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Darkness.Core.Services
 {
     public class CraftingService : ICraftingService
     {
+        private readonly LiteDatabase _db;
+
+        public CraftingService(LiteDatabase db) { _db = db; }
+
         public Task<List<Recipe>> GetAvailableRecipesAsync()
         {
-            var recipes = new List<Recipe>
-            {
-                new Recipe
-                {
-                    Id = 1,
-                    Name = "Simple Dagger",
-                    Result = new Item
-                    {
-                        Name = "Simple Dagger", Description = "A basic blade.", Type = "Weapon", AttackBonus = 2,
-                        Value = 10
-                    },
-                    Materials = new Dictionary<string, int> { { "Iron Ore", 2 } }
-                },
-                new Recipe
-                {
-                    Id = 2,
-                    Name = "Iron Sword",
-                    Result = new Item
-                    {
-                        Name = "Iron Sword", Description = "A sturdy iron blade.", Type = "Weapon", AttackBonus = 5,
-                        Value = 50
-                    },
-                    Materials = new Dictionary<string, int> { { "Iron Ore", 5 } }
-                }
-            };
-
-            return Task.FromResult(recipes);
+            var col = _db.GetCollection<Recipe>("recipes");
+            return Task.FromResult(col.FindAll().ToList());
         }
 
-        public async Task<bool> CraftItemAsync(Character character, Recipe recipe)
+        public Task<bool> CraftItemAsync(Character character, Recipe recipe)
         {
-            if (character == null || recipe == null) return false;
+            if (character == null || recipe == null) return Task.FromResult(false);
 
             // Check materials
             foreach (var material in recipe.Materials)
             {
                 var count = character.Inventory.Count(i => i.Name == material.Key);
-                if (count < material.Value) return false;
+                if (count < material.Value) return Task.FromResult(false);
             }
 
             // Consume materials
@@ -73,14 +54,14 @@ namespace Darkness.Core.Services
                 Tier = 0
             });
 
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> UpgradeItemAsync(Character character, Item item, List<Item> materials, int gold)
+        public Task<bool> UpgradeItemAsync(Character character, Item item, List<Item> materials, int gold)
         {
-            if (character == null || item == null) return false;
-            if (item.Type != "Weapon" && item.Type != "Armor") return false;
-            if (character.Gold < gold) return false;
+            if (character == null || item == null) return Task.FromResult(false);
+            if (item.Type != "Weapon" && item.Type != "Armor") return Task.FromResult(false);
+            if (character.Gold < gold) return Task.FromResult(false);
 
             // TODO: Check materials if any are required for the upgrade
 
@@ -106,13 +87,13 @@ namespace Darkness.Core.Services
                 item.DefenseBonus += 2 * item.Tier;
             }
 
-            return true;
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> InfuseItemAsync(Character character, Item item, Item essence)
+        public Task<bool> InfuseItemAsync(Character character, Item item, Item essence)
         {
-            if (character == null || item == null || essence == null) return false;
-            if (!character.Inventory.Contains(essence)) return false;
+            if (character == null || item == null || essence == null) return Task.FromResult(false);
+            if (!character.Inventory.Contains(essence)) return Task.FromResult(false);
 
             // Infusion is derived from the essence name
             item.Infusion = essence.Name.Replace(" Essence", "");
@@ -120,7 +101,7 @@ namespace Darkness.Core.Services
             // Remove essence from inventory
             character.Inventory.Remove(essence);
 
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

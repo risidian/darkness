@@ -582,14 +582,6 @@ public partial class WorldScene : Node2D, IInitializable
 
         if (_currentDialogueChain != null && _session.CurrentCharacter != null)
         {
-            // Apply morality
-            if (choice.MoralityImpact != 0)
-            {
-                _session.CurrentCharacter.Morality += choice.MoralityImpact;
-                GD.Print(
-                    $"[Morality] Changed by {choice.MoralityImpact}. New Total: {_session.CurrentCharacter.Morality}");
-            }
-
             // Advance to the chosen step
             GD.Print($"[WorldScene] Advancing chain {_currentDialogueChain.Id} to step {choice.NextStepId}");
             var nextStep = _questService.AdvanceStep(_session.CurrentCharacter, _currentDialogueChain.Id, choice.NextStepId);

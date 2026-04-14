@@ -56,9 +56,6 @@ namespace Darkness.Core.Services
 
             character.Gold += result.GoldAwarded;
             character.ConsolidateInventory();
-            
-            // Restore HP to full on victory as requested
-            character.CurrentHP = character.MaxHP;
 
             // Update character in database
             var charCol = _db.GetCollection<Character>("characters");

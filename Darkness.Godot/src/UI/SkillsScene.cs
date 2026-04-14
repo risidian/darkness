@@ -107,7 +107,7 @@ public partial class SkillsScene : Control
         if (emptySlotIndex != -1)
         {
             character.ActiveSkillSlots[emptySlotIndex] = skillId;
-            await _characterService.SaveCharacterAsync(character);
+            await Task.Run(() => _characterService.SaveCharacter(character));
             LoadSkills();
         }
         else
@@ -126,7 +126,7 @@ public partial class SkillsScene : Control
         if (index != -1)
         {
             character.ActiveSkillSlots[index] = 0;
-            await _characterService.SaveCharacterAsync(character);
+            await Task.Run(() => _characterService.SaveCharacter(character));
             LoadSkills();
         }
     }

@@ -77,7 +77,7 @@ public partial class MainMenuScene : Control
         if (_session.CurrentUser != null)
         {
             // Check for character
-            var characters = await _characterService.GetCharactersForUserAsync(_session.CurrentUser.Id);
+            var characters = await Task.Run(() => _characterService.GetCharactersForUser(_session.CurrentUser.Id));
             if (characters == null || characters.Count == 0)
             {
                 await _navigation.NavigateToAsync("CharacterGenPage");
@@ -109,7 +109,7 @@ public partial class MainMenuScene : Control
     private async void OnPvpPressed()
     {
         if (_session.CurrentUser == null) return;
-        var characters = await _characterService.GetCharactersForUserAsync(_session.CurrentUser.Id);
+        var characters = await Task.Run(() => _characterService.GetCharactersForUser(_session.CurrentUser.Id));
         if (characters == null || characters.Count < 2)
         {
             await _dialogService.DisplayAlertAsync("PVP", "You need at least two characters to play PVP.", "OK");

@@ -35,7 +35,7 @@ namespace Darkness.Tests.Services
         }
 
         [Fact]
-        public void ProcessCombatRewards_RestoresCharacterHpToMax()
+        public void ProcessCombatRewards_DoesNotRestoreHP()
         {
             // Arrange
             var character = new Character
@@ -60,7 +60,7 @@ namespace Darkness.Tests.Services
             var result = _rewardService.ProcessCombatRewards(character, enemies);
 
             // Assert
-            Assert.Equal(100, character.CurrentHP); // HP should be restored
+            Assert.Equal(10, character.CurrentHP); // HP should NOT be restored on victory
             Assert.Equal(50, result.GoldAwarded);
             Assert.Equal(50, character.Gold);
         }

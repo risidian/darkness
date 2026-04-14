@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "Name": "Simple Dagger",
+    "Result": {
+      "Name": "Simple Dagger",
+      "Description": "A basic blade.",
+      "Type": "Weapon",
+      "AttackBonus": 2,
+      "Value": 10,
+      "DamageDice": "1d4",
+      "EquipmentSlot": "Weapon"
+    },
+    "Materials": { "Iron Ore": 2 }
+  },
+  {
+    "Id": 2,
+    "Name": "Iron Sword",
+    "Result": {
+      "Name": "Iron Sword",
+      "Description": "A sturdy iron blade.",
+      "Type": "Weapon",
+      "AttackBonus": 5,
+      "Value": 50,
+      "DamageDice": "1d6",
+      "EquipmentSlot": "Weapon"
+    },
+    "Materials": { "Iron Ore": 5 }
+  }
+]

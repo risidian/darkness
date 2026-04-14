@@ -11,4 +11,5 @@ public interface IQuestService
     QuestState? GetQuestState(int characterId, string chainId);
     bool IsMainStoryComplete(Character character);
     List<string> GetCompletedChainIds(int characterId);
+    List<BranchOption> GetAvailableBranchOptions(Character character, string chainId, string stepId);
 }

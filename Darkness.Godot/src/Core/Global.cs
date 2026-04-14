@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Godot;
 using LiteDB;
 using Darkness.Core.Data;
+using Darkness.Core.Models;
 using Darkness.Core.Services;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Logic;
@@ -39,7 +40,7 @@ public partial class Global : Node
             services.AddSingleton<ISessionService, SessionService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ICharacterService, CharacterService>();
-            services.AddSingleton<ICraftingService, CraftingService>();
+            services.AddSingleton<ICraftingService>(sp => new CraftingService(sp.GetRequiredService<LiteDatabase>()));
             services.AddSingleton<IDeathmatchService, DeathmatchService>();
             services.AddSingleton<IAllyService, AllyService>();
             services.AddSingleton<IQuestService, QuestService>();
@@ -52,6 +53,7 @@ public partial class Global : Node
             services.AddSingleton<ILevelingService, LevelingService>();
             services.AddSingleton<ITalentService, TalentService>();
             services.AddSingleton<ITriggerService, TriggerService>();
+            services.AddSingleton<IEquipmentService, EquipmentService>();
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
 
             Services = services.BuildServiceProvider();
@@ -73,7 +75,13 @@ public partial class Global : Node
                 new LevelSeeder(fs).Seed(db);
                 new TalentSeeder(fs).Seed(db);
                 new SkillSeeder(fs).Seed(db);
+                new RecipeSeeder(fs).Seed(db);
                 GD.Print("[Global] Data seeding complete.");
+
+                // Create runtime indexes (once at startup, not per operation)
+                db.GetCollection<Character>("characters").EnsureIndex(c => c.UserId);
+                db.GetCollection<QuestState>("quest_states").EnsureIndex(s => s.CharacterId);
+                db.GetCollection<QuestState>("quest_states").EnsureIndex(s => s.Status);
             }
 catch (Exception ex)
 {

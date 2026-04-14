@@ -1,13 +1,10 @@
 using Darkness.Core.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Darkness.Core.Interfaces
+namespace Darkness.Core.Interfaces;
+
+public interface ICharacterService
 {
-    public interface ICharacterService
-    {
-        Task<bool> SaveCharacterAsync(Character character);
-        Task<Character?> GetCharacterByIdAsync(int characterId);
-        Task<List<Character>> GetCharactersForUserAsync(int userId);
-    }
+    bool SaveCharacter(Character character);
+    Character? GetCharacterById(int characterId);
+    List<Character> GetCharactersForUser(int userId);
 }

@@ -146,7 +146,7 @@ public class GodotSpriteCompositor : ISpriteCompositor
 
             if (fileSystem.FileExists(fullPath))
             {
-                var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
+                using var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
                 using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
                 return ms.ToArray();
@@ -163,7 +163,7 @@ public class GodotSpriteCompositor : ISpriteCompositor
                 
                 if (fileSystem.FileExists(altFullPath))
                 {
-                    var stream = await fileSystem.OpenAppPackageFileAsync(altFullPath);
+                    using var stream = await fileSystem.OpenAppPackageFileAsync(altFullPath);
                     using var ms = new MemoryStream();
                     await stream.CopyToAsync(ms);
                     return ms.ToArray();
@@ -180,7 +180,7 @@ public class GodotSpriteCompositor : ISpriteCompositor
                     string fbFullPath = layer.RootPath.EndsWith("/") ? layer.RootPath + fbFileName : layer.RootPath + "/" + fbFileName;
                     if (fileSystem.FileExists(fbFullPath))
                     {
-                        var stream = await fileSystem.OpenAppPackageFileAsync(fbFullPath);
+                        using var stream = await fileSystem.OpenAppPackageFileAsync(fbFullPath);
                         using var ms = new MemoryStream();
                         await stream.CopyToAsync(ms);
                         return ms.ToArray();

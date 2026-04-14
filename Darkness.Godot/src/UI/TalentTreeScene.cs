@@ -189,7 +189,7 @@ public partial class TalentTreeScene : Control
             {
                 _talentService.PurchaseTalent(_session.CurrentCharacter, treeId, node.Id);
                 _talentService.ApplyTalentPassives(_session.CurrentCharacter);
-                await _characterService.SaveCharacterAsync(_session.CurrentCharacter);
+                await Task.Run(() => _characterService.SaveCharacter(_session.CurrentCharacter));
                 
                 UpdatePointsLabel();
                 LoadTrees();

@@ -24,5 +24,6 @@ namespace Darkness.Core.Models
         public string WeaponRequirement { get; set; } = "None";
         public string? TalentRequirement { get; set; }
         public bool IsPassive { get; set; } = false;
+        public bool IsOffHand { get; set; } = false;
     }
 }

@@ -534,7 +534,7 @@ public partial class BattleScene : Control, IInitializable
                     character.Inventory.Remove(item);
                 }
                 
-                await _characterService.SaveCharacterAsync(character);
+                await Task.Run(() => _characterService.SaveCharacter(character));
                 
                 SetupHotbar(); // Refresh hotbar icons/visibility
             }
@@ -961,6 +961,9 @@ public partial class BattleScene : Control, IInitializable
         EnablePlayerInput(false);
         attacker.IsBlocking = false;
 
+        // Deduct skill resource costs (mana/stamina)
+        _combat.ApplySkillCosts(attacker, skill);
+
         try
         {
             var attackerSprite = _partySprites[0];
@@ -1125,7 +1128,7 @@ public partial class BattleScene : Control, IInitializable
             }
 
             // Save character after rewards and XP are processed
-            await _characterService.SaveCharacterAsync(character);
+            await Task.Run(() => _characterService.SaveCharacter(character));
         }
         
         if (character != null && _questChainId != null)
