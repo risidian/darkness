@@ -55,6 +55,8 @@ public partial class MainMenuScene : Control
 
         GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/SettingsButton").Pressed +=
             () => _navigation.NavigateToAsync("SettingsPage");
+        GetNode<Button>("MarginContainer/VBoxContainer/GridContainer/SkillsButton").Pressed +=
+            () => _navigation.NavigateToAsync("SkillsPage");
         GetNode<Button>("TopRightMenu/LogoutButton").Pressed += OnLogoutPressed;
 
         await RunStartupChecks();

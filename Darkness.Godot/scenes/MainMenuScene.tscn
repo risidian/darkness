@@ -112,6 +112,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "SETTINGS"
 
+[node name="SkillsButton" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "SKILLS"
+
 [node name="TopRightMenu" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
