@@ -44,7 +44,8 @@ public partial class SkillsScene : Control
         var character = _session.CurrentCharacter;
         if (character == null) return;
 
-        var availableSkills = _weaponSkillService.GetAvailableSkills(character);
+        var availableSkills = _weaponSkillService.GetAvailableSkills(character)
+            .Where(s => !s.IsPassive).ToList();
 
         // Populate Available Skills
         foreach (var skill in availableSkills)
