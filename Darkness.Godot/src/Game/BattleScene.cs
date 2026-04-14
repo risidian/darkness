@@ -1099,6 +1099,8 @@ public partial class BattleScene : Control, IInitializable
             victoryMsg += $"\n+{result.XpAwarded} XP";
             if (result.DidLevelUp)
                 victoryMsg += $"\nLevel Up! You are now level {result.NewLevel}!";
+            if (result.TalentPointsAwarded > 0)
+                victoryMsg += $"\n[color=gold]TALENT POINTS GAINED: {result.TalentPointsAwarded}![/color]";
         }
 
         if (character != null)
