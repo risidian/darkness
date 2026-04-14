@@ -17,5 +17,11 @@ namespace Darkness.Core.Models
         public int AccuracyModifier { get; set; } = 0;
         public ActionType AssociatedAction { get; set; } = ActionType.Standard;
         public float BlockReduction { get; set; } = 0.0f; // Only for Defensive types
+
+        // Task 1: New properties
+        public int Cooldown { get; set; } = 0;
+        public int CurrentCooldown { get; set; } = 0;
+        public string WeaponRequirement { get; set; } = "None";
+        public string? TalentRequirement { get; set; }
     }
 }
