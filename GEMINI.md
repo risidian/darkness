@@ -4,7 +4,7 @@
 A cross-platform RPG built on **Godot 4.6.1 (.NET 10)** with a platform-agnostic core library.
 
 ### Core Projects
-- **`Darkness.Core`**: Pure .NET 10 library — models, interfaces, services, ViewModels, combat engine, and LiteDB persistence. All game logic lives here.
+- **`Darkness.Core`**: Pure .NET 10 library — models (39+), interfaces (21), services (21+), combat engine, and LiteDB persistence. All game logic lives here.
 - **`Darkness.Godot`**: Main game host. Godot C# project for rendering, UI, and input.
 - **`Darkness.WebAPI`**: ASP.NET Core 10 backend with EF Core.
 - **`Darkness.Tests`**: XUnit tests with Moq. References Darkness.Core.
@@ -25,13 +25,13 @@ dotnet test Darkness.Tests --filter "FullyQualifiedName~TestMethodName"  # Singl
 - Uses `Microsoft.Extensions.DependencyInjection`.
 - **Global Autoload (`Global.cs`)**: Initializes `ServiceProvider`, registers all services, and runs data seeders at startup.
 - **Service Resolution**: Scenes resolve services via `Global.Services` in `_Ready()`.
-- **Key services**: `IQuestService`, `ILevelingService`, `ITriggerService`, `ISpriteLayerCatalog`, `ICombatService`, `ICharacterService`, `ISessionService`, `INavigationService`.
+- **Key services** (21 interfaces total): `ICharacterService`, `IUserService`, `ISessionService`, `ISettingsService`, `ICombatService`, `IQuestService`, `ITriggerService`, `ILevelingService`, `ITalentService`, `IWeaponSkillService`, `ICraftingService`, `IRewardService`, `IDeathmatchService`, `IAllyService`, `INavigationService`, `ISpriteLayerCatalog`, `ISpriteCompositor`, `IFileSystemService`, `IDispatcherService`, `IDialogService`, `IGameEngineFactory`.
 
 ### Data Architecture
 The project uses a **data-driven architecture** with JSON seed files and LiteDB runtime storage:
 
 - **Seed files** (human-readable JSON in `assets/data/`) define game content — equipment sprites, quest chains, level thresholds.
-- **Seeders** (`SpriteSeeder`, `QuestSeeder`, `LevelSeeder`) load JSON into LiteDB collections at startup.
+- **Seeders** (`SpriteSeeder`, `QuestSeeder`, `LevelSeeder`, `TalentSeeder`, `SkillSeeder`) load JSON into LiteDB collections at startup.
 - **Services** query LiteDB at runtime for all lookups.
 - **Adding new content** (equipment, quests, levels) requires only JSON edits — no code changes.
 
@@ -71,9 +71,28 @@ To add a new quest: create a JSON file in `assets/data/quests/` following the Qu
 ## 5. XP & Leveling System
 
 - **Level thresholds**: Defined in `assets/data/level-table.json` (20 levels, data-driven).
-- **`LevelingService.AwardExperience()`**: Awards XP, checks level-up thresholds, grants attribute points (2 per level), restores HP on level-up.
-- **`LevelUpResult`**: Returned after XP award — includes `DidLevelUp`, `LevelsGained`, `AttributePointsAwarded`.
+- **`LevelingService.AwardExperience()`**: Awards XP, checks level-up thresholds, grants attribute points (2 per level), talent points (1 per even level), scales MaxHP, restores HP on level-up.
+- **`LevelUpResult`**: Returned after XP award — includes `DidLevelUp`, `LevelsGained`, `AttributePointsAwarded`, `TalentPointsAwarded`.
 - **Combat flow**: `BattleScene.Victory()` → sums `Enemy.ExperienceReward` → `LevelingService.AwardExperience()` → `QuestService.AdvanceStep()` → navigate to WorldScene.
+
+## 5a. Talent System
+
+Talent trees defined in `assets/data/talent-trees.json`, seeded into LiteDB by `TalentSeeder`.
+
+- **`TalentTree`**: Id, Name, Tier, RequiredClass, ExclusiveGroupId, IsHidden, RequiredMorality, Prerequisites, Nodes.
+- **`TalentNode`**: Id, Name, Description, PointsRequired, Row, Column, PrerequisiteNodeIds, IsPassive, AutomaticallyUnlocked, IconPath, Effect.
+- **`TalentEffect`**: Stat (bonus stat name), Value, Skill (skill unlock).
+- **`TalentService`**: Validates class requirements, morality requirements, exclusivity groups, hidden trees. Returns `TalentPurchaseResult`.
+- **`TalentLayoutHelper`**: Static utility for calculating spatial layout (BFS depth for rows, collision resolution).
+- **Talent points**: 1 per even level, spent to unlock nodes in class-restricted trees.
+
+## 5b. Skills & Weapons
+
+Skills defined in `assets/data/skills.json`, seeded into LiteDB by `SkillSeeder`.
+
+- **`Skill`**: Name, ManaCost, StaminaCost, BasePower, DamageDice, DamageMultiplier, SkillType (Physical/Magical/Defensive), ActionType, Cooldown, WeaponRequirement, TalentRequirement, IsPassive.
+- **`WeaponSkillService`**: Resolves available skills — prioritizes `ActiveSkillSlots` (player-assigned hotbar), falls back to weapon-type matching. Generates inline skills for various weapon types (Wand, Bow, Sword, Shield, Unarmed).
+- **`ActiveSkillSlots`** on Character: Player-curated skill hotbar that overrides weapon-based defaults.
 
 ## 6. Game Flow & Scenes
 
@@ -81,10 +100,18 @@ To add a new quest: create a JSON file in `assets/data/quests/` following the Qu
 2. **`LoadUserScene`**: Login and user selection.
 3. **`CreateUserScene`**: User creation.
 4. **`CharactersScene`**: Character list with thumbnails.
-5. **`MainMenuScene` (Hub)**: Central hub — Story, Deathmatch, PVP, Forge, Study, Allies, Settings.
+5. **`MainMenuScene` (Hub)**: Central hub — Story, Deathmatch, PVP, Characters, Forge, Study, Allies, Talents, Skills, Settings, Logout.
 6. **`WorldScene`**: World exploration with `TriggerService`-driven quest triggers. Handles dialogue, branch choices, and scene transitions.
 7. **`BattleScene`**: Turn-based combat with XP awards and quest advancement on victory.
-8. **`StealthScene`**: Timing-bar stealth minigame with quest context pass-through.
+8. **`StealthScene`**: Timing-bar stealth minigame with quest context pass-through (5 successes to win, 3 failures to lose).
+9. **`SkillsScene`**: Skill management and hotbar assignment.
+10. **`TalentTreeScene`**: Multi-tab talent tree visualization with node purchasing.
+11. **`InventoryScene`**: Item/equipment management with sprite preview and tooltips.
+12. **`ForgeScene`**: Crafting recipes, equipment upgrades, and essence infusion.
+13. **`StudyScene`**: Stat point allocation across 6 attributes.
+14. **`AlliesScene`**: Ally request and management.
+15. **`SettingsScene`**: Volume controls (Master, Music, SFX).
+16. **`CharacterGenScene`**: 3-step character creation with live sprite preview.
 
 ## 7. Build & Deployment
 
@@ -99,7 +126,8 @@ To add a new quest: create a JSON file in `assets/data/quests/` following the Qu
 - **UI Layering**: Use `ScrollContainer` → `VBoxContainer` hierarchies. Set root `mouse_filter = Ignore` if buttons are unresponsive.
 - **Audio Driver**: WASAPI with `enable_input = false` for Windows.
 - **Namespaces**: Use `global::Godot.FileAccess` when `System.IO` is in scope. Use `using SystemJson = System.Text.Json` when `LiteDB` is in scope (both have `JsonSerializer`).
-- **Data seeding**: All seeders use `DeleteAll()` + re-insert pattern (idempotent). Errors are logged but don't crash startup.
+- **Data seeding**: All 5 seeders (Sprite, Quest, Level, Talent, Skill) use `DeleteAll()` + re-insert pattern (idempotent). Errors are logged but don't crash startup.
+- **D20 Combat**: `CombatEngine` uses d20 hit rolls against AC, dice-based damage (XdY parser), initiative from DEX modifier, critical hit on natural 20, critical miss on natural 1. Supports Character vs Enemy, Enemy vs Character, and Character vs Character.
 
 ## 9. Workflow Requirements
 
@@ -109,7 +137,10 @@ To add a new quest: create a JSON file in `assets/data/quests/` following the Qu
 - **All tests must pass before committing.** Verify all tests pass before every commit. Do not commit with failing tests. If a pre-existing test fails, investigate and fix it or explicitly flag it to the user — do not ignore it.
 
 ## 10. Project Conventions
-- .NET 10 with `ImplicitUsings` and `Nullable` enabled.
+- .NET 10 with `ImplicitUsings`, `Nullable`, and `TreatWarningsAsErrors` enabled.
 - App identifier: `com.risidian.darkness`
+- Rendering: `gl_compatibility` mode. Viewport: 1280x720, stretch mode `canvas_items`. Pixel snapping enabled.
 - Sprite assets in `assets/sprites/full/` (LPC-based character sprites).
-- Key dependencies: CommunityToolkit.Mvvm 8.4.2, LiteDB 5.0.21.
+- Seed data in `Darkness.Godot/assets/data/` (sprite-catalog.json, skills.json, talent-trees.json, level-table.json, quests/*.json — 9 quest chains: beat_1 through beat_9).
+- Key dependencies: CommunityToolkit.Mvvm 8.4.2, LiteDB 5.0.21, Newtonsoft.Json 13.0.3 (Core); Microsoft.Extensions.DependencyInjection 9.0.2 (Godot); SkiaSharp 3.119.2 (Tests).
+- 165 tests across 37 test files (5 excluded files depend on removed MonoGame project).

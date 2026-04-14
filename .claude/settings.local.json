@@ -34,7 +34,8 @@
       "Bash(find:*)",
       "Bash(ls -d \"C:\\\\Users\\\\Mayce\\\\Documents\\\\GitHub\\\\darkness\\\\Darkness.Godot\\\\assets\\\\sprites\\\\full\\\\weapons\\\\sword\\\\arming\"/*)",
       "Bash(python3 -c \"from PIL import Image; img = Image.open\\('Darkness.Godot/assets/sprites/full/weapons/sword/arming/universal/bg/walk/steel.png'\\); print\\(f'Size: {img.size}'\\)\")",
-      "Bash(python -c \"from PIL import Image; img = Image.open\\('Darkness.Godot/assets/sprites/full/weapons/sword/arming/universal/bg/walk/steel.png'\\); print\\(f'Size: {img.size}'\\)\")"
+      "Bash(python -c \"from PIL import Image; img = Image.open\\('Darkness.Godot/assets/sprites/full/weapons/sword/arming/universal/bg/walk/steel.png'\\); print\\(f'Size: {img.size}'\\)\")",
+      "Bash(xargs -I {} basename {} .cs)"
     ]
   }
 }

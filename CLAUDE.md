@@ -20,45 +20,64 @@ dotnet build Darkness.Godot/Darkness.Godot.csproj
 # Run WebAPI backend
 dotnet run --project Darkness.WebAPI
 
-# Run all tests
+# Run all tests (165 tests)
 dotnet test Darkness.Tests
 
 # Run a single test
 dotnet test Darkness.Tests --filter "FullyQualifiedName~TestMethodName"
+
+# Build Android APK
+./build-android.ps1
 ```
 
 ## Architecture
 
-This is **Darkness**, a cross-platform RPG built on .NET 10 with three active projects:
+This is **Darkness**, a cross-platform RPG built on .NET 10 with four projects:
 
-- **Darkness.Core** — Platform-agnostic business logic layer. Contains models, services, ViewModels, combat engine, story controller, and LiteDB persistence. All game logic lives here.
-- **Darkness.Godot** — The main game host. A Godot 4.6.1 project using C# for rendering, UI, and input.
-- **Darkness.WebAPI** — ASP.NET Core 10 backend with EF Core.
-- **Darkness.Tests** — XUnit tests with Moq. References Darkness.Core.
+- **Darkness.Core** — Platform-agnostic business logic layer. Contains models (39+), services (21+), combat engine, and LiteDB persistence. All game logic lives here.
+- **Darkness.Godot** — The main game host. A Godot 4.6.1 (.NET) project with 23 scenes, 5 platform services, and all rendering/UI/input.
+- **Darkness.WebAPI** — ASP.NET Core 10 backend with EF Core (SQL Server). Currently has a placeholder ValuesController and two EF models (Characters, Users).
+- **Darkness.Tests** — XUnit tests with Moq (165 tests). References Darkness.Core only. Five test files excluded (depend on removed MonoGame project).
 
 ### Key Patterns
 
-- **MVVM** via `CommunityToolkit.Mvvm` — ViewModels in Core extend `ObservableObject`.
-- **DI** configured in `Darkness.Godot/src/Core/Global.cs`. Seeders run at startup.
-- **Interface-driven**: Core defines interfaces (`IQuestService`, `ILevelingService`, `ITriggerService`, `ISpriteLayerCatalog`, `ICombatService`, `ICharacterService`, `INavigationService`, `ISessionService`, `IFileSystemService`, `ISpriteCompositor`); Godot provides platform implementations.
-- **Data-driven**: Game content (equipment, quests, level thresholds) defined in JSON seed files, loaded into LiteDB at startup. Adding content requires JSON edits only — no code changes.
-- **Local data**: LiteDB via `LiteDB` package.
+- **DI** configured in `Darkness.Godot/src/Core/Global.cs`. All services are singletons. Five seeders run synchronously at startup.
+- **Interface-driven**: Core defines 21 interfaces; Godot provides 5 platform implementations (`GodotNavigationService`, `GodotFileSystemService`, `GodotDispatcherService`, `GodotDialogService`, `GodotSpriteCompositor`).
+- **Data-driven**: Game content (equipment, quests, level thresholds, skills, talent trees) defined in JSON seed files, loaded into LiteDB at startup. Adding content requires JSON edits only — no code changes.
+- **Local data**: LiteDB via `LiteDB` package. Collections: characters, users, quest_chains, quest_states, skills, talent_trees, items, recipes, equipment_sprites, appearance_options.
+- **D20 combat**: `CombatEngine` uses d20 hit rolls against AC, dice-based damage (XdY parser), initiative from DEX modifier, critical hits/misses.
 
 ### Data Flow
 
-Godot Scenes → ViewModels (in Core) → Services (in Core) → LiteDB
+Godot Scenes → Services (in Core) → LiteDB
+
+### Core Interfaces
+
+`ICharacterService`, `IUserService`, `ISessionService`, `ISettingsService`, `ICombatService`, `IQuestService`, `ITriggerService`, `ILevelingService`, `ITalentService`, `IWeaponSkillService`, `ICraftingService`, `IRewardService`, `IDeathmatchService`, `IAllyService`, `INavigationService`, `ISpriteLayerCatalog`, `ISpriteCompositor`, `IFileSystemService`, `IDispatcherService`, `IDialogService`, `IGameEngineFactory`
 
 ### Sprite Composition Pipeline
 
-Character appearance uses an 11+ layer system. `EquipmentSprite` and `AppearanceOption` records in LiteDB map display names to asset paths and z-ordering. `SpriteLayerCatalog` queries LiteDB to build `StitchLayer` lists. `GodotSpriteCompositor` composites PNG layers into a single sprite sheet. Seed data in `assets/data/sprite-catalog.json`.
+Character appearance uses an 11+ layer system. `EquipmentSprite` and `AppearanceOption` records in LiteDB map display names to asset paths and z-ordering. `SpriteLayerCatalog` queries LiteDB to build `StitchLayer` lists. `GodotSpriteCompositor` composites PNG layers into 1536x2112 sprite sheets (6 LPC animation rows). Seed data in `Darkness.Godot/assets/data/sprite-catalog.json`.
 
 ### Quest System
 
-Per-chain JSON files in `assets/data/quests/`, seeded into LiteDB. `QuestChain` contains `QuestStep`s (typed: dialogue, combat, location, branch). `QuestState` in LiteDB tracks per-character progress. `QuestService.AdvanceStep()` drives all progression. `TriggerService` handles location-based triggers. `ConditionEvaluator` supports extensible branch conditions (morality, class, item, quest).
+9 quest chain JSON files in `Darkness.Godot/assets/data/quests/` (beat_1 through beat_9), seeded into LiteDB. `QuestChain` contains `QuestStep`s (typed: dialogue, combat, location, branch). `QuestState` in LiteDB tracks per-character progress. `QuestService.AdvanceStep()` drives all progression. `TriggerService` handles location-based triggers. `ConditionEvaluator` supports extensible branch conditions (morality, class, item, quest).
 
 ### XP & Leveling
 
-Level thresholds in `assets/data/level-table.json`. `LevelingService.AwardExperience()` handles XP award, level-up detection, attribute points (2/level), HP restore. BattleScene awards XP on victory, then advances quest.
+Level thresholds in `Darkness.Godot/assets/data/level-table.json` (20 levels). `LevelingService.AwardExperience()` handles XP award, level-up detection, attribute points (2/level), talent points (1/even level), HP scaling, and HP restore. BattleScene awards XP on victory, then advances quest.
+
+### Talent System
+
+Talent trees in `Darkness.Godot/assets/data/talent-trees.json`, seeded into LiteDB. `TalentService` manages class-restricted and morality-gated trees with prerequisite nodes, exclusivity groups, and hidden trees. `TalentLayoutHelper` calculates spatial layout. Talents grant stat bonuses or skill unlocks via `TalentEffect`.
+
+### Skills & Weapons
+
+Skills in `Darkness.Godot/assets/data/skills.json`, seeded into LiteDB. `WeaponSkillService` resolves available skills — prioritizes `ActiveSkillSlots` (player-assigned hotbar), falls back to weapon-type matching. Skills have mana/stamina costs, damage dice, cooldowns, and optional talent requirements.
+
+### Scene Flow
+
+SplashScene → LoadUserScene → MainMenuScene (hub) → WorldScene, BattleScene, StealthScene, DeathmatchScene, CharactersScene, CharacterGenScene, InventoryScene, ForgeScene, SkillsScene, TalentTreeScene, StudyScene, AlliesScene, SettingsScene. `GodotNavigationService` handles fade transitions and `IInitializable` parameter injection. PauseMenu available in-game.
 
 ## Workflow Requirements
 
@@ -67,9 +86,11 @@ Level thresholds in `assets/data/level-table.json`. `LevelingService.AwardExperi
 
 ## Project Conventions
 
-- .NET 10 with `ImplicitUsings` and `Nullable` enabled.
+- .NET 10 with `ImplicitUsings`, `Nullable`, and `TreatWarningsAsErrors` enabled.
 - App identifier: `com.risidian.darkness`
 - Sprite assets in `assets/sprites/full/` (LPC-based character sprites).
-- Seed data in `assets/data/` (sprite-catalog.json, quests/*.json, level-table.json).
-- Key dependencies: CommunityToolkit.Mvvm 8.4.2, LiteDB 5.0.21.
+- Seed data in `Darkness.Godot/assets/data/` (sprite-catalog.json, skills.json, talent-trees.json, level-table.json, quests/*.json).
+- Key dependencies: CommunityToolkit.Mvvm 8.4.2, LiteDB 5.0.21, Newtonsoft.Json 13.0.3 (Core); Microsoft.Extensions.DependencyInjection 9.0.2 (Godot); SkiaSharp 3.119.2 (Tests).
 - Use `using SystemJson = System.Text.Json` when LiteDB is in scope (both have `JsonSerializer`).
+- Rendering: `gl_compatibility` mode. Viewport: 1280x720, stretch mode `canvas_items`. Pixel snapping enabled.
+- Seeders use `DeleteAll()` + re-insert pattern (idempotent). Errors logged but don't crash startup.
