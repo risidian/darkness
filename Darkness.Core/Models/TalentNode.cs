@@ -13,5 +13,6 @@ namespace Darkness.Core.Models
         public List<string> PrerequisiteNodeIds { get; set; } = new();
         public string? IconPath { get; set; }
         public TalentEffect Effect { get; set; } = new();
+        public bool IsPassive { get; set; } = false;
     }
 }
