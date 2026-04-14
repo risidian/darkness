@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg2n8hxxxxxx"]
+[gd_scene format=3 uid="uid://cg2n8hxxxxxx"]
 
 [ext_resource type="Script" path="res://src/UI/Tooltip.cs" id="1_1a2b3"]
 

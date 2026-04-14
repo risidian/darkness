@@ -85,4 +85,29 @@ public class WeaponSkillServiceTests
         var holyStrike = skills.Find(s => s.Name == "Holy Strike");
         Assert.Equal(1.8f, holyStrike.DamageMultiplier);
     }
+
+    [Fact]
+    public void GetEquippedSkills_PrioritizesActiveSkillSlots()
+    {
+        // Arrange
+        var skills = _db.GetCollection<Skill>("skills");
+        skills.Insert(new Skill { Id = 10, Name = "Active Skill 1" });
+        skills.Insert(new Skill { Id = 20, Name = "Active Skill 2" });
+        skills.Insert(new Skill { Id = 1, Name = "Slash", WeaponRequirement = "Sword" });
+
+        var character = new Character
+        {
+            WeaponType = "Sword",
+            ActiveSkillSlots = new List<int> { 10, 20, 0, 0, 0 }
+        };
+
+        // Act
+        var equipped = _service.GetEquippedSkills(character);
+
+        // Assert
+        Assert.Equal(2, equipped.Count);
+        Assert.Contains(equipped, s => s.Id == 10);
+        Assert.Contains(equipped, s => s.Id == 20);
+        Assert.DoesNotContain(equipped, s => s.Name == "Slash");
+    }
 }

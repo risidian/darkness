@@ -67,6 +67,7 @@ public partial class LayeredSprite : Node2D
         ISpriteCompositor? compositor = null)
     {
         EnsureLayers();
+        GD.Print($"[LayeredSprite] SetupCharacter started for {c.Name}. Class: {c.Class}");
 
         var appearance = new CharacterAppearance
         {
@@ -81,7 +82,8 @@ public partial class LayeredSprite : Node2D
             Arms = c.Arms,
             Legs = c.Legs,
             Head = c.Head ?? "Human Male",
-            ShieldType = c.ShieldType ?? "None"
+            ShieldType = c.ShieldType ?? "None",
+            OffHandType = c.OffHandType ?? "None"
         };
 
         if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
@@ -98,6 +100,7 @@ public partial class LayeredSprite : Node2D
             {
                 var allLayers = catalog.GetStitchLayers(appearance);
                 var baseLayers = allLayers.Where(l => !l.RootPath.Contains("weapons/") && !l.RootPath.Contains("shields/")).ToList();
+                GD.Print($"[LayeredSprite] Compositing {baseLayers.Count} base layers...");
                 
                 c.FullSpriteSheet = await compositor.CompositeFullSheet(baseLayers, fileSystem);
                 GD.Print($"[LayeredSprite] Generated sheet for {c.Name}: {c.FullSpriteSheet?.Length ?? 0} bytes");
@@ -106,10 +109,15 @@ public partial class LayeredSprite : Node2D
                 {
                     await SetupFromBytes(c.FullSpriteSheet);
                 }
+                else
+                {
+                    GD.PrintErr($"[LayeredSprite] CompositeFullSheet returned empty/null buffer for {c.Name}");
+                }
             }
             catch (Exception ex)
             {
                 GD.PrintErr($"[LayeredSprite] Failed to generate sheet for {c.Name}: {ex.Message}");
+                GD.PrintErr(ex.StackTrace);
             }
         }
         else
@@ -120,6 +128,7 @@ public partial class LayeredSprite : Node2D
         // Dynamically load oversized equipment (weapons, shields) without baking them into base sheet
         if (appearance.ShieldType != "None" && !string.IsNullOrEmpty(appearance.ShieldType))
         {
+            GD.Print($"[LayeredSprite] Adding shield overlay: {appearance.ShieldType}");
             await AddEquipmentOverlay("Shield", appearance.ShieldType, "Shield", catalog, fileSystem);
         }
         else if (_layers.TryGetValue("Shield", out var shieldLayer))
@@ -129,6 +138,7 @@ public partial class LayeredSprite : Node2D
         
         if (appearance.WeaponType != "None" && !string.IsNullOrEmpty(appearance.WeaponType))
         {
+            GD.Print($"[LayeredSprite] Adding weapon overlay: {appearance.WeaponType}");
             await AddEquipmentOverlay("Weapon", appearance.WeaponType, "Weapon", catalog, fileSystem);
         }
         else if (_layers.TryGetValue("Weapon", out var weaponLayer))
@@ -155,10 +165,15 @@ public partial class LayeredSprite : Node2D
             bodySprite.SpriteFrames = frames;
             bodySprite.FlipH = _flipH;
             bodySprite.Show();
+            bodySprite.Modulate = new Color(1, 1, 1, 1); // Reset transparency
 
             if (frames.HasAnimation("idle_down"))
             {
                 bodySprite.Play("idle_down");
+            }
+            else if (frames.GetAnimationNames().Length > 0)
+            {
+                bodySprite.Play(frames.GetAnimationNames()[0]);
             }
         }
         else
@@ -277,7 +292,7 @@ public partial class LayeredSprite : Node2D
         equipSprite.Show();
         
         // Let it sync up to whatever the body is doing if applicable
-        if (HasAnimation("idle_down"))
+        if (frames.HasAnimation("idle_down"))
         {
             equipSprite.Play("idle_down");
         }

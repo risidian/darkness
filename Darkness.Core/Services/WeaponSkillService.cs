@@ -16,15 +16,11 @@ public class WeaponSkillService : IWeaponSkillService
 
     public List<Skill> GetAvailableSkills(Character character)
     {
-        // New implementation: Use ActiveSkillSlots to determine active skills
-        var skillCollection = _db.GetCollection<Skill>("skills");
-        var activeSkills = character.ActiveSkillSlots
-            .Where(id => id > 0)
-            .Select(id => skillCollection.FindById(id))
-            .Where(s => s != null)
-            .ToList();
-        
-        return activeSkills!;
+        var allSkills = _db.GetCollection<Skill>("skills").FindAll().ToList();
+        return allSkills.Where(s => 
+            (s.WeaponRequirement == "None" || s.WeaponRequirement == character.WeaponType) || 
+            (s.TalentRequirement != null && character.UnlockedTalentIds.Contains(s.TalentRequirement))
+        ).ToList();
     }
 
     public List<Skill> GetEquippedSkills(Character character)

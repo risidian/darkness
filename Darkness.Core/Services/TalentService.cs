@@ -126,6 +126,35 @@ public class TalentService : ITalentService
         }
     }
 
+    public void UnlockStartingTalents(Character character)
+    {
+        var trees = GetAvailableTrees(character);
+        var skillCollection = _db.GetCollection<Skill>("skills");
+        
+        int slotIndex = 0;
+        foreach (var tree in trees)
+        {
+            foreach (var node in tree.Nodes)
+            {
+                if (node.AutomaticallyUnlocked && !character.UnlockedTalentIds.Contains(node.Id))
+                {
+                    character.UnlockedTalentIds.Add(node.Id);
+                    
+                    // If the node grants a skill, equip it into the next available slot
+                    if (!string.IsNullOrEmpty(node.Effect.Skill))
+                    {
+                        var skill = skillCollection.FindOne(s => s.Name == node.Effect.Skill);
+                        if (skill != null && slotIndex < 5)
+                        {
+                            character.ActiveSkillSlots[slotIndex] = skill.Id;
+                            slotIndex++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void ApplyTalentPassives(Character character)
     {
         var allTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();

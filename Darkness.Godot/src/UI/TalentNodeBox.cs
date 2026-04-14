@@ -31,6 +31,13 @@ public partial class TalentNodeBox : PanelContainer
         _iconButton.Pressed += OnIconButtonPressed;
     }
 
+    public void Setup(TalentNode node)
+    {
+        var style = new StyleBoxFlat();
+        style.BgColor = node.IsPassive ? new Color(0.2f, 0.2f, 0.2f) : new Color(0.4f, 0.2f, 0.4f);
+        this.AddThemeStyleboxOverride("panel", style);
+    }
+
     public void SetTalent(TalentNode node, bool isUnlocked, TalentPurchaseResult purchaseResult)
     {
         _node = node;

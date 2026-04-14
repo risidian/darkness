@@ -192,6 +192,18 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 24
 text = "ATTACK 3"
 
+[node name="Attack4" type="Button" parent="ActionsArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "ATTACK 4"
+
+[node name="Attack5" type="Button" parent="ActionsArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "ATTACK 5"
+
 [node name="PauseMenu" parent="." instance=ExtResource("2_pause")]
 visible = false
 

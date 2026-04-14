@@ -15,6 +15,7 @@ public partial class CharacterGenScene : Control
     private ISpriteCompositor _compositor = null!;
     private ISpriteLayerCatalog _catalog = null!;
     private ICharacterService _characterService = null!;
+    private ITalentService _talentService = null!;
     private ISessionService _session = null!;
     private IFileSystemService _fileSystem = null!;
 
@@ -55,6 +56,7 @@ public partial class CharacterGenScene : Control
         _compositor = sp.GetRequiredService<ISpriteCompositor>();
         _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
         _characterService = sp.GetRequiredService<ICharacterService>();
+        _talentService = sp.GetRequiredService<ITalentService>();
         _session = sp.GetRequiredService<ISessionService>();
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
@@ -427,6 +429,7 @@ public partial class CharacterGenScene : Control
             }
 
             SetStats(_character, _character.Class);
+            _talentService.UnlockStartingTalents(_character);
 
             await _characterService.SaveCharacterAsync(_character);
             GD.Print($"[CharacterGen] Character '{_character.Name}' saved.");

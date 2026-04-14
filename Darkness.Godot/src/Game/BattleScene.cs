@@ -381,20 +381,29 @@ public partial class BattleScene : Control, IInitializable
         if (_session.CurrentCharacter == null) return;
         var character = _session.CurrentCharacter;
 
-        _currentWeaponSkills =
-            _weaponSkillService.GetSkillsForWeapon(character.WeaponType ?? "None", character.OffHandType ?? "None", character.ShieldType ?? "None", character.UnlockedTalentIds);
+        _currentWeaponSkills = _weaponSkillService.GetEquippedSkills(character);
 
-        var buttons = new[]
+        var actionsArea = GetNodeOrNull<HBoxContainer>("ActionsArea");
+        if (actionsArea == null)
         {
-            GetNode<Button>("ActionsArea/Attack1"),
-            GetNode<Button>("ActionsArea/Attack2"),
-            GetNode<Button>("ActionsArea/Attack3"),
-            GetNode<Button>("ActionsArea/Attack4"),
-            GetNode<Button>("ActionsArea/Attack5")
+            GD.PrintErr("[BattleScene] ActionsArea not found!");
+            return;
+        }
+
+        var buttons = new Button[]
+        {
+            actionsArea.GetNodeOrNull<Button>("Attack1"),
+            actionsArea.GetNodeOrNull<Button>("Attack2"),
+            actionsArea.GetNodeOrNull<Button>("Attack3"),
+            actionsArea.GetNodeOrNull<Button>("Attack4"),
+            actionsArea.GetNodeOrNull<Button>("Attack5")
         };
 
         for (int i = 0; i < buttons.Length; i++)
         {
+            var btn = buttons[i];
+            if (btn == null) continue;
+
             if (i < _currentWeaponSkills.Count)
             {
                 var skill = _currentWeaponSkills[i];
@@ -402,27 +411,27 @@ public partial class BattleScene : Control, IInitializable
 
                 if (onCooldown)
                 {
-                    buttons[i].Text = $"{skill.Name.ToUpper()} (CD: {turnsLeft})";
-                    buttons[i].Disabled = true;
+                    btn.Text = $"{skill.Name.ToUpper()} (CD: {turnsLeft})";
+                    btn.Disabled = true;
                 }
                 else
                 {
-                    buttons[i].Text = skill.Name.ToUpper();
-                    buttons[i].Disabled = false;
+                    btn.Text = skill.Name.ToUpper();
+                    btn.Disabled = false;
                 }
 
-                buttons[i].TooltipText = skill.Description;
+                btn.TooltipText = skill.Description;
 
-                // Clear existing connections if any (though usually fine on _Ready)
-                foreach (var connection in buttons[i].GetSignalConnectionList("pressed"))
-                    buttons[i].Disconnect("pressed", connection["callable"].AsCallable());
+                // Clear existing connections if any
+                foreach (var connection in btn.GetSignalConnectionList("pressed"))
+                    btn.Disconnect("pressed", connection["callable"].AsCallable());
 
-                buttons[i].Pressed += () => ExecuteWeaponSkill(skill);
-                buttons[i].Show();
+                btn.Pressed += () => ExecuteWeaponSkill(skill);
+                btn.Show();
             }
             else
             {
-                buttons[i].Hide();
+                btn.Hide();
             }
         }
     }

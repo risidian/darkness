@@ -29,6 +29,7 @@
     <Compile Remove="Input\InputManagerTests.cs" />
     <Compile Remove="Scenes\BattleSceneTests.cs" />
     <Compile Remove="Scenes\SceneDisposalTests.cs" />
+    <Compile Remove="Scenes\SkillsSceneTests.cs" />
     <Compile Remove="Services\SpriteCompositorTests.cs" />
   </ItemGroup>
 

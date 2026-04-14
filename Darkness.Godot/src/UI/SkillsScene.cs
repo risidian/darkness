@@ -50,7 +50,7 @@ public partial class SkillsScene : Control
         // Populate Available Skills
         foreach (var skill in availableSkills)
         {
-            bool isEquipped = character.SelectedSkillIds.Contains(skill.Id);
+            bool isEquipped = character.ActiveSkillSlots.Contains(skill.Id);
             if (isEquipped) continue;
 
             var btn = new Button
@@ -68,13 +68,13 @@ public partial class SkillsScene : Control
         // Populate Equipped Slots (Always show 5 slots)
         for (int i = 0; i < 5; i++)
         {
-            if (i < character.SelectedSkillIds.Count)
+            int skillId = character.ActiveSkillSlots[i];
+            if (skillId > 0)
             {
-                var skillId = character.SelectedSkillIds[i];
                 var skill = availableSkills.FirstOrDefault(s => s.Id == skillId);
                 var btn = new Button
                 {
-                    Text = skill != null ? $"{skill.Name} (EQUIPPED)" : "UNKNOWN SKILL",
+                    Text = skill != null ? $"{skill.Name} (SLOT {i + 1})" : "UNKNOWN SKILL",
                     CustomMinimumSize = new Vector2(0, 60),
                     TooltipText = skill?.Description ?? ""
                 };
@@ -87,7 +87,7 @@ public partial class SkillsScene : Control
             {
                 var btn = new Button
                 {
-                    Text = "- EMPTY SLOT -",
+                    Text = $"- EMPTY SLOT {i + 1} -",
                     CustomMinimumSize = new Vector2(0, 60),
                     Disabled = true
                 };
@@ -102,11 +102,18 @@ public partial class SkillsScene : Control
         var character = _session.CurrentCharacter;
         if (character == null) return;
 
-        if (character.SelectedSkillIds.Count < 5 && !character.SelectedSkillIds.Contains(skillId))
+        // Find first empty slot
+        int emptySlotIndex = character.ActiveSkillSlots.IndexOf(0);
+        if (emptySlotIndex != -1)
         {
-            character.SelectedSkillIds.Add(skillId);
+            character.ActiveSkillSlots[emptySlotIndex] = skillId;
             await _characterService.SaveCharacterAsync(character);
             LoadSkills();
+        }
+        else
+        {
+            // Optional: Handle full slots (e.g., prompt to swap)
+            GD.Print("All slots full. Choose a slot to replace (logic TBD)");
         }
     }
 
@@ -115,9 +122,10 @@ public partial class SkillsScene : Control
         var character = _session.CurrentCharacter;
         if (character == null) return;
 
-        if (character.SelectedSkillIds.Contains(skillId))
+        int index = character.ActiveSkillSlots.IndexOf(skillId);
+        if (index != -1)
         {
-            character.SelectedSkillIds.Remove(skillId);
+            character.ActiveSkillSlots[index] = 0;
             await _characterService.SaveCharacterAsync(character);
             LoadSkills();
         }

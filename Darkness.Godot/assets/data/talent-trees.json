@@ -9,14 +9,44 @@
                           },
         "Nodes":  [
                       {
+                          "Id": "k_starter_slash",
+                          "Name": "Basic Slashing",
+                          "Description": "Your fundamental slashing technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 0,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Slash" }
+                      },
+                      {
+                          "Id": "k_starter_thrust",
+                          "Name": "Basic Thrusting",
+                          "Description": "Your fundamental thrusting technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 1,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Thrust" }
+                      },
+                      {
+                          "Id": "k_starter_block",
+                          "Name": "Basic Blocking",
+                          "Description": "Your fundamental blocking technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 2,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Shield Block" }
+                      },
+                      {
                           "Id":  "k_toughness",
                           "Name":  "Toughness",
                           "Description":  "Increases Constitution by 1.",
                           "PointsRequired":  1,
                           "Row":  1,
-                          "Column":  1,
+                          "Column":  2,
                           "PrerequisiteNodeIds":  [
-
+                                                      "k_starter_block"
                                                   ],
                           "Effect":  {
                                          "Stat":  "Constitution",
@@ -30,9 +60,9 @@
                           "Description":  "Increases Strength by 1.",
                           "PointsRequired":  1,
                           "Row":  1,
-                          "Column":  2,
+                          "Column":  0,
                           "PrerequisiteNodeIds":  [
-
+                                                      "k_starter_slash"
                                                   ],
                           "Effect":  {
                                          "Stat":  "Strength",
@@ -239,14 +269,44 @@
                           },
         "Nodes":  [
                       {
+                          "Id": "w_starter_cleave",
+                          "Name": "Basic Cleaving",
+                          "Description": "Your fundamental cleaving technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 0,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Cleave" }
+                      },
+                      {
+                          "Id": "w_starter_crush",
+                          "Name": "Basic Crushing",
+                          "Description": "Your fundamental crushing technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 1,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Crush" }
+                      },
+                      {
+                          "Id": "w_starter_brace",
+                          "Name": "Basic Bracing",
+                          "Description": "Your fundamental bracing technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 2,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Brace" }
+                      },
+                      {
                           "Id":  "w_brute_force",
                           "Name":  "Brute Force",
                           "Description":  "Raw power (+1 Strength).",
                           "PointsRequired":  1,
                           "Row":  1,
-                          "Column":  1,
+                          "Column":  0,
                           "PrerequisiteNodeIds":  [
-
+                                                      "w_starter_cleave"
                                                   ],
                           "Effect":  {
                                          "Stat":  "Strength",
@@ -262,7 +322,7 @@
                           "Row":  1,
                           "Column":  2,
                           "PrerequisiteNodeIds":  [
-
+                                                      "w_starter_brace"
                                                   ],
                           "Effect":  {
                                          "Stat":  "Constitution",
@@ -421,14 +481,44 @@
                           },
         "Nodes":  [
                       {
+                          "Id": "m_starter_bolt",
+                          "Name": "Basic Bolt",
+                          "Description": "Your fundamental arcane technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 0,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Arcane Bolt" }
+                      },
+                      {
+                          "Id": "m_starter_fire",
+                          "Name": "Basic Fire",
+                          "Description": "Your fundamental fire technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 1,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Fireball" }
+                      },
+                      {
+                          "Id": "m_starter_shield",
+                          "Name": "Basic Shielding",
+                          "Description": "Your fundamental shielding technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 2,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Mana Shield" }
+                      },
+                      {
                           "Id":  "m_intellect",
                           "Name":  "Arcane Intellect",
                           "Description":  "Sharpens the mind (+1 Intelligence).",
                           "PointsRequired":  1,
                           "Row":  1,
-                          "Column":  2,
+                          "Column":  0,
                           "PrerequisiteNodeIds":  [
-
+                                                      "m_starter_bolt"
                                                   ],
                           "Effect":  {
                                          "Stat":  "Intelligence",
@@ -587,14 +677,44 @@
                           },
         "Nodes":  [
                       {
+                          "Id": "r_starter_stab",
+                          "Name": "Basic Stabbing",
+                          "Description": "Your fundamental stabbing technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 0,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Quick Stab" }
+                      },
+                      {
+                          "Id": "r_starter_vitals",
+                          "Name": "Basic Vitals",
+                          "Description": "Your fundamental precision technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 1,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Vitals" }
+                      },
+                      {
+                          "Id": "r_starter_parry",
+                          "Name": "Basic Parrying",
+                          "Description": "Your fundamental parrying technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 2,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Parry" }
+                      },
+                      {
                           "Id":  "r_agility",
                           "Name":  "Agility",
                           "Description":  "Swift movements (+1 Dexterity).",
                           "PointsRequired":  1,
                           "Row":  1,
-                          "Column":  1,
+                          "Column":  0,
                           "PrerequisiteNodeIds":  [
-
+                                                      "r_starter_stab"
                                                   ],
                           "Effect":  {
                                          "Stat":  "Dexterity",
@@ -736,6 +856,36 @@
                           },
         "Nodes":  [
                       {
+                          "Id": "cl_starter_slash",
+                          "Name": "Basic Slashing",
+                          "Description": "Your fundamental slashing technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 0,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Slash" }
+                      },
+                      {
+                          "Id": "cl_starter_thrust",
+                          "Name": "Basic Thrusting",
+                          "Description": "Your fundamental thrusting technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 1,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Thrust" }
+                      },
+                      {
+                          "Id": "cl_starter_block",
+                          "Name": "Basic Blocking",
+                          "Description": "Your fundamental blocking technique.",
+                          "PointsRequired": 0,
+                          "Row": 0,
+                          "Column": 2,
+                          "AutomaticallyUnlocked": true,
+                          "Effect": { "Skill": "Shield Block" }
+                      },
+                      {
                           "Id":  "cl_devotion",
                           "Name":  "Devotion",
                           "Description":  "Spiritual focus (+1 Wisdom).",
@@ -743,7 +893,7 @@
                           "Row":  1,
                           "Column":  2,
                           "PrerequisiteNodeIds":  [
-
+                                                      "cl_starter_block"
                                                   ],
                           "Effect":  {
                                          "Stat":  "Wisdom",

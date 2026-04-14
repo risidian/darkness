@@ -290,4 +290,59 @@ public class TalentServiceTests
         // Assert
         Assert.Contains(available, t => t.Id == "hidden_tree");
     }
+
+    [Fact]
+    public void UnlockStartingTalents_UnlocksAutomaticallyUnlockedNodes_And_EquipsSkills()
+    {
+        // Arrange
+        using var db = new LiteDatabase(new MemoryStream());
+        var treeCol = db.GetCollection<TalentTree>("talent_trees");
+        var skillCol = db.GetCollection<Skill>("skills");
+
+        skillCol.Insert(new Skill { Id = 101, Name = "Starter Skill 1" });
+        skillCol.Insert(new Skill { Id = 102, Name = "Starter Skill 2" });
+
+        var tree = new TalentTree
+        {
+            Id = "knight_tree",
+            RequiredClass = "Knight",
+            Nodes = new List<TalentNode>
+            {
+                new TalentNode
+                {
+                    Id = "node1",
+                    AutomaticallyUnlocked = true,
+                    Effect = new TalentEffect { Skill = "Starter Skill 1" }
+                },
+                new TalentNode
+                {
+                    Id = "node2",
+                    AutomaticallyUnlocked = true,
+                    Effect = new TalentEffect { Skill = "Starter Skill 2" }
+                },
+                new TalentNode
+                {
+                    Id = "node3",
+                    AutomaticallyUnlocked = false,
+                    Effect = new TalentEffect { Skill = "Later Skill" }
+                }
+            }
+        };
+        treeCol.Insert(tree);
+
+        var service = new TalentService(db);
+        var character = new Character { Class = "Knight" };
+
+        // Act
+        service.UnlockStartingTalents(character);
+
+        // Assert
+        Assert.Contains("node1", character.UnlockedTalentIds);
+        Assert.Contains("node2", character.UnlockedTalentIds);
+        Assert.DoesNotContain("node3", character.UnlockedTalentIds);
+
+        Assert.Equal(101, character.ActiveSkillSlots[0]);
+        Assert.Equal(102, character.ActiveSkillSlots[1]);
+        Assert.Equal(0, character.ActiveSkillSlots[2]);
+    }
 }
