@@ -14,6 +14,25 @@ public class WeaponSkillService : IWeaponSkillService
         _db = db;
     }
 
+    public List<Skill> GetAvailableSkills(Character character)
+    {
+        var allSkills = _db.GetCollection<Skill>("skills").FindAll().ToList();
+        return allSkills.Where(s => 
+            (s.WeaponRequirement == "None" || s.WeaponRequirement == character.WeaponType) || 
+            (s.TalentRequirement != null && character.UnlockedTalentIds.Contains(s.TalentRequirement))
+        ).ToList();
+    }
+
+    public List<Skill> GetEquippedSkills(Character character)
+    {
+        if (character.SelectedSkillIds != null && character.SelectedSkillIds.Count > 0)
+        {
+            return _db.GetCollection<Skill>("skills").Find(s => character.SelectedSkillIds.Contains(s.Id)).ToList();
+        }
+
+        return GetSkillsForWeapon(character.WeaponType, character.OffHandType, character.ShieldType, character.UnlockedTalentIds);
+    }
+
     public List<Skill> GetSkillsForWeapon(string? weaponType, string? offHandType, string? shieldType, List<string>? unlockedTalentIds = null)
     {
         var skills = new List<Skill>();

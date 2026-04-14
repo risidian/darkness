@@ -32,6 +32,7 @@ public partial class BattleScene : Control, IInitializable
     private Button _retryButton = null!;
     private Button _continueButton = null!;
     private Button _okButton = null!;
+    private Tooltip _tooltip = null!;
     private string? _questChainId;
     private string? _questStepId;
     private Vector2? _returnPosition;
@@ -433,7 +434,8 @@ public partial class BattleScene : Control, IInitializable
                 {
                     // Item missing or quantity 0 - KEEP ON HOTBAR but grey out
                     btn.Text = $"{btnText} (X0)";
-                    btn.TooltipText = "Out of items!";
+                    btn.TooltipText = "";
+                    TooltipHelper.Bind(btn, "Out of items!", _tooltip);
                     btn.Disabled = true;
                     btn.Modulate = new Color(1, 1, 1, 0.5f); 
                 }

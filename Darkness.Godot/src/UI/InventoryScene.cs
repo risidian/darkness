@@ -21,6 +21,7 @@ public partial class InventoryScene : Control
     private VBoxContainer _equipmentList = null!;
     private LayeredSprite _charSprite = null!;
     private Label _goldLabel = null!;
+    private Tooltip _tooltip = null!;
 
     public override void _Ready()
     {
@@ -38,6 +39,10 @@ public partial class InventoryScene : Control
         _equipmentList = GetNode<VBoxContainer>("MarginContainer/VBoxContainer/HSplitContainer/TabContainer/EQUIPMENT/EquipmentList");
         _goldLabel = GetNode<Label>("MarginContainer/VBoxContainer/Header/GoldLabel");
         GetNode<Button>("MarginContainer/VBoxContainer/BackButton").Pressed += () => _navigation.GoBackAsync();
+
+        var tooltipScene = GD.Load<PackedScene>("res://scenes/UI/Tooltip.tscn");
+        _tooltip = tooltipScene.Instantiate<Tooltip>();
+        AddChild(_tooltip);
 
         var previewContainer = GetNode<Control>("MarginContainer/VBoxContainer/HSplitContainer/PreviewArea");
         var layeredSpriteScene = GD.Load<PackedScene>("res://scenes/LayeredSprite.tscn");
@@ -135,11 +140,13 @@ public partial class InventoryScene : Control
                 
                 if (!meetsStats)
                 {
-                    label.TooltipText = $"Requires: {string.Join(", ", missing)}";
+                    label.TooltipText = "";
+                    TooltipHelper.Bind(label, $"Requires: {string.Join(", ", missing)}", _tooltip);
                 }
                 else if (!meetsAC)
                 {
-                    label.TooltipText = $"Requires Armor Proficiency Level {item.ArmorClass}";
+                    label.TooltipText = "";
+                    TooltipHelper.Bind(label, $"Requires Armor Proficiency Level {item.ArmorClass}", _tooltip);
                 }
             }
             else

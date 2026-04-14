@@ -12,9 +12,9 @@ public partial class TalentNodeBox : PanelContainer
     private TextureButton _iconButton = null!;
     private Label _nameLabel = null!;
     private Label _statusLabel = null!;
-    
-    private TalentNode? _node;
-    private bool _isUnlocked;
+    private Tooltip _tooltip = null!;
+
+    private TalentNode? _node;    private bool _isUnlocked;
     private bool _canPurchase;
     private string? _failureReason;
 
@@ -23,6 +23,10 @@ public partial class TalentNodeBox : PanelContainer
         _iconButton = GetNode<TextureButton>("MarginContainer/VBoxContainer/Icon");
         _nameLabel = GetNode<Label>("MarginContainer/VBoxContainer/NameLabel");
         _statusLabel = GetNode<Label>("MarginContainer/VBoxContainer/StatusLabel");
+
+        var tooltipScene = GD.Load<PackedScene>("res://scenes/UI/Tooltip.tscn");
+        _tooltip = tooltipScene.Instantiate<Tooltip>();
+        AddChild(_tooltip);
 
         _iconButton.Pressed += OnIconButtonPressed;
     }
@@ -45,7 +49,8 @@ public partial class TalentNodeBox : PanelContainer
         
         if (_isUnlocked)
         {
-            TooltipText = _node.Description;
+            TooltipText = "";
+            TooltipHelper.Bind(this, _node.Description, _tooltip);
             _statusLabel.Text = "Unlocked";
             _iconButton.Disabled = true;
             _iconButton.Modulate = new Color(1, 1, 1, 1); // Normal
@@ -53,7 +58,8 @@ public partial class TalentNodeBox : PanelContainer
         }
         else if (_canPurchase)
         {
-            TooltipText = _node.Description;
+            TooltipText = "";
+            TooltipHelper.Bind(this, _node.Description, _tooltip);
             _statusLabel.Text = $"Available (0/{_node.PointsRequired})";
             _iconButton.Disabled = false;
             _iconButton.Modulate = new Color(1, 1, 1, 1); // Normal
@@ -61,7 +67,8 @@ public partial class TalentNodeBox : PanelContainer
         }
         else
         {
-            TooltipText = $"{_node.Description}\n\n[LOCKED]\n{_failureReason}";
+            TooltipText = "";
+            TooltipHelper.Bind(this, $"{_node.Description}\n\n[LOCKED]\n{_failureReason}", _tooltip);
             _statusLabel.Text = "Locked";
             _iconButton.Disabled = true;
             _iconButton.Modulate = new Color(0.5f, 0.5f, 0.5f, 1); // Greyed out
