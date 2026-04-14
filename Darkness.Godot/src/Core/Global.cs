@@ -72,6 +72,7 @@ public partial class Global : Node
                 new QuestSeeder(fs).Seed(db);
                 new LevelSeeder(fs).Seed(db);
                 new TalentSeeder(fs).Seed(db);
+                new SkillSeeder(fs).Seed(db);
                 GD.Print("[Global] Data seeding complete.");
             }
 catch (Exception ex)
