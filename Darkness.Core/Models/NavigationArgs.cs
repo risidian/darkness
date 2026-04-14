@@ -8,13 +8,14 @@ public abstract class NavigationArgs
 
 public class BattleArgs : NavigationArgs
 {
-    public CombatData? Combat { get; set; }
-    public string? QuestChainId { get; set; }
-    public string? QuestStepId { get; set; }
-    public float ReturnPositionX { get; set; }
-    public float ReturnPositionY { get; set; }
+    public CombatData? Combat { get; set; }        
+    public string? QuestChainId { get; set; }      
+    public string? QuestStepId { get; set; }       
+    public float ReturnPositionX { get; set; }     
+    public float ReturnPositionY { get; set; }     
+    public CombatSnapshot? Snapshot { get; set; }
+    public bool IsResuming { get; set; }
 }
-
 public class StealthArgs : NavigationArgs
 {
     public string? QuestChainId { get; set; }
