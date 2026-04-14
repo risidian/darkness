@@ -40,6 +40,14 @@ public class TalentService : ITalentService
             return TalentPurchaseResult.Failed($"Requires Class: {tree.RequiredClass}");
         }
 
+        if (tree.RequiredMorality.HasValue)
+        {
+            if (tree.RequiredMorality.Value > 0 && character.Morality < 0)
+                return TalentPurchaseResult.Failed("Requires positive morality");
+            if (tree.RequiredMorality.Value < 0 && character.Morality > 0)
+                return TalentPurchaseResult.Failed("Requires negative morality");
+        }
+
         if (!string.IsNullOrEmpty(tree.ExclusiveGroupId))
         {
             var otherTreesInGroup = _db.GetCollection<TalentTree>("talent_trees")

@@ -127,6 +127,7 @@
     "Tier": 3,
     "IsHidden": true,
     "RequiredClass": "Knight",
+    "RequiredMorality": 1,
     "ExclusiveGroupId": "Knight_EndGame",
     "Prerequisites": {
       "Level": 40,
@@ -150,28 +151,29 @@
     ]
   },
   {
-    "Id": "kingsguard_tree",
-    "Name": "Kingsguard",
+    "Id": "oathbreaker_tree",
+    "Name": "Oathbreaker",
     "Tier": 3,
     "IsHidden": true,
     "RequiredClass": "Knight",
+    "RequiredMorality": -1,
     "ExclusiveGroupId": "Knight_EndGame",
     "Prerequisites": {
       "Level": 40,
-      "Constitution": 20,
+      "Strength": 20,
       "SpentInTree:holy_knight_tree": 20
     },
     "Nodes": [
       {
-        "Id": "kg_loyalty",
-        "Name": "Royal Loyalty",
-        "Description": "Absolute loyalty increases Constitution by 5.",
+        "Id": "ob_darkness",
+        "Name": "Dark Aura",
+        "Description": "Aura of darkness increases Strength by 5.",
         "PointsRequired": 1,
         "Row": 1,
         "Column": 1,
         "PrerequisiteNodeIds": [],
         "Effect": {
-          "Stat": "Constitution",
+          "Stat": "Strength",
           "Value": 5
         }
       }

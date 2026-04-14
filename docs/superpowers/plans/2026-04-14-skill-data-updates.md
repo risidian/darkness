@@ -1,0 +1,445 @@
+# Skill Data & Model Updates Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Implement data-driven skill system by updating the Skill model, migrating hardcoded skills to JSON, and creating a database seeder.
+
+**Architecture:** Extend `Skill` model with cooldown and requirement properties, migrate existing logic-defined skills to `skills.json`, and use a `SkillSeeder` to load them into LiteDB at startup.
+
+**Tech Stack:** C#, .NET 10, LiteDB, System.Text.Json, Godot 4.6.1
+
+---
+
+### Task 1: Update Skill Model
+
+**Files:**
+- Modify: `Darkness.Core/Models/Skill.cs`
+
+- [ ] **Step 1: Add new properties to `Skill.cs`**
+
+```csharp
+namespace Darkness.Core.Models
+{
+    public class Skill
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int ManaCost { get; set; }
+        public int StaminaCost { get; set; }
+        public int BasePower { get; set; }
+        public string DamageDice { get; set; } = "1d6";
+        public string SkillType { get; set; } = "Physical"; // Physical, Magical, Defensive
+
+        // Multipliers and Modifiers
+        public float DamageMultiplier { get; set; } = 1.0f;
+        public float ArmorPenetration { get; set; } = 0.0f; // 0.0 to 1.0
+        public int AccuracyModifier { get; set; } = 0;
+        public ActionType AssociatedAction { get; set; } = ActionType.Standard;
+        public float BlockReduction { get; set; } = 0.0f; // Only for Defensive types
+
+        // Task 1: New properties
+        public int Cooldown { get; set; } = 0;
+        public int CurrentCooldown { get; set; } = 0;
+        public string WeaponRequirement { get; set; } = "None";
+        public string? TalentRequirement { get; set; }
+    }
+}
+```
+
+- [ ] **Step 2: Commit changes**
+
+```bash
+git add Darkness.Core/Models/Skill.cs
+git commit -m "feat: add cooldown and requirement properties to Skill model"
+```
+
+---
+
+### Task 2: Create `skills.json`
+
+**Files:**
+- Create: `Darkness.Godot/assets/data/skills.json`
+
+- [ ] **Step 1: Migrate skills from `WeaponSkillService.cs` into `skills.json`**
+
+```json
+[
+  {
+    "Id": 1,
+    "Name": "Arcane Bolt",
+    "Description": "A standard magical bolt. (1.1x Magic Dmg)",
+    "SkillType": "Magical",
+    "DamageMultiplier": 1.1,
+    "AssociatedAction": "Shoot",
+    "WeaponRequirement": "Wand"
+  },
+  {
+    "Id": 2,
+    "Name": "Fireball",
+    "Description": "A powerful blast of fire. (1.5x Magic Dmg, -10 Accuracy)",
+    "SkillType": "Magical",
+    "DamageMultiplier": 1.5,
+    "AccuracyModifier": -10,
+    "AssociatedAction": "Shoot",
+    "WeaponRequirement": "Wand"
+  },
+  {
+    "Id": 3,
+    "Name": "Quick Shot",
+    "Description": "A fast arrow shot. (1.0x Dmg, +10 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.0,
+    "AccuracyModifier": 10,
+    "AssociatedAction": "Shoot",
+    "WeaponRequirement": "Bow"
+  },
+  {
+    "Id": 4,
+    "Name": "Snipe",
+    "Description": "A precise shot to a weak point. (1.3x Dmg, 20% Armor Pen)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.3,
+    "ArmorPenetration": 0.2,
+    "AssociatedAction": "Shoot",
+    "WeaponRequirement": "Bow"
+  },
+  {
+    "Id": 5,
+    "Name": "Quick Stab",
+    "Description": "A lightning-fast strike. (1.0x Dmg, +20 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.0,
+    "AccuracyModifier": 20,
+    "AssociatedAction": "Thrust",
+    "WeaponRequirement": "Dagger"
+  },
+  {
+    "Id": 6,
+    "Name": "Vitals",
+    "Description": "Targets a weak point in armor. (0.8x Dmg, 50% Armor Pen)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 0.8,
+    "ArmorPenetration": 0.5,
+    "AssociatedAction": "Thrust",
+    "WeaponRequirement": "Dagger"
+  },
+  {
+    "Id": 7,
+    "Name": "Cleave",
+    "Description": "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.2,
+    "AccuracyModifier": -10,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Axe"
+  },
+  {
+    "Id": 8,
+    "Name": "Crush",
+    "Description": "A heavy overhead blow. (1.3x Dmg, -15 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.3,
+    "AccuracyModifier": -15,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Axe"
+  },
+  {
+    "Id": 9,
+    "Name": "Smash",
+    "Description": "A heavy blunt strike. (1.1x Dmg, 20% Armor Pen)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.1,
+    "ArmorPenetration": 0.2,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Mace"
+  },
+  {
+    "Id": 10,
+    "Name": "Stun",
+    "Description": "Attempts to daze the target. (0.9x Dmg, +10 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 0.9,
+    "AccuracyModifier": 10,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Mace"
+  },
+  {
+    "Id": 11,
+    "Name": "Slash",
+    "Description": "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.2,
+    "AccuracyModifier": -10,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Sword"
+  },
+  {
+    "Id": 12,
+    "Name": "Thrust",
+    "Description": "A precise armor-piercing jab. (0.9x Dmg, 30% Armor Pen)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 0.9,
+    "ArmorPenetration": 0.3,
+    "AssociatedAction": "Thrust",
+    "WeaponRequirement": "Sword"
+  },
+  {
+    "Id": 13,
+    "Name": "Punch",
+    "Description": "A basic unarmed strike. (0.5x Dmg)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 0.5,
+    "AssociatedAction": "Punch",
+    "WeaponRequirement": "None"
+  },
+  {
+    "Id": 14,
+    "Name": "Kick",
+    "Description": "A strong unarmed strike. (0.8x Dmg, -10 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 0.8,
+    "AccuracyModifier": -10,
+    "AssociatedAction": "Kick",
+    "WeaponRequirement": "None"
+  },
+  {
+    "Id": 15,
+    "Name": "Mana Shield",
+    "Description": "Creates a barrier of pure energy. (40% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.4,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "Wand"
+  },
+  {
+    "Id": 16,
+    "Name": "Dodge",
+    "Description": "Prepares to evade incoming attacks. (20% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.2,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "Bow"
+  },
+  {
+    "Id": 17,
+    "Name": "Parry",
+    "Description": "Attempts to deflect an incoming blow. (25% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.25,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "Dagger"
+  },
+  {
+    "Id": 18,
+    "Name": "Shield Block",
+    "Description": "Uses shield to negate most damage. (60% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.6,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "Shield"
+  },
+  {
+    "Id": 19,
+    "Name": "Deflect",
+    "Description": "Braces for impact with the weapon. (20% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.2,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "Sword"
+  },
+  {
+    "Id": 20,
+    "Name": "Brace",
+    "Description": "Braces for impact with the weapon. (20% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.2,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "None"
+  },
+  {
+    "Id": 21,
+    "Name": "Holy Strike",
+    "Description": "A strike imbued with holy energy. (1.8x Dmg)",
+    "SkillType": "Magical",
+    "DamageMultiplier": 1.8,
+    "ManaCost": 15,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "None",
+    "TalentRequirement": "holy_strike_talent_id"
+  }
+]
+```
+
+- [ ] **Step 2: Commit changes**
+
+```bash
+git add Darkness.Godot/assets/data/skills.json
+git commit -m "feat: migrate skills to data-driven JSON"
+```
+
+---
+
+### Task 3: Implement `SkillSeeder`
+
+**Files:**
+- Create: `Darkness.Core/Services/SkillSeeder.cs`
+
+- [ ] **Step 1: Write `SkillSeeder.cs` following the `LevelSeeder` pattern**
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Darkness.Core.Interfaces;
+using Darkness.Core.Models;
+using LiteDB;
+using SystemJson = System.Text.Json;
+
+namespace Darkness.Core.Services;
+
+public class SkillSeeder
+{
+    private readonly IFileSystemService _fileSystem;
+
+    public SkillSeeder(IFileSystemService fileSystem)
+    {
+        _fileSystem = fileSystem;
+    }
+
+    public void Seed(LiteDatabase db)
+    {
+        string json;
+        try
+        {
+            json = _fileSystem.ReadAllText("assets/data/skills.json");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[SkillSeeder] ERROR: Failed to read skills.json — {ex.Message}");
+            return;
+        }
+
+        List<Skill>? skills;
+        try
+        {
+            skills = SystemJson.JsonSerializer.Deserialize<List<Skill>>(json, new SystemJson.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
+        catch (SystemJson.JsonException ex)
+        {
+            Console.WriteLine($"[SkillSeeder] ERROR: Failed to parse skills.json — {ex.Message}");
+            return;
+        }
+
+        if (skills == null || skills.Count == 0)
+        {
+            Console.WriteLine("[SkillSeeder] WARN: skills.json is empty or null");
+            return;
+        }
+
+        var col = db.GetCollection<Skill>("skills");
+        col.DeleteAll();
+        foreach (var skill in skills)
+            col.Insert(skill);
+        col.EnsureIndex(s => s.Id);
+        col.EnsureIndex(s => s.Name);
+
+        Console.WriteLine($"[SkillSeeder] INFO: Loaded {col.Count()} skills from JSON");
+    }
+}
+```
+
+- [ ] **Step 2: Commit changes**
+
+```bash
+git add Darkness.Core/Services/SkillSeeder.cs
+git commit -m "feat: implement SkillSeeder"
+```
+
+---
+
+### Task 4: Register Seeder in `Global.cs`
+
+**Files:**
+- Modify: `Darkness.Godot/src/Core/Global.cs`
+
+- [ ] **Step 1: Instantiate and run `SkillSeeder` in `_Ready`**
+
+```csharp
+// ... inside try block in _Ready method where other seeders are called
+GD.Print("[Global] Seeding data...");
+new SpriteSeeder(fs).Seed(db);
+new QuestSeeder(fs).Seed(db);
+new LevelSeeder(fs).Seed(db);
+new TalentSeeder(fs).Seed(db);
+new SkillSeeder(fs).Seed(db); // Add this line
+GD.Print("[Global] Data seeding complete.");
+```
+
+- [ ] **Step 2: Commit changes**
+
+```bash
+git add Darkness.Godot/src/Core/Global.cs
+git commit -m "feat: register SkillSeeder in Global"
+```
+
+---
+
+### Task 5: Verify Seeding
+
+**Files:**
+- Create: `Darkness.Tests/Services/SkillSeederTests.cs`
+
+- [ ] **Step 1: Write a test to verify `SkillSeeder`**
+
+```csharp
+using Darkness.Core.Interfaces;
+using Darkness.Core.Models;
+using Darkness.Core.Services;
+using LiteDB;
+using Moq;
+using Xunit;
+
+namespace Darkness.Tests.Services;
+
+public class SkillSeederTests
+{
+    [Fact]
+    public void Seed_ShouldLoadSkillsFromFilesystemToDatabase()
+    {
+        // Arrange
+        var mockFs = new Mock<IFileSystemService>();
+        var json = @"[
+            { ""Id"": 1, ""Name"": ""Test Skill"", ""Description"": ""Test Desc"", ""WeaponRequirement"": ""Wand"" }
+        ]";
+        mockFs.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(json);
+
+        var seeder = new SkillSeeder(mockFs.Object);
+        using var db = new LiteDatabase(new MemoryStream());
+
+        // Act
+        seeder.Seed(db);
+
+        // Assert
+        var col = db.GetCollection<Skill>("skills");
+        var skill = col.FindOne(s => s.Id == 1);
+        Assert.NotNull(skill);
+        Assert.Equal("Test Skill", skill.Name);
+        Assert.Equal("Wand", skill.WeaponRequirement);
+    }
+}
+```
+
+- [ ] **Step 2: Run the test**
+
+Run: `dotnet test Darkness.Tests --filter "FullyQualifiedName~SkillSeederTests"`
+Expected: PASS
+
+- [ ] **Step 3: Commit changes**
+
+```bash
+git add Darkness.Tests/Services/SkillSeederTests.cs
+git commit -m "test: add SkillSeeder verification test"
+```
