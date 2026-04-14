@@ -16,20 +16,32 @@ public class WeaponSkillService : IWeaponSkillService
 
     public List<Skill> GetAvailableSkills(Character character)
     {
-        var allSkills = _db.GetCollection<Skill>("skills").FindAll().ToList();
-        return allSkills.Where(s => 
-            (s.WeaponRequirement == "None" || s.WeaponRequirement == character.WeaponType) || 
-            (s.TalentRequirement != null && character.UnlockedTalentIds.Contains(s.TalentRequirement))
-        ).ToList();
+        // New implementation: Use ActiveSkillSlots to determine active skills
+        var skillCollection = _db.GetCollection<Skill>("skills");
+        var activeSkills = character.ActiveSkillSlots
+            .Where(id => id > 0)
+            .Select(id => skillCollection.FindById(id))
+            .Where(s => s != null)
+            .ToList();
+        
+        return activeSkills!;
     }
 
     public List<Skill> GetEquippedSkills(Character character)
     {
-        if (character.SelectedSkillIds != null && character.SelectedSkillIds.Count > 0)
+        // Prioritize ActiveSkillSlots
+        if (character.ActiveSkillSlots != null && character.ActiveSkillSlots.Any(id => id > 0))
         {
-            return _db.GetCollection<Skill>("skills").Find(s => character.SelectedSkillIds.Contains(s.Id)).ToList();
+            var skillCollection = _db.GetCollection<Skill>("skills");
+            return character.ActiveSkillSlots
+                .Where(id => id > 0)
+                .Select(id => skillCollection.FindById(id))
+                .Where(s => s != null)
+                .Cast<Skill>()
+                .ToList();
         }
 
+        // Fallback to legacy weapon-based skills if no active slots are set
         return GetSkillsForWeapon(character.WeaponType, character.OffHandType, character.ShieldType, character.UnlockedTalentIds);
     }
 
