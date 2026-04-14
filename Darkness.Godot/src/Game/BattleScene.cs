@@ -61,6 +61,8 @@ public partial class BattleScene : Control, IInitializable
     private ProgressBar? _survivalBar;
     private Label? _survivalLabel;
 
+    private Dictionary<int, int> _skillCooldowns = new();
+
     private List<Skill> _currentWeaponSkills = new();
     private string? _backgroundKey;
 
@@ -353,6 +355,24 @@ public partial class BattleScene : Control, IInitializable
         }
 
         _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
+
+        if (_battleArgs != null && _battleArgs.IsResuming && _battleArgs.Snapshot != null)
+        {
+            var snapshot = _battleArgs.Snapshot;
+            for (int i = 0; i < _party.Count; i++)
+            {
+                if (snapshot.PartyHP.ContainsKey(i))
+                    _party[i].CurrentHP = snapshot.PartyHP[i];
+            }
+            for (int i = 0; i < _enemies.Count; i++)
+            {
+                if (snapshot.EnemyHP.ContainsKey(i))
+                    _enemies[i].CurrentHP = snapshot.EnemyHP[i];
+            }
+            _turnManager.CurrentRound = snapshot.CurrentRound;
+            _turnManager.CurrentTurnIndex = snapshot.CurrentTurnIndex;
+        }
+
         UpdateTurnOrderUI();
     }
 
@@ -368,7 +388,9 @@ public partial class BattleScene : Control, IInitializable
         {
             GetNode<Button>("ActionsArea/Attack1"),
             GetNode<Button>("ActionsArea/Attack2"),
-            GetNode<Button>("ActionsArea/Attack3")
+            GetNode<Button>("ActionsArea/Attack3"),
+            GetNode<Button>("ActionsArea/Attack4"),
+            GetNode<Button>("ActionsArea/Attack5")
         };
 
         for (int i = 0; i < buttons.Length; i++)
@@ -376,7 +398,19 @@ public partial class BattleScene : Control, IInitializable
             if (i < _currentWeaponSkills.Count)
             {
                 var skill = _currentWeaponSkills[i];
-                buttons[i].Text = skill.Name.ToUpper();
+                bool onCooldown = _skillCooldowns.TryGetValue(skill.Id, out int turnsLeft) && turnsLeft > 0;
+
+                if (onCooldown)
+                {
+                    buttons[i].Text = $"{skill.Name.ToUpper()} (CD: {turnsLeft})";
+                    buttons[i].Disabled = true;
+                }
+                else
+                {
+                    buttons[i].Text = skill.Name.ToUpper();
+                    buttons[i].Disabled = false;
+                }
+
                 buttons[i].TooltipText = skill.Description;
 
                 // Clear existing connections if any (though usually fine on _Ready)
@@ -756,6 +790,14 @@ public partial class BattleScene : Control, IInitializable
 
         if (currentEntity is Character character)
         {
+            foreach (var key in _skillCooldowns.Keys.ToList())
+            {
+                _skillCooldowns[key]--;
+                if (_skillCooldowns[key] <= 0)
+                    _skillCooldowns.Remove(key);
+            }
+            SetupWeaponSkills();
+
             EnablePlayerInput(true);
             _combatLog.AppendText($"\n\n--- [color=cyan]{character.Name}'s Turn[/color] ---");
             _combatLog.AppendText("\n[color=gray]Select an action and target![/color]");
@@ -774,11 +816,28 @@ public partial class BattleScene : Control, IInitializable
         {
             GetNode<Button>("ActionsArea/Attack1"),
             GetNode<Button>("ActionsArea/Attack2"),
-            GetNode<Button>("ActionsArea/Attack3")
+            GetNode<Button>("ActionsArea/Attack3"),
+            GetNode<Button>("ActionsArea/Attack4"),
+            GetNode<Button>("ActionsArea/Attack5")
         };
-        foreach (var btn in attackButtons)
+        for (int i = 0; i < attackButtons.Length; i++)
         {
-            btn.Disabled = !enable;
+            if (!enable)
+            {
+                attackButtons[i].Disabled = true;
+            }
+            else
+            {
+                if (i < _currentWeaponSkills.Count)
+                {
+                    var skill = _currentWeaponSkills[i];
+                    attackButtons[i].Disabled = _skillCooldowns.TryGetValue(skill.Id, out int cd) && cd > 0;
+                }
+                else
+                {
+                    attackButtons[i].Disabled = true;
+                }
+            }
         }
 
         if (_hotbarContainer != null && _session.CurrentCharacter != null)
@@ -879,6 +938,7 @@ public partial class BattleScene : Control, IInitializable
     private async void ExecuteWeaponSkill(Skill skill)
     {
         if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
+        if (_skillCooldowns.TryGetValue(skill.Id, out int cd) && cd > 0) return;
 
         var currentEntity = _turnManager.CurrentEntity;
         if (!(currentEntity is Character attacker)) return;
@@ -1002,6 +1062,11 @@ public partial class BattleScene : Control, IInitializable
                 return;
             }
             
+            if (skill.Cooldown > 0)
+            {
+                _skillCooldowns[skill.Id] = skill.Cooldown;
+            }
+            
             _turnManager.NextTurn();
             ProcessNextTurn();
         }
@@ -1083,13 +1148,32 @@ public partial class BattleScene : Control, IInitializable
 
     private void SyncCombatState()
     {
-        if (_battleArgs?.Combat == null) return;
+        if (_battleArgs == null) return;
 
-        foreach (var pair in _enemyMap)
+        if (_battleArgs.Snapshot == null)
+            _battleArgs.Snapshot = new CombatSnapshot();
+
+        _battleArgs.Snapshot.CurrentRound = _turnManager.CurrentRound;
+        _battleArgs.Snapshot.CurrentTurnIndex = _turnManager.CurrentTurnIndex;
+
+        _battleArgs.Snapshot.PartyHP.Clear();
+        for (int i = 0; i < _party.Count; i++)
+            _battleArgs.Snapshot.PartyHP[i] = _party[i].CurrentHP;
+
+        _battleArgs.Snapshot.EnemyHP.Clear();
+        for (int i = 0; i < _enemies.Count; i++)
+            _battleArgs.Snapshot.EnemyHP[i] = _enemies[i].CurrentHP;
+
+        _battleArgs.Snapshot.SkillCooldowns = new Dictionary<int, int>(_skillCooldowns);
+
+        if (_battleArgs.Combat != null)
         {
-            var liveEnemy = pair.Key;
-            var spawn = pair.Value;
-            spawn.CurrentHP = liveEnemy.CurrentHP;
+            foreach (var pair in _enemyMap)
+            {
+                var liveEnemy = pair.Key;
+                var spawn = pair.Value;
+                spawn.CurrentHP = liveEnemy.CurrentHP;
+            }
         }
     }
 }
