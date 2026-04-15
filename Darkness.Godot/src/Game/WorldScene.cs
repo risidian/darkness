@@ -17,7 +17,7 @@ public partial class WorldScene : Node2D, IInitializable
     private IQuestService _questService = null!;
     private ITriggerService _triggerService = null!;
     private ISpriteCompositor _compositor = null!;
-    private ISpriteLayerCatalog _catalog = null!;
+    private ISheetDefinitionCatalog _catalog = null!;
     private IFileSystemService _fileSystem = null!;
 
     private CharacterBody2D _player = null!;
@@ -117,7 +117,7 @@ public partial class WorldScene : Node2D, IInitializable
         _questService = sp.GetRequiredService<IQuestService>();
         _triggerService = sp.GetRequiredService<ITriggerService>();
         _compositor = sp.GetRequiredService<ISpriteCompositor>();
-        _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
+        _catalog = sp.GetRequiredService<ISheetDefinitionCatalog>();
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
         // Apply simple shader to Backgrounds

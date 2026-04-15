@@ -17,7 +17,7 @@ public partial class BattleScene : Control, IInitializable
     private ISessionService _session = null!;
     private ICombatService _combat = null!;
     private ISpriteCompositor _compositor = null!;
-    private ISpriteLayerCatalog _catalog = null!;
+    private ISheetDefinitionCatalog _catalog = null!;
     private IFileSystemService _fileSystem = null!;
     private IWeaponSkillService _weaponSkillService = null!;
     private ILevelingService _leveling = null!;
@@ -168,7 +168,7 @@ public partial class BattleScene : Control, IInitializable
         _session = sp.GetRequiredService<ISessionService>();
         _combat = sp.GetRequiredService<ICombatService>();
         _compositor = sp.GetRequiredService<ISpriteCompositor>();
-        _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
+        _catalog = sp.GetRequiredService<ISheetDefinitionCatalog>();
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
         _weaponSkillService = sp.GetRequiredService<IWeaponSkillService>();
         _leveling = sp.GetRequiredService<ILevelingService>();
@@ -994,6 +994,19 @@ public partial class BattleScene : Control, IInitializable
                     else attackAnim = "walk_right";
                 }
 
+                // Handle oversize animations for attacks
+                string oversizeAnim = skill.AssociatedAction switch
+                {
+                    ActionType.Slash => "slash_oversize_right",
+                    ActionType.Thrust => "thrust_oversize_right",
+                    _ => ""
+                };
+
+                if (!string.IsNullOrEmpty(oversizeAnim) && attackerSprite.HasAnimation(oversizeAnim))
+                {
+                    attackAnim = oversizeAnim;
+                }
+
                 var originalPos = attackerSprite.Position;
                 var targetPos = targetSprite.Position;
                 bool isRanged = skill.AssociatedAction == ActionType.Cast || skill.AssociatedAction == ActionType.Shoot;
@@ -1024,6 +1037,8 @@ public partial class BattleScene : Control, IInitializable
                     var tween = GetTree().CreateTween();
                     tween.TweenProperty(attackerSprite, "position", lungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
                         .SetEase(Tween.EaseType.Out);
+                    
+                    attackerSprite.Play(attackAnim);
                     await ToSignal(tween, "finished");
                     await ToSignal(GetTree().CreateTimer(0.2), "timeout");
                 }

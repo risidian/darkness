@@ -16,7 +16,7 @@ public class QuestSeeder
         _fileSystem = fileSystem;
     }
 
-    public void Seed(LiteDatabase db)
+    public void Seed(ILiteDatabase db)
     {
         const string questDir = "assets/data/quests";
 

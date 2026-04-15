@@ -13,7 +13,7 @@ public class RecipeSeeder
 
     public RecipeSeeder(IFileSystemService fs) { _fs = fs; }
 
-    public void Seed(LiteDatabase db)
+    public void Seed(ILiteDatabase db)
     {
         string json;
         try

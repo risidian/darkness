@@ -9,9 +9,9 @@ namespace Darkness.Core.Services
 {
     public class CraftingService : ICraftingService
     {
-        private readonly LiteDatabase _db;
+        private readonly ILiteDatabase _db;
 
-        public CraftingService(LiteDatabase db) { _db = db; }
+        public CraftingService(ILiteDatabase db) { _db = db; }
 
         public Task<List<Recipe>> GetAvailableRecipesAsync()
         {

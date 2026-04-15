@@ -16,7 +16,7 @@ public class SkillSeeder
         _fileSystem = fileSystem;
     }
 
-    public void Seed(LiteDatabase db)
+    public void Seed(ILiteDatabase db)
     {
         string json;
         try

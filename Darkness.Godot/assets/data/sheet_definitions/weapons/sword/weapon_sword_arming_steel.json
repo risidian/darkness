@@ -5,31 +5,31 @@
     "main": {
       "zPos": 140,
       "paths": {
-        "male": "weapons/sword/arming/",
-        "female": "weapons/sword/arming/"
+        "male": "weapons/sword/arming/universal/fg/",
+        "female": "weapons/sword/arming/universal/fg/"
       }
     },
     "behind": {
       "zPos": 9,
       "paths": {
-        "male": "weapons/sword/arming/universal_behind/",
-        "female": "weapons/sword/arming/universal_behind/"
+        "male": "weapons/sword/arming/universal/bg/",
+        "female": "weapons/sword/arming/universal/bg/"
       }
     },
     "slash_behind": {
       "custom_animation": "slash_oversize",
       "zPos": -1,
       "paths": {
-        "male": "weapons/sword/arming/attack_slash/behind/",
-        "female": "weapons/sword/arming/attack_slash/behind/"
+        "male": "weapons/sword/arming/attack_slash/bg/",
+        "female": "weapons/sword/arming/attack_slash/bg/"
       }
     },
     "slash_front": {
       "custom_animation": "slash_oversize",
       "zPos": 150,
       "paths": {
-        "male": "weapons/sword/arming/attack_slash/",
-        "female": "weapons/sword/arming/attack_slash/"
+        "male": "weapons/sword/arming/attack_slash/fg/",
+        "female": "weapons/sword/arming/attack_slash/fg/"
       }
     }
   },

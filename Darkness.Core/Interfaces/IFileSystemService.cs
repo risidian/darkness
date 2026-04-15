@@ -10,6 +10,6 @@ namespace Darkness.Core.Interfaces
         string ReadAllText(string filename);
         bool FileExists(string path);
         bool DirectoryExists(string path);
-        string[] GetFiles(string path, string searchPattern);
+        string[] GetFiles(string path, string searchPattern, bool recursive = false);
     }
 }

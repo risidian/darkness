@@ -16,7 +16,7 @@ public class TalentSeeder
         _fileSystem = fileSystem;
     }
 
-    public void Seed(LiteDatabase db)
+    public void Seed(ILiteDatabase db)
     {
         const string jsonPath = "assets/data/talent-trees.json";
         

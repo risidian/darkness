@@ -14,7 +14,7 @@ public partial class InventoryScene : Control
     private ISessionService _session = null!;
     private INavigationService _navigation = null!;
     private ISpriteCompositor _compositor = null!;
-    private ISpriteLayerCatalog _catalog = null!;
+    private ISheetDefinitionCatalog _catalog = null!;
     private ICharacterService _characterService = null!;
     private IFileSystemService _fileSystem = null!;
     private VBoxContainer _itemList = null!;
@@ -31,7 +31,7 @@ public partial class InventoryScene : Control
         _session = sp.GetRequiredService<ISessionService>();
         _navigation = sp.GetRequiredService<INavigationService>();
         _compositor = sp.GetRequiredService<ISpriteCompositor>();
-        _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
+        _catalog = sp.GetRequiredService<ISheetDefinitionCatalog>();
         _characterService = sp.GetRequiredService<ICharacterService>();
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
 
@@ -274,8 +274,8 @@ public partial class InventoryScene : Control
 
         try
         {
-            var stitchLayers = _catalog.GetStitchLayers(appearance);
-            c.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
+            var definitions = _catalog.GetSheetDefinitions(appearance);
+            c.FullSpriteSheet = await _compositor.CompositeFullSheet(definitions, appearance, _fileSystem);
         }
         catch (System.Exception ex)
         {

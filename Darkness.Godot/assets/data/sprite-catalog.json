@@ -1,6 +1,28 @@
 {
   "AppearanceOptions": [
     {
+      "Id": 100,
+      "Category": "Body",
+      "DisplayName": "Human Male",
+      "AssetPath": "assets/sprites/full/body/male",
+      "FileNameTemplate": "{action}.png",
+      "TintHex": "#FFFFFF",
+      "ZOrder": 10,
+      "Gender": "male",
+      "FallbackGender": null
+    },
+    {
+      "Id": 101,
+      "Category": "Body",
+      "DisplayName": "Human Female",
+      "AssetPath": "assets/sprites/full/body/female",
+      "FileNameTemplate": "{action}.png",
+      "TintHex": "#FFFFFF",
+      "ZOrder": 10,
+      "Gender": "female",
+      "FallbackGender": null
+    },
+    {
       "Id": 1,
       "Category": "Hair",
       "DisplayName": "Long",

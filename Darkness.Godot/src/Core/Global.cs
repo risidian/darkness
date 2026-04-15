@@ -32,23 +32,24 @@ public partial class Global : Node
 
             // Core Services
             services.AddSingleton<LocalDatabaseService>();
-            services.AddSingleton<LiteDatabase>(sp =>
+            services.AddSingleton<ILiteDatabase>(sp =>
             {
                 var dbService = sp.GetRequiredService<LocalDatabaseService>();
                 return dbService.OpenDatabase();
             });
+            services.AddSingleton<LiteDatabase>(sp => (LiteDatabase)sp.GetRequiredService<ILiteDatabase>());
             services.AddSingleton<ISessionService, SessionService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ICharacterService, CharacterService>();
-            services.AddSingleton<ICraftingService>(sp => new CraftingService(sp.GetRequiredService<LiteDatabase>()));
+            services.AddSingleton<ICraftingService>(sp => new CraftingService(sp.GetRequiredService<ILiteDatabase>()));
             services.AddSingleton<IDeathmatchService, DeathmatchService>();
             services.AddSingleton<IAllyService, AllyService>();
             services.AddSingleton<IQuestService, QuestService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IRewardService, RewardService>();
             services.AddSingleton<ICombatService, CombatEngine>();
-            services.AddSingleton<ISpriteCompositor, GodotSpriteCompositor>();
-            services.AddSingleton<ISpriteLayerCatalog, SpriteLayerCatalog>();
+            services.AddSingleton<ISpriteCompositor, SkiaSharpSpriteCompositor>();
+            services.AddSingleton<ISheetDefinitionCatalog, SheetDefinitionCatalog>();
             services.AddSingleton<IWeaponSkillService, WeaponSkillService>();
             services.AddSingleton<ILevelingService, LevelingService>();
             services.AddSingleton<ITalentService, TalentService>();
@@ -66,11 +67,12 @@ public partial class Global : Node
             // Seed data synchronously to ensure it's available before scenes load
             try 
             {
-                var db = Services.GetRequiredService<LiteDatabase>();
+                var db = Services.GetRequiredService<ILiteDatabase>();
                 var fs = Services.GetRequiredService<IFileSystemService>();
 
                 GD.Print("[Global] Seeding data...");
-                new SpriteSeeder(fs).Seed(db);
+                new SheetDefinitionSeeder(fs).Seed(db);
+                new AppearanceSeeder(fs).Seed(db);
                 new QuestSeeder(fs).Seed(db);
                 new LevelSeeder(fs).Seed(db);
                 new TalentSeeder(fs).Seed(db);

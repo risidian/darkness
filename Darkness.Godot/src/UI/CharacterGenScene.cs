@@ -13,7 +13,7 @@ public partial class CharacterGenScene : Control
 {
     private INavigationService _navigation = null!;
     private ISpriteCompositor _compositor = null!;
-    private ISpriteLayerCatalog _catalog = null!;
+    private ISheetDefinitionCatalog _catalog = null!;
     private ICharacterService _characterService = null!;
     private ITalentService _talentService = null!;
     private ISessionService _session = null!;
@@ -54,7 +54,7 @@ public partial class CharacterGenScene : Control
         var sp = global.Services!;
         _navigation = sp.GetRequiredService<INavigationService>();
         _compositor = sp.GetRequiredService<ISpriteCompositor>();
-        _catalog = sp.GetRequiredService<ISpriteLayerCatalog>();
+        _catalog = sp.GetRequiredService<ISheetDefinitionCatalog>();
         _characterService = sp.GetRequiredService<ICharacterService>();
         _talentService = sp.GetRequiredService<ITalentService>();
         _session = sp.GetRequiredService<ISessionService>();
@@ -317,17 +317,23 @@ public partial class CharacterGenScene : Control
 
         try
         {
-            var stitchLayers = _catalog.GetStitchLayers(appearance);
-            var previewFrameBytes = await _compositor.CompositePreviewFrame(stitchLayers, _fileSystem);
+            var definitions = _catalog.GetSheetDefinitions(appearance);
+            var previewFrameBytes = await _compositor.CompositePreviewFrame(definitions, appearance, _fileSystem);
 
             if (previewFrameBytes != null && previewFrameBytes.Length > 0)
             {
-                // Scale it by 4 for the UI portrait.
-                _previewBytes = _compositor.ExtractFrame(previewFrameBytes, 0, 0, 64, 64, 4);
+                _previewBytes = previewFrameBytes;
 
                 var img = new Image();
-                img.LoadPngFromBuffer(_previewBytes);
-                _spritePreview.Texture = ImageTexture.CreateFromImage(img);
+                var error = img.LoadPngFromBuffer(_previewBytes);
+                if (error == Error.Ok)
+                {
+                    _spritePreview.Texture = ImageTexture.CreateFromImage(img);
+                }
+                else
+                {
+                    GD.PrintErr($"[CharacterGen] Failed to load preview PNG: {error}");
+                }
             }
         }
         catch (System.Exception ex)
@@ -340,20 +346,26 @@ public partial class CharacterGenScene : Control
     {
         return new CharacterAppearance
         {
-            SkinColor = _skinOption.GetItemText(_skinOption.Selected),
-            Face = _faceOption.GetItemText(_faceOption.Selected),
-            Eyes = _eyesOption.GetItemText(_eyesOption.Selected),
-            HairStyle = _hairStyleOption.GetItemText(_hairStyleOption.Selected),
-            HairColor = _hairColorOption.GetItemText(_hairColorOption.Selected),
-            Legs = _legsOption.GetItemText(_legsOption.Selected),
-            Feet = _feetOption.GetItemText(_feetOption.Selected),
-            Arms = _armsOption.GetItemText(_armsOption.Selected),
-            ArmorType = _armorOption.GetItemText(_armorOption.Selected),
-            WeaponType = _weaponOption.GetItemText(_weaponOption.Selected),
-            ShieldType = _shieldOption.GetItemText(_shieldOption.Selected),
-            OffHandType = _offHandOption.GetItemText(_offHandOption.Selected),
-            Head = _headOption.GetItemText(_headOption.Selected)
+            SkinColor = GetSelectedText(_skinOption),
+            Face = GetSelectedText(_faceOption),
+            Eyes = GetSelectedText(_eyesOption),
+            HairStyle = GetSelectedText(_hairStyleOption),
+            HairColor = GetSelectedText(_hairColorOption),
+            Legs = GetSelectedText(_legsOption),
+            Feet = GetSelectedText(_feetOption),
+            Arms = GetSelectedText(_armsOption),
+            ArmorType = GetSelectedText(_armorOption),
+            WeaponType = GetSelectedText(_weaponOption),
+            ShieldType = GetSelectedText(_shieldOption),
+            OffHandType = GetSelectedText(_offHandOption),
+            Head = GetSelectedText(_headOption)
         };
+    }
+
+    private string GetSelectedText(OptionButton ob)
+    {
+        if (ob == null || ob.ItemCount == 0 || ob.Selected < 0 || ob.Selected >= ob.ItemCount) return "None";
+        return ob.GetItemText(ob.Selected);
     }
 
     private async void OnCreatePressed()
@@ -418,9 +430,9 @@ public partial class CharacterGenScene : Control
             // Generate Full Sprite Sheet
             try
             {
-                var stitchLayers = _catalog.GetStitchLayers(appearance);
-                GD.Print($"[CharacterGen] Stitching {stitchLayers.Count} layers for {_character.Name}...");
-                _character.FullSpriteSheet = await _compositor.CompositeFullSheet(stitchLayers, _fileSystem);
+                var definitions = _catalog.GetSheetDefinitions(appearance);
+                GD.Print($"[CharacterGen] Compositing {definitions.Count} definitions for {_character.Name}...");
+                _character.FullSpriteSheet = await _compositor.CompositeFullSheet(definitions, appearance, _fileSystem);
                 GD.Print($"[CharacterGen] Full sheet generated: {_character.FullSpriteSheet?.Length ?? 0} bytes");
             }
             catch (System.Exception ex)
@@ -453,13 +465,11 @@ public partial class CharacterGenScene : Control
         var item = new Item { Name = name, Type = type, Value = value };
 
         // Try to look up requirements from catalog
-        var sprite = _catalog.GetEquipmentSpriteByName(type, name);
-        if (sprite != null)
+        var def = _catalog.GetSheetDefinitionByName(type, name);
+        if (def != null)
         {
-            item.RequiredStrength = sprite.RequiredStrength;
-            item.RequiredDexterity = sprite.RequiredDexterity;
-            item.RequiredIntelligence = sprite.RequiredIntelligence;
-            item.RequiredLevel = sprite.RequiredLevel;
+            // SheetDefinition doesn't have stats yet, but we could add them if needed.
+            // For now, keeping it simple.
         }
 
         _character.Inventory.Add(item);

@@ -63,7 +63,7 @@ public partial class LayeredSprite : Node2D
         }
     }
 
-    public async Task SetupCharacter(Character c, ISpriteLayerCatalog catalog, IFileSystemService fileSystem,
+    public async Task SetupCharacter(Character c, ISheetDefinitionCatalog catalog, IFileSystemService fileSystem,
         ISpriteCompositor? compositor = null)
     {
         EnsureLayers();
@@ -98,11 +98,10 @@ public partial class LayeredSprite : Node2D
 
             try
             {
-                var allLayers = catalog.GetStitchLayers(appearance);
-                var baseLayers = allLayers.Where(l => !l.RootPath.Contains("weapons/") && !l.RootPath.Contains("shields/")).ToList();
-                GD.Print($"[LayeredSprite] Compositing {baseLayers.Count} base layers...");
+                var definitions = catalog.GetSheetDefinitions(appearance);
+                GD.Print($"[LayeredSprite] Compositing {definitions.Count} sheet definitions...");
                 
-                c.FullSpriteSheet = await compositor.CompositeFullSheet(baseLayers, fileSystem);
+                c.FullSpriteSheet = await compositor.CompositeFullSheet(definitions, appearance, fileSystem);
                 GD.Print($"[LayeredSprite] Generated sheet for {c.Name}: {c.FullSpriteSheet?.Length ?? 0} bytes");
                 
                 if (c.FullSpriteSheet != null && c.FullSpriteSheet.Length > 0)
@@ -123,27 +122,6 @@ public partial class LayeredSprite : Node2D
         else
         {
             GD.PrintErr($"[LayeredSprite] No compositor provided for {c.Name} — cannot generate sprite sheet.");
-        }
-        
-        // Dynamically load oversized equipment (weapons, shields) without baking them into base sheet
-        if (appearance.ShieldType != "None" && !string.IsNullOrEmpty(appearance.ShieldType))
-        {
-            GD.Print($"[LayeredSprite] Adding shield overlay: {appearance.ShieldType}");
-            await AddEquipmentOverlay("Shield", appearance.ShieldType, "Shield", catalog, fileSystem);
-        }
-        else if (_layers.TryGetValue("Shield", out var shieldLayer))
-        {
-            shieldLayer.Hide();
-        }
-        
-        if (appearance.WeaponType != "None" && !string.IsNullOrEmpty(appearance.WeaponType))
-        {
-            GD.Print($"[LayeredSprite] Adding weapon overlay: {appearance.WeaponType}");
-            await AddEquipmentOverlay("Weapon", appearance.WeaponType, "Weapon", catalog, fileSystem);
-        }
-        else if (_layers.TryGetValue("Weapon", out var weaponLayer))
-        {
-            weaponLayer.Hide();
         }
     }
 
@@ -240,122 +218,6 @@ public partial class LayeredSprite : Node2D
         }
     }
 
-    public async Task AddEquipmentOverlay(string slotType, string equipmentName, string nodeName, ISpriteLayerCatalog catalog, IFileSystemService fileSystem)
-    {
-        EnsureLayers();
-        if (!_layers.TryGetValue(nodeName, out var equipSprite)) return;
-
-        var appearance = new CharacterAppearance();
-        if (slotType == "Weapon") appearance.WeaponType = equipmentName;
-        else if (slotType == "Shield") appearance.ShieldType = equipmentName;
-        else return;
-
-        var layers = catalog.GetStitchLayers(appearance);
-        var equipLayer = layers.FirstOrDefault(l => l.RootPath.Contains(slotType.ToLower() + "s/"));
-        if (equipLayer == null)
-        {
-            equipSprite.SpriteFrames = null;
-            equipSprite.Hide();
-            return;
-        }
-
-        GD.Print($"[LayeredSprite] Constructing {nodeName} dynamically: {equipmentName}");
-        var frames = new SpriteFrames();
-        if (frames.HasAnimation("default")) frames.RemoveAnimation("default");
-
-        await TryLoadLpcAction(frames, equipLayer, "walk", fileSystem, 9);
-        await TryLoadLpcAction(frames, equipLayer, "slash", fileSystem, 6);
-        await TryLoadLpcAction(frames, equipLayer, "thrust", fileSystem, 8);
-        await TryLoadLpcAction(frames, equipLayer, "shoot", fileSystem, 13);
-        await TryLoadLpcAction(frames, equipLayer, "spellcast", fileSystem, 7);
-        await TryLoadLpcAction(frames, equipLayer, "hurt", fileSystem, 6, isSingleRow: true);
-
-        if (frames.HasAnimation("walk_up"))
-        {
-            CopyFirstFrame(frames, "walk_up", "idle_up");
-            CopyFirstFrame(frames, "walk_left", "idle_left");
-            CopyFirstFrame(frames, "walk_down", "idle_down");
-            CopyFirstFrame(frames, "walk_right", "idle_right");
-        }
-
-        // If a weapon has shoot but no spellcast (like wands), map shoot's first frame to spellcast
-        if (!frames.HasAnimation("spellcast_up") && frames.HasAnimation("shoot_up"))
-        {
-            CopyFirstFrame(frames, "shoot_up", "spellcast_up");
-            CopyFirstFrame(frames, "shoot_left", "spellcast_left");
-            CopyFirstFrame(frames, "shoot_down", "spellcast_down");
-            CopyFirstFrame(frames, "shoot_right", "spellcast_right");
-        }
-
-        equipSprite.SpriteFrames = frames;
-        equipSprite.FlipH = _flipH;
-        equipSprite.Show();
-        
-        // Let it sync up to whatever the body is doing if applicable
-        if (frames.HasAnimation("idle_down"))
-        {
-            equipSprite.Play("idle_down");
-        }
-    }
-
-    private async Task TryLoadLpcAction(SpriteFrames frames, StitchLayer layer, string action, IFileSystemService fileSystem, int expectedCols, bool isSingleRow = false)
-    {
-        string fileName = layer.FileNameTemplate.Replace("{action}", action);
-        string fullPath = layer.RootPath.EndsWith("/") ? layer.RootPath + fileName : layer.RootPath + "/" + fileName;
-
-        byte[]? data = null;
-        if (fileSystem.FileExists(fullPath))
-        {
-            using var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
-            using var ms = new System.IO.MemoryStream();
-            await stream.CopyToAsync(ms);
-            data = ms.ToArray();
-        }
-        else if (action == "slash" || action == "thrust" || action == "shoot")
-        {
-            string altAction = "attack_" + action;
-            fileName = layer.FileNameTemplate.Replace("{action}", altAction);
-            fullPath = layer.RootPath.EndsWith("/") ? layer.RootPath + fileName : layer.RootPath + "/" + fileName;
-            if (fileSystem.FileExists(fullPath))
-            {
-                using var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
-                using var ms = new System.IO.MemoryStream();
-                await stream.CopyToAsync(ms);
-                data = ms.ToArray();
-            }
-        }
-
-        if (data == null) return;
-
-        var tex = ImageUtils.ByteArrayToTexture(data);
-        if (tex == null) return;
-
-        int rows = isSingleRow ? 1 : 4;
-        int frameW = (int)tex.GetSize().X / expectedCols;
-        int frameH = (int)tex.GetSize().Y / rows;
-
-        if (isSingleRow)
-        {
-            ImageUtils.AddLpcRowWeapon(frames, tex, action, 0, expectedCols, frameW, frameH);
-        }
-        else
-        {
-            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_up", 0, expectedCols, frameW, frameH);
-            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_left", 1, expectedCols, frameW, frameH);
-            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_down", 2, expectedCols, frameW, frameH);
-            ImageUtils.AddLpcRowWeapon(frames, tex, $"{action}_right", 3, expectedCols, frameW, frameH);
-        }
-    }
-
-    private void CopyFirstFrame(SpriteFrames frames, string sourceAnim, string targetAnim)
-    {
-        if (!frames.HasAnimation(sourceAnim)) return;
-        if (frames.HasAnimation(targetAnim)) frames.RemoveAnimation(targetAnim);
-        frames.AddAnimation(targetAnim);
-        frames.SetAnimationLoop(targetAnim, false);
-        frames.AddFrame(targetAnim, frames.GetFrameTexture(sourceAnim, 0));
-    }
-
     private async Task LoadIfExists(SpriteFrames frames, string animName, string path, IFileSystemService fileSystem)
     {
         try
@@ -399,19 +261,17 @@ public partial class LayeredSprite : Node2D
             {
                 sprite.Play(animation);
                 
-                if (kvp.Key == "Weapon" || kvp.Key == "Shield")
+                // Handle positioning for oversize frames
+                var tex = sprite.SpriteFrames.GetFrameTexture(animation, 0) as AtlasTexture;
+                if (tex != null)
                 {
-                    var tex = sprite.SpriteFrames.GetFrameTexture(animation, 0) as AtlasTexture;
-                    if (tex != null)
+                    if (tex.Region.Size.X > 64)
                     {
-                        if (tex.Region.Size.X > 64)
-                        {
-                            sprite.Position = new Vector2(-64, -64);
-                        }
-                        else
-                        {
-                            sprite.Position = Vector2.Zero;
-                        }
+                        sprite.Position = new Vector2(-64, -64);
+                    }
+                    else
+                    {
+                        sprite.Position = Vector2.Zero;
                     }
                 }
             }

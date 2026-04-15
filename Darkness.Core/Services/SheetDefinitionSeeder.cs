@@ -32,6 +32,7 @@ public class SheetDefinitionSeeder
             }
 
             var files = _fileSystem.GetFiles(baseDir, "*.json", true);
+            Console.WriteLine($"[SheetDefinitionSeeder] Found {files.Length} JSON files in {baseDir}");
             foreach (var file in files)
             {
                 try
@@ -45,6 +46,7 @@ public class SheetDefinitionSeeder
                     if (def != null)
                     {
                         col.Insert(def);
+                        Console.WriteLine($"[SheetDefinitionSeeder] Loaded: {def.Name} ({def.Slot}) from {file}");
                     }
                 }
                 catch (Exception ex)
