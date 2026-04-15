@@ -245,7 +245,7 @@ public partial class InventoryScene : Control
         }
 
         await RegenerateFullSheet();
-        await Task.Run(() => _characterService.SaveCharacter(_session.CurrentCharacter));
+        _characterService.SaveCharacter(_session.CurrentCharacter);
 
         LoadInventory();
         UpdateCharacterPreview();

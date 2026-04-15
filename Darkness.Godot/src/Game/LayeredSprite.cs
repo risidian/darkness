@@ -2,16 +2,14 @@ using Godot;
 using Darkness.Godot.Core;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
-using System.Linq;
 
 namespace Darkness.Godot.Game;
 
 public partial class LayeredSprite : Node2D
 {
-    private Dictionary<string, AnimatedSprite2D> _layers = new();
+    private AnimatedSprite2D _bakedSprite = null!;
     private ShaderMaterial _simpleMaterial = null!;
     private bool _flipH = false;
 
@@ -21,9 +19,9 @@ public partial class LayeredSprite : Node2D
         set
         {
             _flipH = value;
-            foreach (var sprite in _layers.Values)
+            if (_bakedSprite != null)
             {
-                sprite.FlipH = _flipH;
+                _bakedSprite.FlipH = _flipH;
             }
         }
     }
@@ -31,42 +29,32 @@ public partial class LayeredSprite : Node2D
     public override void _Ready()
     {
         if (!IsInsideTree()) return;
-        EnsureLayers();
+        EnsureSprite();
     }
 
-    private void EnsureLayers()
+    private void EnsureSprite()
     {
-        if (_layers.Count > 0) return;
+        if (_bakedSprite != null) return;
 
+        _bakedSprite = GetNode<AnimatedSprite2D>("BakedSprite");
         var shader = GD.Load<Shader>("res://src/Shaders/simple_2d.gdshader");
         _simpleMaterial = new ShaderMaterial { Shader = shader };
-
-        foreach (var child in GetChildren())
-        {
-            if (child is AnimatedSprite2D sprite)
-            {
-                _layers[sprite.Name] = sprite;
-                sprite.Material = _simpleMaterial;
-            }
-        }
+        _bakedSprite.Material = _simpleMaterial;
     }
 
-    public void ResetLayers()
+    public void ResetSprite()
     {
-        EnsureLayers();
-        foreach (var layer in _layers.Values)
-        {
-            layer.SpriteFrames = null;
-            layer.Hide();
-            layer.Frame = 0;
-            layer.Stop();
-        }
+        EnsureSprite();
+        _bakedSprite.SpriteFrames = null;
+        _bakedSprite.Hide();
+        _bakedSprite.Frame = 0;
+        _bakedSprite.Stop();
     }
 
     public async Task SetupCharacter(Character c, ISheetDefinitionCatalog catalog, IFileSystemService fileSystem,
         ISpriteCompositor? compositor = null)
     {
-        EnsureLayers();
+        EnsureSprite();
         GD.Print($"[LayeredSprite] SetupCharacter started for {c.Name}. Class: {c.Class}");
 
         var appearance = new CharacterAppearance
@@ -93,7 +81,6 @@ public partial class LayeredSprite : Node2D
         }
         else if (compositor != null)
         {
-            // Generate sprite sheet on the fly from appearance data
             GD.Print($"[LayeredSprite] Generating base sprite sheet for {c.Name}...");
 
             try
@@ -128,11 +115,11 @@ public partial class LayeredSprite : Node2D
     public async Task SetupFromBytes(byte[] data)
     {
         GD.Print($"[LayeredSprite] SetupFromBytes called with {data.Length} bytes.");
-        ResetLayers();
+        ResetSprite();
 
-        if (!_layers.TryGetValue("Body", out var bodySprite))
+        if (_bakedSprite == null)
         {
-            GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
+            GD.PrintErr("[LayeredSprite] BakedSprite layer not found!");
             return;
         }
 
@@ -140,18 +127,18 @@ public partial class LayeredSprite : Node2D
         if (frames != null)
         {
             GD.Print($"[LayeredSprite] Created SpriteFrames from bytes. Animations: {string.Join(", ", frames.GetAnimationNames())}");
-            bodySprite.SpriteFrames = frames;
-            bodySprite.FlipH = _flipH;
-            bodySprite.Show();
-            bodySprite.Modulate = new Color(1, 1, 1, 1); // Reset transparency
+            _bakedSprite.SpriteFrames = frames;
+            _bakedSprite.FlipH = _flipH;
+            _bakedSprite.Show();
+            _bakedSprite.Modulate = new Color(1, 1, 1, 1);
 
             if (frames.HasAnimation("idle_down"))
             {
-                bodySprite.Play("idle_down");
+                _bakedSprite.Play("idle_down");
             }
             else if (frames.GetAnimationNames().Length > 0)
             {
-                bodySprite.Play(frames.GetAnimationNames()[0]);
+                _bakedSprite.Play(frames.GetAnimationNames()[0]);
             }
         }
         else
@@ -162,14 +149,10 @@ public partial class LayeredSprite : Node2D
 
     public async Task SetupMonster(string monsterType, IFileSystemService fileSystem)
     {
-        ResetLayers();
+        ResetSprite();
         GD.Print($"[LayeredSprite] SetupMonster started for: {monsterType}");
 
-        if (!_layers.TryGetValue("Body", out var bodySprite))
-        {
-            GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
-            return;
-        }
+        if (_bakedSprite == null) return;
 
         var frames = new SpriteFrames();
         if (frames.HasAnimation("default")) frames.RemoveAnimation("default");
@@ -184,36 +167,32 @@ public partial class LayeredSprite : Node2D
 
         GD.Print($"[LayeredSprite] Loaded {frames.GetAnimationNames().Length} animations.");
 
-        bodySprite.SpriteFrames = frames;
-        bodySprite.FlipH = _flipH;
-        bodySprite.Show();
+        _bakedSprite.SpriteFrames = frames;
+        _bakedSprite.FlipH = _flipH;
+        _bakedSprite.Show();
 
         if (frames.HasAnimation("idle"))
         {
-            bodySprite.Play("idle");
+            _bakedSprite.Play("idle");
         }
     }
 
     public async Task SetupFullSheet(string path, IFileSystemService fileSystem)
     {
-        ResetLayers();
+        ResetSprite();
 
-        if (!_layers.TryGetValue("Body", out var bodySprite))
-        {
-            GD.PrintErr("[LayeredSprite] Body layer not found in dictionary!");
-            return;
-        }
+        if (_bakedSprite == null) return;
 
         var frames = await LoadFrames(path, fileSystem);
         if (frames != null)
         {
-            bodySprite.SpriteFrames = frames;
-            bodySprite.FlipH = _flipH;
-            bodySprite.Show();
+            _bakedSprite.SpriteFrames = frames;
+            _bakedSprite.FlipH = _flipH;
+            _bakedSprite.Show();
 
             if (frames.HasAnimation("idle_down"))
             {
-                bodySprite.Play("idle_down");
+                _bakedSprite.Play("idle_down");
             }
         }
     }
@@ -231,7 +210,6 @@ public partial class LayeredSprite : Node2D
             var img = new Image();
             img.LoadPngFromBuffer(data);
             int frameH = img.GetHeight();
-
             int frameW = (frameH <= 48) ? 64 : frameH;
 
             GD.Print($"[LayeredSprite] Successfully read {data.Length} bytes for {animName}. Detected Frame Size: {frameW}x{frameH}");
@@ -254,25 +232,21 @@ public partial class LayeredSprite : Node2D
     public void Play(string animation)
     {
         if (!GodotObject.IsInstanceValid(this) || !IsInsideTree()) return;
-        foreach (var kvp in _layers)
+        
+        if (_bakedSprite.Visible && _bakedSprite.SpriteFrames != null && _bakedSprite.SpriteFrames.HasAnimation(animation))
         {
-            var sprite = kvp.Value;
-            if (sprite.Visible && sprite.SpriteFrames != null && sprite.SpriteFrames.HasAnimation(animation))
+            _bakedSprite.Play(animation);
+            
+            var tex = _bakedSprite.SpriteFrames.GetFrameTexture(animation, 0) as AtlasTexture;
+            if (tex != null)
             {
-                sprite.Play(animation);
-                
-                // Handle positioning for oversize frames
-                var tex = sprite.SpriteFrames.GetFrameTexture(animation, 0) as AtlasTexture;
-                if (tex != null)
+                if (tex.Region.Size.X > 64)
                 {
-                    if (tex.Region.Size.X > 64)
-                    {
-                        sprite.Position = new Vector2(-64, -64);
-                    }
-                    else
-                    {
-                        sprite.Position = Vector2.Zero;
-                    }
+                    _bakedSprite.Position = new Vector2(-64, -64);
+                }
+                else
+                {
+                    _bakedSprite.Position = Vector2.Zero;
                 }
             }
         }
@@ -280,10 +254,6 @@ public partial class LayeredSprite : Node2D
 
     public bool HasAnimation(string animation)
     {
-        if (_layers.TryGetValue("Body", out var bodySprite))
-        {
-            return bodySprite.SpriteFrames != null && bodySprite.SpriteFrames.HasAnimation(animation);
-        }
-        return false;
+        return _bakedSprite?.SpriteFrames != null && _bakedSprite.SpriteFrames.HasAnimation(animation);
     }
 }

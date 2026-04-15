@@ -48,23 +48,24 @@ public static class ImageUtils
             int startRow = kvp.Value;
             int frameCount = SheetConstants.FrameCounts[anim];
 
-            AddLpcRow(frames, tex, $"{anim}_up", startRow + 0, frameCount, frameWidth, frameHeight);
-            AddLpcRow(frames, tex, $"{anim}_left", startRow + 1, frameCount, frameWidth, frameHeight);
-            AddLpcRow(frames, tex, $"{anim}_down", startRow + 2, frameCount, frameWidth, frameHeight);
-            AddLpcRow(frames, tex, $"{anim}_right", startRow + 3, frameCount, frameWidth, frameHeight);
-
-            // Special case for single-row animations
             if (anim == "hurt" || anim == "climb")
             {
                 AddLpcRow(frames, tex, anim, startRow, frameCount, frameWidth, frameHeight);
             }
+            else
+            {
+                AddLpcRow(frames, tex, $"{anim}_up", startRow + 0, frameCount, frameWidth, frameHeight);
+                AddLpcRow(frames, tex, $"{anim}_left", startRow + 1, frameCount, frameWidth, frameHeight);
+                AddLpcRow(frames, tex, $"{anim}_down", startRow + 2, frameCount, frameWidth, frameHeight);
+                AddLpcRow(frames, tex, $"{anim}_right", startRow + 3, frameCount, frameWidth, frameHeight);
+            }
         }
 
         // Generate idles from frame 0 of each walk direction (after the loop, not inside it)
-        AddSingleFrame(frames, tex, $"idle_up", SheetConstants.AnimationRows["walk"] + 0, 0, frameWidth, frameHeight);
-        AddSingleFrame(frames, tex, $"idle_left", SheetConstants.AnimationRows["walk"] + 1, 0, frameWidth, frameHeight);
-        AddSingleFrame(frames, tex, $"idle_down", SheetConstants.AnimationRows["walk"] + 2, 0, frameWidth, frameHeight);
-        AddSingleFrame(frames, tex, $"idle_right", SheetConstants.AnimationRows["walk"] + 3, 0, frameWidth, frameHeight);
+        AddSingleFrame(frames, tex, "idle_up", SheetConstants.AnimationRows["walk"] + 0, 0, frameWidth, frameHeight);
+        AddSingleFrame(frames, tex, "idle_left", SheetConstants.AnimationRows["walk"] + 1, 0, frameWidth, frameHeight);
+        AddSingleFrame(frames, tex, "idle_down", SheetConstants.AnimationRows["walk"] + 2, 0, frameWidth, frameHeight);
+        AddSingleFrame(frames, tex, "idle_right", SheetConstants.AnimationRows["walk"] + 3, 0, frameWidth, frameHeight);
 
         // Handle Oversize Region (fixed at Y offset 3456)
         if (tex.GetSize().Y > SheetConstants.SHEET_HEIGHT)

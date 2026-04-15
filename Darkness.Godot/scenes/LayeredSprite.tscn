@@ -5,35 +5,5 @@
 [node name="LayeredSprite" type="Node2D"]
 script = ExtResource("1_layer")
 
-[node name="Body" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Head" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Face" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Eyes" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Feet" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Legs" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Arms" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Armor" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Hair" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Shield" type="AnimatedSprite2D" parent="."]
-centered = false
-
-[node name="Weapon" type="AnimatedSprite2D" parent="."]
+[node name="BakedSprite" type="AnimatedSprite2D" parent="."]
 centered = false

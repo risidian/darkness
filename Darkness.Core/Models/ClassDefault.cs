@@ -13,4 +13,8 @@ public class ClassDefault
     public string Feet { get; set; } = "None";
     public string Arms { get; set; } = "None";
     public string Legs { get; set; } = "None";
+    public string SkinColor { get; set; } = "Light";
+    public string HairStyle { get; set; } = "None";
+    public string HairColor { get; set; } = "None";
+    public string Eyes { get; set; } = "Default";
 }

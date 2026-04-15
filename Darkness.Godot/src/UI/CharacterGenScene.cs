@@ -457,7 +457,7 @@ public partial class CharacterGenScene : Control
             SetStats(_character, _character.Class);
             _talentService.UnlockStartingTalents(_character);
 
-            await Task.Run(() => _characterService.SaveCharacter(_character));
+            _characterService.SaveCharacter(_character);
             GD.Print($"[CharacterGen] Character '{_character.Name}' saved.");
 
             // CRITICAL: Update session state so WorldScene knows who to render
