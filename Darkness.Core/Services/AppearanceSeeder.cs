@@ -54,16 +54,38 @@ public class AppearanceSeeder
         if (data.AppearanceOptions != null)
         {
             foreach (var option in data.AppearanceOptions)
+            {
+                if (option.AssetPath.StartsWith("assets/sprites/full/"))
+                {
+                    option.AssetPath = option.AssetPath.Replace("assets/sprites/full/", "");
+                }
                 optionCol.Insert(option);
+            }
         }
         optionCol.EnsureIndex(o => o.Category);
         optionCol.EnsureIndex(o => o.DisplayName);
 
         Console.WriteLine($"[AppearanceSeeder] INFO: Loaded {optionCol.Count()} appearance options");
+
+        var defaultsCol = db.GetCollection<ClassDefault>("class_defaults");
+        defaultsCol.DeleteAll();
+        if (data.ClassDefaults != null)
+        {
+            foreach (var kvp in data.ClassDefaults)
+            {
+                var cd = kvp.Value;
+                cd.ClassName = kvp.Key;
+                defaultsCol.Insert(cd);
+            }
+        }
+        defaultsCol.EnsureIndex(c => c.ClassName);
+
+        Console.WriteLine($"[AppearanceSeeder] INFO: Loaded {defaultsCol.Count()} class defaults");
     }
 
     private class SeedData
     {
         public List<AppearanceOption>? AppearanceOptions { get; set; }
+        public Dictionary<string, ClassDefault>? ClassDefaults { get; set; }
     }
 }

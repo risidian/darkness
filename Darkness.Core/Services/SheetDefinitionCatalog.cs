@@ -131,10 +131,22 @@ public class SheetDefinitionCatalog : ISheetDefinitionCatalog
 
     public CharacterAppearance GetDefaultAppearanceForClass(string className)
     {
-        // This should probably be in a seeder/LiteDB too, but for now we can keep it simple
-        // or query the database if we have a 'class_defaults' collection.
-        // For now, returning a basic one.
-        return new CharacterAppearance();
+        var col = _db.GetCollection<ClassDefault>("class_defaults");
+        var defaults = col.FindOne(x => x.ClassName == className);
+        if (defaults == null) return new CharacterAppearance();
+
+        return new CharacterAppearance
+        {
+            Head = defaults.Head,
+            Face = defaults.Face,
+            ArmorType = defaults.ArmorType,
+            WeaponType = defaults.WeaponType,
+            ShieldType = defaults.ShieldType,
+            OffHandType = defaults.OffHandType,
+            Feet = defaults.Feet,
+            Arms = defaults.Arms,
+            Legs = defaults.Legs
+        };
     }
 
     public List<string> GetOptionNames(string category, string gender)

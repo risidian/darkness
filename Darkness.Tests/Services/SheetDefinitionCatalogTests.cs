@@ -117,4 +117,38 @@ public class SheetDefinitionCatalogTests : IDisposable
         var baseLayer = eyesDef.Layers["base"];
         Assert.Equal("blue", baseLayer.DefaultVariant);
     }
+
+    [Theory]
+    [InlineData("Knight", "Arming Sword (Steel)", "Spartan")]
+    [InlineData("Warrior", "Waraxe", "None")]
+    [InlineData("Mage", "Mage Wand", "None")]
+    [InlineData("Rogue", "Dagger (Steel)", "None")]
+    [InlineData("Cleric", "Mace", "Crusader")]
+    public void GetDefaultAppearanceForClass_ReturnsCorrectEquipment(string className, string expectedWeapon, string expectedShield)
+    {
+        var appearance = _catalog.GetDefaultAppearanceForClass(className);
+        Assert.Equal(expectedWeapon, appearance.WeaponType);
+        Assert.Equal(expectedShield, appearance.ShieldType);
+    }
+
+    [Fact]
+    public void GetDefaultAppearanceForClass_UnknownClass_ReturnsDefaultAppearance()
+    {
+        var appearance = _catalog.GetDefaultAppearanceForClass("Nonexistent");
+        Assert.NotNull(appearance);
+    }
+
+    [Theory]
+    [InlineData("Knight", "Plate (Steel)", "Boots (Rimmed)", "Gloves", "Formal")]
+    [InlineData("Mage", "Mage Robes (Blue)", "Sandals", "None", "Formal")]
+    [InlineData("Rogue", "Leather (Black)", "Boots (Fold)", "Gloves", "Leggings")]
+    [InlineData("Cleric", "Longsleeve (White)", "Shoes", "None", "Slacks")]
+    public void GetDefaultAppearanceForClass_ReturnsCorrectArmorAndAccessories(string className, string expectedArmor, string expectedFeet, string expectedArms, string expectedLegs)
+    {
+        var appearance = _catalog.GetDefaultAppearanceForClass(className);
+        Assert.Equal(expectedArmor, appearance.ArmorType);
+        Assert.Equal(expectedFeet, appearance.Feet);
+        Assert.Equal(expectedArms, appearance.Arms);
+        Assert.Equal(expectedLegs, appearance.Legs);
+    }
 }
