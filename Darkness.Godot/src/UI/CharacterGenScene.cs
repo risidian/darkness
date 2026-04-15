@@ -195,11 +195,17 @@ public partial class CharacterGenScene : Control
 
         // Preserve current selections if possible
         string currentSkin = _skinOption.Selected != -1 ? _skinOption.GetItemText(_skinOption.Selected) : "";
+        string currentHairStyle = _hairStyleOption.Selected != -1 ? _hairStyleOption.GetItemText(_hairStyleOption.Selected) : "";
+        string currentHairColor = _hairColorOption.Selected != -1 ? _hairColorOption.GetItemText(_hairColorOption.Selected) : "";
+        string currentFace = _faceOption.Selected != -1 ? _faceOption.GetItemText(_faceOption.Selected) : "";
+        string currentEyes = _eyesOption.Selected != -1 ? _eyesOption.GetItemText(_eyesOption.Selected) : "";
         string currentArmor = _armorOption.Selected != -1 ? _armorOption.GetItemText(_armorOption.Selected) : "";
         string currentWeapon = _weaponOption.Selected != -1 ? _weaponOption.GetItemText(_weaponOption.Selected) : "";
         string currentShield = _shieldOption.Selected != -1 ? _shieldOption.GetItemText(_shieldOption.Selected) : "";
         string currentOffHand = _offHandOption.Selected != -1 ? _offHandOption.GetItemText(_offHandOption.Selected) : "";
         string currentLegs = _legsOption.Selected != -1 ? _legsOption.GetItemText(_legsOption.Selected) : "";
+        string currentFeet = _feetOption.Selected != -1 ? _feetOption.GetItemText(_feetOption.Selected) : "";
+        string currentArms = _armsOption.Selected != -1 ? _armsOption.GetItemText(_armsOption.Selected) : "";
 
         // Re-populate everything that is gender-dependent (except Head, which is the gender selector)
         Populate(_skinOption, _catalog.GetOptionNames("Skin", gender));
@@ -217,11 +223,17 @@ public partial class CharacterGenScene : Control
 
         // Restore selections
         if (!string.IsNullOrEmpty(currentSkin)) SelectByText(_skinOption, currentSkin);
+        if (!string.IsNullOrEmpty(currentHairStyle)) SelectByText(_hairStyleOption, currentHairStyle);
+        if (!string.IsNullOrEmpty(currentHairColor)) SelectByText(_hairColorOption, currentHairColor);
+        if (!string.IsNullOrEmpty(currentFace)) SelectByText(_faceOption, currentFace);
+        if (!string.IsNullOrEmpty(currentEyes)) SelectByText(_eyesOption, currentEyes);
         if (!string.IsNullOrEmpty(currentArmor)) SelectByText(_armorOption, currentArmor);
         if (!string.IsNullOrEmpty(currentWeapon)) SelectByText(_weaponOption, currentWeapon);
         if (!string.IsNullOrEmpty(currentShield)) SelectByText(_shieldOption, currentShield);
         if (!string.IsNullOrEmpty(currentOffHand)) SelectByText(_offHandOption, currentOffHand);
         if (!string.IsNullOrEmpty(currentLegs)) SelectByText(_legsOption, currentLegs);
+        if (!string.IsNullOrEmpty(currentFeet)) SelectByText(_feetOption, currentFeet);
+        if (!string.IsNullOrEmpty(currentArms)) SelectByText(_armsOption, currentArms);
     }
 
     private void Populate(OptionButton node, List<string> items)
@@ -270,25 +282,27 @@ public partial class CharacterGenScene : Control
 
         UpdateGenderFiltering();
 
-        _character.WeaponType = defaults.WeaponType;
-        _character.ArmorType = defaults.ArmorType;
-        _character.ShieldType = defaults.ShieldType;
-        _character.OffHandType = defaults.OffHandType;
+        string GetFallback(string? classDefault, string charDefault) => string.IsNullOrEmpty(classDefault) ? charDefault : classDefault;
 
-        SelectByText(_armorOption, defaults.ArmorType);
-        SelectByText(_weaponOption, defaults.WeaponType);
-        SelectByText(_shieldOption, defaults.ShieldType);
-        SelectByText(_offHandOption, defaults.OffHandType ?? "None");
-        SelectByText(_legsOption, defaults.Legs);
-        SelectByText(_feetOption, defaults.Feet);
-        SelectByText(_armsOption, defaults.Arms);
-        SelectByText(_faceOption, defaults.Face);
+        _character.WeaponType = GetFallback(defaults.WeaponType, _character.WeaponType);
+        _character.ArmorType = GetFallback(defaults.ArmorType, _character.ArmorType);
+        _character.ShieldType = GetFallback(defaults.ShieldType, _character.ShieldType);
+        _character.OffHandType = GetFallback(defaults.OffHandType, _character.OffHandType ?? "None");
+
+        SelectByText(_armorOption, _character.ArmorType);
+        SelectByText(_weaponOption, _character.WeaponType);
+        SelectByText(_shieldOption, _character.ShieldType);
+        SelectByText(_offHandOption, _character.OffHandType);
+        SelectByText(_legsOption, GetFallback(defaults.Legs, _character.Legs));
+        SelectByText(_feetOption, GetFallback(defaults.Feet, _character.Feet));
+        SelectByText(_armsOption, GetFallback(defaults.Arms, _character.Arms));
+        SelectByText(_faceOption, GetFallback(defaults.Face, _character.Face));
         
         // Aesthetic defaults
-        if (!string.IsNullOrEmpty(defaults.HairStyle)) SelectByText(_hairStyleOption, defaults.HairStyle);
-        if (!string.IsNullOrEmpty(defaults.HairColor)) SelectByText(_hairColorOption, defaults.HairColor);
-        if (!string.IsNullOrEmpty(defaults.SkinColor)) SelectByText(_skinOption, defaults.SkinColor);
-        if (!string.IsNullOrEmpty(defaults.Eyes)) SelectByText(_eyesOption, defaults.Eyes);
+        SelectByText(_hairStyleOption, GetFallback(defaults.HairStyle, _character.HairStyle));
+        SelectByText(_hairColorOption, GetFallback(defaults.HairColor, _character.HairColor));
+        SelectByText(_skinOption, GetFallback(defaults.SkinColor, _character.SkinColor));
+        SelectByText(_eyesOption, GetFallback(defaults.Eyes, _character.Eyes));
 
         // Ensure visibility of relevant equipment slots
         bool isMage = className == "Mage";

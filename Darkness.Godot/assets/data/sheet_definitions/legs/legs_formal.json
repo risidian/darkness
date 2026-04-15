@@ -1,0 +1,16 @@
+{
+  "name": "Formal",
+  "slot": "Legs",
+  "layers": {
+    "main": {
+      "zPos": 40,
+      "paths": {
+        "male": "legs/formal/male",
+        "female": "legs/formal/female"
+      },
+      "default_variant": "black"
+    }
+  },
+  "variants": ["black"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

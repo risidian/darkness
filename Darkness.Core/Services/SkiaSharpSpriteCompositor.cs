@@ -222,7 +222,8 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
 
         string gender = appearance.Head.ToLower().Contains("female") ? "female" : "male";
         string animation = "walk";
-        int direction = 2;
+        int direction = 2; // Down
+        
         foreach (var kvp in SheetConstants.AnimationRows)
         {
             if (row >= kvp.Value && row < kvp.Value + 4)
@@ -234,6 +235,25 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         }
 
         var layers = ResolveLayers(definitions, animation, gender, appearance).OrderBy(l => l.ZPos).ToList();
+        
+        // --- PREVIEW HACK ---
+        // The Mage Wand only exists in the 'shoot' animation.
+        // To make it visible in the preview, manually add it if the user has it equipped.
+        if (appearance.WeaponType?.Contains("Wand") == true)
+        {
+            var wandDef = definitions.FirstOrDefault(d => d.Slot == "Weapon" && d.Name == appearance.WeaponType);
+            if (wandDef != null && wandDef.Layers.TryGetValue("main", out var wandLayer))
+            {
+                layers.Add(new ResolvedLayer(wandDef.Name, wandLayer, wandDef.IsFlipped, "#FFFFFF", wandLayer.DefaultVariant ?? wandDef.Variants?.FirstOrDefault() ?? "wand")
+                {
+                    // Sneakily tell the renderer to load the 'shoot' animation just for the wand
+                    CustomPreviewAnimationOverride = "shoot"
+                });
+                // Sort again to maintain Z-order
+                layers = layers.OrderBy(l => l.ZPos).ToList();
+            }
+        }
+
         Console.WriteLine($"[Compositor] CompositePreviewFrame: {layers.Count} layers resolved for {animation}");
 
         var bitmapCache = new Dictionary<string, SKBitmap?>();
@@ -241,7 +261,8 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         foreach (var layer in layers)
         {
             string variant = ResolveVariant(layer);
-            var candidates = GetCandidatePaths(layer.Layer, animation, variant, gender);
+            string targetAnim = layer.CustomPreviewAnimationOverride ?? animation;
+            var candidates = GetCandidatePaths(layer.Layer, targetAnim, variant, gender);
             SKBitmap? bitmap = null;
             foreach (var candidate in candidates)
             {
@@ -250,8 +271,11 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
             }
             if (bitmap != null)
             {
-                var srcRect = new SKRectI(col * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE,
-                                        (col + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
+                // If it's a 'shoot' animation used as a preview hack, we use col 9 to ensure visibility.
+                int sourceCol = targetAnim == "shoot" ? 9 : col;
+                
+                var srcRect = new SKRectI(sourceCol * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE,
+                                        (sourceCol + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
                 var destRect = new SKRect(0, 0, SheetConstants.FRAME_SIZE, SheetConstants.FRAME_SIZE);
 
                 using var paint = new SKPaint();
@@ -367,17 +391,20 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         // Strategy 1: {animation}/{variant}.png (weapons/gear with variants)
         candidates.Add($"{basePath}/{animation}/{variant}.png");
 
-        // Strategy 2: {animation}.png (body/head/face single files)
+        // Strategy 2: {variant}/{animation}.png (robes/some colored gear)
+        candidates.Add($"{basePath}/{variant}/{animation}.png");
+
+        // Strategy 3: {animation}.png (body/head/face single files)
         candidates.Add($"{basePath}/{animation}.png");
 
-        // Strategy 3: attack_{animation}/{variant}.png (slash/thrust/shoot)
+        // Strategy 4: attack_{animation}/{variant}.png (slash/thrust/shoot)
         if (animation == "slash" || animation == "thrust" || animation == "shoot")
         {
             candidates.Add($"{basePath}/attack_{animation}/{variant}.png");
             candidates.Add($"{basePath}/attack_{animation}.png");
         }
 
-        // Strategy 4: Direct file path
+        // Strategy 5: Direct file path
         if (layerPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             candidates.Add(layerPath);
 
@@ -400,9 +427,13 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
 
     private string ResolveVariant(ResolvedLayer layer)
     {
+        if (!string.IsNullOrEmpty(layer.DefaultVariant) && layer.DefaultVariant != "default") 
+            return layer.DefaultVariant;
+
         string extracted = ExtractVariant(layer.DefinitionName);
         if (extracted != "default") return extracted;
-        return layer.DefaultVariant ?? "default";
+        
+        return "default";
     }
 
     private class ResolvedLayer
@@ -412,6 +443,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         public bool IsFlipped { get; }
         public string TintHex { get; }
         public string? DefaultVariant { get; }
+        public string? CustomPreviewAnimationOverride { get; set; }
         public int ZPos => Layer.ZPos;
 
         public ResolvedLayer(string defName, SheetLayer layer, bool isFlipped, string tintHex, string? defaultVariant = null)

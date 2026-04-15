@@ -1,0 +1,16 @@
+{
+  "name": "Leggings",
+  "slot": "Legs",
+  "layers": {
+    "main": {
+      "zPos": 40,
+      "paths": {
+        "male": "legs/leggings/male",
+        "female": "legs/leggings/female"
+      },
+      "default_variant": "black"
+    }
+  },
+  "variants": ["black"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

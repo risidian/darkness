@@ -90,11 +90,33 @@ public class CharacterGenWizardTests : IDisposable
         // 3. Get sheet definitions
         var definitions = _catalog.GetSheetDefinitions(appearance);
         
-        // 4. Assert basics
-        Assert.NotEmpty(definitions);
-        
+        var errors = new System.Collections.Generic.List<string>();
+
         // Check body exists
-        var body = definitions.FirstOrDefault(d => d.Slot == "Body");
-        Assert.NotNull(body);
+        if (!definitions.Any(d => d.Slot == "Body")) errors.Add($"Missing Body definition for {className}");
+
+        // Check equipment
+        if (appearance.ArmorType != "None" && !string.IsNullOrEmpty(appearance.ArmorType))
+            if (!definitions.Any(d => d.Slot == "Armor")) errors.Add($"Missing Armor definition for {className} ({appearance.ArmorType})");
+
+        if (appearance.WeaponType != "None" && !string.IsNullOrEmpty(appearance.WeaponType))
+            if (!definitions.Any(d => d.Slot == "Weapon")) errors.Add($"Missing Weapon definition for {className} ({appearance.WeaponType})");
+
+        if (appearance.ShieldType != "None" && !string.IsNullOrEmpty(appearance.ShieldType))
+            if (!definitions.Any(d => d.Slot == "Shield")) errors.Add($"Missing Shield definition for {className} ({appearance.ShieldType})");
+
+        if (appearance.OffHandType != "None" && !string.IsNullOrEmpty(appearance.OffHandType))
+            if (!definitions.Any(d => d.Slot == "OffHand")) errors.Add($"Missing OffHand definition for {className} ({appearance.OffHandType})");
+
+        if (appearance.Legs != "None" && !string.IsNullOrEmpty(appearance.Legs))
+            if (!definitions.Any(d => d.Slot == "Legs")) errors.Add($"Missing Legs definition for {className} ({appearance.Legs})");
+
+        if (appearance.Feet != "None" && !string.IsNullOrEmpty(appearance.Feet))
+            if (!definitions.Any(d => d.Slot == "Feet")) errors.Add($"Missing Feet definition for {className} ({appearance.Feet})");
+
+        if (appearance.Arms != "None" && !string.IsNullOrEmpty(appearance.Arms))
+            if (!definitions.Any(d => d.Slot == "Arms")) errors.Add($"Missing Arms definition for {className} ({appearance.Arms})");
+
+        Assert.True(errors.Count == 0, string.Join("\n", errors));
     }
 }

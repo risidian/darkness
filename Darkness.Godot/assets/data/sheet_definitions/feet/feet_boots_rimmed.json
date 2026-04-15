@@ -1,0 +1,16 @@
+{
+  "name": "Boots (Rimmed)",
+  "slot": "Feet",
+  "layers": {
+    "main": {
+      "zPos": 15,
+      "paths": {
+        "male": "feet/shoes/basic/male",
+        "female": "feet/shoes/basic/female"
+      },
+      "default_variant": "black"
+    }
+  },
+  "variants": ["black"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

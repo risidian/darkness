@@ -7,14 +7,16 @@
       "paths": {
         "male": "weapons/sword/dagger",
         "female": "weapons/sword/dagger"
-      }
+      },
+      "default_variant": "dagger"
     },
     "behind": {
       "zPos": 9,
       "paths": {
         "male": "weapons/sword/dagger/behind",
         "female": "weapons/sword/dagger/behind"
-      }
+      },
+      "default_variant": "dagger"
     }
   },
   "variants": ["dagger"],

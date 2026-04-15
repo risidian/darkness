@@ -1,0 +1,16 @@
+{
+  "name": "Mage Robes (Blue)",
+  "slot": "Armor",
+  "layers": {
+    "main": {
+      "zPos": 60,
+      "paths": {
+        "male": "torso/jacket/tabard/male",
+        "female": "torso/robes/female"
+      },
+      "default_variant": "blue"
+    }
+  },
+  "variants": ["blue", "red", "white"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}
