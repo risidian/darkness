@@ -35,6 +35,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
 
         string gender = appearance.Head.ToLower().Contains("female") ? "female" : "male";
         int totalBitmapsDrawn = 0;
+        var bitmapCache = new Dictionary<string, SKBitmap?>();
 
         // 1. Render Standard Sheet (64x64 frames)
         foreach (var animation in SheetConstants.AnimationRows.Keys)
@@ -55,50 +56,43 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
                 foreach (var layer in sortedLayers)
                 {
                     string variant = ResolveVariant(layer);
-                    string path = ResolveAssetPath(layer.Layer, animation, variant, gender, fileSystem);
-                    
-                    if (string.IsNullOrEmpty(path))
+                    var candidates = GetCandidatePaths(layer.Layer, animation, variant, gender);
+                    SKBitmap? bitmap = null;
+                    foreach (var candidate in candidates)
                     {
-                        if (animation == "slash" || animation == "thrust" || animation == "shoot")
-                        {
-                            path = ResolveAssetPath(layer.Layer, "attack_" + animation, variant, gender, fileSystem);
-                        }
+                        bitmap = await LoadBitmap(BASE_PATH + candidate, fileSystem, bitmapCache);
+                        if (bitmap != null) break;
                     }
 
-                    if (!string.IsNullOrEmpty(path))
+                    if (bitmap != null)
                     {
-                        using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
-                        using var bitmap = SKBitmap.Decode(stream);
-                        if (bitmap != null)
+                        totalBitmapsDrawn++;
+                        for (int frame = 0; frame < frameCount; frame++)
                         {
-                            totalBitmapsDrawn++;
-                            for (int frame = 0; frame < frameCount; frame++)
+                            var rect = _animationHelper.GetFrameRect(animation, direction, frame);
+                            var srcRect = new SKRectI(frame * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE,
+                                                    (frame + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
+                            var destRect = new SKRect(rect.X, rect.Y, rect.X + rect.Width, rect.Y + rect.Height);
+
+                            using var paint = new SKPaint();
+                            if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
                             {
-                                var rect = _animationHelper.GetFrameRect(animation, direction, frame);
-                                var srcRect = new SKRectI(frame * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE, 
-                                                        (frame + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
-                                var destRect = new SKRect(rect.X, rect.Y, rect.X + rect.Width, rect.Y + rect.Height);
+                                if (SKColor.TryParse(layer.TintHex, out var color))
+                                {
+                                    paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
+                                }
+                            }
 
-                                using var paint = new SKPaint();
-                                if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
-                                {
-                                    if (SKColor.TryParse(layer.TintHex, out var color))
-                                    {
-                                        paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-                                    }
-                                }
-
-                                if (layer.IsFlipped)
-                                {
-                                    canvas.Save();
-                                    canvas.Scale(-1, 1, destRect.MidX, destRect.MidY);
-                                    canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
-                                    canvas.Restore();
-                                }
-                                else
-                                {
-                                    canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
-                                }
+                            if (layer.IsFlipped)
+                            {
+                                canvas.Save();
+                                canvas.Scale(-1, 1, destRect.MidX, destRect.MidY);
+                                canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
+                                canvas.Restore();
+                            }
+                            else
+                            {
+                                canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
                             }
                         }
                     }
@@ -128,34 +122,35 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
                     foreach (var layer in standardLayers)
                     {
                         string variant = ResolveVariant(layer);
-                        string path = ResolveAssetPath(layer.Layer, baseAnim, variant, gender, fileSystem);
-                        if (!string.IsNullOrEmpty(path))
+                        var candidates = GetCandidatePaths(layer.Layer, baseAnim, variant, gender);
+                        SKBitmap? bitmap = null;
+                        foreach (var candidate in candidates)
                         {
-                            using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
-                            using var bitmap = SKBitmap.Decode(stream);
-                            if (bitmap != null)
-                            {
-                                var srcRect = new SKRectI(frame * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE, 
-                                                        (frame + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
-                                
-                                using var paint = new SKPaint();
-                                if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
-                                {
-                                    if (SKColor.TryParse(layer.TintHex, out var color))
-                                        paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-                                }
+                            bitmap = await LoadBitmap(BASE_PATH + candidate, fileSystem, bitmapCache);
+                            if (bitmap != null) break;
+                        }
+                        if (bitmap != null)
+                        {
+                            var srcRect = new SKRectI(frame * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE,
+                                                    (frame + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
 
-                                if (layer.IsFlipped)
-                                {
-                                    canvas.Save();
-                                    canvas.Scale(-1, 1, innerDestRect.MidX, innerDestRect.MidY);
-                                    canvas.DrawBitmap(bitmap, srcRect, innerDestRect, paint);
-                                    canvas.Restore();
-                                }
-                                else
-                                {
-                                    canvas.DrawBitmap(bitmap, srcRect, innerDestRect, paint);
-                                }
+                            using var paint = new SKPaint();
+                            if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
+                            {
+                                if (SKColor.TryParse(layer.TintHex, out var color))
+                                    paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
+                            }
+
+                            if (layer.IsFlipped)
+                            {
+                                canvas.Save();
+                                canvas.Scale(-1, 1, innerDestRect.MidX, innerDestRect.MidY);
+                                canvas.DrawBitmap(bitmap, srcRect, innerDestRect, paint);
+                                canvas.Restore();
+                            }
+                            else
+                            {
+                                canvas.DrawBitmap(bitmap, srcRect, innerDestRect, paint);
                             }
                         }
                     }
@@ -163,34 +158,35 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
                     foreach (var layer in customLayers)
                     {
                         string variant = ResolveVariant(layer);
-                        string path = ResolveAssetPath(layer.Layer, customAnim, variant, gender, fileSystem);
-                        if (!string.IsNullOrEmpty(path))
+                        var candidates = GetCandidatePaths(layer.Layer, customAnim, variant, gender);
+                        SKBitmap? bitmap = null;
+                        foreach (var candidate in candidates)
                         {
-                            using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
-                            using var bitmap = SKBitmap.Decode(stream);
-                            if (bitmap != null)
-                            {
-                                var srcRect = new SKRectI(frame * SheetConstants.OVERSIZE_FRAME_SIZE, direction * SheetConstants.OVERSIZE_FRAME_SIZE, 
-                                                        (frame + 1) * SheetConstants.OVERSIZE_FRAME_SIZE, (direction + 1) * SheetConstants.OVERSIZE_FRAME_SIZE);
-                                
-                                using var paint = new SKPaint();
-                                if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
-                                {
-                                    if (SKColor.TryParse(layer.TintHex, out var color))
-                                        paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-                                }
+                            bitmap = await LoadBitmap(BASE_PATH + candidate, fileSystem, bitmapCache);
+                            if (bitmap != null) break;
+                        }
+                        if (bitmap != null)
+                        {
+                            var srcRect = new SKRectI(frame * SheetConstants.OVERSIZE_FRAME_SIZE, direction * SheetConstants.OVERSIZE_FRAME_SIZE,
+                                                    (frame + 1) * SheetConstants.OVERSIZE_FRAME_SIZE, (direction + 1) * SheetConstants.OVERSIZE_FRAME_SIZE);
 
-                                if (layer.IsFlipped)
-                                {
-                                    canvas.Save();
-                                    canvas.Scale(-1, 1, skDestRect.MidX, skDestRect.MidY);
-                                    canvas.DrawBitmap(bitmap, srcRect, skDestRect, paint);
-                                    canvas.Restore();
-                                }
-                                else
-                                {
-                                    canvas.DrawBitmap(bitmap, srcRect, skDestRect, paint);
-                                }
+                            using var paint = new SKPaint();
+                            if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
+                            {
+                                if (SKColor.TryParse(layer.TintHex, out var color))
+                                    paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
+                            }
+
+                            if (layer.IsFlipped)
+                            {
+                                canvas.Save();
+                                canvas.Scale(-1, 1, skDestRect.MidX, skDestRect.MidY);
+                                canvas.DrawBitmap(bitmap, srcRect, skDestRect, paint);
+                                canvas.Restore();
+                            }
+                            else
+                            {
+                                canvas.DrawBitmap(bitmap, srcRect, skDestRect, paint);
                             }
                         }
                     }
@@ -199,6 +195,10 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         }
 
         Console.WriteLine($"[Compositor] Finished CompositeFullSheet. Bitmaps Drawn: {totalBitmapsDrawn}");
+
+        foreach (var bmp in bitmapCache.Values)
+            bmp?.Dispose();
+
         using var image = surface.Snapshot();
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
         return data.ToArray();
@@ -236,41 +236,47 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         var layers = ResolveLayers(definitions, animation, gender, appearance).OrderBy(l => l.ZPos).ToList();
         Console.WriteLine($"[Compositor] CompositePreviewFrame: {layers.Count} layers resolved for {animation}");
 
+        var bitmapCache = new Dictionary<string, SKBitmap?>();
+
         foreach (var layer in layers)
         {
             string variant = ResolveVariant(layer);
-            string path = ResolveAssetPath(layer.Layer, animation, variant, gender, fileSystem);
-            if (!string.IsNullOrEmpty(path))
+            var candidates = GetCandidatePaths(layer.Layer, animation, variant, gender);
+            SKBitmap? bitmap = null;
+            foreach (var candidate in candidates)
             {
-                using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
-                using var bitmap = SKBitmap.Decode(stream);
-                if (bitmap != null)
+                bitmap = await LoadBitmap(BASE_PATH + candidate, fileSystem, bitmapCache);
+                if (bitmap != null) break;
+            }
+            if (bitmap != null)
+            {
+                var srcRect = new SKRectI(col * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE,
+                                        (col + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
+                var destRect = new SKRect(0, 0, SheetConstants.FRAME_SIZE, SheetConstants.FRAME_SIZE);
+
+                using var paint = new SKPaint();
+                if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
                 {
-                    var srcRect = new SKRectI(col * SheetConstants.FRAME_SIZE, direction * SheetConstants.FRAME_SIZE, 
-                                            (col + 1) * SheetConstants.FRAME_SIZE, (direction + 1) * SheetConstants.FRAME_SIZE);
-                    var destRect = new SKRect(0, 0, SheetConstants.FRAME_SIZE, SheetConstants.FRAME_SIZE);
+                    if (SKColor.TryParse(layer.TintHex, out var color))
+                        paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
+                }
 
-                    using var paint = new SKPaint();
-                    if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
-                    {
-                        if (SKColor.TryParse(layer.TintHex, out var color))
-                            paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-                    }
-
-                    if (layer.IsFlipped)
-                    {
-                        canvas.Save();
-                        canvas.Scale(-1, 1, destRect.MidX, destRect.MidY);
-                        canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
-                        canvas.Restore();
-                    }
-                    else
-                    {
-                        canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
-                    }
+                if (layer.IsFlipped)
+                {
+                    canvas.Save();
+                    canvas.Scale(-1, 1, destRect.MidX, destRect.MidY);
+                    canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
+                    canvas.Restore();
+                }
+                else
+                {
+                    canvas.DrawBitmap(bitmap, srcRect, destRect, paint);
                 }
             }
         }
+
+        foreach (var bmp in bitmapCache.Values)
+            bmp?.Dispose();
 
         using var image = surface.Snapshot();
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
@@ -330,31 +336,52 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         return result;
     }
 
-    private string ResolveAssetPath(SheetLayer layer, string animation, string variant, string gender, IFileSystemService fileSystem)
+    private async Task<SKBitmap?> LoadBitmap(string fullPath, IFileSystemService fileSystem, Dictionary<string, SKBitmap?> cache)
     {
-        string layerPath = layer.GetPath(gender);
-        if (string.IsNullOrEmpty(layerPath)) return string.Empty;
-
-        // Strip redundant prefix if present
-        if (layerPath.StartsWith("assets/sprites/full/"))
+        if (cache.TryGetValue(fullPath, out var cached)) return cached;
+        try
         {
-            layerPath = layerPath.Replace("assets/sprites/full/", "");
+            using var stream = await fileSystem.OpenAppPackageFileAsync(fullPath);
+            var bitmap = SKBitmap.Decode(stream);
+            cache[fullPath] = bitmap;
+            return bitmap;
         }
+        catch
+        {
+            cache[fullPath] = null;
+            return null;
+        }
+    }
+
+    private List<string> GetCandidatePaths(SheetLayer layer, string animation, string variant, string gender)
+    {
+        var candidates = new List<string>();
+        string layerPath = layer.GetPath(gender);
+        if (string.IsNullOrEmpty(layerPath)) return candidates;
+
+        if (layerPath.StartsWith("assets/sprites/full/"))
+            layerPath = layerPath.Replace("assets/sprites/full/", "");
 
         string basePath = layerPath.TrimEnd('/');
-        
-        // Strategy 1: {animation}/{variant}.png (Standard for weapons/gear with variants)
-        string path1 = $"{basePath}/{animation}/{variant}.png";
-        if (fileSystem.FileExists(BASE_PATH + path1)) return path1;
 
-        // Strategy 2: {animation}.png (Standard for base body/hair/face)
-        string path2 = $"{basePath}/{animation}.png";
-        if (fileSystem.FileExists(BASE_PATH + path2)) return path2;
+        // Strategy 1: {animation}/{variant}.png (weapons/gear with variants)
+        candidates.Add($"{basePath}/{animation}/{variant}.png");
 
-        // Strategy 3: Directly pointing to a file (if layerPath ends in .png)
-        if (layerPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) return layerPath;
+        // Strategy 2: {animation}.png (body/head/face single files)
+        candidates.Add($"{basePath}/{animation}.png");
 
-        return string.Empty;
+        // Strategy 3: attack_{animation}/{variant}.png (slash/thrust/shoot)
+        if (animation == "slash" || animation == "thrust" || animation == "shoot")
+        {
+            candidates.Add($"{basePath}/attack_{animation}/{variant}.png");
+            candidates.Add($"{basePath}/attack_{animation}.png");
+        }
+
+        // Strategy 4: Direct file path
+        if (layerPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+            candidates.Add(layerPath);
+
+        return candidates;
     }
 
     private string ExtractVariant(string displayName)

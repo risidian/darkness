@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Darkness.Core.Interfaces;
 using Godot;
@@ -59,8 +60,6 @@ public class GodotFileSystemService : IFileSystemService
                     }
                     else
                     {
-                        GD.Print(
-                            $"[FileSystem] Loaded image via ResourceLoader: {path} ({pngBytes.Length} bytes, Format: {img.GetFormat()})");
                         return Task.FromResult<Stream>(new MemoryStream(pngBytes));
                     }
                 }
@@ -79,7 +78,6 @@ public class GodotFileSystemService : IFileSystemService
             throw new IOException($"Failed to read bytes from asset: {path}");
         }
 
-        GD.Print($"[FileSystem] Successfully read {bytes.Length} bytes from {path} (Fallback/Non-Image)");
         return Task.FromResult<Stream>(new MemoryStream(bytes));
     }
 
@@ -107,18 +105,37 @@ public class GodotFileSystemService : IFileSystemService
         return DirAccess.DirExistsAbsolute(resPath);
     }
 
-    public string[] GetFiles(string path, string searchPattern)
+    public string[] GetFiles(string path, string searchPattern, bool recursive = false)
     {
         string resPath = path.StartsWith("res://") ? path : $"res://{path}";
         if (!DirAccess.DirExistsAbsolute(resPath))
             return Array.Empty<string>();
 
-        var files = DirAccess.GetFilesAt(resPath);
-        var extension = Path.GetExtension(searchPattern);
+        var allFiles = new List<string>();
+        ScanFilesRecursive(resPath, searchPattern, recursive, allFiles);
+        return allFiles.ToArray();
+    }
 
-        return files
-            .Where(f => string.IsNullOrEmpty(extension) || f.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
-            .Select(f => Path.Combine(resPath, f).Replace("\\", "/"))
-            .ToArray();
+    private void ScanFilesRecursive(string path, string pattern, bool recursive, List<string> results)
+    {
+        var files = DirAccess.GetFilesAt(path);
+        var extension = Path.GetExtension(pattern);
+
+        foreach (var file in files)
+        {
+            if (string.IsNullOrEmpty(extension) || file.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+            {
+                results.Add(Path.Combine(path, file).Replace("\\", "/"));
+            }
+        }
+
+        if (recursive)
+        {
+            var dirs = DirAccess.GetDirectoriesAt(path);
+            foreach (var dir in dirs)
+            {
+                ScanFilesRecursive(Path.Combine(path, dir).Replace("\\", "/"), pattern, recursive, results);
+            }
+        }
     }
 }
