@@ -17,8 +17,9 @@ public class SpriteSheetGenerator : IDisposable
 {
     private readonly LiteDatabase _db;
     private readonly string _dbPath;
-    private readonly SpriteLayerCatalog _catalog;
+    private readonly SheetDefinitionCatalog _catalog;
     private readonly Mock<IFileSystemService> _fsMock;
+    private readonly SkiaSharpSpriteCompositor _compositor;
 
     public SpriteSheetGenerator()
     {
@@ -29,10 +30,23 @@ public class SpriteSheetGenerator : IDisposable
         var json = File.ReadAllText(FindSeedFile());
         _fsMock.Setup(f => f.ReadAllText("assets/data/sprite-catalog.json")).Returns(json);
 
-        var seeder = new SpriteSeeder(_fsMock.Object);
-        seeder.Seed(_db);
+        var appSeeder = new AppearanceSeeder(_fsMock.Object);
+        appSeeder.Seed(_db);
 
-        _catalog = new SpriteLayerCatalog(_db, _fsMock.Object);
+        // Seed SheetDefinitions from actual JSON files
+        var root = GetProjectRoot();
+        var sheetDefDir = Path.Combine(root, "Darkness.Godot", "assets", "data", "sheet_definitions");
+        var col = _db.GetCollection<SheetDefinition>("sheet_definitions");
+        foreach (var file in Directory.GetFiles(sheetDefDir, "*.json", SearchOption.AllDirectories))
+        {
+            var defJson = File.ReadAllText(file);
+            var def = System.Text.Json.JsonSerializer.Deserialize<SheetDefinition>(defJson,
+                new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (def != null) col.Insert(def);
+        }
+
+        _catalog = new SheetDefinitionCatalog(_db);
+        _compositor = new SkiaSharpSpriteCompositor();
     }
 
     private static string FindSeedFile()
@@ -68,150 +82,27 @@ public class SpriteSheetGenerator : IDisposable
     [InlineData("Cleric", "Human Female")]
     [InlineData("Warrior", "Human Male")]
     [InlineData("Warrior", "Human Female")]
-    public void GenerateSpriteSheets(string className, string head)
+    public async Task GenerateSpriteSheets(string className, string head)
     {
         var appearance = _catalog.GetDefaultAppearanceForClass(className);
         appearance.Head = head;
         
-        var layers = _catalog.GetStitchLayers(appearance).Where(l => !l.RootPath.Contains("weapons/") && !l.RootPath.Contains("shields/")).ToList();
+        var definitions = _catalog.GetSheetDefinitions(appearance);
         
         var root = GetProjectRoot();
         var outDir = Path.Combine(root, "GeneratedSpriteSheets");
         Directory.CreateDirectory(outDir);
 
-        using var compositeBitmap = new SKBitmap(832, 1344);
-        using var canvas = new SKCanvas(compositeBitmap);
-        canvas.Clear(SKColors.Transparent);
+        // Mock FileSystemService to read from local disk for the generator
+        var localFs = new Mock<IFileSystemService>();
+        localFs.Setup(f => f.FileExists(It.IsAny<string>())).Returns<string>(p => File.Exists(Path.Combine(root, "Darkness.Godot", p)));
+        localFs.Setup(f => f.OpenAppPackageFileAsync(It.IsAny<string>())).Returns<string>(p => Task.FromResult<Stream>(File.OpenRead(Path.Combine(root, "Darkness.Godot", p))));
 
-        var animMap = new Dictionary<string, int>
-        {
-            { "spellcast", 0 },
-            { "thrust", 4 },
-            { "walk", 8 },
-            { "slash", 12 },
-            { "shoot", 16 },
-            { "hurt", 20 }
-        };
-
-        foreach (var layer in layers)
-        {
-            using var layerBitmap = new SKBitmap(832, 1344);
-            using var layerCanvas = new SKCanvas(layerBitmap);
-            layerCanvas.Clear(SKColors.Transparent);
-
-            bool layerHasContent = false;
-
-            using var paint = new SKPaint();
-            if (SKColor.TryParse(layer.TintHex, out var tintColor) && tintColor != SKColors.White)
-            {
-                paint.ColorFilter = SKColorFilter.CreateBlendMode(tintColor, SKBlendMode.Multiply);
-            }
-
-            foreach (var anim in animMap)
-            {
-                byte[] data = null;
-                string assetPath = layer.RootPath + "/" + layer.FileNameTemplate.Replace("{action}", anim.Key);
-                string fullPath = Path.Combine(root, "Darkness.Godot", assetPath);
-
-                if (!File.Exists(fullPath))
-                {
-                    assetPath = layer.RootPath + "/" + layer.FileNameTemplate.Replace("{action}/", "");
-                    fullPath = Path.Combine(root, "Darkness.Godot", assetPath);
-                    if (!File.Exists(fullPath))
-                    {
-                        assetPath = layer.RootPath + "/" + layer.FileNameTemplate;
-                        fullPath = Path.Combine(root, "Darkness.Godot", assetPath);
-                    }
-                }
-
-                if (File.Exists(fullPath))
-                {
-                    data = File.ReadAllBytes(fullPath);
-                }
-                else
-                {
-                    // Fallback 1: Try "attack_" prefix (for LPC weapons)
-                    if (anim.Key == "slash" || anim.Key == "thrust" || anim.Key == "shoot")
-                    {
-                        string altPath = layer.RootPath + "/" + layer.FileNameTemplate.Replace("{action}", "attack_" + anim.Key);
-                        string altFullPath = Path.Combine(root, "Darkness.Godot", altPath);
-                        if (File.Exists(altFullPath))
-                        {
-                            data = File.ReadAllBytes(altFullPath);
-                        }
-                    }
-
-                    // Fallback 2: walk
-                    if (data == null && anim.Key != "walk")
-                    {
-                        assetPath = layer.RootPath + "/" + layer.FileNameTemplate.Replace("{action}", "walk");
-                        fullPath = Path.Combine(root, "Darkness.Godot", assetPath);
-                        if (File.Exists(fullPath))
-                        {
-                            data = File.ReadAllBytes(fullPath);
-                        }
-                    }
-                }
-
-                if (data != null)
-                {
-                    using var stream = new MemoryStream(data);
-                    using var img = SKBitmap.Decode(stream);
-                    if (img != null)
-                    {
-                        layerHasContent = true;
-                        
-                        SKBitmap sourceImg = img;
-                        if (layer.IsFlipped)
-                        {
-                            var flippedBitmap = new SKBitmap(img.Width, img.Height);
-                            using var flipCanvas = new SKCanvas(flippedBitmap);
-                            flipCanvas.Scale(-1, 1, img.Width / 2.0f, 0);
-                            flipCanvas.DrawBitmap(img, 0, 0);
-                            sourceImg = flippedBitmap;
-                        }
-
-                        if (sourceImg.Width == 96 && sourceImg.Height == 128)
-                        {
-                            // Face asset logic: blit the standing frames (col 1) to the 9 columns of this animation block
-                            int destRowBase = anim.Value;
-                            int[] faceYOffset = { 0, 96, 64, 32 }; // Up, Left, Down, Right
-
-                            for (int dir = 0; dir < 4; dir++)
-                            {
-                                var faceRect = new SKRect(32, faceYOffset[dir], 64, faceYOffset[dir] + 32);
-                                for (int col = 0; col < 9; col++)
-                                {
-                                    var destRect = new SKRect(col * 64 + 16, (destRowBase + dir) * 64 + 16, col * 64 + 16 + 32, (destRowBase + dir) * 64 + 16 + 32);
-                                    layerCanvas.DrawBitmap(sourceImg, faceRect, destRect, paint);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            layerCanvas.DrawBitmap(sourceImg, 0, anim.Value * 64, paint);
-                        }
-
-                        if (layer.IsFlipped)
-                        {
-                            sourceImg.Dispose();
-                        }
-                    }
-                }
-            }
-
-            if (layerHasContent)
-            {
-                canvas.DrawBitmap(layerBitmap, 0, 0);
-            }
-        }
+        var sheetData = await _compositor.CompositeFullSheet(definitions, appearance, localFs.Object);
 
         string gender = head.Contains("Female") ? "Female" : "Male";
         string outPath = Path.Combine(outDir, $"{className}_{gender}.png");
         
-        using var image = SKImage.FromBitmap(compositeBitmap);
-        using var dataOut = image.Encode(SKEncodedImageFormat.Png, 100);
-        using var outStream = File.OpenWrite(outPath);
-        dataOut.SaveTo(outStream);
+        File.WriteAllBytes(outPath, sheetData);
     }
 }

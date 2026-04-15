@@ -32,10 +32,17 @@ public class SheetDefinitionCatalogTests : IDisposable
         var appSeeder = new AppearanceSeeder(_fsMock.Object);
         appSeeder.Seed(_db);
 
-        // Seed DB for SheetDefinitions (manual insert for test)
+        // Seed SheetDefinitions from actual JSON files
+        var root = FindProjectRoot();
+        var sheetDefDir = Path.Combine(root, "Darkness.Godot", "assets", "data", "sheet_definitions");
         var col = _db.GetCollection<SheetDefinition>("sheet_definitions");
-        col.Insert(new SheetDefinition { Name = "Arming Sword (Steel)", Slot = "Weapon", Variants = new List<string> { "steel" } });
-        col.Insert(new SheetDefinition { Name = "Plate (Steel)", Slot = "Armor" });
+        foreach (var file in Directory.GetFiles(sheetDefDir, "*.json", SearchOption.AllDirectories))
+        {
+            var defJson = File.ReadAllText(file);
+            var def = System.Text.Json.JsonSerializer.Deserialize<SheetDefinition>(defJson,
+                new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (def != null) col.Insert(def);
+        }
 
         _catalog = new SheetDefinitionCatalog(_db);
     }
@@ -46,6 +53,14 @@ public class SheetDefinitionCatalogTests : IDisposable
         while (dir != null && !File.Exists(Path.Combine(dir, "Darkness.sln")))
             dir = Directory.GetParent(dir)?.FullName;
         return Path.Combine(dir!, "Darkness.Godot", "assets", "data", "sprite-catalog.json");
+    }
+
+    private static string FindProjectRoot()
+    {
+        var dir = Directory.GetCurrentDirectory();
+        while (dir != null && !File.Exists(Path.Combine(dir, "Darkness.sln")))
+            dir = Directory.GetParent(dir)?.FullName;
+        return dir!;
     }
 
     public void Dispose()

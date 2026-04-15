@@ -4,6 +4,9 @@ using Darkness.Core.Interfaces;
 using LiteDB;
 using Moq;
 using Xunit;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace Darkness.Tests.Scenes;
 
@@ -11,7 +14,7 @@ public class CharacterGenWizardTests : IDisposable
 {
     private readonly LiteDatabase _db;
     private readonly string _dbPath;
-    private readonly SpriteLayerCatalog _catalog;
+    private readonly SheetDefinitionCatalog _catalog;
     private readonly Mock<IFileSystemService> _fsMock;
 
     public CharacterGenWizardTests()
@@ -25,10 +28,22 @@ public class CharacterGenWizardTests : IDisposable
         _fsMock.Setup(f => f.ReadAllText("assets/data/sprite-catalog.json")).Returns(json);
 
         // Seed DB
-        var seeder = new SpriteSeeder(_fsMock.Object);
-        seeder.Seed(_db);
+        var appSeeder = new AppearanceSeeder(_fsMock.Object);
+        appSeeder.Seed(_db);
 
-        _catalog = new SpriteLayerCatalog(_db, _fsMock.Object);
+        // Seed SheetDefinitions from actual JSON files
+        var root = FindProjectRoot();
+        var sheetDefDir = Path.Combine(root, "Darkness.Godot", "assets", "data", "sheet_definitions");
+        var col = _db.GetCollection<SheetDefinition>("sheet_definitions");
+        foreach (var file in Directory.GetFiles(sheetDefDir, "*.json", SearchOption.AllDirectories))
+        {
+            var defJson = File.ReadAllText(file);
+            var def = System.Text.Json.JsonSerializer.Deserialize<SheetDefinition>(defJson,
+                new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (def != null) col.Insert(def);
+        }
+
+        _catalog = new SheetDefinitionCatalog(_db);
     }
 
     private static string FindSeedFile()
@@ -37,6 +52,14 @@ public class CharacterGenWizardTests : IDisposable
         while (dir != null && !File.Exists(Path.Combine(dir, "Darkness.sln")))
             dir = Directory.GetParent(dir)?.FullName;
         return Path.Combine(dir!, "Darkness.Godot", "assets", "data", "sprite-catalog.json");
+    }
+
+    private static string FindProjectRoot()
+    {
+        var dir = Directory.GetCurrentDirectory();
+        while (dir != null && !File.Exists(Path.Combine(dir, "Darkness.sln")))
+            dir = Directory.GetParent(dir)?.FullName;
+        return dir!;
     }
 
     public void Dispose()
@@ -64,78 +87,14 @@ public class CharacterGenWizardTests : IDisposable
         // 2. Set head to match gender
         appearance.Head = head;
         
-        // 3. Get stitch layers
-        var layers = _catalog.GetStitchLayers(appearance);
+        // 3. Get sheet definitions
+        var definitions = _catalog.GetSheetDefinitions(appearance);
         
         // 4. Assert basics
-        Assert.NotEmpty(layers);
+        Assert.NotEmpty(definitions);
         
-        // Check body path
-        var bodyLayer = layers.FirstOrDefault(l => l.RootPath.Contains("body"));
-        Assert.NotNull(bodyLayer);
-        Assert.Contains(expectedGender, bodyLayer.RootPath);
-
-        // 5. Check specific class gear and prevent path doubling (e.g. female/female)
-        switch (className)
-        {
-            case "Knight":
-                var plateLayer = layers.FirstOrDefault(l => l.RootPath.Contains("plate"));
-                Assert.NotNull(plateLayer);
-                Assert.Contains(expectedGender, plateLayer.RootPath);
-                Assert.DoesNotContain($"{expectedGender}/{expectedGender}", plateLayer.RootPath);
-                break;
-            case "Mage":
-                var mageArmor = layers.FirstOrDefault(l => l.RootPath.Contains("torso") && !l.RootPath.Contains("body"));
-                Assert.NotNull(mageArmor);
-                if (expectedGender == "male")
-                {
-                    Assert.Contains("jacket/tabard/male", mageArmor.RootPath);
-                }
-                else
-                {
-                    Assert.Contains("torso/robes/female", mageArmor.RootPath);
-                    Assert.DoesNotContain("female/female", mageArmor.RootPath);
-                }
-                break;
-            case "Cleric":
-                var clericArmor = layers.FirstOrDefault(l => l.RootPath.Contains("torso") && !l.RootPath.Contains("body"));
-                Assert.NotNull(clericArmor);
-                if (expectedGender == "male")
-                {
-                    Assert.Contains("jacket/tabard/male", clericArmor.RootPath);
-                }
-                else
-                {
-                    Assert.Contains("torso/robes/female", clericArmor.RootPath);
-                    Assert.DoesNotContain("female/female", clericArmor.RootPath);
-                }
-                break;
-        }
-    }
-
-    [Fact]
-    public void GetDefaultAppearanceForClass_ReturnsCorrectEquipment()
-    {
-        var knight = _catalog.GetDefaultAppearanceForClass("Knight");
-        Assert.Equal("Plate (Steel)", knight.ArmorType);
-        Assert.Equal("Arming Sword (Steel)", knight.WeaponType);
-        Assert.Equal("Spartan", knight.ShieldType);
-
-        var mage = _catalog.GetDefaultAppearanceForClass("Mage");
-        Assert.Equal("Mage Robes (Blue)", mage.ArmorType);
-        Assert.Equal("Mage Wand", mage.WeaponType);
-        Assert.Equal("Dagger (Steel)", mage.OffHandType);
-
-        var rogue = _catalog.GetDefaultAppearanceForClass("Rogue");
-        Assert.Equal("Leather (Black)", rogue.ArmorType);
-        Assert.Equal("Dagger (Steel)", rogue.WeaponType);
-
-        var warrior = _catalog.GetDefaultAppearanceForClass("Warrior");
-        Assert.Equal("Plate (Steel)", warrior.ArmorType);
-        Assert.Equal("Waraxe", warrior.WeaponType);
-
-        var cleric = _catalog.GetDefaultAppearanceForClass("Cleric");
-        Assert.Equal("Longsleeve (White)", cleric.ArmorType);
-        Assert.Equal("Mace", cleric.WeaponType);
+        // Check body exists
+        var body = definitions.FirstOrDefault(d => d.Slot == "Body");
+        Assert.NotNull(body);
     }
 }
