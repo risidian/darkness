@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Darkness.Core.Models;
 
 public class SheetLayer
 {
+    [JsonPropertyName("custom_animation")]
     public string? CustomAnimation { get; set; }
     public int ZPos { get; set; }
+    public string TintHex { get; set; } = "#FFFFFF";
     public Dictionary<string, string> Paths { get; set; } = new(); // "male", "female" keys
     
     // Helper to get path for gender
