@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
@@ -22,15 +23,22 @@ public class SheetDefinitionCatalog : ISheetDefinitionCatalog
         var col = _db.GetCollection<SheetDefinition>("sheet_definitions");
         var appCol = _db.GetCollection<AppearanceOption>("appearance_options");
 
+        string gender = appearance.Head.ToLower().Contains("female") ? "female" : "male";
+        string bodyName = gender == "female" ? "Human Female" : "Human Male";
+
+        // Resolve tints from names
+        string skinTint = ResolveTint(appCol, "Skin", appearance.SkinColor);
+        string hairTint = ResolveTint(appCol, "HairColor", appearance.HairColor);
+
         // 1. Body (always present, base for skin color)
-        var body = WrapAppearanceOption(appCol.FindOne(x => x.Category == "Body" && x.DisplayName == "Human Male"), "Body", appearance.SkinColor); // Defaulting to Human Male for now
+        var body = WrapAppearanceOption(appCol.FindOne(x => x.Category == "Body" && x.DisplayName == bodyName), "Body", skinTint);
         if (body != null) definitions.Add(body);
 
         // 2. Head, Face, Eyes, Hair
-        AddAppearanceLayer(definitions, appCol, "Head", appearance.Head, appearance.SkinColor);
-        AddAppearanceLayer(definitions, appCol, "Face", appearance.Face, appearance.SkinColor);
+        AddAppearanceLayer(definitions, appCol, "Head", appearance.Head, skinTint);
+        AddAppearanceLayer(definitions, appCol, "Face", appearance.Face, skinTint);
         AddAppearanceLayer(definitions, appCol, "Eyes", appearance.Eyes, "#FFFFFF"); // Eyes usually not tinted by skin
-        AddAppearanceLayer(definitions, appCol, "Hair", appearance.HairStyle, appearance.HairColor);
+        AddAppearanceLayer(definitions, appCol, "Hair", appearance.HairStyle, hairTint);
 
         // 3. Equipment
         AddEquipmentLayer(definitions, col, "Armor", appearance.ArmorType);
@@ -66,6 +74,13 @@ public class SheetDefinitionCatalog : ISheetDefinitionCatalog
         return definitions;
     }
 
+    private string ResolveTint(ILiteCollection<AppearanceOption> col, string category, string displayName)
+    {
+        if (string.IsNullOrEmpty(displayName) || displayName == "None") return "#FFFFFF";
+        var option = col.FindOne(x => x.Category == category && x.DisplayName == displayName);
+        return option?.TintHex ?? "#FFFFFF";
+    }
+
     private void AddAppearanceLayer(List<SheetDefinition> list, ILiteCollection<AppearanceOption> col, string category, string displayName, string tint)
     {
         if (displayName == "None") return;
@@ -87,10 +102,21 @@ public class SheetDefinitionCatalog : ISheetDefinitionCatalog
     private SheetDefinition? WrapAppearanceOption(AppearanceOption? option, string slot, string tint)
     {
         if (option == null) return null;
-        
+
+        // Parse DefaultVariant from FileNameTemplate.
+        // "{action}/blonde.png" -> "blonde", "{action}.png" -> null
+        string? defaultVariant = null;
+        if (!string.IsNullOrEmpty(option.FileNameTemplate) && option.FileNameTemplate.Contains('/'))
+        {
+            var afterSlash = option.FileNameTemplate.Substring(option.FileNameTemplate.LastIndexOf('/') + 1);
+            defaultVariant = Path.GetFileNameWithoutExtension(afterSlash);
+        }
+
         var layer = new SheetLayer
         {
             ZPos = option.ZOrder,
+            TintHex = tint,
+            DefaultVariant = defaultVariant,
             Paths = new Dictionary<string, string> { { "male", option.AssetPath }, { "female", option.AssetPath } }
         };
 
@@ -113,11 +139,19 @@ public class SheetDefinitionCatalog : ISheetDefinitionCatalog
 
     public List<string> GetOptionNames(string category, string gender)
     {
-        var col = _db.GetCollection<AppearanceOption>("appearance_options");
-        return col.Find(x => x.Category == category)
+        var appCol = _db.GetCollection<AppearanceOption>("appearance_options");
+        var sheetCol = _db.GetCollection<SheetDefinition>("sheet_definitions");
+
+        var appOptions = appCol.Find(x => x.Category == category)
                   .Where(x => x.Gender == "universal" || x.Gender == gender)
-                  .Select(x => x.DisplayName)
-                  .ToList();
+                  .Select(x => x.DisplayName);
+
+        var sheetOptions = sheetCol.Find(x => x.Slot == category)
+                  .Select(x => x.Name);
+
+        var result = appOptions.Concat(sheetOptions).ToList();
+        if (!result.Contains("None")) result.Insert(0, "None");
+        return result;
     }
 
     public SheetDefinition? GetSheetDefinitionByName(string slot, string displayName)

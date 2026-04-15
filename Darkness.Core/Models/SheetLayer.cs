@@ -9,6 +9,10 @@ public class SheetLayer
     public string? CustomAnimation { get; set; }
     public int ZPos { get; set; }
     public string TintHex { get; set; } = "#FFFFFF";
+
+    [JsonPropertyName("default_variant")]
+    public string? DefaultVariant { get; set; }
+
     public Dictionary<string, string> Paths { get; set; } = new(); // "male", "female" keys
     
     // Helper to get path for gender

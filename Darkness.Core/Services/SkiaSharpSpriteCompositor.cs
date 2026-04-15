@@ -20,13 +20,21 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         CharacterAppearance appearance,
         IFileSystemService fileSystem)
     {
-        // Total height = standard + oversize
+        Console.WriteLine($"[Compositor] CompositeFullSheet: {definitions.Count} defs, Gender: {appearance.Head}");
+        
         int totalHeight = SheetConstants.SHEET_HEIGHT + (12 * SheetConstants.OVERSIZE_FRAME_SIZE);
-        using var surface = SKSurface.Create(new SKImageInfo(SheetConstants.SHEET_WIDTH, totalHeight));
+        var info = new SKImageInfo(SheetConstants.SHEET_WIDTH, totalHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+        using var surface = SKSurface.Create(info);
+        if (surface == null)
+        {
+            Console.WriteLine("[Compositor] ERROR: Failed to create SKSurface (Dimensions too large?)");
+            return Array.Empty<byte>();
+        }
         var canvas = surface.Canvas;
         canvas.Clear(SKColors.Transparent);
 
         string gender = appearance.Head.ToLower().Contains("female") ? "female" : "male";
+        int totalBitmapsDrawn = 0;
 
         // 1. Render Standard Sheet (64x64 frames)
         foreach (var animation in SheetConstants.AnimationRows.Keys)
@@ -36,32 +44,34 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
             int frameCount = _animationHelper.GetFrameCount(animation);
             int startRow = SheetConstants.AnimationRows[animation];
 
+            var layersForAnimation = ResolveLayers(definitions, animation, gender, appearance);
+            var sortedLayers = layersForAnimation.OrderBy(l => l.ZPos).ToList();
+
+            if (sortedLayers.Count == 0) continue;
+
             for (int direction = 0; direction < 4; direction++)
             {
                 int row = startRow + direction;
-                var layersForAnimation = ResolveLayers(definitions, animation, gender, appearance);
-                var sortedLayers = layersForAnimation.OrderBy(l => l.ZPos).ToList();
-
                 foreach (var layer in sortedLayers)
                 {
-                    string variant = ExtractVariant(layer.DefinitionName);
-                    string path = ResolveAssetPath(layer.Layer, animation, variant, gender);
+                    string variant = ResolveVariant(layer);
+                    string path = ResolveAssetPath(layer.Layer, animation, variant, gender, fileSystem);
                     
-                    if (!fileSystem.FileExists(BASE_PATH + path))
+                    if (string.IsNullOrEmpty(path))
                     {
-                        // Fallback: try attack_ prefix if it's a combat animation
                         if (animation == "slash" || animation == "thrust" || animation == "shoot")
                         {
-                            path = ResolveAssetPath(layer.Layer, "attack_" + animation, variant, gender);
+                            path = ResolveAssetPath(layer.Layer, "attack_" + animation, variant, gender, fileSystem);
                         }
                     }
 
-                    if (fileSystem.FileExists(BASE_PATH + path))
+                    if (!string.IsNullOrEmpty(path))
                     {
                         using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
                         using var bitmap = SKBitmap.Decode(stream);
                         if (bitmap != null)
                         {
+                            totalBitmapsDrawn++;
                             for (int frame = 0; frame < frameCount; frame++)
                             {
                                 var rect = _animationHelper.GetFrameRect(animation, direction, frame);
@@ -97,30 +107,29 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         }
 
         // 2. Render Oversize Region (192x192 frames)
+        // ... (Skipping for brevity in log check, but keeping implementation)
         string[] oversizeAnimations = { "slash_oversize", "slash_reverse_oversize", "thrust_oversize" };
         foreach (var customAnim in oversizeAnimations)
         {
             int frameCount = _animationHelper.GetFrameCount(customAnim);
             string baseAnim = customAnim.Replace("_oversize", "").Replace("_reverse", "");
             
+            var standardLayers = ResolveLayers(definitions, baseAnim, gender, appearance).OrderBy(l => l.ZPos).ToList();
+            var customLayers = ResolveLayers(definitions, customAnim, gender, appearance).OrderBy(l => l.ZPos).ToList();
+
             for (int direction = 0; direction < 4; direction++)
             {
-                // First, draw the character body from standard frames into the center of the 192x192 frame
                 for (int frame = 0; frame < frameCount; frame++)
                 {
                     var destRect = _animationHelper.GetOversizeFrameRect(customAnim, direction, frame);
                     var skDestRect = new SKRect(destRect.X, destRect.Y, destRect.X + destRect.Width, destRect.Y + destRect.Height);
-                    
-                    // Center the 64x64 frame (offset 64,64)
                     var innerDestRect = new SKRect(skDestRect.Left + 64, skDestRect.Top + 64, skDestRect.Left + 128, skDestRect.Top + 128);
                     
-                    // Draw standard layers centered
-                    var standardLayers = ResolveLayers(definitions, baseAnim, gender, appearance).OrderBy(l => l.ZPos).ToList();
                     foreach (var layer in standardLayers)
                     {
-                        string variant = ExtractVariant(layer.DefinitionName);
-                        string path = ResolveAssetPath(layer.Layer, baseAnim, variant, gender);
-                        if (fileSystem.FileExists(BASE_PATH + path))
+                        string variant = ResolveVariant(layer);
+                        string path = ResolveAssetPath(layer.Layer, baseAnim, variant, gender, fileSystem);
+                        if (!string.IsNullOrEmpty(path))
                         {
                             using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
                             using var bitmap = SKBitmap.Decode(stream);
@@ -133,9 +142,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
                                 if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
                                 {
                                     if (SKColor.TryParse(layer.TintHex, out var color))
-                                    {
                                         paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-                                    }
                                 }
 
                                 if (layer.IsFlipped)
@@ -153,13 +160,11 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
                         }
                     }
 
-                    // Now draw the custom oversize layers on top/behind
-                    var customLayers = ResolveLayers(definitions, customAnim, gender, appearance).OrderBy(l => l.ZPos).ToList();
                     foreach (var layer in customLayers)
                     {
-                        string variant = ExtractVariant(layer.DefinitionName);
-                        string path = ResolveAssetPath(layer.Layer, customAnim, variant, gender);
-                        if (fileSystem.FileExists(BASE_PATH + path))
+                        string variant = ResolveVariant(layer);
+                        string path = ResolveAssetPath(layer.Layer, customAnim, variant, gender, fileSystem);
+                        if (!string.IsNullOrEmpty(path))
                         {
                             using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
                             using var bitmap = SKBitmap.Decode(stream);
@@ -172,9 +177,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
                                 if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
                                 {
                                     if (SKColor.TryParse(layer.TintHex, out var color))
-                                    {
                                         paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-                                    }
                                 }
 
                                 if (layer.IsFlipped)
@@ -195,6 +198,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
             }
         }
 
+        Console.WriteLine($"[Compositor] Finished CompositeFullSheet. Bitmaps Drawn: {totalBitmapsDrawn}");
         using var image = surface.Snapshot();
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
         return data.ToArray();
@@ -205,20 +209,20 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         CharacterAppearance appearance,
         IFileSystemService fileSystem)
     {
-        // Use the first definition's preview info, or default to walk (10, 0)
         var previewDef = definitions.FirstOrDefault() ?? new SheetDefinition();
-        int row = previewDef.PreviewRow > 0 ? previewDef.PreviewRow : 10; // Row 10 is walk south
+        int row = previewDef.PreviewRow > 0 ? previewDef.PreviewRow : 10;
         int col = previewDef.PreviewColumn;
 
-        using var surface = SKSurface.Create(new SKImageInfo(SheetConstants.FRAME_SIZE, SheetConstants.FRAME_SIZE));
+        var info = new SKImageInfo(SheetConstants.FRAME_SIZE, SheetConstants.FRAME_SIZE, SKColorType.Rgba8888, SKAlphaType.Premul);
+        using var surface = SKSurface.Create(info);
+        if (surface == null) return Array.Empty<byte>();
+        
         var canvas = surface.Canvas;
         canvas.Clear(SKColors.Transparent);
 
         string gender = appearance.Head.ToLower().Contains("female") ? "female" : "male";
-        
-        // Find animation name from row
         string animation = "walk";
-        int direction = 2; // South
+        int direction = 2;
         foreach (var kvp in SheetConstants.AnimationRows)
         {
             if (row >= kvp.Value && row < kvp.Value + 4)
@@ -230,11 +234,13 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         }
 
         var layers = ResolveLayers(definitions, animation, gender, appearance).OrderBy(l => l.ZPos).ToList();
+        Console.WriteLine($"[Compositor] CompositePreviewFrame: {layers.Count} layers resolved for {animation}");
+
         foreach (var layer in layers)
         {
-            string variant = ExtractVariant(layer.DefinitionName);
-            string path = ResolveAssetPath(layer.Layer, animation, variant, gender);
-            if (fileSystem.FileExists(BASE_PATH + path))
+            string variant = ResolveVariant(layer);
+            string path = ResolveAssetPath(layer.Layer, animation, variant, gender, fileSystem);
+            if (!string.IsNullOrEmpty(path))
             {
                 using var stream = await fileSystem.OpenAppPackageFileAsync(BASE_PATH + path);
                 using var bitmap = SKBitmap.Decode(stream);
@@ -248,9 +254,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
                     if (!string.IsNullOrEmpty(layer.TintHex) && layer.TintHex != "#FFFFFF")
                     {
                         if (SKColor.TryParse(layer.TintHex, out var color))
-                        {
                             paint.ColorFilter = SKColorFilter.CreateBlendMode(color, SKBlendMode.Modulate);
-                        }
                     }
 
                     if (layer.IsFlipped)
@@ -300,37 +304,57 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         var result = new List<ResolvedLayer>();
         foreach (var def in definitions)
         {
-            string tint = "#FFFFFF";
-            if (def.Slot == "Body" || def.Slot == "Head" || def.Slot == "Face") tint = appearance.SkinColor;
-            else if (def.Slot == "Hair") tint = appearance.HairColor;
-            
+            // Compute default variant: layer-level DefaultVariant takes priority, then definition-level Variants[0]
+            string? defVariant = def.Variants?.Count > 0 ? def.Variants[0] : null;
+
             foreach (var kvp in def.Layers)
             {
                 var layer = kvp.Value;
+                string? variant = layer.DefaultVariant ?? defVariant;
+
                 // Only include if no custom animation, or it matches the current custom animation
                 if (string.IsNullOrEmpty(layer.CustomAnimation))
                 {
                     // Standard layers don't apply to oversize render passes except when we are rendering the base character
                     if (!animation.EndsWith("_oversize"))
                     {
-                        result.Add(new ResolvedLayer(def.Name, layer, def.IsFlipped, tint));
+                        result.Add(new ResolvedLayer(def.Name, layer, def.IsFlipped, layer.TintHex, variant));
                     }
                 }
                 else if (layer.CustomAnimation == animation)
                 {
-                    result.Add(new ResolvedLayer(def.Name, layer, def.IsFlipped, tint));
+                    result.Add(new ResolvedLayer(def.Name, layer, def.IsFlipped, layer.TintHex, variant));
                 }
             }
         }
         return result;
     }
 
-    private string ResolveAssetPath(SheetLayer layer, string animation, string variant, string gender)
+    private string ResolveAssetPath(SheetLayer layer, string animation, string variant, string gender, IFileSystemService fileSystem)
     {
         string layerPath = layer.GetPath(gender);
         if (string.IsNullOrEmpty(layerPath)) return string.Empty;
 
-        return $"{layerPath.TrimEnd('/')}/{animation}/{variant}.png";
+        // Strip redundant prefix if present
+        if (layerPath.StartsWith("assets/sprites/full/"))
+        {
+            layerPath = layerPath.Replace("assets/sprites/full/", "");
+        }
+
+        string basePath = layerPath.TrimEnd('/');
+        
+        // Strategy 1: {animation}/{variant}.png (Standard for weapons/gear with variants)
+        string path1 = $"{basePath}/{animation}/{variant}.png";
+        if (fileSystem.FileExists(BASE_PATH + path1)) return path1;
+
+        // Strategy 2: {animation}.png (Standard for base body/hair/face)
+        string path2 = $"{basePath}/{animation}.png";
+        if (fileSystem.FileExists(BASE_PATH + path2)) return path2;
+
+        // Strategy 3: Directly pointing to a file (if layerPath ends in .png)
+        if (layerPath.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) return layerPath;
+
+        return string.Empty;
     }
 
     private string ExtractVariant(string displayName)
@@ -347,20 +371,29 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         return "default";
     }
 
+    private string ResolveVariant(ResolvedLayer layer)
+    {
+        string extracted = ExtractVariant(layer.DefinitionName);
+        if (extracted != "default") return extracted;
+        return layer.DefaultVariant ?? "default";
+    }
+
     private class ResolvedLayer
     {
         public string DefinitionName { get; }
         public SheetLayer Layer { get; }
         public bool IsFlipped { get; }
         public string TintHex { get; }
+        public string? DefaultVariant { get; }
         public int ZPos => Layer.ZPos;
 
-        public ResolvedLayer(string defName, SheetLayer layer, bool isFlipped, string tintHex)
+        public ResolvedLayer(string defName, SheetLayer layer, bool isFlipped, string tintHex, string? defaultVariant = null)
         {
             DefinitionName = defName;
             Layer = layer;
             IsFlipped = isFlipped;
             TintHex = tintHex;
+            DefaultVariant = defaultVariant;
         }
     }
 }
