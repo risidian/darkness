@@ -1,0 +1,15 @@
+{
+  "name": "Plate (Steel)",
+  "slot": "Armor",
+  "layers": {
+    "main": {
+      "zPos": 60,
+      "paths": {
+        "male": "armor/plate/male",
+        "female": "armor/plate/female"
+      }
+    }
+  },
+  "variants": ["steel", "gold", "iron"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

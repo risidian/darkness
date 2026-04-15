@@ -1,0 +1,22 @@
+{
+  "name": "Mace",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/blunt/mace",
+        "female": "weapons/blunt/mace"
+      }
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/blunt/mace/universal_behind",
+        "female": "weapons/blunt/mace/universal_behind"
+      }
+    }
+  },
+  "variants": ["mace"],
+  "animations": ["walk", "thrust", "hurt"]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Slacks",
+  "slot": "Legs",
+  "layers": {
+    "main": {
+      "zPos": 40,
+      "paths": {
+        "male": "legs/pants/male",
+        "female": "legs/pants/female"
+      }
+    }
+  },
+  "variants": ["black", "brown"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

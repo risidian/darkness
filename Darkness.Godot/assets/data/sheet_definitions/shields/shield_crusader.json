@@ -1,0 +1,22 @@
+{
+  "name": "Crusader",
+  "slot": "Shield",
+  "layers": {
+    "front": {
+      "zPos": 130,
+      "paths": {
+        "male": "shields/crusader/fg/male",
+        "female": "shields/crusader/fg/female"
+      }
+    },
+    "behind": {
+      "zPos": 8,
+      "paths": {
+        "male": "shields/crusader/bg",
+        "female": "shields/crusader/bg"
+      }
+    }
+  },
+  "variants": ["crusader"],
+  "animations": ["walk", "slash", "thrust", "shoot", "spellcast", "hurt"]
+}

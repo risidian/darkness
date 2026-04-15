@@ -1,0 +1,22 @@
+{
+  "name": "Dagger (Steel)",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/dagger",
+        "female": "weapons/sword/dagger"
+      }
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/sword/dagger/behind",
+        "female": "weapons/sword/dagger/behind"
+      }
+    }
+  },
+  "variants": ["dagger"],
+  "animations": ["walk", "slash", "thrust", "hurt"]
+}

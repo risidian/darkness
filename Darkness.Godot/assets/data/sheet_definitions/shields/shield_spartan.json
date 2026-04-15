@@ -1,0 +1,22 @@
+{
+  "name": "Spartan",
+  "slot": "Shield",
+  "layers": {
+    "front": {
+      "zPos": 130,
+      "paths": {
+        "male": "shields/spartan/fg",
+        "female": "shields/spartan/fg"
+      }
+    },
+    "behind": {
+      "zPos": 8,
+      "paths": {
+        "male": "shields/spartan/bg",
+        "female": "shields/spartan/bg"
+      }
+    }
+  },
+  "variants": ["spartan"],
+  "animations": ["walk", "slash", "thrust", "shoot", "spellcast", "hurt"]
+}

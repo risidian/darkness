@@ -1,0 +1,15 @@
+{
+  "name": "Gloves",
+  "slot": "Arms",
+  "layers": {
+    "main": {
+      "zPos": 55,
+      "paths": {
+        "male": "arms/gloves/male",
+        "female": "arms/gloves/female"
+      }
+    }
+  },
+  "variants": ["black"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

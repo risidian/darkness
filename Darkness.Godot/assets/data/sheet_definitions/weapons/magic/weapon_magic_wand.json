@@ -1,0 +1,15 @@
+{
+  "name": "Mage Wand",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/wand/male",
+        "female": "weapons/magic/wand/female"
+      }
+    }
+  },
+  "variants": ["wand"],
+  "animations": ["shoot"]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Waraxe",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/blunt/waraxe",
+        "female": "weapons/blunt/waraxe"
+      }
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/blunt/waraxe/behind",
+        "female": "weapons/blunt/waraxe/behind"
+      }
+    }
+  },
+  "variants": ["waraxe"],
+  "animations": ["walk", "hurt"]
+}

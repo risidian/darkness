@@ -1,0 +1,15 @@
+{
+  "name": "Shoes",
+  "slot": "Feet",
+  "layers": {
+    "main": {
+      "zPos": 15,
+      "paths": {
+        "male": "feet/shoes/basic/male",
+        "female": "feet/shoes/basic/female"
+      }
+    }
+  },
+  "variants": ["black", "brown"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}
