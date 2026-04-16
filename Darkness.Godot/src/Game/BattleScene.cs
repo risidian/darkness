@@ -666,8 +666,8 @@ public partial class BattleScene : Control, IInitializable
 
         foreach (var character in _party)
         {
-            var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
-            wrapper.AddThemeConstantOverride("separation", -30);
+            var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(250, 180) };
+            wrapper.AddThemeConstantOverride("separation", 5);
             _partyContainer.AddChild(wrapper);
 
             var hpBar = statusBarScene.Instantiate<StatusBar>();
@@ -675,12 +675,12 @@ public partial class BattleScene : Control, IInitializable
             hpBar.Setup(character.Name, character.CurrentHP, character.MaxHP, StatusType.HP);
             _partyHealthBars.Add(hpBar);
 
-            var spriteContainer = new Control { CustomMinimumSize = new Vector2(200, 120) };
+            var spriteContainer = new Control { CustomMinimumSize = new Vector2(250, 135) };
             wrapper.AddChild(spriteContainer);
 
             var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
             spriteContainer.AddChild(sprite);
-            sprite.Position = new Vector2(20, -10);
+            sprite.Position = new Vector2(20, 0);
             sprite.Scale = new Vector2(2.5f, 2.5f);
             _partySprites.Add(sprite);
 
@@ -691,8 +691,8 @@ public partial class BattleScene : Control, IInitializable
         for (int i = 0; i < _enemies.Count; i++)
         {
             var enemy = _enemies[i];
-            var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(200, 160) };
-            wrapper.AddThemeConstantOverride("separation", -30);
+            var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(250, 180) };
+            wrapper.AddThemeConstantOverride("separation", 5);
             _enemyContainer.AddChild(wrapper);
 
             var hpBar = statusBarScene.Instantiate<StatusBar>();
@@ -700,7 +700,7 @@ public partial class BattleScene : Control, IInitializable
             hpBar.Setup(enemy.Name, enemy.CurrentHP, enemy.MaxHP, StatusType.HP);
             _enemyHealthBars.Add(hpBar);
 
-            var spriteContainer = new Control { CustomMinimumSize = new Vector2(200, 120) };
+            var spriteContainer = new Control { CustomMinimumSize = new Vector2(250, 135) };
             spriteContainer.MouseFilter = Control.MouseFilterEnum.Stop;
             int index = i;
             spriteContainer.GuiInput += (@event) =>
@@ -715,7 +715,7 @@ public partial class BattleScene : Control, IInitializable
             spriteContainer.AddChild(sprite);
             
             float offsetX = enemy.SpriteOffsetX ?? 20f;
-            float offsetY = enemy.SpriteOffsetY ?? -10f;
+            float offsetY = enemy.SpriteOffsetY ?? 0f;
             sprite.Position = new Vector2(offsetX, offsetY);
             
             _enemySprites.Add(sprite);

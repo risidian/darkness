@@ -50,14 +50,15 @@ public static class ImageUtils
 
             if (anim == "hurt" || anim == "climb")
             {
-                AddLpcRow(frames, tex, anim, startRow, frameCount, frameWidth, frameHeight);
+                AddLpcRow(frames, tex, anim, startRow, frameCount, frameWidth, frameHeight, loop: false);
             }
             else
             {
-                AddLpcRow(frames, tex, $"{anim}_up", startRow + 0, frameCount, frameWidth, frameHeight);
-                AddLpcRow(frames, tex, $"{anim}_left", startRow + 1, frameCount, frameWidth, frameHeight);
-                AddLpcRow(frames, tex, $"{anim}_down", startRow + 2, frameCount, frameWidth, frameHeight);
-                AddLpcRow(frames, tex, $"{anim}_right", startRow + 3, frameCount, frameWidth, frameHeight);
+                bool shouldLoop = (anim == "walk" || anim == "run" || anim == "climb");
+                AddLpcRow(frames, tex, $"{anim}_up", startRow + 0, frameCount, frameWidth, frameHeight, loop: shouldLoop);
+                AddLpcRow(frames, tex, $"{anim}_left", startRow + 1, frameCount, frameWidth, frameHeight, loop: shouldLoop);
+                AddLpcRow(frames, tex, $"{anim}_down", startRow + 2, frameCount, frameWidth, frameHeight, loop: shouldLoop);
+                AddLpcRow(frames, tex, $"{anim}_right", startRow + 3, frameCount, frameWidth, frameHeight, loop: shouldLoop);
             }
         }
 
@@ -74,20 +75,20 @@ public static class ImageUtils
             int oversizeH = SheetConstants.OVERSIZE_FRAME_SIZE;
             int yBase = SheetConstants.SHEET_HEIGHT;
 
-            AddOversizeRows(frames, tex, "slash_oversize", yBase + 0, 6, oversizeW, oversizeH);
-            AddOversizeRows(frames, tex, "slash_reverse_oversize", yBase + (4 * oversizeH), 6, oversizeW, oversizeH);
-            AddOversizeRows(frames, tex, "thrust_oversize", yBase + (8 * oversizeH), 8, oversizeW, oversizeH);
+            AddOversizeRows(frames, tex, "slash_oversize", yBase + 0, 6, oversizeW, oversizeH, loop: false);
+            AddOversizeRows(frames, tex, "slash_reverse_oversize", yBase + (4 * oversizeH), 6, oversizeW, oversizeH, loop: false);
+            AddOversizeRows(frames, tex, "thrust_oversize", yBase + (8 * oversizeH), 8, oversizeW, oversizeH, loop: false);
         }
 
         return frames;
     }
 
-    private static void AddOversizeRows(SpriteFrames frames, Texture2D tex, string animBase, int yStart, int count, int w, int h)
+    private static void AddOversizeRows(SpriteFrames frames, Texture2D tex, string animBase, int yStart, int count, int w, int h, bool loop = true)
     {
-        AddLpcRowByPixel(frames, tex, $"{animBase}_up", yStart + (0 * h), count, w, h);
-        AddLpcRowByPixel(frames, tex, $"{animBase}_left", yStart + (1 * h), count, w, h);
-        AddLpcRowByPixel(frames, tex, $"{animBase}_down", yStart + (2 * h), count, w, h);
-        AddLpcRowByPixel(frames, tex, $"{animBase}_right", yStart + (3 * h), count, w, h);
+        AddLpcRowByPixel(frames, tex, $"{animBase}_up", yStart + (0 * h), count, w, h, loop: loop);
+        AddLpcRowByPixel(frames, tex, $"{animBase}_left", yStart + (1 * h), count, w, h, loop: loop);
+        AddLpcRowByPixel(frames, tex, $"{animBase}_down", yStart + (2 * h), count, w, h, loop: loop);
+        AddLpcRowByPixel(frames, tex, $"{animBase}_right", yStart + (3 * h), count, w, h, loop: loop);
     }
 
     private static void AddLpcRow(SpriteFrames frames, Texture2D tex, string animName, int row, int count, int frameW,
