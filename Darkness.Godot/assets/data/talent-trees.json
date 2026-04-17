@@ -39,6 +39,17 @@
                           "Effect": { "Skill": "Shield Block" }
                       },
                       {
+                          "Id": "k_cleave",
+                          "Name": "Cleave",
+                          "Description": "Learn to strike multiple foes at once.",
+                          "PointsRequired": 1,
+                          "Row": 1,
+                          "Column": 1,
+                          "PrerequisiteNodeIds": [ "k_starter_slash" ],
+                          "Effect": { "Skill": "Cleave" },
+                          "IsPassive": false
+                      },
+                      {
                           "Id":  "k_toughness",
                           "Name":  "Toughness",
                           "Description":  "Increases Constitution by 1.",

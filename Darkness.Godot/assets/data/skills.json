@@ -61,9 +61,10 @@
   {
     "Id": 7,
     "Name": "Cleave",
-    "Description": "A powerful sweeping strike. (1.2x Dmg, -10 Accuracy)",
+    "Description": "A powerful sweeping strike hitting all enemies. (1.0x Dmg, -10 Accuracy)",
     "SkillType": "Physical",
-    "DamageMultiplier": 1.2,
+    "IsAOE": true,
+    "DamageMultiplier": 1.0,
     "AccuracyModifier": -10,
     "AssociatedAction": "Slash",
     "WeaponRequirement": "Axe"
