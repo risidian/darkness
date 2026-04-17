@@ -86,12 +86,17 @@ public partial class BattleScene : Control, IInitializable
                 
                 foreach (var e in combat.Enemies)
                 {
+                    // Start of battle: e.CurrentHP is usually 0 in JSON, so we use MaxHP.
+                    // Resuming: args.IsResuming will be true, so we use e.CurrentHP (even if 0).
+                    int initialHP = e.CurrentHP;
+                    if (initialHP <= 0 && !args.IsResuming) initialHP = e.MaxHP;
+
                     var enemy = new Enemy
                     {
                         Name = e.Name,
                         Level = e.Level,
                         MaxHP = e.MaxHP,
-                        CurrentHP = e.CurrentHP <= 0 ? e.MaxHP : e.CurrentHP,
+                        CurrentHP = initialHP,
                         Attack = e.Attack > 0 ? e.Attack : 10,
                         Defense = e.Defense > 0 ? e.Defense : 5,
                         Speed = e.Speed > 0 ? e.Speed : 10,
@@ -126,6 +131,12 @@ public partial class BattleScene : Control, IInitializable
                         GoldReward = enemy.GoldReward
                     });
                 }
+                
+                // Remove dead enemies if we are resuming
+                if (args.IsResuming)
+                {
+                    _enemies.RemoveAll(e => e.CurrentHP <= 0);
+                }
             }
         }
         // Backward compatibility for old DeathmatchEncounter
@@ -139,7 +150,7 @@ public partial class BattleScene : Control, IInitializable
                 {
                     Name = e.Name,
                     MaxHP = e.MaxHP,
-                    CurrentHP = e.MaxHP,
+                    CurrentHP = e.CurrentHP > 0 ? e.CurrentHP : e.MaxHP,
                     Attack = e.Attack > 0 ? e.Attack : 10,
                     Defense = e.Defense > 0 ? e.Defense : 5,
                     Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
@@ -359,16 +370,8 @@ public partial class BattleScene : Control, IInitializable
         if (_battleArgs != null && _battleArgs.IsResuming && _battleArgs.Snapshot != null)
         {
             var snapshot = _battleArgs.Snapshot;
-            for (int i = 0; i < _party.Count; i++)
-            {
-                if (snapshot.PartyHP.ContainsKey(i))
-                    _party[i].CurrentHP = snapshot.PartyHP[i];
-            }
-            for (int i = 0; i < _enemies.Count; i++)
-            {
-                if (snapshot.EnemyHP.ContainsKey(i))
-                    _enemies[i].CurrentHP = snapshot.EnemyHP[i];
-            }
+            // Party and Enemy HP already restored via Initialize reference sharing or loop.
+            // Only need to restore round/turn state.
             _turnManager.CurrentRound = snapshot.CurrentRound;
             _turnManager.CurrentTurnIndex = snapshot.CurrentTurnIndex;
         }
@@ -1216,6 +1219,8 @@ public partial class BattleScene : Control, IInitializable
     {
         if (_battleArgs == null) return;
 
+        _battleArgs.IsResuming = true;
+
         if (_battleArgs.Snapshot == null)
             _battleArgs.Snapshot = new CombatSnapshot();
 
@@ -1227,18 +1232,22 @@ public partial class BattleScene : Control, IInitializable
             _battleArgs.Snapshot.PartyHP[i] = _party[i].CurrentHP;
 
         _battleArgs.Snapshot.EnemyHP.Clear();
-        for (int i = 0; i < _enemies.Count; i++)
-            _battleArgs.Snapshot.EnemyHP[i] = _enemies[i].CurrentHP;
-
         _battleArgs.Snapshot.SkillCooldowns = new Dictionary<int, int>(_skillCooldowns);
 
         if (_battleArgs.Combat != null)
         {
-            foreach (var pair in _enemyMap)
+            // We must iterate through the ORIGINAL enemy list to ensure snapshot indices match Initialize loop
+            for (int i = 0; i < _battleArgs.Combat.Enemies.Count; i++)
             {
-                var liveEnemy = pair.Key;
-                var spawn = pair.Value;
-                spawn.CurrentHP = liveEnemy.CurrentHP;
+                var spawn = _battleArgs.Combat.Enemies[i];
+                
+                // Find corresponding live enemy in our map
+                var liveEnemy = _enemyMap.FirstOrDefault(p => p.Value == spawn).Key;
+                if (liveEnemy != null)
+                {
+                    spawn.CurrentHP = liveEnemy.CurrentHP;
+                    _battleArgs.Snapshot.EnemyHP[i] = liveEnemy.CurrentHP;
+                }
             }
         }
     }
