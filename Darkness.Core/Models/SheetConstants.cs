@@ -4,9 +4,9 @@ public static class SheetConstants
 {
     public const int FRAME_SIZE = 64;
     public const int OVERSIZE_FRAME_SIZE = 192;
-    public const int SHEET_WIDTH = 832;
+    public const int SHEET_WIDTH = 1536;
     public const int SHEET_HEIGHT = 3456;
-    public const int COLUMNS = 13;
+    public const int COLUMNS = 24;
     public const int ROWS = 54;
     public const int OVERSIZE_Y_OFFSET = 3456;
 

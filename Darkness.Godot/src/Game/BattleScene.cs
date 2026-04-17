@@ -666,7 +666,11 @@ public partial class BattleScene : Control, IInitializable
 
         foreach (var character in _party)
         {
-            var wrapper = new VBoxContainer { CustomMinimumSize = new Vector2(250, 180) };
+            var wrapper = new VBoxContainer 
+            { 
+                CustomMinimumSize = new Vector2(250, 180),
+                ClipContents = false
+            };
             wrapper.AddThemeConstantOverride("separation", 5);
             _partyContainer.AddChild(wrapper);
 
@@ -675,7 +679,11 @@ public partial class BattleScene : Control, IInitializable
             hpBar.Setup(character.Name, character.CurrentHP, character.MaxHP, StatusType.HP);
             _partyHealthBars.Add(hpBar);
 
-            var spriteContainer = new Control { CustomMinimumSize = new Vector2(250, 135) };
+            var spriteContainer = new Control 
+            { 
+                CustomMinimumSize = new Vector2(250, 135),
+                ClipContents = false
+            };
             wrapper.AddChild(spriteContainer);
 
             var sprite = layeredSpriteScene.Instantiate<LayeredSprite>();
@@ -1040,7 +1048,7 @@ public partial class BattleScene : Control, IInitializable
                     
                     attackerSprite.Play(attackAnim);
                     await ToSignal(tween, "finished");
-                    await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+                    await ToSignal(GetTree().CreateTimer(0.5), "timeout");
                 }
 
                 var combatResult = _combat.CalculateDamage(attacker, target, skill: skill);

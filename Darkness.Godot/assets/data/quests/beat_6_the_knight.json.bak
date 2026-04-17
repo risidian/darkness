@@ -16,7 +16,6 @@
           "Name": "Tywin",
           "PositionX": 600,
           "PositionY": 300,
-          "SpriteKey": "bosses/Tywin",
           "Appearance": {
             "HairStyle": "Short",
             "HairColor": "#FFD700",
