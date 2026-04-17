@@ -23,7 +23,7 @@ public class WeaponSkillService : IWeaponSkillService
         var col = _db.GetCollection<Skill>("skills");
         if (col.Count() > 0) return;
 
-        var defaults = new List<Skill>
+        var defaults = new Skill[]
         {
             new() { Id = 1,  Name = "Arcane Bolt",   Description = "A standard magical bolt. (1.1x Magic Dmg)",          SkillType = "Magical",   DamageMultiplier = 1.1f,  AssociatedAction = ActionType.Shoot,  WeaponRequirement = "Wand" },
             new() { Id = 2,  Name = "Fireball",       Description = "A powerful blast of fire. (1.5x Magic Dmg, -10 Accuracy)", SkillType = "Magical", DamageMultiplier = 1.5f, AccuracyModifier = -10, AssociatedAction = ActionType.Shoot, WeaponRequirement = "Wand" },
@@ -56,11 +56,30 @@ public class WeaponSkillService : IWeaponSkillService
 
     public List<Skill> GetAvailableSkills(Character character)
     {
-        var allSkills = _db.GetCollection<Skill>("skills").FindAll().ToList();
-        return allSkills.Where(s =>
-            (s.WeaponRequirement == "None" || s.WeaponRequirement == character.WeaponType) ||
-            (s.TalentRequirement != null && character.UnlockedTalentIds.Contains(s.TalentRequirement))
+        EnsureSkillsSeeded();
+        var skillCol = _db.GetCollection<Skill>("skills");
+        var allSkills = skillCol.FindAll().ToList();
+
+        // Skills matching weapon
+        var weaponSkills = allSkills.Where(s =>
+            (s.WeaponRequirement == "None" || s.WeaponRequirement == character.WeaponType)
         ).ToList();
+
+        // Skills granted by talents (by TalentRequirement ID or by Name matching a Talent Effect)
+        var talentTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();
+        var unlockedSkillNames = talentTrees
+            .SelectMany(t => t.Nodes)
+            .Where(n => character.UnlockedTalentIds.Contains(n.Id))
+            .Where(n => !string.IsNullOrEmpty(n.Effect.Skill))
+            .Select(n => n.Effect.Skill)
+            .ToList();
+
+        var talentSkills = allSkills.Where(s =>
+            (s.TalentRequirement != null && character.UnlockedTalentIds.Contains(s.TalentRequirement)) ||
+            unlockedSkillNames.Contains(s.Name)
+        ).ToList();
+
+        return weaponSkills.Union(talentSkills).ToList();
     }
 
     public List<Skill> GetEquippedSkills(Character character)
@@ -165,12 +184,21 @@ public class WeaponSkillService : IWeaponSkillService
         // Talent-based skills
         if (unlockedTalentIds != null && unlockedTalentIds.Count > 0)
         {
+            var talentTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();
+            var unlockedSkillNames = talentTrees
+                .SelectMany(t => t.Nodes)
+                .Where(n => unlockedTalentIds.Contains(n.Id))
+                .Where(n => !string.IsNullOrEmpty(n.Effect.Skill))
+                .Select(n => n.Effect.Skill)
+                .ToList();
+
             var talentSkills = skillCol.FindAll()
-                .Where(s => s.TalentRequirement != null && unlockedTalentIds.Contains(s.TalentRequirement))
+                .Where(s => (s.TalentRequirement != null && unlockedTalentIds.Contains(s.TalentRequirement)) ||
+                             unlockedSkillNames.Contains(s.Name))
                 .ToList();
             skills.AddRange(talentSkills);
         }
 
-        return skills;
+        return skills.DistinctBy(s => s.Id).ToList();
     }
 }

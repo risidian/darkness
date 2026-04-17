@@ -22,6 +22,7 @@ public partial class TalentTreeScene : Control
     private INavigationService _navigation = null!;
     private IDialogService _dialogService = null!;
     private ICharacterService _characterService = null!;
+    private IWeaponSkillService _weaponSkillService = null!;
 
     private Label _pointsLabel = null!;
     private TabContainer _tabContainer = null!;
@@ -38,6 +39,7 @@ public partial class TalentTreeScene : Control
         _navigation = global.Services!.GetRequiredService<INavigationService>();
         _dialogService = global.Services!.GetRequiredService<IDialogService>();
         _characterService = global.Services!.GetRequiredService<ICharacterService>();
+        _weaponSkillService = global.Services!.GetRequiredService<IWeaponSkillService>();
 
         _nodeBoxScene = GD.Load<PackedScene>("res://scenes/UI/TalentNodeBox.tscn");
 
@@ -115,6 +117,7 @@ public partial class TalentTreeScene : Control
                 nodeBox.Position = new Vector2(x, y);
 
                 nodeBox.PurchaseRequested += (talentId) => OnNodePressed(tree.Id, node);
+                nodeBox.EquipRequested += OnEquipRequested;
             }
 
             // Update canvas height based on max row
@@ -125,6 +128,40 @@ public partial class TalentTreeScene : Control
         if (currentTab >= 0 && currentTab < _tabContainer.GetTabCount())
         {
             _tabContainer.CurrentTab = currentTab;
+        }
+    }
+
+    private async void OnEquipRequested(string skillName)
+    {
+        var character = _session.CurrentCharacter;
+        if (character == null) return;
+
+        var availableSkills = _weaponSkillService.GetAvailableSkills(character);
+        var skill = availableSkills.FirstOrDefault(s => s.Name == skillName);
+
+        if (skill == null)
+        {
+            await _dialogService.DisplayAlertAsync("Equip Failed", $"Skill '{skillName}' not available.", "OK");
+            return;
+        }
+
+        if (character.ActiveSkillSlots.Contains(skill.Id))
+        {
+            await _dialogService.DisplayAlertAsync("Already Equipped", $"{skill.Name} is already equipped.", "OK");
+            return;
+        }
+
+        // Find first empty slot
+        int emptySlotIndex = character.ActiveSkillSlots.IndexOf(0);
+        if (emptySlotIndex != -1)
+        {
+            character.ActiveSkillSlots[emptySlotIndex] = skill.Id;
+            await Task.Run(() => _characterService.SaveCharacter(character));
+            await _dialogService.DisplayAlertAsync("Equipped", $"{skill.Name} has been equipped.", "OK");
+        }
+        else
+        {
+            await _dialogService.DisplayAlertAsync("Slots Full", "All skill slots are full. Unequip a skill in the Skills menu first.", "OK");
         }
     }
 

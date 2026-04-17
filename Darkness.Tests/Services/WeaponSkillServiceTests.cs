@@ -13,7 +13,7 @@ public class WeaponSkillServiceTests
 
     public WeaponSkillServiceTests()
     {
-        _db = new LiteDatabase(new System.IO.MemoryStream());
+        _db = new LiteDatabase(new System.IO.MemoryStream(), new BsonMapper());
         _service = new WeaponSkillService(_db);
     }
 
