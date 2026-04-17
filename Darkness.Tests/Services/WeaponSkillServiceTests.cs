@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using Darkness.Core.Services;
 using LiteDB;
+using Moq;
 using Xunit;
 
 namespace Darkness.Tests.Services;
@@ -10,11 +12,30 @@ public class WeaponSkillServiceTests
 {
     private readonly WeaponSkillService _service;
     private readonly LiteDatabase _db;
+    private readonly Mock<IFileSystemService> _mockFs;
 
     public WeaponSkillServiceTests()
     {
         _db = new LiteDatabase(new System.IO.MemoryStream(), new BsonMapper());
-        _service = new WeaponSkillService(_db);
+        _mockFs = new Mock<IFileSystemService>();
+        
+        // Default mock setup to return basic skills
+        var skillsJson = @"[
+            { ""Id"": 1, ""Name"": ""Slash"", ""WeaponRequirement"": ""Sword"", ""SkillType"": ""Physical"", ""DamageMultiplier"": 1.2 },
+            { ""Id"": 2, ""Name"": ""Arcane Bolt"", ""WeaponRequirement"": ""Wand"", ""SkillType"": ""Magical"", ""DamageMultiplier"": 1.1 },
+            { ""Id"": 3, ""Name"": ""Quick Stab"", ""WeaponRequirement"": ""Dagger"", ""SkillType"": ""Physical"", ""DamageMultiplier"": 1.0 },
+            { ""Id"": 4, ""Name"": ""Cleave"", ""WeaponRequirement"": ""Axe"", ""SkillType"": ""Physical"", ""DamageMultiplier"": 1.0 },
+            { ""Id"": 5, ""Name"": ""Smash"", ""WeaponRequirement"": ""Mace"", ""SkillType"": ""Physical"", ""DamageMultiplier"": 1.1 },
+            { ""Id"": 6, ""Name"": ""Quick Shot"", ""WeaponRequirement"": ""Bow"", ""SkillType"": ""Physical"", ""DamageMultiplier"": 1.0 },
+            { ""Id"": 7, ""Name"": ""Punch"", ""WeaponRequirement"": ""None"", ""SkillType"": ""Physical"", ""DamageMultiplier"": 0.5 },
+            { ""Id"": 8, ""Name"": ""Shield Block"", ""WeaponRequirement"": ""Shield"", ""SkillType"": ""Defensive"", ""BlockReduction"": 0.6 },
+            { ""Id"": 9, ""Name"": ""Brace"", ""WeaponRequirement"": ""None"", ""SkillType"": ""Defensive"", ""BlockReduction"": 0.2 },
+            { ""Id"": 21, ""Name"": ""Holy Strike"", ""WeaponRequirement"": ""None"", ""SkillType"": ""Magical"", ""DamageMultiplier"": 1.8, ""TalentRequirement"": ""holy_strike_node"" },
+            { ""Id"": 22, ""Name"": ""Offhand Stab"", ""WeaponRequirement"": ""Dagger"", ""SkillType"": ""Physical"", ""DamageMultiplier"": 1.0, ""IsOffHand"": true }
+        ]";
+        _mockFs.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(skillsJson);
+
+        _service = new WeaponSkillService(_db, _mockFs.Object);
     }
 
     [Theory]
