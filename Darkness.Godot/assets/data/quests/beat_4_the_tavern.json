@@ -9,7 +9,7 @@
       "Id": "beat_4_intro",
       "Type": "dialogue",
       "Visuals": {
-        "BackgroundKey": "tavern"
+        "BackgroundKey": "tavern",
         "GroundColor": "#4a2e19",
         "Npc": {
           "Name": "Tavern Keeper",

@@ -106,4 +106,38 @@ public class QuestSeederTests : IDisposable
 
         Assert.Equal(2, _db.GetCollection<QuestChain>("quest_chains").Count());
     }
+
+    [Fact]
+    public void Regression_AllLiveDataFiles_AreValidJson()
+    {
+        // This test recursively checks ALL JSON files in the assets/data directory
+        // to ensure no syntax errors exist in any game data.
+        string dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../Darkness.Godot/assets/data");
+        
+        if (!Directory.Exists(dataDir))
+        {
+            dataDir = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../../../Darkness.Godot/assets/data"));
+        }
+
+        Assert.True(Directory.Exists(dataDir), $"Data directory not found at: {dataDir}");
+
+        // Get all JSON files recursively
+        var files = Directory.GetFiles(dataDir, "*.json", SearchOption.AllDirectories);
+        Assert.NotEmpty(files);
+
+        foreach (var file in files)
+        {
+            var json = File.ReadAllText(file);
+            try
+            {
+                // Use JsonDocument to validate syntax without needing a specific model
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                Assert.NotNull(doc);
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                Assert.Fail($"JSON Syntax Error in {Path.GetFileName(file)}: {ex.Message}\nPath: {file}");
+            }
+        }
+    }
 }
