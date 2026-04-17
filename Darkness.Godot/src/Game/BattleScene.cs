@@ -1051,21 +1051,46 @@ public partial class BattleScene : Control, IInitializable
                     await ToSignal(GetTree().CreateTimer(0.5), "timeout");
                 }
 
-                var combatResult = _combat.CalculateDamage(attacker, target, skill: skill);
-                
-                if (combatResult.IsHit)
+                if (skill.IsAOE)
                 {
-                    target.CurrentHP -= combatResult.DamageDealt;
-                    _enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
+                    _combatLog.AppendText($"\n[color=orange]{attacker.Name}[/color] performs a sweeping [b]{skill.Name}[/b]!");
+                    for (int i = 0; i < _enemies.Count; i++)
+                    {
+                        var e = _enemies[i];
+                        var result = _combat.CalculateDamage(attacker, e, skill: skill);
+                        if (result.IsHit)
+                        {
+                            e.CurrentHP -= result.DamageDealt;
+                            _enemyHealthBars[i].UpdateValue(e.CurrentHP, (int)e.MaxHP);
+                            string critMsg = result.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
+                            _combatLog.AppendText($"\n{critMsg}[color=red]{attacker.Name}[/color] hits {e.Name} for {result.DamageDealt} damage! Rolled {result.D20Roll}");
+                        }
+                        else
+                        {
+                            string missMsg = result.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
+                            _combatLog.AppendText($"\n{missMsg}[color=red]{attacker.Name}[/color] misses {e.Name}! Rolled {result.D20Roll}");
+                        }
+                    }
                     SyncCombatState();
-                    
-                    string critMsg = combatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
-                    _combatLog.AppendText($"\n{critMsg}[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {combatResult.DamageDealt} damage! Rolled {combatResult.D20Roll}");
                 }
                 else
                 {
-                    string missMsg = combatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
-                    _combatLog.AppendText($"\n{missMsg}[color=red]{attacker.Name}[/color] tried to use [b]{skill.Name}[/b] on {target.Name} but missed! Rolled { combatResult.D20Roll}");
+                    var combatResult = _combat.CalculateDamage(attacker, target, skill: skill);
+                    
+                    if (combatResult.IsHit)
+                    {
+                        target.CurrentHP -= combatResult.DamageDealt;
+                        _enemyHealthBars[actualIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
+                        SyncCombatState();
+                        
+                        string critMsg = combatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
+                        _combatLog.AppendText($"\n{critMsg}[color=red]{attacker.Name}[/color] uses [b]{skill.Name}[/b] on {target.Name} for {combatResult.DamageDealt} damage! Rolled {combatResult.D20Roll}");
+                    }
+                    else
+                    {
+                        string missMsg = combatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
+                        _combatLog.AppendText($"\n{missMsg}[color=red]{attacker.Name}[/color] tried to use [b]{skill.Name}[/b] on {target.Name} but missed! Rolled {combatResult.D20Roll}");
+                    }
                 }
 
                 if (!isRanged)
@@ -1079,14 +1104,18 @@ public partial class BattleScene : Control, IInitializable
                 attackerSprite.Play("idle_right");
             }
 
-            if (target.CurrentHP <= 0)
+            var defeatedEnemies = _enemies.Where(e => e.CurrentHP <= 0).ToList();
+            foreach (var defeated in defeatedEnemies)
             {
-                _combatLog.AppendText($"\n[color=gold]{target.Name} is defeated![/color]");
-                if (target.MoralityImpact != 0) _party[0].Morality += target.MoralityImpact;
+                _combatLog.AppendText($"\n[color=gold]{defeated.Name} is defeated![/color]");
+                if (defeated.MoralityImpact != 0) _party[0].Morality += defeated.MoralityImpact;
                 
-                _turnManager.RemoveEntity(target);
-                
-                _enemies.Remove(target);
+                _turnManager.RemoveEntity(defeated);
+                _enemies.Remove(defeated);
+            }
+
+            if (defeatedEnemies.Count > 0)
+            {
                 _selectedEnemyIndex = 0;
                 await UpdateSprites();
             }
