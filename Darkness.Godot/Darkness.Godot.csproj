@@ -17,5 +17,6 @@
     <ProjectReference Include="..\Darkness.Core\Darkness.Core.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="3.119.2" />
   </ItemGroup>
 </Project>
