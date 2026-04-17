@@ -6,7 +6,10 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- Force NuGet to accept Android-specific native assets in a standard net10.0 project -->
+    <AssetTargetFallback>$(AssetTargetFallback);net8.0-android34.0</AssetTargetFallback>
   </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="android/**" />
     <EmbeddedResource Remove="android/**" />
@@ -17,6 +20,9 @@
     <ProjectReference Include="..\Darkness.Core\Darkness.Core.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="3.119.2" />
+    <!-- Native assets for SkiaSharp on Android. NU1701 is suppressed because we're forcing a net8.0-android package into net10.0 -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Android" Version="3.119.2">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
   </ItemGroup>
 </Project>
