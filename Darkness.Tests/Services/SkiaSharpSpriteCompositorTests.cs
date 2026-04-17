@@ -29,7 +29,7 @@ public class SkiaSharpSpriteCompositorTests
         using var stream = new MemoryStream(sheet);
         using var bitmap = SKBitmap.Decode(stream);
         Assert.NotNull(bitmap);
-        Assert.Equal(832, bitmap.Width);
+        Assert.Equal(SheetConstants.SHEET_WIDTH, bitmap.Width);
         Assert.Equal(5760, bitmap.Height);
     }
 
