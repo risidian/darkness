@@ -23,7 +23,8 @@ public class BattleRewardTests
         itemCol.Insert(new Item { Name = "Iron Scrap", Value = 10 });
         itemCol.Insert(new Item { Name = "Silver Ring", Value = 100 });
 
-        var rewardService = new RewardService(db);
+        var sessionMock = new Mock<ISessionService>();
+        var rewardService = new RewardService(db, sessionMock.Object);
         var character = new Character { Name = "Hero", Gold = 100 };
         
         // Seed character

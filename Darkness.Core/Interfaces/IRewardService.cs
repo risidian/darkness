@@ -6,7 +6,7 @@ namespace Darkness.Core.Interfaces
 {
     public interface IRewardService
     {
-        Task<Item?> CheckDailyRewardAsync(User user);
+        Task<List<Item>> CheckDailyRewardAsync(User user);
         BattleRewardResult ProcessCombatRewards(Character character, List<Enemy> enemies);
     }
 }

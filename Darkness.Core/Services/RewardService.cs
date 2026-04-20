@@ -11,10 +11,12 @@ namespace Darkness.Core.Services
     public class RewardService : IRewardService
     {
         private readonly LiteDatabase _db;
+        private readonly ISessionService _session;
 
-        public RewardService(LiteDatabase db)
+        public RewardService(LiteDatabase db, ISessionService session)
         {
             _db = db;
+            _session = session;
         }
 
         public BattleRewardResult ProcessCombatRewards(Character character, List<Enemy> enemies)
@@ -64,58 +66,88 @@ namespace Darkness.Core.Services
             return result;
         }
 
-        public Task<Item?> CheckDailyRewardAsync(User user)
+        public Task<List<Item>> CheckDailyRewardAsync(User user)
         {
-            if (user == null) return Task.FromResult<Item?>(null);
+            if (user == null) return Task.FromResult(new List<Item>());
 
             return Task.Run(() =>
             {
+                var awardedItems = new List<Item>();
                 DateTime today = DateTime.Today;
 
                 if (user.LastLogin.Date < today)
                 {
-                    Item reward = GenerateRandomReward();
+                    var character = _session.CurrentCharacter;
+                    if (character == null) return awardedItems;
 
+                    var randomCol = _db.GetCollection<RandomReward>("random_rewards");
+                    var calendarCol = _db.GetCollection<CalendarReward>("login_calendar");
+                    var itemCol = _db.GetCollection<Item>("items");
+
+                    // 1. Weighted Random Selection
+                    var randomRewards = randomCol.FindAll().ToList();
+                    if (randomRewards.Any())
+                    {
+                        int totalWeight = randomRewards.Sum(r => r.Weight);
+                        var random = new Random();
+                        int roll = random.Next(totalWeight);
+                        int currentSum = 0;
+                        RandomReward? selectedRandom = null;
+                        foreach (var r in randomRewards)
+                        {
+                            currentSum += r.Weight;
+                            if (roll < currentSum)
+                            {
+                                selectedRandom = r;
+                                break;
+                            }
+                        }
+
+                        if (selectedRandom != null)
+                        {
+                            var itemTemplate = itemCol.FindOne(x => x.Name == selectedRandom.ItemName);
+                            if (itemTemplate != null)
+                            {
+                                // Add check character.TotalWeight + item.Weight <= character.CarryCapacity
+                                if (character.TotalWeight + itemTemplate.Weight <= character.CarryCapacity)
+                                {
+                                    character.Inventory.Add(itemTemplate);
+                                    awardedItems.Add(itemTemplate);
+                                }
+                            }
+                        }
+                    }
+
+                    // 2. Calendar Selection
+                    var now = DateTime.Now;
+                    var calendar = calendarCol.FindOne(c => c.Month == now.Month);
+                    if (calendar != null && calendar.Items.Count >= now.Day)
+                    {
+                        string itemName = calendar.Items[now.Day - 1];
+                        var itemTemplate = itemCol.FindOne(x => x.Name == itemName);
+                        if (itemTemplate != null)
+                        {
+                            if (character.TotalWeight + itemTemplate.Weight <= character.CarryCapacity)
+                            {
+                                character.Inventory.Add(itemTemplate);
+                                awardedItems.Add(itemTemplate);
+                            }
+                        }
+                    }
+
+                    // 3. Update User and Character
                     user.LastLogin = DateTime.Now;
-                    var col = _db.GetCollection<User>("users");
-                    col.Update(user);
+                    _db.GetCollection<User>("users").Update(user);
 
-                    return (Item?)reward;
+                    if (awardedItems.Any())
+                    {
+                        character.ConsolidateInventory();
+                        _db.GetCollection<Character>("characters").Update(character);
+                    }
                 }
 
-                return null;
+                return awardedItems;
             });
-        }
-
-        private Item GenerateRandomReward()
-        {
-            var random = new Random();
-            int choice = random.Next(3);
-
-            return choice switch
-            {
-                0 => new Item
-                {
-                    Name = "Health Potion",
-                    Description = "A crimson elixir that mends flesh and bone.",
-                    Type = "Consumable",
-                    Value = 50
-                },
-                1 => new Item
-                {
-                    Name = "Mana Potion",
-                    Description = "A swirling blue liquid that restores magical energy.",
-                    Type = "Consumable",
-                    Value = 50
-                },
-                _ => new Item
-                {
-                    Name = "Iron Ore",
-                    Description = "Raw iron extracted from the deep earth. Used in smithing.",
-                    Type = "Material",
-                    Value = 25
-                }
-            };
         }
     }
 }

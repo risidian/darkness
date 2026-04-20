@@ -4,6 +4,7 @@ using Darkness.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkness.Godot.UI;
 
@@ -99,10 +100,11 @@ public partial class MainMenuScene : Control
     {
         if (_session.CurrentUser == null) return;
 
-        var reward = await _rewardService.CheckDailyRewardAsync(_session.CurrentUser);
-        if (reward != null)
+        var rewards = await _rewardService.CheckDailyRewardAsync(_session.CurrentUser);
+        if (rewards != null && rewards.Count > 0)
         {
-            await _dialogService.DisplayAlertAsync("Daily Bonus!", $"You received a {reward.Name}!", "Excellent");
+            var itemsList = string.Join(", ", rewards.Select(i => i.Name));
+            await _dialogService.DisplayAlertAsync("Daily Bonus!", $"You received: {itemsList}!", "Excellent");
         }
     }
 

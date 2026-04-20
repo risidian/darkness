@@ -1,6 +1,8 @@
+using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using Darkness.Core.Services;
 using LiteDB;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,11 +15,13 @@ namespace Darkness.Tests.Services
         private readonly LiteDatabase _db;
         private readonly string _dbPath;
         private readonly RewardService _rewardService;
+        private readonly Mock<ISessionService> _sessionMock;
 
         public RewardServiceTests()
         {
             _dbPath = Path.Combine(Path.GetTempPath(), $"RewardServiceTests_{Guid.NewGuid()}.db");
             _db = new LiteDatabase(_dbPath, new BsonMapper());
+            _sessionMock = new Mock<ISessionService>();
 
             var characters = _db.GetCollection<Character>("characters");
             var items = _db.GetCollection<Item>("items");
@@ -25,7 +29,7 @@ namespace Darkness.Tests.Services
             items.Insert(new Item { Id = 1, Name = "Health Potion", Type = "Consumable", Value = 50 });
             items.Insert(new Item { Id = 2, Name = "Gold Coin", Type = "Currency", Value = 1 });
 
-            _rewardService = new RewardService(_db);
+            _rewardService = new RewardService(_db, _sessionMock.Object);
         }
 
         public void Dispose()
