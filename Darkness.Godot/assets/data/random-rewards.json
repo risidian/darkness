@@ -1,0 +1,8 @@
+[
+  { "ItemName": "Health Potion", "Weight": 10 },
+  { "ItemName": "Mana Potion", "Weight": 10 },
+  { "ItemName": "Iron Ore", "Weight": 20 },
+  { "ItemName": "Iron Scrap", "Weight": 30 },
+  { "ItemName": "Simple Dagger", "Weight": 5 },
+  { "ItemName": "Iron Sword", "Weight": 2 }
+]
