@@ -78,6 +78,8 @@ public partial class Global : Node
                 new TalentSeeder(fs).Seed(db);
                 new SkillSeeder(fs).Seed(db);
                 new RecipeSeeder(fs).Seed(db);
+                new ItemSeeder(fs).Seed(db);
+                new RewardSeeder(fs).Seed(db);
                 GD.Print("[Global] Data seeding complete.");
 
                 // Create runtime indexes (once at startup, not per operation)
