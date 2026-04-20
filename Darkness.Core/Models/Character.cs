@@ -90,6 +90,12 @@ namespace Darkness.Core.Models
             set => BaseCharisma = value;
         }
 
+        [BsonIgnore]
+        public int TotalWeight => Inventory?.Sum(i => i.Weight * i.Quantity) ?? 0;
+
+        [BsonIgnore]
+        public int CarryCapacity => Strength * 20;
+
         // Derived Stats
         public int CurrentHP { get; set; }
         public int MaxHP { get; set; }
