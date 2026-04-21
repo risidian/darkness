@@ -50,11 +50,17 @@ public class ItemSeeder
         }
 
         var col = db.GetCollection<Item>("items");
-        col.DeleteAll();
+        var loadedIds = new List<int>();
         foreach (var item in items)
-            col.Insert(item);
+        {
+            col.Upsert(item);
+            loadedIds.Add(item.Id);
+        }
+        // Cleanup orphaned items
+        col.DeleteMany(x => !loadedIds.Contains(x.Id));
+
         col.EnsureIndex(i => i.Name);
 
-        Console.WriteLine($"[ItemSeeder] INFO: Loaded {col.Count()} items");
+        Console.WriteLine($"[ItemSeeder] INFO: Synced {col.Count()} items");
     }
 }

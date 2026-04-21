@@ -1,5 +1,5 @@
 using Darkness.Core.Interfaces;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -29,7 +29,7 @@ namespace Darkness.Core.Services
             try
             {
                 string json = await File.ReadAllTextAsync(_settingsPath);
-                var settings = JsonConvert.DeserializeObject<SettingsData>(json);
+                var settings = JsonSerializer.Deserialize<SettingsData>(json);       
                 if (settings != null)
                 {
                     MasterVolume = settings.MasterVolume;
@@ -49,7 +49,7 @@ namespace Darkness.Core.Services
             try
             {
                 string? directory = Path.GetDirectoryName(_settingsPath);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))   
                 {
                     Directory.CreateDirectory(directory);
                 }
@@ -62,7 +62,7 @@ namespace Darkness.Core.Services
                     LastUserId = LastUserId
                 };
 
-                string json = JsonConvert.SerializeObject(settings);
+                string json = JsonSerializer.Serialize(settings);
                 await File.WriteAllTextAsync(_settingsPath, json);
             }
             catch (System.Exception)
@@ -71,12 +71,12 @@ namespace Darkness.Core.Services
             }
         }
 
-        private class SettingsData
+        internal class SettingsData
         {
             public double MasterVolume { get; set; }
             public double MusicVolume { get; set; }
-            public double SfxVolume { get; set; }
-            public int LastUserId { get; set; }
+            public double SfxVolume { get; set; }  
+            public int LastUserId { get; set; }    
         }
     }
 }

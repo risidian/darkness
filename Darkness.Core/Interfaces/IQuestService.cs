@@ -9,6 +9,7 @@ public interface IQuestService
     QuestStep? GetCurrentStep(Character character, string chainId);
     QuestStep? AdvanceStep(Character character, string chainId, string? choiceStepId = null);
     QuestState? GetQuestState(int characterId, string chainId);
+    void UpdateQuestState(QuestState state);
     bool IsMainStoryComplete(Character character);
     List<string> GetCompletedChainIds(int characterId);
     List<BranchOption> GetAvailableBranchOptions(Character character, string chainId, string stepId);

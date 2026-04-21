@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Darkness.Core.Models;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Xunit;
 
 namespace Darkness.Tests.Audit;
 
 public class QuestGraphAudit
 {
-    private const string QuestDataPath = "../../../Darkness.Godot/assets/data/quests/";
+    private const string QuestDataPath = "../../../Darkness.Godot/assets/data/quests/";      
 
     [Fact]
     public void AuditAllQuests()
     {
         var root = FindSolutionRoot();
-        var fullPath = Path.Combine(root, "Darkness.Godot", "assets", "data", "quests");
-        
+        var fullPath = Path.Combine(root, "Darkness.Godot", "assets", "data", "quests");     
+
         if (!Directory.Exists(fullPath))
         {
             throw new DirectoryNotFoundException($"Could not find quest data at {fullPath}");
@@ -25,21 +25,21 @@ public class QuestGraphAudit
 
         var questFiles = Directory.GetFiles(fullPath, "*.json");
         var reports = new List<string>();
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         foreach (var file in questFiles)
         {
             if (file.EndsWith(".bak")) continue;
 
             var content = File.ReadAllText(file);
-            var chain = JsonConvert.DeserializeObject<QuestChain>(content);
+            var chain = JsonSerializer.Deserialize<QuestChain>(content, options);
             if (chain == null) continue;
 
             reports.Add($"## Audit for {chain.Id} ({Path.GetFileName(file)})");
             AuditChain(chain, reports);
         }
 
-        var docPath = Path.Combine(root, "docs", "superpowers", "audit", "report-agent-3.md");
-        var docDir = Path.GetDirectoryName(docPath);
+        var docPath = Path.Combine(root, "docs", "superpowers", "audit", "report-agent-3.md");        var docDir = Path.GetDirectoryName(docPath);
         if (!string.IsNullOrEmpty(docDir) && !Directory.Exists(docDir))
         {
             Directory.CreateDirectory(docDir);

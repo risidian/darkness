@@ -58,32 +58,55 @@ public class QuestService : IQuestService
         var chain = GetChainById(chainId);
         if (chain == null)
         {
+            Console.Error.WriteLine($"[QuestService] ERROR: Quest chain not found: {chainId}");
             return null;
         }
 
         var stateCol = _db.GetCollection<QuestState>("quest_states");
         var state = GetQuestState(character.Id, chainId);
-        var currentStep = state != null
-            ? chain.Steps.FirstOrDefault(s => s.Id == state.CurrentStepId)
+        
+        // If state is already completed, do nothing
+        if (state?.Status == "completed")
+        {
+            Console.Error.WriteLine($"[QuestService] WARN: Attempted to advance a completed quest chain: {chainId}");
+            return null;
+        }
+
+        var currentStepId = state?.CurrentStepId;
+        var currentStep = currentStepId != null
+            ? chain.Steps.FirstOrDefault(s => s.Id == currentStepId)
             : chain.Steps.FirstOrDefault();
 
         if (currentStep == null)
         {
+            Console.Error.WriteLine($"[QuestService] ERROR: Current step '{currentStepId}' not found in chain '{chainId}'");
             return null;
         }
 
         string? nextStepId = null;
 
-        if (choiceStepId != null && currentStep.Branch != null)
+        if (choiceStepId != null)
         {
+            if (currentStep.Branch == null)
+            {
+                Console.Error.WriteLine($"[QuestService] ERROR: Choice '{choiceStepId}' provided but current step '{currentStep.Id}' has no branch data.");
+                return null;
+            }
+
             var completedChainIds = GetCompletedChainIds(character.Id);
             var option = currentStep.Branch.Options.FirstOrDefault(o =>
                 o.NextStepId == choiceStepId &&
                 ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds));
+            
             if (option != null)
             {
                 character.Morality += option.MoralityImpact;
                 nextStepId = option.NextStepId;
+            }
+            else
+            {
+                Console.Error.WriteLine($"[QuestService] ERROR: Invalid or unmet choice '{choiceStepId}' for step '{currentStep.Id}' in chain '{chainId}'");
+                return null;
             }
         }
         else
@@ -91,7 +114,7 @@ public class QuestService : IQuestService
             nextStepId = currentStep.NextStepId;
         }
 
-        if (nextStepId != null)
+        if (!string.IsNullOrEmpty(nextStepId))
         {
             var nextStep = chain.Steps.FirstOrDefault(s => s.Id == nextStepId);
             if (nextStep != null)
@@ -111,13 +134,20 @@ public class QuestService : IQuestService
                 {
                     state.CurrentStepId = nextStepId;
                     state.Status = "in_progress";
+                    // Clear combat snapshot if we are moving to a new step
+                    state.CurrentCombatSnapshot = null;
                     stateCol.Update(state);
                 }
                 return nextStep;
             }
+            else
+            {
+                Console.Error.WriteLine($"[QuestService] ERROR: Next step '{nextStepId}' defined in data but missing from chain '{chainId}' steps.");
+                return null;
+            }
         }
 
-        // No next step — chain is complete
+        // Truly no next step — chain is complete
         if (state == null)
         {
             state = new QuestState
@@ -133,10 +163,17 @@ public class QuestService : IQuestService
         {
             state.Status = "completed";
             state.CurrentStepId = currentStep.Id;
+            state.CurrentCombatSnapshot = null;
             stateCol.Update(state);
         }
 
         return null;
+    }
+
+    public void UpdateQuestState(QuestState state)
+    {
+        var col = _db.GetCollection<QuestState>("quest_states");
+        col.Update(state);
     }
 
     public QuestState? GetQuestState(int characterId, string chainId)

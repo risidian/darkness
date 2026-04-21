@@ -50,7 +50,7 @@ public class AppearanceSeeder
         }
 
         var optionCol = db.GetCollection<AppearanceOption>("appearance_options");
-        optionCol.DeleteAll();
+        var loadedOptionIds = new List<int>();
         if (data.AppearanceOptions != null)
         {
             foreach (var option in data.AppearanceOptions)
@@ -59,25 +59,33 @@ public class AppearanceSeeder
                 {
                     option.AssetPath = option.AssetPath.Replace("assets/sprites/full/", "");
                 }
-                optionCol.Insert(option);
+                optionCol.Upsert(option);
+                loadedOptionIds.Add(option.Id);
             }
         }
+        // Cleanup orphaned options
+        optionCol.DeleteMany(x => !loadedOptionIds.Contains(x.Id));
+
         optionCol.EnsureIndex(o => o.Category);
         optionCol.EnsureIndex(o => o.DisplayName);
 
-        Console.WriteLine($"[AppearanceSeeder] INFO: Loaded {optionCol.Count()} appearance options");
+        Console.WriteLine($"[AppearanceSeeder] INFO: Synced {optionCol.Count()} appearance options");
 
         var defaultsCol = db.GetCollection<ClassDefault>("class_defaults");
-        defaultsCol.DeleteAll();
+        var loadedDefaultNames = new List<string>();
         if (data.ClassDefaults != null)
         {
             foreach (var kvp in data.ClassDefaults)
             {
                 var cd = kvp.Value;
                 cd.ClassName = kvp.Key;
-                defaultsCol.Insert(cd);
+                defaultsCol.Upsert(cd);
+                loadedDefaultNames.Add(cd.ClassName);
             }
         }
+        // Cleanup orphaned class defaults
+        defaultsCol.DeleteMany(x => !loadedDefaultNames.Contains(x.ClassName));
+
         defaultsCol.EnsureIndex(c => c.ClassName);
 
         Console.WriteLine($"[AppearanceSeeder] INFO: Loaded {defaultsCol.Count()} class defaults");

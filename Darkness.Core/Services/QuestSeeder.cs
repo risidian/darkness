@@ -38,7 +38,7 @@ public class QuestSeeder
         }
 
         var chainCol = db.GetCollection<QuestChain>("quest_chains");
-        chainCol.DeleteAll();
+        var loadedIds = new List<string>();
 
         int chainCount = 0, stepCount = 0, errorCount = 0;
 
@@ -62,6 +62,7 @@ public class QuestSeeder
                 }
 
                 chainCol.Upsert(chain);
+                loadedIds.Add(chain.Id);
                 chainCount++;
                 stepCount += chain.Steps.Count;
             }
@@ -77,8 +78,10 @@ public class QuestSeeder
             }
         }
 
-        chainCol.EnsureIndex(c => c.Id);
-        chainCol.EnsureIndex(c => c.IsMainStory);
+        // Cleanup orphaned chains
+        chainCol.DeleteMany(x => !loadedIds.Contains(x.Id));
+
+        chainCol.EnsureIndex(c => c.Id);        chainCol.EnsureIndex(c => c.IsMainStory);
 
         Console.Error.WriteLine($"[QuestSeeder] INFO: Loaded {chainCount} quest chains with {stepCount} steps from {files.Length} files ({errorCount} errors)");
         Console.Error.WriteLine($"[QuestSeeder] DEBUG: Total chains in DB now: {chainCol.Count()}");

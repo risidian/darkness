@@ -8,6 +8,7 @@ namespace Darkness.Core.Data
     {
         private readonly IFileSystemService _fileSystem;
         private readonly string _dbPath;
+        private static readonly BsonMapper _sharedMapper = new BsonMapper();
 
         public LocalDatabaseService(IFileSystemService fileSystem)
         {
@@ -28,10 +29,10 @@ namespace Darkness.Core.Data
             return Path.Combine(directory, filename);
         }
 
-        public LiteDatabase OpenDatabase() 
+        public LiteDatabase OpenDatabase()
         {
             var connectionString = $"Filename={_dbPath};Connection=shared";
-            return new LiteDatabase(connectionString);
+            return new LiteDatabase(connectionString, _sharedMapper);
         }
     }
 }

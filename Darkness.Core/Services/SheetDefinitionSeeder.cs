@@ -20,7 +20,7 @@ public class SheetDefinitionSeeder
     public void Seed(ILiteDatabase db)
     {
         var col = db.GetCollection<SheetDefinition>("sheet_definitions");
-        col.DeleteAll();
+        var loadedIds = new List<int>();
 
         string baseDir = "assets/data/sheet_definitions";
         try
@@ -45,8 +45,9 @@ public class SheetDefinitionSeeder
 
                     if (def != null)
                     {
-                        col.Insert(def);
-                        Console.WriteLine($"[SheetDefinitionSeeder] Loaded: {def.Name} ({def.Slot}) from {file}");
+                        col.Upsert(def);
+                        loadedIds.Add(def.Id);
+                        Console.WriteLine($"[SheetDefinitionSeeder] Synced: {def.Name} ({def.Slot}) from {file}");
                     }
                 }
                 catch (Exception ex)
@@ -55,9 +56,12 @@ public class SheetDefinitionSeeder
                 }
             }
 
+            // Cleanup orphaned definitions
+            col.DeleteMany(x => !loadedIds.Contains(x.Id));
+
             col.EnsureIndex(x => x.Slot);
             col.EnsureIndex(x => x.Name);
-            Console.WriteLine($"[SheetDefinitionSeeder] INFO: Loaded {col.Count()} sheet definitions from {baseDir}");
+            Console.WriteLine($"[SheetDefinitionSeeder] INFO: Synced {col.Count()} sheet definitions from {baseDir}");
         }
         catch (Exception ex)
         {

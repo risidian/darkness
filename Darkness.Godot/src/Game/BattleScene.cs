@@ -135,6 +135,26 @@ public partial class BattleScene : Control, IInitializable
                 // Remove dead enemies if we are resuming
                 if (args.IsResuming)
                 {
+                    // If no snapshot was passed in memory, try to load from database
+                    if (args.Snapshot == null && _session.CurrentCharacter != null && !string.IsNullOrEmpty(_questChainId))
+                    {
+                        var state = _questService.GetQuestState(_session.CurrentCharacter.Id, _questChainId);
+                        if (state != null && state.CurrentCombatSnapshot != null)
+                        {
+                            GD.Print($"[BattleScene] Restoring combat snapshot from database for chain: {_questChainId}");
+                            args.Snapshot = state.CurrentCombatSnapshot;
+                            
+                            // Restore enemy HP from snapshot
+                            for (int i = 0; i < args.Combat.Enemies.Count; i++)
+                            {
+                                if (args.Snapshot.EnemyHP.TryGetValue(i, out int hp))
+                                {
+                                    args.Combat.Enemies[i].CurrentHP = hp;
+                                }
+                            }
+                        }
+                    }
+
                     _enemies.RemoveAll(e => e.CurrentHP <= 0);
                 }
             }
@@ -789,6 +809,8 @@ public partial class BattleScene : Control, IInitializable
     {
         if (!IsInsideTree() || _party.Count == 0 || _enemies.Count == 0 || _turnManager.TurnOrder.Count == 0) return;
 
+        SyncCombatState();
+
         if (_survivalTurns > 0)
         {
             int currentSurvivalTurn = _turnManager.CurrentRound - 1;
@@ -1248,6 +1270,17 @@ public partial class BattleScene : Control, IInitializable
                     spawn.CurrentHP = liveEnemy.CurrentHP;
                     _battleArgs.Snapshot.EnemyHP[i] = liveEnemy.CurrentHP;
                 }
+            }
+        }
+
+        // Persist to database for auto-resume
+        if (_session.CurrentCharacter != null && !string.IsNullOrEmpty(_questChainId))
+        {
+            var state = _questService.GetQuestState(_session.CurrentCharacter.Id, _questChainId);
+            if (state != null)
+            {
+                state.CurrentCombatSnapshot = _battleArgs.Snapshot;
+                _questService.UpdateQuestState(state);
             }
         }
     }

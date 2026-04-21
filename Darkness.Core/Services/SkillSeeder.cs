@@ -50,12 +50,18 @@ public class SkillSeeder
         }
 
         var col = db.GetCollection<Skill>("skills");
-        col.DeleteAll();
+        var loadedIds = new List<int>();
         foreach (var skill in skills)
-            col.Insert(skill);
+        {
+            col.Upsert(skill);
+            loadedIds.Add(skill.Id);
+        }
+        // Cleanup orphaned skills
+        col.DeleteMany(x => !loadedIds.Contains(x.Id));
+
         col.EnsureIndex(s => s.Id);
         col.EnsureIndex(s => s.Name);
 
-        Console.WriteLine($"[SkillSeeder] INFO: Loaded {col.Count()} skills from JSON");
+        Console.WriteLine($"[SkillSeeder] INFO: Synced {col.Count()} skills from JSON");
     }
 }

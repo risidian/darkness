@@ -8,4 +8,5 @@ public class QuestState
     public string CurrentStepId { get; set; } = string.Empty;
     public string Status { get; set; } = "available";
     public Dictionary<string, string> Flags { get; set; } = new();
+    public CombatSnapshot? CurrentCombatSnapshot { get; set; }
 }

@@ -45,10 +45,17 @@ public class RecipeSeeder
         }
 
         var col = db.GetCollection<Recipe>("recipes");
-        col.DeleteAll();
-        col.InsertBulk(recipes);
+        var loadedIds = new List<int>();
+        foreach (var recipe in recipes)
+        {
+            col.Upsert(recipe);
+            loadedIds.Add(recipe.Id);
+        }
+        // Cleanup orphaned recipes
+        col.DeleteMany(x => !loadedIds.Contains(x.Id));
+
         col.EnsureIndex(r => r.Name);
 
-        Console.WriteLine($"[RecipeSeeder] INFO: Loaded {col.Count()} recipes from JSON");
+        Console.WriteLine($"[RecipeSeeder] INFO: Synced {col.Count()} recipes from JSON");
     }
 }

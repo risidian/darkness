@@ -50,11 +50,17 @@ public class LevelSeeder
         }
 
         var col = db.GetCollection<Level>("levels");
-        col.DeleteAll();
+        var loadedValues = new List<int>();
         foreach (var level in levels)
-            col.Insert(level);
+        {
+            col.Upsert(level);
+            loadedValues.Add(level.Value);
+        }
+        // Cleanup orphaned levels
+        col.DeleteMany(x => !loadedValues.Contains(x.Value));
+
         col.EnsureIndex(l => l.Value);
 
-        Console.WriteLine($"[LevelSeeder] INFO: Loaded {col.Count()} level thresholds (max level: {levels[^1].Value})");
+        Console.WriteLine($"[LevelSeeder] INFO: Synced {col.Count()} level thresholds (max level: {levels[^1].Value})");
     }
 }

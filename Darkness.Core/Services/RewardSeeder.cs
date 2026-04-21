@@ -52,10 +52,15 @@ public class RewardSeeder
         if (rewards != null)
         {
             var col = db.GetCollection<RandomReward>("random_rewards");
-            col.DeleteAll();
+            var loadedNames = new List<string>();
             foreach (var r in rewards)
-                col.Insert(r);
-            Console.WriteLine($"[RewardSeeder] INFO: Loaded {col.Count()} random rewards");
+            {
+                col.Upsert(r);
+                loadedNames.Add(r.ItemName);
+            }
+            // Cleanup orphaned rewards
+            col.DeleteMany(x => !loadedNames.Contains(x.ItemName));
+            Console.WriteLine($"[RewardSeeder] INFO: Synced {col.Count()} random rewards");
         }
     }
 
@@ -89,11 +94,16 @@ public class RewardSeeder
         if (rewards != null)
         {
             var col = db.GetCollection<CalendarReward>("login_calendar");
-            col.DeleteAll();
+            var loadedMonths = new List<int>();
             foreach (var r in rewards)
-                col.Insert(r);
+            {
+                col.Upsert(r);
+                loadedMonths.Add(r.Month);
+            }
+            // Cleanup orphaned rewards
+            col.DeleteMany(x => !loadedMonths.Contains(x.Month));
             col.EnsureIndex(r => r.Month);
-            Console.WriteLine($"[RewardSeeder] INFO: Loaded {col.Count()} calendar reward sets");
+            Console.WriteLine($"[RewardSeeder] INFO: Synced {col.Count()} calendar reward sets");
         }
     }
 }

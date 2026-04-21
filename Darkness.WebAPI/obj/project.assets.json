@@ -3716,16 +3716,17 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\.worktrees\\robustness-integrity\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
       "projectName": "Darkness.WebAPI",
-      "projectPath": "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
+      "projectPath": "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\.worktrees\\robustness-integrity\\Darkness.WebAPI\\Darkness.WebAPI.csproj",
       "packagesPath": "C:\\Users\\Mayce\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\Darkness.WebAPI\\obj\\",
+      "outputPath": "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\.worktrees\\robustness-integrity\\Darkness.WebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
+        "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\.worktrees\\robustness-integrity\\NuGet.Config",
         "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\NuGet.Config",
         "C:\\Users\\Mayce\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",

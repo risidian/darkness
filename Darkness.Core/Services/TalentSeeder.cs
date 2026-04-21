@@ -58,10 +58,17 @@ public class TalentSeeder
         }
 
         var col = db.GetCollection<TalentTree>("talent_trees");
-        col.DeleteAll();
-        col.InsertBulk(trees);
+        var loadedIds = new List<string>();
+        foreach (var tree in trees)
+        {
+            col.Upsert(tree);
+            loadedIds.Add(tree.Id);
+        }
+        // Cleanup orphaned talent trees
+        col.DeleteMany(x => !loadedIds.Contains(x.Id));
+
         col.EnsureIndex(t => t.Id);
 
-        Console.Error.WriteLine($"[TalentSeeder] INFO: Loaded {col.Count()} talent trees");
+        Console.Error.WriteLine($"[TalentSeeder] INFO: Synced {col.Count()} talent trees");
     }
 }
