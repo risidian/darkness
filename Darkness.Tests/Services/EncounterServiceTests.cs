@@ -93,15 +93,20 @@ public class EncounterServiceTests : IDisposable
     }
 
     [Fact]
-    public void RollForEncounter_MethodExists()
+    public void RollForEncounter_RespectsDistanceThreshold()
     {
-        // Act
-        // This will cause a compilation error until the interface and implementation are updated
-        var result = _service.RollForEncounter("forest", 10.0);
+        // Arrange
+        var table = new EncounterTable
+        {
+            BackgroundKey = "test_bg",
+            EncounterChance = 100, // Always succeed if distance met
+            EncounterDistance = 500f,
+            Encounters = new List<EncounterEntry> { new EncounterEntry { Weight = 1, Combat = new CombatData() } }
+        };
+        _db.GetCollection<EncounterTable>("encounter_tables").Insert(table);
 
-        // Assert
-        // For Task 2, we just care that it exists. 
-        // Logic will be tested in Task 3.
-        Assert.Null(result);
+        // Act & Assert
+        Assert.Null(_service.RollForEncounter("test_bg", 499)); // Below threshold
+        Assert.NotNull(_service.RollForEncounter("test_bg", 501)); // Above threshold
     }
 }

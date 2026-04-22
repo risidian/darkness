@@ -9,7 +9,6 @@ namespace Darkness.Core.Services;
 public class EncounterService : IEncounterService
 {
     private readonly LiteDatabase _db;
-    private readonly Random _random = new();
 
     public EncounterService(LiteDatabase db)
     {
@@ -27,7 +26,12 @@ public class EncounterService : IEncounterService
         }
 
         int totalWeight = table.Encounters.Sum(e => e.Weight);
-        int roll = _random.Next(totalWeight);
+        if (totalWeight <= 0)
+        {
+            return table.Encounters.First().Combat;
+        }
+
+        int roll = Random.Shared.Next(totalWeight);
         int currentWeight = 0;
 
         foreach (var entry in table.Encounters)
@@ -44,6 +48,20 @@ public class EncounterService : IEncounterService
 
     public CombatData? RollForEncounter(string backgroundKey, double distanceMoved)
     {
+        var col = _db.GetCollection<EncounterTable>("encounter_tables");
+        var table = col.FindOne(t => t.BackgroundKey == backgroundKey);
+
+        if (table == null || table.Encounters.Count == 0 || distanceMoved < table.EncounterDistance)
+        {
+            return null;
+        }
+
+        int roll = Random.Shared.Next(1, 101);
+        if (roll <= table.EncounterChance)
+        {
+            return GetRandomEncounter(backgroundKey);
+        }
+
         return null;
     }
 }
