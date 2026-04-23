@@ -16,11 +16,13 @@ public partial class WorldScene : Node2D, IInitializable
     private ISessionService _session = null!;
     private IQuestService _questService = null!;
     private ITriggerService _triggerService = null!;
+    private IEncounterService _encounterService = null!;
     private ISpriteCompositor _compositor = null!;
     private ISheetDefinitionCatalog _catalog = null!;
     private IFileSystemService _fileSystem = null!;
 
     private CharacterBody2D _player = null!;
+    private Camera2D _camera = null!;
     private LayeredSprite _playerSprite = null!;
     private LayeredSprite _npcSprite = null!;
     private PanelContainer _dialogueBox = null!;
@@ -50,6 +52,9 @@ public partial class WorldScene : Node2D, IInitializable
     private QuestStep? _currentDialogueStep = null;
     private double _textZoneCooldown = 0;
     private bool _isZoneDialogue = false;
+
+    private double _distanceMovedSinceLastEncounter = 0;
+    private Vector2 _lastPlayerPosition;
 
     public void Initialize(IDictionary<string, object> parameters)
     {
@@ -116,6 +121,7 @@ public partial class WorldScene : Node2D, IInitializable
         _session = sp.GetRequiredService<ISessionService>();
         _questService = sp.GetRequiredService<IQuestService>();
         _triggerService = sp.GetRequiredService<ITriggerService>();
+        _encounterService = sp.GetRequiredService<IEncounterService>();
         _compositor = sp.GetRequiredService<ISpriteCompositor>();
         _catalog = sp.GetRequiredService<ISheetDefinitionCatalog>();
         _fileSystem = sp.GetRequiredService<IFileSystemService>();
@@ -130,11 +136,19 @@ public partial class WorldScene : Node2D, IInitializable
         _playerSprite = GetNode<LayeredSprite>("Player/Sprite");
         _npcSprite = GetNode<LayeredSprite>("NPC/Sprite");
 
+        // Set up Camera (at root, static center)
+        _camera = new Camera2D();
+        _camera.GlobalPosition = new Vector2(640, 360);
+        AddChild(_camera);
+        _camera.MakeCurrent();
+
         if (_startingPosition.HasValue)
         {
             _player.GlobalPosition = _startingPosition.Value;
             GD.Print($"[WorldScene] Set starting position to: {_startingPosition.Value}");
         }
+
+        _lastPlayerPosition = _player.GlobalPosition;
 
         _dialogueBox = GetNode<PanelContainer>("CanvasLayer/DialogueBox");
         _pauseMenu = GetNode<PauseMenu>("CanvasLayer/PauseMenu");
@@ -332,16 +346,94 @@ public partial class WorldScene : Node2D, IInitializable
             {
                 _player.MoveAndSlide();
                 UpdateAnimation(intendedVelocity);
+                CheckRandomEncounter(delta);
             }
             else
             {
                 _playerSprite.Play("idle_" + _lastDirection);
+                _lastPlayerPosition = _player.GlobalPosition;
             }
         }
         else
         {
             _playerSprite.Play("idle_" + _lastDirection);
+            _lastPlayerPosition = _player.GlobalPosition;
         }
+    }
+
+    private void CheckRandomEncounter(double delta)
+    {
+        float dist = _player.GlobalPosition.DistanceTo(_lastPlayerPosition);
+        _distanceMovedSinceLastEncounter += dist;
+        _lastPlayerPosition = _player.GlobalPosition;
+
+        // Only roll if we have a background key to look up
+        string? bgKey = _currentDialogueStep?.Visuals?.BackgroundKey;
+        if (string.IsNullOrEmpty(bgKey)) return;
+
+        var combat = _encounterService.RollForEncounter(bgKey, _distanceMovedSinceLastEncounter);
+        if (combat != null)
+        {
+            _distanceMovedSinceLastEncounter = 0; // Reset only on success
+            _ = StartRandomEncounter(combat);
+        }
+    }
+
+    private async Task StartRandomEncounter(CombatData combat)
+    {
+        _state = WorldState.Transitioning;
+        _isEncounterTriggered = true;
+        _player.Velocity = Vector2.Zero;
+        _playerSprite.Play("idle_" + _lastDirection);
+
+        GD.Print("[WorldScene] RANDOM ENCOUNTER TRIGGERED!");
+
+        // Spawn Ghost Enemy
+        var ghostEnemy = new Sprite2D();
+        var enemySpriteKey = combat.Enemies.FirstOrDefault()?.SpriteKey ?? "hound";
+        var ghostTex = GD.Load<Texture2D>($"res://assets/sprites/{enemySpriteKey}.png");
+        if (ghostTex != null)
+        {
+            ghostEnemy.Texture = ghostTex;
+            ghostEnemy.Hframes = 13; // LPC standard
+            ghostEnemy.Vframes = 21;
+            ghostEnemy.Frame = 130; // Side view idleish
+            ghostEnemy.Scale = new Vector2(2, 2);
+        }
+
+        // Random position around player
+        float angle = (float)GD.RandRange(0, Mathf.Pi * 2);
+        Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 200;
+        ghostEnemy.GlobalPosition = _player.GlobalPosition + offset;
+        AddChild(ghostEnemy);
+
+        // Heartbeat Pulse Animation
+        for (int i = 1; i <= 4; i++)
+        {
+            float targetZoom = 1.0f + (i * 0.5f);
+            
+            // Pulse toward enemy
+            var tween = CreateTween();
+            tween.SetParallel(true);
+            tween.TweenProperty(_camera, "zoom", new Vector2(targetZoom + 0.2f, targetZoom + 0.2f), 0.1f).SetTrans(Tween.TransitionType.Back);
+            tween.TweenProperty(_camera, "global_position", ghostEnemy.GlobalPosition, 0.1f);
+            await ToSignal(tween, "finished");
+
+            // Settle slightly
+            var settleTween = CreateTween();
+            settleTween.TweenProperty(_camera, "zoom", new Vector2(targetZoom, targetZoom), 0.2f);
+            await ToSignal(settleTween, "finished");
+
+            await Task.Delay(150); // Gap between beats
+        }
+
+        // Final transition
+        await _navigation.NavigateToAsync(Routes.Battle, new BattleArgs
+        {
+            Combat = combat,
+            ReturnPositionX = _player.GlobalPosition.X,
+            ReturnPositionY = _player.GlobalPosition.Y
+        });
     }
 
     private void UpdateAnimation(Vector2 velocity)
