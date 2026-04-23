@@ -40,6 +40,8 @@ public class EncounterServiceTests : IDisposable
         var json = @"[
             {
                 ""BackgroundKey"": ""test_bg"",
+                ""EncounterChance"": 15,
+                ""EncounterDistance"": 2000,
                 ""Encounters"": [
                     { ""Weight"": 100, ""Combat"": { ""BackgroundKey"": ""combat_bg"" } }
                 ]
@@ -56,6 +58,8 @@ public class EncounterServiceTests : IDisposable
         Assert.Equal(1, col.Count());
         var table = col.FindOne(t => t.BackgroundKey == "test_bg");
         Assert.NotNull(table);
+        Assert.Equal(15, table.EncounterChance);
+        Assert.Equal(2000f, table.EncounterDistance);
         Assert.Single(table.Encounters);
         Assert.Equal("combat_bg", table.Encounters[0].Combat.BackgroundKey);
     }
@@ -108,5 +112,55 @@ public class EncounterServiceTests : IDisposable
         // Act & Assert
         Assert.Null(_service.RollForEncounter("test_bg", 499)); // Below threshold
         Assert.NotNull(_service.RollForEncounter("test_bg", 501)); // Above threshold
+    }
+
+    [Fact]
+    public void RollForEncounter_RespectsChance_Failure()
+    {
+        // Arrange
+        var table = new EncounterTable
+        {
+            BackgroundKey = "low_chance",
+            EncounterChance = 0, // Never succeed
+            EncounterDistance = 0,
+            Encounters = new List<EncounterEntry> { new EncounterEntry { Weight = 1, Combat = new CombatData() } }
+        };
+        _db.GetCollection<EncounterTable>("encounter_tables").Insert(table);
+
+        // Act
+        var result = _service.RollForEncounter("low_chance", 100);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void RollForEncounter_ReturnsNullForUnknownBackground()
+    {
+        // Act
+        var result = _service.RollForEncounter("unknown", 1000);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void RollForEncounter_ReturnsNullForEmptyEncounters()
+    {
+        // Arrange
+        var table = new EncounterTable
+        {
+            BackgroundKey = "empty",
+            EncounterChance = 100,
+            EncounterDistance = 0,
+            Encounters = new List<EncounterEntry>()
+        };
+        _db.GetCollection<EncounterTable>("encounter_tables").Insert(table);
+
+        // Act
+        var result = _service.RollForEncounter("empty", 100);
+
+        // Assert
+        Assert.Null(result);
     }
 }

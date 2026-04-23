@@ -1,0 +1,61 @@
+[
+  {
+    "BackgroundKey": "camelot_shore",
+    "EncounterChance": 8,
+    "EncounterDistance": 1000,
+    "Encounters": [
+      {
+        "Weight": 50,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Stray Hound",
+              "Level": 1,
+              "MaxHP": 25,
+              "CurrentHP": 25,
+              "Attack": 5,
+              "Defense": 2,
+              "Speed": 10,
+              "SpriteKey": "hound",
+              "ExperienceReward": 15,
+              "GoldReward": 1
+            }
+          ],
+          "BackgroundKey": "camelot_shore_2"
+        }
+      },
+      {
+        "Weight": 25,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Shore Crab",
+              "Level": 1,
+              "MaxHP": 35,
+              "CurrentHP": 35,
+              "Attack": 6,
+              "Defense": 5,
+              "Speed": 5,
+              "SpriteKey": "hound",
+              "ExperienceReward": 20,
+              "GoldReward": 2
+            },
+            {
+              "Name": "Shore Crab",
+              "Level": 1,
+              "MaxHP": 35,
+              "CurrentHP": 35,
+              "Attack": 6,
+              "Defense": 5,
+              "Speed": 5,
+              "SpriteKey": "hound",
+              "ExperienceReward": 20,
+              "GoldReward": 2
+            }
+          ],
+          "BackgroundKey": "camelot_shore_2"
+        }
+      }
+    ]
+  }
+]
