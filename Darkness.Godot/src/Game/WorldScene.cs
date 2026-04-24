@@ -911,6 +911,7 @@ public partial class WorldScene : Node2D, IInitializable
             float x = visuals.PlayerPositionX ?? _player.GlobalPosition.X;
             float y = visuals.PlayerPositionY ?? _player.GlobalPosition.Y;
             _player.GlobalPosition = new Vector2(x, y);
+            _lastPlayerPosition = _player.GlobalPosition; // Sync position to prevent jump in distance tracking
             _targetPosition = null; // Stop any ongoing movement
             _player.Velocity = Vector2.Zero;
             GD.Print($"[WorldScene] Player position updated from quest data to: ({x}, {y})");

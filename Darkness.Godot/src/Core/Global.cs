@@ -53,6 +53,7 @@ public partial class Global : Node
             services.AddSingleton<IWeaponSkillService, WeaponSkillService>();
             services.AddSingleton<ILevelingService, LevelingService>();
             services.AddSingleton<ITalentService, TalentService>();
+            services.AddSingleton<IEncounterService, EncounterService>();
             services.AddSingleton<ITriggerService, TriggerService>();
             services.AddSingleton<IEquipmentService, EquipmentService>();
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
@@ -80,6 +81,7 @@ public partial class Global : Node
                 new RecipeSeeder(fs).Seed(db);
                 new ItemSeeder(fs).Seed(db);
                 new RewardSeeder(fs).Seed(db);
+                new EncounterSeeder(fs).Seed(db);
                 GD.Print("[Global] Data seeding complete.");
 
                 // Create runtime indexes (once at startup, not per operation)
