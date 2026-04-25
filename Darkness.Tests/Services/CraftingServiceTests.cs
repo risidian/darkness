@@ -120,5 +120,37 @@ namespace Darkness.Tests.Services
             Assert.Equal("Fire", item.Infusion);
             Assert.Empty(character.Inventory);
         }
+
+        [Fact]
+        public async Task CraftItem_Preserves_Metadata_Deep_Clone()
+        {
+            var service = new CraftingService(CreateEmptyDb());
+            var character = new Character 
+            { 
+                Inventory = new List<Item> { new Item { Name = "Iron Ore" } } 
+            };
+            var recipe = new Recipe 
+            { 
+                Name = "Magic Dagger",
+                Materials = new Dictionary<string, int> { { "Iron Ore", 1 } },
+                Result = new Item 
+                { 
+                    Name = "Magic Dagger", 
+                    Type = "Weapon",
+                    StrengthBonus = 5,
+                    IntelligenceBonus = 10,
+                    RequiredLevel = 5
+                }
+            };
+
+            var result = await service.CraftItemAsync(character, recipe);
+            
+            Assert.True(result);
+            var craftedItem = character.Inventory.FirstOrDefault(i => i.Name == "Magic Dagger");
+            Assert.NotNull(craftedItem);
+            Assert.Equal(5, craftedItem.StrengthBonus);
+            Assert.Equal(10, craftedItem.IntelligenceBonus);
+            Assert.Equal(5, craftedItem.RequiredLevel);
+        }
     }
 }

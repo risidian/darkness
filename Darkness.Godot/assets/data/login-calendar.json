@@ -1,14 +1,50 @@
-{
-  "1": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "2": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "3": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "4": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "5": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "6": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "7": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "8": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "9": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "10": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "11": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"],
-  "12": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
-}
+[
+  {
+    "Month": 1,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 2,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 3,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 4,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 5,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 6,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 7,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 8,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 9,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 10,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 11,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  },
+  {
+    "Month": 12,
+    "Items": ["Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion", "Mana Potion", "Iron Ore", "Iron Scrap", "Simple Dagger", "Iron Sword", "Health Potion"]
+  }
+]

@@ -130,7 +130,7 @@
 	  "Type": "combat",
 	  "Combat": {
 		"Enemies": [
-		  { "Name": "Creek Monster", "Level": 3, "MaxHP": 300, "CurrentHP": 300, "Attack": 15, "Defense": 8, "Speed": 10, "SpriteKey": "hound", "MoralityImpact": 2, "ExperienceReward": 100 }
+		  { "Name": "Creek Monster", "Level": 1, "MaxHP": 45, "CurrentHP": 45, "Attack": 9, "Defense": 5, "Speed": 10, "SpriteKey": "hound", "MoralityImpact": 2, "ExperienceReward": 50 }
 		],
 		"BackgroundKey": "camelot_shore"
 	  }

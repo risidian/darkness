@@ -41,18 +41,15 @@ namespace Darkness.Core.Services
             }
 
             // Add result
-            character.Inventory.Add(new Item
+            var resultJson = System.Text.Json.JsonSerializer.Serialize(recipe.Result);
+            var newItem = System.Text.Json.JsonSerializer.Deserialize<Item>(resultJson);
+            
+            if (newItem != null)
             {
-                Name = recipe.Result.Name,
-                Description = recipe.Result.Description,
-                Type = recipe.Result.Type,
-                AttackBonus = recipe.Result.AttackBonus,
-                DefenseBonus = recipe.Result.DefenseBonus,
-                Value = recipe.Result.Value,
-                DamageDice = recipe.Result.DamageDice,
-                EquipmentSlot = recipe.Result.EquipmentSlot,
-                Tier = 0
-            });
+                newItem.Tier = 0;
+                newItem.Quantity = 1;
+                character.Inventory.Add(newItem);
+            }
 
             return Task.FromResult(true);
         }

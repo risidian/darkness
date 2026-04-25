@@ -3,6 +3,6 @@
   { "Id": 2, "Name": "Mana Potion", "Description": "Restores MP.", "Type": "Consumable", "Weight": 1, "Value": 50 },
   { "Id": 3, "Name": "Iron Ore", "Description": "Raw iron ore.", "Type": "Material", "Weight": 2, "Value": 10 },
   { "Id": 4, "Name": "Iron Scrap", "Description": "Pieces of iron.", "Type": "Material", "Weight": 1, "Value": 5 },
-  { "Id": 5, "Name": "Simple Dagger", "Description": "A basic dagger.", "Type": "Weapon", "Weight": 1, "Value": 100 },
-  { "Id": 6, "Name": "Iron Sword", "Description": "A sharp iron sword.", "Type": "Weapon", "Weight": 3, "Value": 250 }
+  { "Id": 5, "Name": "Simple Dagger", "Description": "A basic dagger.", "Type": "Weapon", "Weight": 1, "Value": 100, "DamageDice": "1d4", "EquipmentSlot": "Weapon", "EquipmentSpriteId": 101 },
+  { "Id": 6, "Name": "Iron Sword", "Description": "A sharp iron sword.", "Type": "Weapon", "Weight": 3, "Value": 250, "DamageDice": "1d8", "EquipmentSlot": "Weapon", "EquipmentSpriteId": 102 }
 ]

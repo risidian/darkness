@@ -4,12 +4,14 @@
     "Name": "Simple Dagger",
     "Result": {
       "Name": "Simple Dagger",
-      "Description": "A basic blade.",
+      "Description": "A basic dagger.",
       "Type": "Weapon",
       "AttackBonus": 2,
-      "Value": 10,
+      "Value": 100,
+      "Weight": 1,
       "DamageDice": "1d4",
-      "EquipmentSlot": "Weapon"
+      "EquipmentSlot": "Weapon",
+      "EquipmentSpriteId": 101
     },
     "Materials": { "Iron Ore": 2 }
   },
@@ -18,12 +20,14 @@
     "Name": "Iron Sword",
     "Result": {
       "Name": "Iron Sword",
-      "Description": "A sturdy iron blade.",
+      "Description": "A sharp iron sword.",
       "Type": "Weapon",
       "AttackBonus": 5,
-      "Value": 50,
-      "DamageDice": "1d6",
-      "EquipmentSlot": "Weapon"
+      "Value": 250,
+      "Weight": 3,
+      "DamageDice": "1d8",
+      "EquipmentSlot": "Weapon",
+      "EquipmentSpriteId": 102
     },
     "Materials": { "Iron Ore": 5 }
   }
