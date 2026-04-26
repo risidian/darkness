@@ -65,8 +65,8 @@ public partial class Global : Node
             Transition = new TransitionLayer();
             AddChild(Transition);
 
-            // Seed data synchronously to ensure it's available before scenes load
-            try 
+            // Wrap seeding in the task so SplashScene can await and catch it
+            SeedingTask = Task.Run(() =>
             {
                 var db = Services.GetRequiredService<ILiteDatabase>();
                 var fs = Services.GetRequiredService<IFileSystemService>();
@@ -84,16 +84,15 @@ public partial class Global : Node
                 new EncounterSeeder(fs).Seed(db);
                 GD.Print("[Global] Data seeding complete.");
 
-                // Create runtime indexes (once at startup, not per operation)
+                // Run Cross-Validation
+                DataValidator.Validate(db);
+
+                // Create runtime indexes
                 db.GetCollection<Character>("characters").EnsureIndex(c => c.UserId);
                 db.GetCollection<QuestState>("quest_states").EnsureIndex(s => s.CharacterId);
                 db.GetCollection<QuestState>("quest_states").EnsureIndex(s => s.Status);
-            }
-catch (Exception ex)
-{
-    GD.PrintErr($"[Global] Data seeding failed: {ex.Message}");
-}
-}
+            });
+        }
         catch (Exception ex)
         {
             GD.PrintErr($"[Global] Critical error during DI initialization: {ex.Message}");

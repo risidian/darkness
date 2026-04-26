@@ -55,6 +55,7 @@ public partial class WorldScene : Node2D, IInitializable
 
     private double _distanceMovedSinceLastEncounter = 0;
     private Vector2 _lastPlayerPosition;
+    private Label _questLogLabel = null!;
 
     public void Initialize(IDictionary<string, object> parameters)
     {
@@ -962,6 +963,19 @@ public partial class WorldScene : Node2D, IInitializable
         {
             GD.Print("[WorldScene] Hiding NPC node (none in this step).");
             GetNode<Area2D>("NPC").Hide();
+        }
+
+        // Update Quest Log UI
+        if (_questLogLabel != null)
+        {
+            if (chain != null && step != null)
+            {
+                _questLogLabel.Text = $"Quest: {chain.Title}\nObjective: {step.Id}";
+            }
+            else
+            {
+                _questLogLabel.Text = "Quest: None";
+            }
         }
     }
 

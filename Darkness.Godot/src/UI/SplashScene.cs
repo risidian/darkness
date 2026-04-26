@@ -70,10 +70,12 @@ public partial class SplashScene : Control
         {
             GD.PrintErr($"[Splash] CRITICAL INITIALIZATION FAILURE: {ex.Message}");
             await _dialog.DisplayAlertAsync("System Error",
-                "Failed to initialize game database. Please ensure the app has storage permissions.", "OK");
+                $"Failed to initialize game database or invalid data detected.\n\nError: {ex.Message}", "OK");
             _isInitialized = false;
             GetNode<Label>("VBoxContainer/Subtitle").Show();
             loading.Hide();
+            
+            GetNode<Label>("VBoxContainer/Subtitle").Text = "Initialization Failed. Check Logs.";
         }
     }
 }

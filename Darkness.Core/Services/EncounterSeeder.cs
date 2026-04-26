@@ -39,8 +39,16 @@ public class EncounterSeeder
 
             if (tables != null)
             {
-                col.DeleteAll();
-                col.InsertBulk(tables);
+                var loadedKeys = new List<string>();
+                foreach (var table in tables)
+                {
+                    col.Upsert(table);
+                    loadedKeys.Add(table.BackgroundKey);
+                }
+                
+                // Cleanup orphaned encounter tables
+                col.DeleteMany(x => !loadedKeys.Contains(x.BackgroundKey));
+                
                 Console.Error.WriteLine($"[EncounterSeeder] INFO: Loaded {tables.Count} encounter tables");
             }
             else

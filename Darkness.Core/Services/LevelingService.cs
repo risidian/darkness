@@ -9,7 +9,7 @@ namespace Darkness.Core.Services;
 
 public class LevelingService : ILevelingService
 {
-    private const int AttributePointsPerLevel = 4;
+    private const int AttributePointsPerLevel = 2;
     private readonly LiteDatabase _db;
 
     public LevelingService(LiteDatabase db)
