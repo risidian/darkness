@@ -65,12 +65,14 @@ public class EncounterServiceTests : IDisposable
     }
 
     [Fact]
-    public void GetRandomEncounter_ReturnsCorrectEncounter()
+    public void RollForEncounter_ReturnsEncounterWhenChanceIs100()
     {
         // Arrange
         var table = new EncounterTable
         {
             BackgroundKey = "forest",
+            EncounterChance = 100,
+            EncounterDistance = 0,
             Encounters = new List<EncounterEntry>
             {
                 new EncounterEntry { Weight = 100, Combat = new CombatData { BackgroundKey = "forest_battle" } }
@@ -79,21 +81,23 @@ public class EncounterServiceTests : IDisposable
         _db.GetCollection<EncounterTable>("encounter_tables").Insert(table);
 
         // Act
-        var result = _service.GetRandomEncounter("forest");
+        var result = _service.RollForEncounter("forest", 100, out bool didRoll);
 
         // Assert
         Assert.NotNull(result);
+        Assert.True(didRoll);
         Assert.Equal("forest_battle", result.BackgroundKey);
     }
 
     [Fact]
-    public void GetRandomEncounter_ReturnsNullForUnknownBackground()
+    public void RollForEncounter_ReturnsNullForUnknownBackground()
     {
         // Act
-        var result = _service.GetRandomEncounter("unknown");
+        var result = _service.RollForEncounter("unknown", 1000, out bool didRoll);
 
         // Assert
         Assert.Null(result);
+        Assert.False(didRoll);
     }
 
     [Fact]
@@ -103,45 +107,42 @@ public class EncounterServiceTests : IDisposable
         var table = new EncounterTable
         {
             BackgroundKey = "test_bg",
-            EncounterChance = 100, // Always succeed if distance met
+            EncounterChance = 100,
             EncounterDistance = 500f,
             Encounters = new List<EncounterEntry> { new EncounterEntry { Weight = 1, Combat = new CombatData() } }
         };
         _db.GetCollection<EncounterTable>("encounter_tables").Insert(table);
 
-        // Act & Assert
-        Assert.Null(_service.RollForEncounter("test_bg", 499)); // Below threshold
-        Assert.NotNull(_service.RollForEncounter("test_bg", 501)); // Above threshold
+        // Act & Assert — below threshold
+        var belowResult = _service.RollForEncounter("test_bg", 499, out bool belowRoll);
+        Assert.Null(belowResult);
+        Assert.False(belowRoll);
+
+        // Above threshold
+        var aboveResult = _service.RollForEncounter("test_bg", 501, out bool aboveRoll);
+        Assert.NotNull(aboveResult);
+        Assert.True(aboveRoll);
     }
 
     [Fact]
-    public void RollForEncounter_RespectsChance_Failure()
+    public void RollForEncounter_DidRollTrueEvenWhenChanceFails()
     {
-        // Arrange
+        // Arrange — distance met but chance is 0% so encounter never triggers
         var table = new EncounterTable
         {
             BackgroundKey = "low_chance",
-            EncounterChance = 0, // Never succeed
+            EncounterChance = 0,
             EncounterDistance = 0,
             Encounters = new List<EncounterEntry> { new EncounterEntry { Weight = 1, Combat = new CombatData() } }
         };
         _db.GetCollection<EncounterTable>("encounter_tables").Insert(table);
 
         // Act
-        var result = _service.RollForEncounter("low_chance", 100);
+        var result = _service.RollForEncounter("low_chance", 100, out bool didRoll);
 
-        // Assert
+        // Assert — no combat but didRoll=true because distance was met
         Assert.Null(result);
-    }
-
-    [Fact]
-    public void RollForEncounter_ReturnsNullForUnknownBackground()
-    {
-        // Act
-        var result = _service.RollForEncounter("unknown", 1000);
-
-        // Assert
-        Assert.Null(result);
+        Assert.True(didRoll);
     }
 
     [Fact]
@@ -158,9 +159,29 @@ public class EncounterServiceTests : IDisposable
         _db.GetCollection<EncounterTable>("encounter_tables").Insert(table);
 
         // Act
-        var result = _service.RollForEncounter("empty", 100);
+        var result = _service.RollForEncounter("empty", 100, out bool didRoll);
 
         // Assert
         Assert.Null(result);
+        Assert.False(didRoll);
+    }
+
+    [Fact]
+    public void EncounterTable_ClampsChanceTo0To100()
+    {
+        var table = new EncounterTable();
+        table.EncounterChance = 150;
+        Assert.Equal(100, table.EncounterChance);
+
+        table.EncounterChance = -10;
+        Assert.Equal(0, table.EncounterChance);
+    }
+
+    [Fact]
+    public void EncounterTable_ClampsDistanceToMinimum1()
+    {
+        var table = new EncounterTable();
+        table.EncounterDistance = -50f;
+        Assert.Equal(1f, table.EncounterDistance);
     }
 }

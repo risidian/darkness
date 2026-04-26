@@ -27,12 +27,12 @@ public class SheetDefinitionSeeder
         {
             if (!_fileSystem.DirectoryExists(baseDir))
             {
-                Console.WriteLine($"[SheetDefinitionSeeder] WARN: Directory not found: {baseDir}");
+                Console.Error.WriteLine($"[SheetDefinitionSeeder] WARN: Directory not found: {baseDir}");
                 return;
             }
 
             var files = _fileSystem.GetFiles(baseDir, "*.json", true);
-            Console.WriteLine($"[SheetDefinitionSeeder] Found {files.Length} JSON files in {baseDir}");
+            Console.Error.WriteLine($"[SheetDefinitionSeeder] Found {files.Length} JSON files in {baseDir}");
             foreach (var file in files)
             {
                 try
@@ -47,12 +47,12 @@ public class SheetDefinitionSeeder
                     {
                         col.Upsert(def);
                         loadedIds.Add(def.Id);
-                        Console.WriteLine($"[SheetDefinitionSeeder] Synced: {def.Name} ({def.Slot}) from {file}");
+                        Console.Error.WriteLine($"[SheetDefinitionSeeder] Synced: {def.Name} ({def.Slot}) from {file}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[SheetDefinitionSeeder] ERROR: Failed to load {file}: {ex.Message}");
+                    Console.Error.WriteLine($"[SheetDefinitionSeeder] ERROR: Failed to load {file}: {ex.Message}");
                 }
             }
 
@@ -65,7 +65,7 @@ public class SheetDefinitionSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[SheetDefinitionSeeder] ERROR: Seed failed: {ex.Message}");
+            Console.Error.WriteLine($"[SheetDefinitionSeeder] ERROR: Seed failed: {ex.Message}");
         }
     }
 }

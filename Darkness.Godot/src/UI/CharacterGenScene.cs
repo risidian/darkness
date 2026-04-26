@@ -540,7 +540,9 @@ public partial class CharacterGenScene : Control
                 break;
         }
 
+        int classArmorBonus = c.ArmorClass; // Preserve class-specific AC before recalc
         c.RecalculateDerivedStats();
+        c.ArmorClass += classArmorBonus; // Add class-specific armor on top of derived AC
         c.CurrentHP = c.MaxHP;
         c.Mana = c.MaxMana;
         c.Stamina = c.MaxStamina;

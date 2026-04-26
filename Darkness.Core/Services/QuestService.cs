@@ -84,6 +84,7 @@ public class QuestService : IQuestService
         }
 
         string? nextStepId = null;
+        int pendingMoralityImpact = 0;
 
         if (choiceStepId != null)
         {
@@ -97,11 +98,11 @@ public class QuestService : IQuestService
             var option = currentStep.Branch.Options.FirstOrDefault(o =>
                 o.NextStepId == choiceStepId &&
                 ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds));
-            
+
             if (option != null)
             {
-                character.Morality += option.MoralityImpact;
                 nextStepId = option.NextStepId;
+                pendingMoralityImpact = option.MoralityImpact;
             }
             else
             {
@@ -134,10 +135,11 @@ public class QuestService : IQuestService
                 {
                     state.CurrentStepId = nextStepId;
                     state.Status = "in_progress";
-                    // Clear combat snapshot if we are moving to a new step
                     state.CurrentCombatSnapshot = null;
                     stateCol.Update(state);
                 }
+                // Apply morality only after state has been persisted
+                character.Morality += pendingMoralityImpact;
                 return nextStep;
             }
             else

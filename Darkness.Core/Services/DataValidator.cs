@@ -9,7 +9,7 @@ public class DataValidator
 {
     public static void Validate(ILiteDatabase db)
     {
-        Console.WriteLine("[DataValidator] Running post-seed cross-validation...");
+        Console.Error.WriteLine("[DataValidator] Running post-seed cross-validation...");
         int errorCount = 0;
 
         var items = db.GetCollection<Item>("items").FindAll().Select(i => i.Name).ToHashSet();
@@ -53,6 +53,6 @@ public class DataValidator
         {
             throw new Exception($"Data validation failed with {errorCount} errors. See logs for details.");
         }
-        Console.WriteLine("[DataValidator] Validation complete. All relationships intact.");
+        Console.Error.WriteLine("[DataValidator] Validation complete. All relationships intact.");
     }
 }

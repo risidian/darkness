@@ -49,7 +49,7 @@ public class EncounterSeeder
                 // Cleanup orphaned encounter tables
                 col.DeleteMany(x => !loadedKeys.Contains(x.BackgroundKey));
                 
-                Console.Error.WriteLine($"[EncounterSeeder] INFO: Loaded {tables.Count} encounter tables");
+                Console.WriteLine($"[EncounterSeeder] INFO: Synced {tables.Count} encounter tables");
             }
             else
             {

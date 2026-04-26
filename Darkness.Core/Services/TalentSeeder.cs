@@ -69,6 +69,6 @@ public class TalentSeeder
 
         col.EnsureIndex(t => t.Id);
 
-        Console.Error.WriteLine($"[TalentSeeder] INFO: Synced {col.Count()} talent trees");
+        Console.WriteLine($"[TalentSeeder] INFO: Synced {col.Count()} talent trees");
     }
 }

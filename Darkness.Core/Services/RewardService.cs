@@ -22,7 +22,6 @@ namespace Darkness.Core.Services
         public BattleRewardResult ProcessCombatRewards(Character character, List<Enemy> enemies)
         {
             var result = new BattleRewardResult();
-            var random = new Random();
             var itemCol = _db.GetCollection<Item>("items");
 
             foreach (var enemy in enemies)
@@ -44,7 +43,7 @@ namespace Darkness.Core.Services
                 // Random Drops
                 foreach (var loot in enemy.RandomDrops)
                 {
-                    if (random.NextDouble() <= loot.Chance)
+                    if (Random.Shared.NextDouble() <= loot.Chance)
                     {
                         var item = itemCol.FindOne(x => x.Name == loot.ItemName);
                         if (item != null)
@@ -73,7 +72,7 @@ namespace Darkness.Core.Services
             return Task.Run(() =>
             {
                 var awardedItems = new List<Item>();
-                DateTime today = DateTime.Today;
+                DateTime today = DateTime.UtcNow.Date;
 
                 if (user.LastLogin.Date < today)
                 {
@@ -91,8 +90,7 @@ namespace Darkness.Core.Services
                         int totalWeight = randomRewards.Sum(r => r.Weight);
                         if (totalWeight > 0)
                         {
-                            var random = new Random();
-                            int roll = random.Next(totalWeight);
+                            int roll = Random.Shared.Next(totalWeight);
                             int currentSum = 0;
                             RandomReward? selectedRandom = null;
                             foreach (var r in randomRewards)
@@ -121,7 +119,7 @@ namespace Darkness.Core.Services
                     }
 
                     // 2. Calendar Selection
-                    var now = DateTime.Now;
+                    var now = DateTime.UtcNow;
                     var calendar = calendarCol.FindOne(c => c.Month == now.Month);
                     if (calendar != null && calendar.Items.Count >= now.Day)
                     {
@@ -138,7 +136,7 @@ namespace Darkness.Core.Services
                     }
 
                     // 3. Update User and Character
-                    user.LastLogin = DateTime.Now;
+                    user.LastLogin = DateTime.UtcNow;
                     _db.GetCollection<User>("users").Update(user);
 
                     if (awardedItems.Any())

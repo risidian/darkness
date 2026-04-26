@@ -25,7 +25,7 @@ public class LevelSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[LevelSeeder] ERROR: Failed to read level-table.json — {ex.Message}");
+            Console.Error.WriteLine($"[LevelSeeder] ERROR: Failed to read level-table.json — {ex.Message}");
             return;
         }
 
@@ -39,13 +39,13 @@ public class LevelSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[LevelSeeder] ERROR: Failed to parse level-table.json — {ex.Message}");
+            Console.Error.WriteLine($"[LevelSeeder] ERROR: Failed to parse level-table.json — {ex.Message}");
             return;
         }
 
         if (levels == null || levels.Count == 0)
         {
-            Console.WriteLine("[LevelSeeder] WARN: level-table.json is empty or null");
+            Console.Error.WriteLine("[LevelSeeder] WARN: level-table.json is empty or null");
             return;
         }
 

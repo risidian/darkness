@@ -22,7 +22,7 @@ public class RecipeSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[RecipeSeeder] ERROR: Failed to read recipes.json — {ex.Message}");
+            Console.Error.WriteLine($"[RecipeSeeder] ERROR: Failed to read recipes.json — {ex.Message}");
             return;
         }
 
@@ -34,13 +34,13 @@ public class RecipeSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[RecipeSeeder] ERROR: Failed to parse recipes.json — {ex.Message}");
+            Console.Error.WriteLine($"[RecipeSeeder] ERROR: Failed to parse recipes.json — {ex.Message}");
             return;
         }
 
         if (recipes == null || recipes.Count == 0)
         {
-            Console.WriteLine("[RecipeSeeder] WARN: recipes.json is empty or null");
+            Console.Error.WriteLine("[RecipeSeeder] WARN: recipes.json is empty or null");
             return;
         }
 

@@ -25,7 +25,7 @@ public class ItemSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ItemSeeder] ERROR: Failed to read items.json — {ex.Message}");
+            Console.Error.WriteLine($"[ItemSeeder] ERROR: Failed to read items.json — {ex.Message}");
             return;
         }
 
@@ -39,13 +39,13 @@ public class ItemSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[ItemSeeder] ERROR: Failed to parse items.json — {ex.Message}");
+            Console.Error.WriteLine($"[ItemSeeder] ERROR: Failed to parse items.json — {ex.Message}");
             return;
         }
 
         if (items == null || items.Count == 0)
         {
-            Console.WriteLine("[ItemSeeder] WARN: items.json is empty or null");
+            Console.Error.WriteLine("[ItemSeeder] WARN: items.json is empty or null");
             return;
         }
 

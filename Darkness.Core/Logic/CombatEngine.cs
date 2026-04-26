@@ -166,13 +166,15 @@ namespace Darkness.Core.Logic
         public void HandleTurnStart(Enemy enemy)
         {
             if (enemy == null) return;
-            
+
+            int maxStamina = enemy.CON * 5;
             int staminaRegen = Math.Max(1, enemy.CON / 2);
-            enemy.Stamina = Math.Min(enemy.MaxHP, enemy.Stamina + staminaRegen);
-            
+            enemy.Stamina = Math.Min(maxStamina, enemy.Stamina + staminaRegen);
+
+            int maxMana = enemy.WIS * 5;
             int manaRegen = Math.Max(1, enemy.WIS / 2);
-            enemy.Mana = Math.Min(enemy.MaxHP, enemy.Mana + manaRegen);
-            
+            enemy.Mana = Math.Min(maxMana, enemy.Mana + manaRegen);
+
             enemy.IsBlocking = false;
         }
 
@@ -192,13 +194,14 @@ namespace Darkness.Core.Logic
 
         public bool CheckStatusEffect(Character target, StatusEffect effect)
         {
-            int resistance = target.Wisdom;
+            // Roll must exceed resistance to apply effect (higher wisdom = harder to affect)
+            int resistance = Math.Clamp(target.Wisdom, 0, 95);
             return _random.Next(1, 101) > resistance;
         }
 
         public bool CheckStatusEffect(Enemy target, StatusEffect effect)
         {
-            int resistance = target.WIS;
+            int resistance = Math.Clamp(target.WIS, 0, 95);
             return _random.Next(1, 101) > resistance;
         }
     }

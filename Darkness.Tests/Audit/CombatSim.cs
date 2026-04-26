@@ -9,6 +9,7 @@ using Xunit.Abstractions;
 
 namespace Darkness.Tests.Audit
 {
+    [Trait("Category", "Audit")]
     public class CombatSim
     {
         private readonly ITestOutputHelper _output;

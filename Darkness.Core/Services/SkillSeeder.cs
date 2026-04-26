@@ -25,7 +25,7 @@ public class SkillSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[SkillSeeder] ERROR: Failed to read skills.json — {ex.Message}");
+            Console.Error.WriteLine($"[SkillSeeder] ERROR: Failed to read skills.json — {ex.Message}");
             return;
         }
 
@@ -39,13 +39,13 @@ public class SkillSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[SkillSeeder] ERROR: Failed to parse skills.json — {ex.Message}");
+            Console.Error.WriteLine($"[SkillSeeder] ERROR: Failed to parse skills.json — {ex.Message}");
             return;
         }
 
         if (skills == null || skills.Count == 0)
         {
-            Console.WriteLine("[SkillSeeder] WARN: skills.json is empty or null");
+            Console.Error.WriteLine("[SkillSeeder] WARN: skills.json is empty or null");
             return;
         }
 

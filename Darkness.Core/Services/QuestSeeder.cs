@@ -47,8 +47,6 @@ public class QuestSeeder
             try
             {
                 var json = _fileSystem.ReadAllText(file);
-                Console.Error.WriteLine($"[QuestSeeder] DEBUG: Reading file: {file}");
-                if (json.Contains("sandy_shore")) Console.Error.WriteLine($"[QuestSeeder] DEBUG: FOUND sandy_shore in {file}!");
                 var chain = SystemJson.JsonSerializer.Deserialize<QuestChain>(json, new SystemJson.JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
@@ -83,7 +81,6 @@ public class QuestSeeder
 
         chainCol.EnsureIndex(c => c.Id);        chainCol.EnsureIndex(c => c.IsMainStory);
 
-        Console.Error.WriteLine($"[QuestSeeder] INFO: Loaded {chainCount} quest chains with {stepCount} steps from {files.Length} files ({errorCount} errors)");
-        Console.Error.WriteLine($"[QuestSeeder] DEBUG: Total chains in DB now: {chainCol.Count()}");
+        Console.WriteLine($"[QuestSeeder] INFO: Synced {chainCount} quest chains with {stepCount} steps from {files.Length} files ({errorCount} errors)");
     }
 }

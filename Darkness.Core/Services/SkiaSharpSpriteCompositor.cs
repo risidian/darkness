@@ -20,7 +20,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
         CharacterAppearance appearance,
         IFileSystemService fileSystem)
     {
-        Console.WriteLine($"[Compositor] CompositeFullSheet: {definitions.Count} defs, Gender: {appearance.Head}");
+        Console.Error.WriteLine($"[Compositor] CompositeFullSheet: {definitions.Count} defs, Gender: {appearance.Head}");
         
         int totalHeight = SheetConstants.SHEET_HEIGHT + (12 * SheetConstants.OVERSIZE_FRAME_SIZE);
         var info = new SKImageInfo(SheetConstants.SHEET_WIDTH, totalHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
@@ -222,7 +222,7 @@ public class SkiaSharpSpriteCompositor : ISpriteCompositor
             }
         }
 
-        Console.WriteLine($"[Compositor] Finished CompositeFullSheet. Bitmaps Drawn: {totalBitmapsDrawn}");
+        Console.Error.WriteLine($"[Compositor] Finished CompositeFullSheet. Bitmaps Drawn: {totalBitmapsDrawn}");
 
         foreach (var bmp in bitmapCache.Values)
             bmp?.Dispose();

@@ -11,11 +11,17 @@ public class WeaponSkillService : IWeaponSkillService
 {
     private readonly LiteDatabase _db;
     private readonly IFileSystemService _fileSystem;
+    private List<TalentTree>? _cachedTalentTrees;
 
     public WeaponSkillService(LiteDatabase db, IFileSystemService fileSystem)
     {
         _db = db;
         _fileSystem = fileSystem;
+    }
+
+    private List<TalentTree> GetCachedTalentTrees()
+    {
+        return _cachedTalentTrees ??= _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();
     }
 
     // Seed canonical skills if the collection is empty (covers test environments
@@ -34,7 +40,7 @@ public class WeaponSkillService : IWeaponSkillService
         }
         catch (System.Exception ex)
         {
-            System.Console.WriteLine($"[WeaponSkillService] ERROR: Failed to read skills.json for seeding — {ex.Message}");
+            System.Console.Error.WriteLine($"[WeaponSkillService] ERROR: Failed to read skills.json for seeding — {ex.Message}");
             return;
         }
 
@@ -48,7 +54,7 @@ public class WeaponSkillService : IWeaponSkillService
         }
         catch (SystemJson.JsonException ex)
         {
-            System.Console.WriteLine($"[WeaponSkillService] ERROR: Failed to parse skills.json — {ex.Message}");
+            System.Console.Error.WriteLine($"[WeaponSkillService] ERROR: Failed to parse skills.json — {ex.Message}");
             return;
         }
 
@@ -73,7 +79,7 @@ public class WeaponSkillService : IWeaponSkillService
         ).ToList();
 
         // Skills granted by talents (by TalentRequirement ID or by Name matching a Talent Effect)
-        var talentTrees = _db.GetCollection<TalentTree>("talent_trees").FindAll().ToList();
+        var talentTrees = GetCachedTalentTrees();
         var unlockedSkillNames = talentTrees
             .SelectMany(t => t.Nodes)
             .Where(n => character.UnlockedTalentIds.Contains(n.Id))

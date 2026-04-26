@@ -111,29 +111,25 @@ namespace Darkness.Core.Models
             if (Inventory == null || Inventory.Count <= 1) return;
 
             var consolidated = new List<Item>();
+            var stackLookup = new Dictionary<string, Item>();
+
             foreach (var item in Inventory)
             {
-                // Only stack Consumables and Materials
                 if (item.Type == "Consumable" || item.Type == "Material")
                 {
-                    var existing = consolidated.FirstOrDefault(i => 
-                        i.Name == item.Name && 
-                        i.Type == item.Type && 
-                        i.Tier == item.Tier && 
-                        i.Infusion == item.Infusion);
-
-                    if (existing != null)
+                    string key = $"{item.Name}|{item.Type}|{item.Tier}|{item.Infusion}";
+                    if (stackLookup.TryGetValue(key, out var existing))
                     {
                         existing.Quantity += item.Quantity;
                     }
                     else
                     {
+                        stackLookup[key] = item;
                         consolidated.Add(item);
                     }
                 }
                 else
                 {
-                    // Equipment (Weapon, Armor, Shield) usually shouldn't stack
                     consolidated.Add(item);
                 }
             }

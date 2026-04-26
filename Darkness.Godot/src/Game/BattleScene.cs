@@ -152,6 +152,15 @@ public partial class BattleScene : Control, IInitializable
                                     args.Combat.Enemies[i].CurrentHP = hp;
                                 }
                             }
+
+                            // Restore party HP from snapshot
+                            if (args.Snapshot.PartyHP.Count > 0 && _session.CurrentCharacter != null)
+                            {
+                                if (args.Snapshot.PartyHP.TryGetValue(0, out int partyHp))
+                                {
+                                    _session.CurrentCharacter.CurrentHP = partyHp;
+                                }
+                            }
                         }
                     }
 
@@ -809,7 +818,11 @@ public partial class BattleScene : Control, IInitializable
     {
         if (!IsInsideTree() || _party.Count == 0 || _enemies.Count == 0 || _turnManager.TurnOrder.Count == 0) return;
 
-        SyncCombatState();
+        // Only sync combat state at the start of each round (not every individual turn)
+        if (_turnManager.CurrentTurnIndex == 0)
+        {
+            SyncCombatState();
+        }
 
         if (_survivalTurns > 0)
         {
@@ -1266,11 +1279,11 @@ public partial class BattleScene : Control, IInitializable
                 var spawn = _battleArgs.Combat.Enemies[i];
                 
                 // Find corresponding live enemy in our map
-                var liveEnemy = _enemyMap.FirstOrDefault(p => p.Value == spawn).Key;
-                if (liveEnemy != null)
+                var match = _enemyMap.FirstOrDefault(p => p.Value == spawn);
+                if (match.Key != null)
                 {
-                    spawn.CurrentHP = liveEnemy.CurrentHP;
-                    _battleArgs.Snapshot.EnemyHP[i] = liveEnemy.CurrentHP;
+                    spawn.CurrentHP = match.Key.CurrentHP;
+                    _battleArgs.Snapshot.EnemyHP[i] = match.Key.CurrentHP;
                 }
             }
         }

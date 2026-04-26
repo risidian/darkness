@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Darkness.Tests.Audit;
 
+[Trait("Category", "Audit")]
 public class QuestGraphAudit
 {
     private const string QuestDataPath = "../../../Darkness.Godot/assets/data/quests/";      

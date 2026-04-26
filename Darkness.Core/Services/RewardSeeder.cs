@@ -31,7 +31,7 @@ public class RewardSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[RewardSeeder] ERROR: Failed to read random-rewards.json — {ex.Message}");
+            Console.Error.WriteLine($"[RewardSeeder] ERROR: Failed to read random-rewards.json — {ex.Message}");
             return;
         }
 
@@ -45,7 +45,7 @@ public class RewardSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[RewardSeeder] ERROR: Failed to parse random-rewards.json — {ex.Message}");
+            Console.Error.WriteLine($"[RewardSeeder] ERROR: Failed to parse random-rewards.json — {ex.Message}");
             return;
         }
 
@@ -73,7 +73,7 @@ public class RewardSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[RewardSeeder] ERROR: Failed to read login-calendar.json — {ex.Message}");
+            Console.Error.WriteLine($"[RewardSeeder] ERROR: Failed to read login-calendar.json — {ex.Message}");
             return;
         }
 
@@ -87,7 +87,7 @@ public class RewardSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[RewardSeeder] ERROR: Failed to parse login-calendar.json — {ex.Message}");
+            Console.Error.WriteLine($"[RewardSeeder] ERROR: Failed to parse login-calendar.json — {ex.Message}");
             return;
         }
 

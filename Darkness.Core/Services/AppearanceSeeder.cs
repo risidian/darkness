@@ -25,7 +25,7 @@ public class AppearanceSeeder
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[AppearanceSeeder] ERROR: Failed to read sprite-catalog.json — {ex.Message}");
+            Console.Error.WriteLine($"[AppearanceSeeder] ERROR: Failed to read sprite-catalog.json — {ex.Message}");
             return;
         }
 
@@ -39,13 +39,13 @@ public class AppearanceSeeder
         }
         catch (SystemJson.JsonException ex)
         {
-            Console.WriteLine($"[AppearanceSeeder] ERROR: Failed to parse sprite-catalog.json — {ex.Message}");
+            Console.Error.WriteLine($"[AppearanceSeeder] ERROR: Failed to parse sprite-catalog.json — {ex.Message}");
             return;
         }
 
         if (data == null)
         {
-            Console.WriteLine("[AppearanceSeeder] ERROR: sprite-catalog.json deserialized to null");
+            Console.Error.WriteLine("[AppearanceSeeder] ERROR: sprite-catalog.json deserialized to null");
             return;
         }
 
