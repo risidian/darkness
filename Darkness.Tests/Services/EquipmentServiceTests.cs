@@ -11,7 +11,7 @@ public class EquipmentServiceTests
     [Fact]
     public void Equip_AppliesStatBonuses()
     {
-        var character = new Character { Strength = 10 };
+        var character = new Character { BaseStrength = 10 };
         var sword = new Item { Name = "Iron Sword", Type = "Weapon", EquipmentSlot = "Weapon", AttackBonus = 5, StrengthBonus = 2 };
 
         var result = _service.Equip(character, sword);
@@ -23,7 +23,7 @@ public class EquipmentServiceTests
     [Fact]
     public void Equip_RejectsIfRequirementsNotMet()
     {
-        var character = new Character { Strength = 5 };
+        var character = new Character { BaseStrength = 5 };
         var sword = new Item { Name = "Heavy Sword", Type = "Weapon", EquipmentSlot = "Weapon", RequiredStrength = 15 };
 
         var result = _service.Equip(character, sword);
@@ -34,7 +34,7 @@ public class EquipmentServiceTests
     [Fact]
     public void Unequip_RemovesStatBonuses()
     {
-        var character = new Character { Strength = 10 };
+        var character = new Character { BaseStrength = 10 };
         var sword = new Item { Name = "Iron Sword", Type = "Weapon", EquipmentSlot = "Weapon", AttackBonus = 5, StrengthBonus = 2 };
 
         _service.Equip(character, sword);
@@ -46,7 +46,7 @@ public class EquipmentServiceTests
     [Fact]
     public void Equip_ReplacesExistingItemInSlot()
     {
-        var character = new Character { Strength = 10 };
+        var character = new Character { BaseStrength = 10 };
         var sword1 = new Item { Name = "Iron Sword", Type = "Weapon", EquipmentSlot = "Weapon", AttackBonus = 3 };
         var sword2 = new Item { Name = "Steel Sword", Type = "Weapon", EquipmentSlot = "Weapon", AttackBonus = 7 };
         character.Inventory.Add(sword1);

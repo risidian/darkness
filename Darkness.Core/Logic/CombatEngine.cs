@@ -154,11 +154,11 @@ namespace Darkness.Core.Logic
             
             // Regenerate Stamina: CON / 2
             int staminaRegen = Math.Max(1, character.Constitution / 2);
-            character.Stamina = Math.Min(character.MaxHP * 10, character.Stamina + staminaRegen); // MaxHP*10 is the base for Stamina in RecalculateDerivedStats (Constitution * 10)
+            character.Stamina = Math.Min(character.MaxStamina, character.Stamina + staminaRegen);
             
             // Regenerate Mana: WIS / 2
             int manaRegen = Math.Max(1, character.Wisdom / 2);
-            character.Mana = Math.Min(character.MaxHP * 10, character.Mana + manaRegen);
+            character.Mana = Math.Min(character.MaxMana, character.Mana + manaRegen);
             
             character.IsBlocking = false;
         }

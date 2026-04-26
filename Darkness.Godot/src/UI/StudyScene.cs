@@ -103,17 +103,23 @@ public partial class StudyScene : Control
     {
         if (_character == null) return;
         _initialPoints = _character.AttributePoints;
-        _initialStr = _character.Strength;
-        _initialDex = _character.Dexterity;
-        _initialCon = _character.Constitution;
-        _initialInt = _character.Intelligence;
-        _initialWis = _character.Wisdom;
-        _initialCha = _character.Charisma;
+        _initialStr = _character.BaseStrength;
+        _initialDex = _character.BaseDexterity;
+        _initialCon = _character.BaseConstitution;
+        _initialInt = _character.BaseIntelligence;
+        _initialWis = _character.BaseWisdom;
+        _initialCha = _character.BaseCharisma;
     }
 
     private bool HasUnsavedChanges()
     {
-        return _character != null && _character.AttributePoints != _initialPoints;
+        return _character != null && (_character.AttributePoints != _initialPoints ||
+               _character.BaseStrength != _initialStr ||
+               _character.BaseDexterity != _initialDex ||
+               _character.BaseConstitution != _initialCon ||
+               _character.BaseIntelligence != _initialInt ||
+               _character.BaseWisdom != _initialWis ||
+               _character.BaseCharisma != _initialCha);
     }
 
     private void SetupStatControl(string attr)
@@ -135,12 +141,12 @@ public partial class StudyScene : Control
         _charNameLabel.Text = _character.Name;
         _pointsLabel.Text = $"Attribute Points: {_character.AttributePoints}";
 
-        UpdateStatRow("Strength", _character.Strength, _initialStr);
-        UpdateStatRow("Dexterity", _character.Dexterity, _initialDex);
-        UpdateStatRow("Constitution", _character.Constitution, _initialCon);
-        UpdateStatRow("Intelligence", _character.Intelligence, _initialInt);
-        UpdateStatRow("Wisdom", _character.Wisdom, _initialWis);
-        UpdateStatRow("Charisma", _character.Charisma, _initialCha);
+        UpdateStatRow("Strength", _character.BaseStrength, _initialStr);
+        UpdateStatRow("Dexterity", _character.BaseDexterity, _initialDex);
+        UpdateStatRow("Constitution", _character.BaseConstitution, _initialCon);
+        UpdateStatRow("Intelligence", _character.BaseIntelligence, _initialInt);
+        UpdateStatRow("Wisdom", _character.BaseWisdom, _initialWis);
+        UpdateStatRow("Charisma", _character.BaseCharisma, _initialCha);
 
         UpdateDerivedStats();
 
@@ -159,7 +165,7 @@ public partial class StudyScene : Control
     {
         if (_character == null) return;
         _lblMaxHP.Text = $"Max HP: {_character.MaxHP}";
-        _lblMaxMana.Text = $"Max Mana: {_character.Mana}";
+        _lblMaxMana.Text = $"Max Mana: {_character.MaxMana}";
         _lblArmorClass.Text = $"Armor Class: {_character.ArmorClass}";
         _lblEvasion.Text = $"Evasion: {_character.Evasion}";
         _lblAccuracy.Text = $"Accuracy: {_character.Accuracy}";
@@ -183,12 +189,12 @@ public partial class StudyScene : Control
         int initialValue = 0;
         switch (attribute)
         {
-            case "Strength": currentValue = _character.Strength; initialValue = _initialStr; break;
-            case "Dexterity": currentValue = _character.Dexterity; initialValue = _initialDex; break;
-            case "Constitution": currentValue = _character.Constitution; initialValue = _initialCon; break;
-            case "Intelligence": currentValue = _character.Intelligence; initialValue = _initialInt; break;
-            case "Wisdom": currentValue = _character.Wisdom; initialValue = _initialWis; break;
-            case "Charisma": currentValue = _character.Charisma; initialValue = _initialCha; break;
+            case "Strength": currentValue = _character.BaseStrength; initialValue = _initialStr; break;
+            case "Dexterity": currentValue = _character.BaseDexterity; initialValue = _initialDex; break;
+            case "Constitution": currentValue = _character.BaseConstitution; initialValue = _initialCon; break;
+            case "Intelligence": currentValue = _character.BaseIntelligence; initialValue = _initialInt; break;
+            case "Wisdom": currentValue = _character.BaseWisdom; initialValue = _initialWis; break;
+            case "Charisma": currentValue = _character.BaseCharisma; initialValue = _initialCha; break;
         }
 
         // If delta is negative, we can't go below initial value.
@@ -196,12 +202,12 @@ public partial class StudyScene : Control
 
         switch (attribute)
         {
-            case "Strength": _character.Strength += delta; break;
-            case "Dexterity": _character.Dexterity += delta; break;
-            case "Constitution": _character.Constitution += delta; break;
-            case "Intelligence": _character.Intelligence += delta; break;
-            case "Wisdom": _character.Wisdom += delta; break;
-            case "Charisma": _character.Charisma += delta; break;
+            case "Strength": _character.BaseStrength += delta; break;
+            case "Dexterity": _character.BaseDexterity += delta; break;
+            case "Constitution": _character.BaseConstitution += delta; break;
+            case "Intelligence": _character.BaseIntelligence += delta; break;
+            case "Wisdom": _character.BaseWisdom += delta; break;
+            case "Charisma": _character.BaseCharisma += delta; break;
         }
 
         _character.AttributePoints -= delta;
@@ -221,12 +227,12 @@ public partial class StudyScene : Control
     private void DiscardChanges()
     {
         if (_character == null) return;
-        _character.Strength = _initialStr;
-        _character.Dexterity = _initialDex;
-        _character.Constitution = _initialCon;
-        _character.Intelligence = _initialInt;
-        _character.Wisdom = _initialWis;
-        _character.Charisma = _initialCha;
+        _character.BaseStrength = _initialStr;
+        _character.BaseDexterity = _initialDex;
+        _character.BaseConstitution = _initialCon;
+        _character.BaseIntelligence = _initialInt;
+        _character.BaseWisdom = _initialWis;
+        _character.BaseCharisma = _initialCha;
         _character.AttributePoints = _initialPoints;
         _character.RecalculateDerivedStats();
     }

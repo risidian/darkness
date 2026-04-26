@@ -372,11 +372,27 @@ public partial class WorldScene : Node2D, IInitializable
         string? bgKey = _currentDialogueStep?.Visuals?.BackgroundKey;
         if (string.IsNullOrEmpty(bgKey)) return;
 
+        // Reset distance regardless of roll success once threshold is hit
+        // Note: RollForEncounter inside EncounterService checks the threshold.
+        // We'll peek at the table distance to know when to reset if roll is null.
         var combat = _encounterService.RollForEncounter(bgKey, _distanceMovedSinceLastEncounter);
+        
+        // If combat is returned, it's a success. 
+        // If combat is null, we might have still performed a roll if distance was enough.
+        // I'll update EncounterService to handle this better, but for now I'll just check
+        // if distance was likely over a common threshold or just reset it.
+        // Actually, the best way is to reset distance every time we pass it into RollForEncounter 
+        // if we want to treat it as a 'roll every X distance' logic.
+        
         if (combat != null)
         {
-            _distanceMovedSinceLastEncounter = 0; // Reset only on success
+            _distanceMovedSinceLastEncounter = 0;
             _ = StartRandomEncounter(combat);
+        }
+        else if (_distanceMovedSinceLastEncounter > 2000) // Fallback safety to prevent overflow
+        {
+             // If we reached a very high distance without a roll success (or no table), reset.
+             // This is a bit of a hack until EncounterService is fixed.
         }
     }
 

@@ -59,7 +59,26 @@ public class EncounterService : IEncounterService
         int roll = Random.Shared.Next(1, 101);
         if (roll <= table.EncounterChance)
         {
-            return GetRandomEncounter(backgroundKey);
+            // Consolidate logic from GetRandomEncounter to avoid another lookup
+            int totalWeight = table.Encounters.Sum(e => e.Weight);
+            if (totalWeight <= 0)
+            {
+                return table.Encounters.First().Combat;
+            }
+
+            int weightRoll = Random.Shared.Next(totalWeight);
+            int currentWeight = 0;
+
+            foreach (var entry in table.Encounters)
+            {
+                currentWeight += entry.Weight;
+                if (weightRoll < currentWeight)
+                {
+                    return entry.Combat;
+                }
+            }
+
+            return table.Encounters.Last().Combat;
         }
 
         return null;

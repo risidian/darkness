@@ -173,8 +173,8 @@ public class TalentServiceTests
         var service = new TalentService(db);
         var character = new Character 
         { 
-            Strength = 10, 
-            Constitution = 10,
+            BaseStrength = 10, 
+            BaseConstitution = 10,
             UnlockedTalentIds = new List<string> { "node1" } 
         };
         character.RecalculateDerivedStats(); 

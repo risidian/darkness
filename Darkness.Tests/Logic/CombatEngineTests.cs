@@ -12,7 +12,7 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CriticalHit_AlwaysHits()
         {
-            var attacker = new Character { Strength = 10 };
+            var attacker = new Character { BaseStrength = 10 };
             var defender = new Enemy { Defense = 100 };
 
             var result = _engine.CalculateDamage(attacker, defender, critRoll: 0.99); // Maps to 20
@@ -26,7 +26,7 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CriticalMiss_AlwaysMisses()
         {
-            var attacker = new Character { Strength = 30 };
+            var attacker = new Character { BaseStrength = 30 };
             var defender = new Enemy { Defense = 1 };
 
             var result = _engine.CalculateDamage(attacker, defender, critRoll: 0.0); // Maps to 1
@@ -39,7 +39,7 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateTurnOrder_ReturnsCorrectCount()
         {
-            var c1 = new Character { Name = "C1", Dexterity = 20 };
+            var c1 = new Character { Name = "C1", BaseDexterity = 20 };
             var e1 = new Enemy { Name = "E1", DEX = 10 };
 
             var order = _engine.CalculateTurnOrder(new List<Character> { c1 }, new List<Enemy> { e1 });
@@ -51,7 +51,7 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CharVsEnemy_AccuracyModifierAppliedAsPercentage()
         {
-            var attacker = new Character { Strength = 10 };
+            var attacker = new Character { BaseStrength = 10 };
             var defender = new Enemy { Defense = 13 };
             var skill = new Skill { AccuracyModifier = 20, DamageDice = "1d4" };
             // baseRoll = d20(11) + statMod(0) + accuracy(0) = 11
@@ -63,7 +63,7 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CharVsEnemy_NegativeAccuracyIsPercentageNotFlat()
         {
-            var attacker = new Character { Strength = 10 };
+            var attacker = new Character { BaseStrength = 10 };
             var defender = new Enemy { Defense = 8 };
             var skill = new Skill { AccuracyModifier = -10, DamageDice = "1d4" };
             // baseRoll = d20(11) + statMod(0) = 11
@@ -77,7 +77,7 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CharVsEnemy_ArmorPenetrationReducesAC()
         {
-            var attacker = new Character { Strength = 10 };
+            var attacker = new Character { BaseStrength = 10 };
             var defender = new Enemy { Defense = 20 };
             var skill = new Skill { ArmorPenetration = 0.5f, DamageDice = "1d4" };
             // 50% pen → effective AC = 10. d20=11+0=11 >= 10
@@ -89,7 +89,7 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CharVsEnemy_SubOneDamageMultiplierAllowed()
         {
-            var attacker = new Character { Strength = 10 };
+            var attacker = new Character { BaseStrength = 10 };
             var defender = new Enemy { Defense = 1 };
             var skill = new Skill { DamageMultiplier = 0.5f, DamageDice = "1d4" };
             var result = _engine.CalculateDamage(attacker, defender, skill, critRoll: 0.99);
@@ -102,7 +102,7 @@ namespace Darkness.Tests.Logic
         public void CalculateDamage_EnemyVsChar_CriticalHitHits()
         {
             var attacker = new Enemy { STR = 10, Accuracy = 0, Attack = 5 };
-            var defender = new Character { Dexterity = 10, ArmorClass = 100 };
+            var defender = new Character { BaseDexterity = 10, ArmorClass = 100 };
             var result = _engine.CalculateDamage(attacker, defender, critRoll: 0.99);
             Assert.True(result.IsHit);
             Assert.True(result.IsCriticalHit);
@@ -113,7 +113,7 @@ namespace Darkness.Tests.Logic
         public void CalculateDamage_EnemyVsChar_CriticalMissMisses()
         {
             var attacker = new Enemy { STR = 30, Accuracy = 50, Attack = 50 };
-            var defender = new Character { Dexterity = 10, ArmorClass = 0 };
+            var defender = new Character { BaseDexterity = 10, ArmorClass = 0 };
             var result = _engine.CalculateDamage(attacker, defender, critRoll: 0.0);
             Assert.False(result.IsHit);
             Assert.True(result.IsCriticalMiss);
@@ -123,8 +123,8 @@ namespace Darkness.Tests.Logic
         public void CalculateDamage_EnemyVsChar_ShieldBlockReducesDamage()
         {
             var attacker = new Enemy { STR = 20, Accuracy = 0, Attack = 100 };
-            var noBlock = new Character { Dexterity = 10, ArmorClass = 0, IsBlocking = false };
-            var withShield = new Character { Dexterity = 10, ArmorClass = 0, IsBlocking = true, ShieldType = "Tower Shield" };
+            var noBlock = new Character { BaseDexterity = 10, ArmorClass = 0, IsBlocking = false };
+            var withShield = new Character { BaseDexterity = 10, ArmorClass = 0, IsBlocking = true, ShieldType = "Tower Shield" };
             var noBlockResult = _engine.CalculateDamage(attacker, noBlock, critRoll: 0.99);
             var shieldResult = _engine.CalculateDamage(attacker, withShield, critRoll: 0.99);
             Assert.True(shieldResult.DamageDealt < noBlockResult.DamageDealt);
@@ -134,8 +134,8 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CharVsChar_MagicalUsesIntelligence()
         {
-            var attacker = new Character { Intelligence = 30, Strength = 1 };
-            var defender = new Character { Dexterity = 10, ArmorClass = 0 };
+            var attacker = new Character { BaseIntelligence = 30, BaseStrength = 1 };
+            var defender = new Character { BaseDexterity = 10, ArmorClass = 0 };
             var spell = new Skill { SkillType = "Magical", DamageDice = "1d4" };
             // d20=11 + GetModifier(30)=10 = 21 >= AC=10
             var result = _engine.CalculateDamage(attacker, defender, spell, critRoll: 0.5);
@@ -145,8 +145,8 @@ namespace Darkness.Tests.Logic
         [Fact]
         public void CalculateDamage_CharVsChar_CriticalHitHits()
         {
-            var attacker = new Character { Strength = 10 };
-            var defender = new Character { Dexterity = 10, ArmorClass = 100 };
+            var attacker = new Character { BaseStrength = 10 };
+            var defender = new Character { BaseDexterity = 10, ArmorClass = 100 };
             var result = _engine.CalculateDamage(attacker, defender, critRoll: 0.99);
             Assert.True(result.IsHit);
             Assert.True(result.IsCriticalHit);

@@ -20,7 +20,7 @@ public class TurnManagerTests
     public void Setup_PopulatesTurnOrderAndSetsCurrentTurnIndexToZero()
     {
         // Arrange
-        var party = new List<Character> { new Character { Name = "Hero", Dexterity = 15 } };
+        var party = new List<Character> { new Character { Name = "Hero", BaseDexterity = 15 } };
         var enemies = new List<Enemy> { new Enemy { Name = "Goblin", DEX = 10 } };
         
         // Act
@@ -36,7 +36,7 @@ public class TurnManagerTests
     public void NextTurn_AdvancesIndexAndLoops()
     {
         // Arrange
-        var party = new List<Character> { new Character { Name = "Hero", Dexterity = 15 } };
+        var party = new List<Character> { new Character { Name = "Hero", BaseDexterity = 15 } };
         var enemies = new List<Enemy> { new Enemy { Name = "Goblin", DEX = 10 } };
         _sut.Setup(party, enemies, new CombatEngine());
         
@@ -57,7 +57,7 @@ public class TurnManagerTests
     public void NextTurn_IncrementsSurvivalTurn_WhenLooping()
     {
         // Arrange
-        var party = new List<Character> { new Character { Name = "Hero", Dexterity = 15 } };
+        var party = new List<Character> { new Character { Name = "Hero", BaseDexterity = 15 } };
         var enemies = new List<Enemy> { new Enemy { Name = "Goblin", DEX = 10 } };
         _sut.Setup(party, enemies, new CombatEngine());
         
@@ -73,7 +73,7 @@ public class TurnManagerTests
     public void RemoveEntity_RemovesFromOrderAndAdjustsIndex()
     {
         // Arrange
-        var hero = new Character { Name = "Hero", Dexterity = 15 };
+        var hero = new Character { Name = "Hero", BaseDexterity = 15 };
         var goblin = new Enemy { Name = "Goblin", DEX = 10 };
         var orc = new Enemy { Name = "Orc", DEX = 12 };
         _sut.Setup(new List<Character> { hero }, new List<Enemy> { goblin, orc }, new CombatEngine());
@@ -99,7 +99,7 @@ public class TurnManagerTests
     public void Retry_ResetsEverything()
     {
         // Arrange
-        var party = new List<Character> { new Character { Name = "Hero", Dexterity = 15 } };
+        var party = new List<Character> { new Character { Name = "Hero", BaseDexterity = 15 } };
         var enemies = new List<Enemy> { new Enemy { Name = "Goblin", DEX = 10 } };
         _sut.Setup(party, enemies, new CombatEngine());
         _sut.NextTurn();

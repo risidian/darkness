@@ -37,58 +37,34 @@ namespace Darkness.Core.Models
 
         // Effective Stats (Computed)
         [BsonIgnore]
-        public int Strength
-        {
-            get => BaseStrength + 
+        public int Strength => BaseStrength + 
                    (StatBonuses.TryGetValue("Strength", out var b) ? b : 0) +
                    (TalentStatBonuses.TryGetValue("Strength", out var tb) ? tb : 0);
-            set => BaseStrength = value;
-        }
 
         [BsonIgnore]
-        public int Dexterity
-        {
-            get => BaseDexterity + 
+        public int Dexterity => BaseDexterity + 
                    (StatBonuses.TryGetValue("Dexterity", out var b) ? b : 0) +
                    (TalentStatBonuses.TryGetValue("Dexterity", out var tb) ? tb : 0);
-            set => BaseDexterity = value;
-        }
 
         [BsonIgnore]
-        public int Constitution
-        {
-            get => BaseConstitution + 
+        public int Constitution => BaseConstitution + 
                    (StatBonuses.TryGetValue("Constitution", out var b) ? b : 0) +
                    (TalentStatBonuses.TryGetValue("Constitution", out var tb) ? tb : 0);
-            set => BaseConstitution = value;
-        }
 
         [BsonIgnore]
-        public int Intelligence
-        {
-            get => BaseIntelligence + 
+        public int Intelligence => BaseIntelligence + 
                    (StatBonuses.TryGetValue("Intelligence", out var b) ? b : 0) +
                    (TalentStatBonuses.TryGetValue("Intelligence", out var tb) ? tb : 0);
-            set => BaseIntelligence = value;
-        }
 
         [BsonIgnore]
-        public int Wisdom
-        {
-            get => BaseWisdom + 
+        public int Wisdom => BaseWisdom + 
                    (StatBonuses.TryGetValue("Wisdom", out var b) ? b : 0) +
                    (TalentStatBonuses.TryGetValue("Wisdom", out var tb) ? tb : 0);
-            set => BaseWisdom = value;
-        }
 
         [BsonIgnore]
-        public int Charisma
-        {
-            get => BaseCharisma + 
+        public int Charisma => BaseCharisma + 
                    (StatBonuses.TryGetValue("Charisma", out var b) ? b : 0) +
                    (TalentStatBonuses.TryGetValue("Charisma", out var tb) ? tb : 0);
-            set => BaseCharisma = value;
-        }
 
         [BsonIgnore]
         public int TotalWeight => Inventory?.Sum(i => i.Weight * i.Quantity) ?? 0;
@@ -101,7 +77,9 @@ namespace Darkness.Core.Models
         public int MaxHP { get; set; }
         public int Attack { get; set; }
         public int Stamina { get; set; }
+        public int MaxStamina { get; set; }
         public int Mana { get; set; }
+        public int MaxMana { get; set; }
         public int Speed { get; set; }
         public int Accuracy { get; set; }
         public int Evasion { get; set; }
@@ -166,14 +144,23 @@ namespace Darkness.Core.Models
         public void RecalculateDerivedStats()
         {
             int oldMaxHP = MaxHP;
-            MaxHP = Constitution * 15 + GetTotalBonus("MaxHP");
+            MaxHP = Constitution * 10 + GetTotalBonus("MaxHP");
             if (MaxHP > oldMaxHP)
             {
                 CurrentHP += (MaxHP - oldMaxHP);
             }
             
-            Mana = Wisdom * 10 + GetTotalBonus("Mana");
-            Stamina = Constitution * 10 + GetTotalBonus("Stamina");
+            MaxMana = Wisdom * 5 + GetTotalBonus("Mana");
+            MaxStamina = Constitution * 5 + GetTotalBonus("Stamina");
+            
+            // If current is 0 (new char), initialize to max
+            if (Mana == 0 && Level == 1) Mana = MaxMana;
+            if (Stamina == 0 && Level == 1) Stamina = MaxStamina;
+            
+            // Clamp current to max
+            Mana = Math.Min(Mana, MaxMana);
+            Stamina = Math.Min(Stamina, MaxStamina);
+
             Speed = Dexterity + GetTotalBonus("Speed");
             Attack = Strength * 2 + GetTotalBonus("Attack");
             Accuracy = 80 + Dexterity / 2 + GetTotalBonus("Accuracy");

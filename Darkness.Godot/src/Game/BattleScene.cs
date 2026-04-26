@@ -100,7 +100,7 @@ public partial class BattleScene : Control, IInitializable
                         Attack = e.Attack > 0 ? e.Attack : 10,
                         Defense = e.Defense > 0 ? e.Defense : 5,
                         Speed = e.Speed > 0 ? e.Speed : 10,
-                        Accuracy = e.Accuracy > 0 ? e.Accuracy : 10,
+                        Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
                         Evasion = e.Evasion,
                         SpriteKey = e.SpriteKey ?? "knight",
                         SpriteOffsetX = e.SpriteOffsetX,

@@ -89,30 +89,32 @@ namespace Darkness.Core.Services
                     if (randomRewards.Any())
                     {
                         int totalWeight = randomRewards.Sum(r => r.Weight);
-                        var random = new Random();
-                        int roll = random.Next(totalWeight);
-                        int currentSum = 0;
-                        RandomReward? selectedRandom = null;
-                        foreach (var r in randomRewards)
+                        if (totalWeight > 0)
                         {
-                            currentSum += r.Weight;
-                            if (roll < currentSum)
+                            var random = new Random();
+                            int roll = random.Next(totalWeight);
+                            int currentSum = 0;
+                            RandomReward? selectedRandom = null;
+                            foreach (var r in randomRewards)
                             {
-                                selectedRandom = r;
-                                break;
-                            }
-                        }
-
-                        if (selectedRandom != null)
-                        {
-                            var itemTemplate = itemCol.FindOne(x => x.Name == selectedRandom.ItemName);
-                            if (itemTemplate != null)
-                            {
-                                // Add check character.TotalWeight + item.Weight <= character.CarryCapacity
-                                if (character.TotalWeight + itemTemplate.Weight <= character.CarryCapacity)
+                                currentSum += r.Weight;
+                                if (roll < currentSum)
                                 {
-                                    character.Inventory.Add(itemTemplate);
-                                    awardedItems.Add(itemTemplate);
+                                    selectedRandom = r;
+                                    break;
+                                }
+                            }
+
+                            if (selectedRandom != null)
+                            {
+                                var itemTemplate = itemCol.FindOne(x => x.Name == selectedRandom.ItemName);
+                                if (itemTemplate != null)
+                                {
+                                    if (character.TotalWeight + itemTemplate.Weight <= character.CarryCapacity)
+                                    {
+                                        character.Inventory.Add(itemTemplate);
+                                        awardedItems.Add(itemTemplate);
+                                    }
                                 }
                             }
                         }
