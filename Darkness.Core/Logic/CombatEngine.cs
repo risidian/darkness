@@ -120,7 +120,7 @@ namespace Darkness.Core.Logic
         {
             bool isMagical = skill?.SkillType == "Magical";
             int attackStat = isMagical ? attacker.Intelligence : attacker.Strength;
-            return CalculateDamageInternal(attackStat, 0, 0,
+            return CalculateDamageInternal(attackStat, attacker.Accuracy, 0,
                 defender.Defense, isMagical,
                 defender.IsBlocking, "", "",
                 skill, critRoll);
@@ -142,10 +142,38 @@ namespace Darkness.Core.Logic
             bool isMagical = skill?.SkillType == "Magical";
             int attackStat = isMagical ? attacker.Intelligence : attacker.Strength;
             int targetAC = 10 + defender.ArmorClass + GetModifier(defender.Dexterity);
-            return CalculateDamageInternal(attackStat, 0, 0,
+            return CalculateDamageInternal(attackStat, attacker.Accuracy, 0,
                 targetAC, isMagical,
                 defender.IsBlocking, defender.ShieldType ?? "", defender.WeaponType ?? "",
                 skill, critRoll);
+        }
+
+        public void HandleTurnStart(Character character)
+        {
+            if (character == null) return;
+            
+            // Regenerate Stamina: CON / 2
+            int staminaRegen = Math.Max(1, character.Constitution / 2);
+            character.Stamina = Math.Min(character.MaxHP * 10, character.Stamina + staminaRegen); // MaxHP*10 is the base for Stamina in RecalculateDerivedStats (Constitution * 10)
+            
+            // Regenerate Mana: WIS / 2
+            int manaRegen = Math.Max(1, character.Wisdom / 2);
+            character.Mana = Math.Min(character.MaxHP * 10, character.Mana + manaRegen);
+            
+            character.IsBlocking = false;
+        }
+
+        public void HandleTurnStart(Enemy enemy)
+        {
+            if (enemy == null) return;
+            
+            int staminaRegen = Math.Max(1, enemy.CON / 2);
+            enemy.Stamina = Math.Min(enemy.MaxHP, enemy.Stamina + staminaRegen);
+            
+            int manaRegen = Math.Max(1, enemy.WIS / 2);
+            enemy.Mana = Math.Min(enemy.MaxHP, enemy.Mana + manaRegen);
+            
+            enemy.IsBlocking = false;
         }
 
         public void ApplySkillCosts(Character attacker, Skill skill)

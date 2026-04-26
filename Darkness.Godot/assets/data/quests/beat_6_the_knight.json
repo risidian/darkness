@@ -43,7 +43,7 @@
       "Type": "combat",
       "Combat": {
         "Enemies": [
-          { "Name": "Tywin", "Level": 6, "MaxHP": 250, "CurrentHP": 250, "Attack": 20, "Defense": 15, "Speed": 12, "SpriteKey": "knight", "ExperienceReward": 200 }
+          { "Name": "Tywin", "Level": 6, "MaxHP": 250, "CurrentHP": 250, "Attack": 12, "Defense": 15, "Speed": 12, "SpriteKey": "bosses/Tywin", "ExperienceReward": 1000 }
         ],
         "BackgroundKey": "road"
       }

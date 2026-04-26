@@ -166,14 +166,14 @@ namespace Darkness.Core.Models
         public void RecalculateDerivedStats()
         {
             int oldMaxHP = MaxHP;
-            MaxHP = Constitution * 10 + GetTotalBonus("MaxHP");
+            MaxHP = Constitution * 15 + GetTotalBonus("MaxHP");
             if (MaxHP > oldMaxHP)
             {
                 CurrentHP += (MaxHP - oldMaxHP);
             }
             
-            Mana = Wisdom * 5 + GetTotalBonus("Mana");
-            Stamina = Constitution * 5 + GetTotalBonus("Stamina");
+            Mana = Wisdom * 10 + GetTotalBonus("Mana");
+            Stamina = Constitution * 10 + GetTotalBonus("Stamina");
             Speed = Dexterity + GetTotalBonus("Speed");
             Attack = Strength * 2 + GetTotalBonus("Attack");
             Accuracy = 80 + Dexterity / 2 + GetTotalBonus("Accuracy");

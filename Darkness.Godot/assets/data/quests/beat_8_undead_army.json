@@ -41,9 +41,9 @@
       "Type": "combat",
       "Combat": {
         "Enemies": [
-          { "Name": "Undead Knight A", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 25, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 100 },
-          { "Name": "Undead Knight B", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 25, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 100 },
-          { "Name": "Undead Knight C", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 25, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 100 }
+          { "Name": "Undead Knight A", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 12, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 500 },
+          { "Name": "Undead Knight B", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 12, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 500 },
+          { "Name": "Undead Knight C", "Level": 12, "MaxHP": 150, "CurrentHP": 150, "Attack": 12, "Defense": 15, "Speed": 10, "SpriteKey": "knight", "ExperienceReward": 500 }
         ],
         "BackgroundKey": "battlefield"
       }

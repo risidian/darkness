@@ -77,5 +77,15 @@ namespace Darkness.Core.Interfaces
         /// <param name="effect">The status effect being applied.</param>
         /// <returns>True if the effect is applied, false if resisted.</returns>
         bool CheckStatusEffect(Enemy target, StatusEffect effect);
+
+        /// <summary>
+        /// Handles turn start logic (regeneration, clearing flags).
+        /// </summary>
+        void HandleTurnStart(Character character);
+
+        /// <summary>
+        /// Handles turn start logic (regeneration, clearing flags).
+        /// </summary>
+        void HandleTurnStart(Enemy enemy);
     }
 }

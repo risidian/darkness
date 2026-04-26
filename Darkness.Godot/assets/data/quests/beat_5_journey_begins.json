@@ -42,8 +42,8 @@
       "Type": "combat",
       "Combat": {
         "Enemies": [
-          { "Name": "Goblin Raider", "Level": 4, "MaxHP": 80, "CurrentHP": 80, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "knight", "ExperienceReward": 50 },
-          { "Name": "Goblin Archer", "Level": 4, "MaxHP": 60, "CurrentHP": 60, "Attack": 10, "Defense": 4, "Speed": 18, "SpriteKey": "knight", "ExperienceReward": 50 }
+          { "Name": "Goblin Raider", "Level": 4, "MaxHP": 80, "CurrentHP": 80, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "knight", "ExperienceReward": 200 },
+          { "Name": "Goblin Archer", "Level": 4, "MaxHP": 60, "CurrentHP": 60, "Attack": 10, "Defense": 4, "Speed": 18, "SpriteKey": "knight", "ExperienceReward": 200 }
         ],
         "BackgroundKey": "forest"
       }

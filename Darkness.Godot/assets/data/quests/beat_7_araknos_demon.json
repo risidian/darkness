@@ -33,7 +33,7 @@
       "Type": "combat",
       "Combat": {
         "Enemies": [
-          { "Name": "Araknos", "Level": 10, "MaxHP": 500, "CurrentHP": 500, "Attack": 35, "Defense": 10, "Speed": 25, "SpriteKey": "bosses/Raknith", "ExperienceReward": 400 }
+          { "Name": "Araknos", "Level": 10, "MaxHP": 500, "CurrentHP": 500, "Attack": 15, "Defense": 10, "Speed": 25, "SpriteKey": "bosses/Raknith", "ExperienceReward": 1500 }
         ],
         "BackgroundKey": "cave"
       }

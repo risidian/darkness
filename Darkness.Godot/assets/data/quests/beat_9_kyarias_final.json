@@ -33,7 +33,7 @@
       "Type": "combat",
       "Combat": {
         "Enemies": [
-          { "Name": "Kyarias", "Level": 15, "MaxHP": 1000, "CurrentHP": 1000, "Attack": 50, "Defense": 20, "Speed": 35, "SpriteKey": "bosses/KazarthEndGame", "ExperienceReward": 1000 }
+          { "Name": "Kyarias", "Level": 15, "MaxHP": 1000, "CurrentHP": 1000, "Attack": 25, "Defense": 20, "Speed": 35, "SpriteKey": "bosses/KazarthEndGame", "ExperienceReward": 3000 }
         ],
         "BackgroundKey": "throne_room"
       }

@@ -32,7 +32,7 @@
 	  "Type": "combat",
 	  "Combat": {
 		"Enemies": [
-		  { "Name": "Balgathor", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 500, "GoldReward":20}
+		  { "Name": "Balgathor", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 1500, "GoldReward":20}
 		],
 		"SurvivalTurns": 5,
 		"BackgroundKey": "dark_castle"

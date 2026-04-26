@@ -100,7 +100,7 @@ public partial class BattleScene : Control, IInitializable
                         Attack = e.Attack > 0 ? e.Attack : 10,
                         Defense = e.Defense > 0 ? e.Defense : 5,
                         Speed = e.Speed > 0 ? e.Speed : 10,
-                        Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
+                        Accuracy = e.Accuracy > 0 ? e.Accuracy : 10,
                         Evasion = e.Evasion,
                         SpriteKey = e.SpriteKey ?? "knight",
                         SpriteOffsetX = e.SpriteOffsetX,
@@ -832,6 +832,7 @@ public partial class BattleScene : Control, IInitializable
 
         if (currentEntity is Character character)
         {
+            _combat.HandleTurnStart(character);
             foreach (var key in _skillCooldowns.Keys.ToList())
             {
                 _skillCooldowns[key]--;
@@ -846,6 +847,7 @@ public partial class BattleScene : Control, IInitializable
         }
         else if (currentEntity is Enemy enemy)
         {
+            _combat.HandleTurnStart(enemy);
             EnablePlayerInput(false);
             _combatLog.AppendText($"\n\n--- [color=orange]{enemy.Name}'s Turn[/color] ---");
             await ExecuteEnemyTurn(enemy);
