@@ -20,130 +20,262 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.129412, 0.129412, 0.129412, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MainLayout" type="HBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -300.0
-offset_right = 300.0
-offset_bottom = 300.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 40
+
+[node name="LeftPanel" type="ScrollContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainLayout/LeftPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 20
 
-[node name="CharName" type="Label" parent="VBoxContainer"]
+[node name="CharName" type="Label" parent="MainLayout/LeftPanel/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "CHARACTER NAME"
 horizontal_alignment = 1
 
-[node name="Points" type="Label" parent="VBoxContainer"]
+[node name="Points" type="Label" parent="MainLayout/LeftPanel/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "Attribute Points: 0"
 horizontal_alignment = 1
 
-[node name="StatsGrid" type="VBoxContainer" parent="VBoxContainer"]
+[node name="StatsGrid" type="VBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="Strength" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+[node name="Strength" type="HBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Strength"]
+[node name="MinusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Strength"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="Label" type="Label" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Strength"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 28
 text = "Strength: 10"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Strength"]
-custom_minimum_size = Vector2(80, 80)
+[node name="PlusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Strength"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "+"
 
-[node name="Dexterity" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+[node name="Dexterity" type="HBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Dexterity"]
+[node name="MinusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Dexterity"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="Label" type="Label" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Dexterity"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 28
 text = "Dexterity: 10"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Dexterity"]
-custom_minimum_size = Vector2(80, 80)
+[node name="PlusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Dexterity"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "+"
 
-[node name="Constitution" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+[node name="Constitution" type="HBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Constitution"]
+[node name="MinusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Constitution"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="Label" type="Label" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Constitution"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 28
 text = "Constitution: 10"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Constitution"]
-custom_minimum_size = Vector2(80, 80)
+[node name="PlusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Constitution"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "+"
 
-[node name="Intelligence" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+[node name="Intelligence" type="HBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Intelligence"]
+[node name="MinusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Intelligence"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="Label" type="Label" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Intelligence"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 28
 text = "Intelligence: 10"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Intelligence"]
-custom_minimum_size = Vector2(80, 80)
+[node name="PlusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Intelligence"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "+"
 
-[node name="Wisdom" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+[node name="Wisdom" type="HBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Wisdom"]
+[node name="MinusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Wisdom"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="Label" type="Label" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Wisdom"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 28
 text = "Wisdom: 10"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Wisdom"]
-custom_minimum_size = Vector2(80, 80)
+[node name="PlusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Wisdom"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "+"
 
-[node name="Charisma" type="HBoxContainer" parent="VBoxContainer/StatsGrid"]
+[node name="Charisma" type="HBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/StatsGrid/Charisma"]
+[node name="MinusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Charisma"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="Label" type="Label" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Charisma"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 28
 text = "Charisma: 10"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PlusButton" type="Button" parent="VBoxContainer/StatsGrid/Charisma"]
-custom_minimum_size = Vector2(80, 80)
+[node name="PlusButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/StatsGrid/Charisma"]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 text = "+"
 
-[node name="BackButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 80)
+[node name="ActionButtons" type="HBoxContainer" parent="MainLayout/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="SaveButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/ActionButtons"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "SAVE"
+
+[node name="BackButton" type="Button" parent="MainLayout/LeftPanel/VBoxContainer/ActionButtons"]
+custom_minimum_size = Vector2(200, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "BACK"
+
+[node name="RightPanel" type="ScrollContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DerivedStatsList" type="VBoxContainer" parent="MainLayout/RightPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="Header" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 36
+text = "Derived Stats"
+horizontal_alignment = 1
+
+[node name="MaxHP" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Max HP: 0"
+
+[node name="MaxMana" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Max Mana: 0"
+
+[node name="ArmorClass" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Armor Class: 0"
+
+[node name="Evasion" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Evasion: 0"
+
+[node name="Accuracy" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Accuracy: 0"
+
+[node name="MeleeDamage" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Melee Damage: 0"
+
+[node name="MagicDamage" type="Label" parent="MainLayout/RightPanel/DerivedStatsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Magic Damage: 0"
+
+[node name="UnsavedDialog" type="ConfirmationDialog" parent="."]
+title = "Unsaved Changes"
+initial_position = 2
+size = Vector2i(400, 150)
+ok_button_text = "Save"
+cancel_button_text = "Cancel"
+dialog_text = "You have unsaved attribute changes. Do you want to save them before leaving?"
+
+[node name="DiscardButton" type="Button" parent="UnsavedDialog"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 392.0
+offset_bottom = 101.0
+text = "Discard"
