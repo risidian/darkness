@@ -97,7 +97,7 @@ public class QuestService : IQuestService
             var completedChainIds = GetCompletedChainIds(character.Id);
             var option = currentStep.Branch.Options.FirstOrDefault(o =>
                 o.NextStepId == choiceStepId &&
-                ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds));
+                ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds, GetWorldFlag));
 
             if (option != null)
             {
@@ -120,6 +120,16 @@ public class QuestService : IQuestService
             var nextStep = chain.Steps.FirstOrDefault(s => s.Id == nextStepId);
             if (nextStep != null)
             {
+                var completedChainIds = GetCompletedChainIds(character.Id);
+                if (!ConditionEvaluator.EvaluateAll(nextStep.Requirements, character, completedChainIds, GetWorldFlag))
+                {
+                    Console.Error.WriteLine($"[QuestService] WARN: Requirements for next step '{nextStepId}' not met for character {character.Id}");
+                    return null;
+                }
+
+                // Grant rewards from the step we are finishing
+                GrantRewards(character, currentStep.Rewards);
+
                 if (state == null)
                 {
                     state = new QuestState
@@ -150,6 +160,9 @@ public class QuestService : IQuestService
         }
 
         // Truly no next step — chain is complete
+        // Grant rewards from the last step
+        GrantRewards(character, currentStep.Rewards);
+
         if (state == null)
         {
             state = new QuestState
@@ -170,6 +183,69 @@ public class QuestService : IQuestService
         }
 
         return null;
+    }
+
+    private void GrantRewards(Character character, List<QuestReward> rewards)
+    {
+        if (rewards == null || rewards.Count == 0) return;
+
+        foreach (var reward in rewards)
+        {
+            switch (reward.Type.ToLower())
+            {
+                case "experience":
+                    if (int.TryParse(reward.Value, out var xp))
+                        character.Experience += xp;
+                    break;
+                case "gold":
+                    if (int.TryParse(reward.Value, out var gold))
+                        character.Gold += gold;
+                    break;
+                case "item":
+                    var itemCol = _db.GetCollection<Item>("items");
+                    var item = itemCol.FindOne(i => i.Name == reward.Value);
+                    if (item != null)
+                    {
+                        for (int i = 0; i < reward.Amount; i++)
+                        {
+                            // Create a copy of the item
+                            var newItem = new Item
+                            {
+                                Name = item.Name,
+                                Description = item.Description,
+                                Type = item.Type,
+                                Tier = item.Tier,
+                                Value = item.Value,
+                                Weight = item.Weight,
+                                Quantity = 1,
+                                Infusion = item.Infusion,
+                                StrengthBonus = item.StrengthBonus,
+                                DexterityBonus = item.DexterityBonus,
+                                IntelligenceBonus = item.IntelligenceBonus,
+                                DefenseBonus = item.DefenseBonus,
+                                AttackBonus = item.AttackBonus,
+                                ArmorClass = item.ArmorClass,
+                                DamageDice = item.DamageDice,
+                                EquipmentSlot = item.EquipmentSlot,
+                                EquipmentSpriteId = item.EquipmentSpriteId,
+                                RequiredStrength = item.RequiredStrength,
+                                RequiredDexterity = item.RequiredDexterity,
+                                RequiredIntelligence = item.RequiredIntelligence,
+                                RequiredLevel = item.RequiredLevel
+                            };
+                            character.Inventory.Add(newItem);
+                        }
+                    }
+                    break;
+                case "worldflag":
+                    SetWorldFlag(reward.Value, true);
+                    break;
+                case "attributepoint":
+                    if (int.TryParse(reward.Value, out var pts))
+                        character.AttributePoints += pts;
+                    break;
+            }
+        }
     }
 
     public void UpdateQuestState(QuestState state)
@@ -210,7 +286,29 @@ public class QuestService : IQuestService
 
         var completedChainIds = GetCompletedChainIds(character.Id);
         return step.Branch.Options
-            .Where(o => ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds))
+            .Where(o => ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds, GetWorldFlag))
             .ToList();
+    }
+
+    public bool GetWorldFlag(string key)
+    {
+        var col = _db.GetCollection<WorldFlag>("world_flags");
+        var flag = col.FindOne(f => f.Key == key);
+        return flag != null && flag.Value.ToLower() == "true";
+    }
+
+    public void SetWorldFlag(string key, bool value)
+    {
+        var col = _db.GetCollection<WorldFlag>("world_flags");
+        var flag = col.FindOne(f => f.Key == key);
+        if (flag == null)
+        {
+            col.Insert(new WorldFlag { Key = key, Value = value.ToString().ToLower() });
+        }
+        else
+        {
+            flag.Value = value.ToString().ToLower();
+            col.Update(flag);
+        }
     }
 }

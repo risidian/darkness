@@ -13,4 +13,6 @@ public interface IQuestService
     bool IsMainStoryComplete(Character character);
     List<string> GetCompletedChainIds(int characterId);
     List<BranchOption> GetAvailableBranchOptions(Character character, string chainId, string stepId);
+    bool GetWorldFlag(string key);
+    void SetWorldFlag(string key, bool value);
 }

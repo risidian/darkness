@@ -7,14 +7,14 @@ namespace Darkness.Core.Services;
 
 public static class ConditionEvaluator
 {
-    public static bool EvaluateAll(List<BranchCondition>? conditions, Character character, List<string> completedChainIds)
+    public static bool EvaluateAll(List<BranchCondition>? conditions, Character character, List<string> completedChainIds, Func<string, bool> flagProvider)
     {
         if (conditions == null || conditions.Count == 0)
             return true;
-        return conditions.All(c => Evaluate(c, character, completedChainIds));
+        return conditions.All(c => Evaluate(c, character, completedChainIds, flagProvider));
     }
 
-    public static bool Evaluate(BranchCondition condition, Character character, List<string> completedChainIds)
+    public static bool Evaluate(BranchCondition condition, Character character, List<string> completedChainIds, Func<string, bool> flagProvider)
     {
         return condition.Type switch
         {
@@ -22,6 +22,7 @@ public static class ConditionEvaluator
             "class" => condition.Operator == "==" && string.Equals(character.Class, condition.Value, StringComparison.OrdinalIgnoreCase),
             "has_item" => character.Inventory.Any(i => string.Equals(i.Name, condition.Value, StringComparison.OrdinalIgnoreCase)),
             "quest_completed" => completedChainIds.Contains(condition.Value),
+            "world_flag" => flagProvider(condition.Value) == (condition.Operator != "!="),
             _ => false
         };
     }
