@@ -1,0 +1,144 @@
+{
+  "Id": "exploration_demo",
+  "Title": "Exploration Demo",
+  "IsMainStory": false,
+  "SortOrder": 100,
+  "Prerequisites": [],
+  "Steps": [
+    {
+      "Id": "demo_intro",
+      "Type": "dialogue",
+      "NextStepId": "demo_hub",
+      "Dialogue": {
+        "Speaker": "Warden",
+        "Lines": [
+          "Stop! The gate ahead is locked.",
+          "Only those who find the secret lever in the cave can pass."
+        ]
+      },
+      "Rewards": [
+        { "Type": "worldflag", "Value": "demo_started", "Amount": 1 }
+      ]
+    },
+    {
+      "Id": "demo_hub",
+      "Type": "travel",
+      "Visuals": {
+        "BackgroundKey": "forest",
+        "GroundColor": "#2d4c1e",
+        "Zones": [
+          {
+            "X": 1000,
+            "Y": 300,
+            "Width": 200,
+            "Height": 200,
+            "Type": "Block",
+            "ForbiddenFlag": "gate_open"
+          },
+          {
+            "X": 1000,
+            "Y": 300,
+            "Width": 200,
+            "Height": 200,
+            "Type": "Trigger",
+            "ActionId": "demo_gate_unlocked"
+          },
+          {
+            "X": 100,
+            "Y": 100,
+            "Width": 200,
+            "Height": 200,
+            "Type": "Trigger",
+            "ActionId": "demo_lever"
+          }
+        ]
+      },
+      "Branch": {
+        "Options": [
+          {
+            "Text": "Go to cave",
+            "NextStepId": "demo_lever"
+          },
+          {
+            "Text": "Pass the gate",
+            "NextStepId": "demo_gate_unlocked",
+            "Conditions": [
+              { "Type": "world_flag", "Operator": "==", "Value": "gate_open" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "Id": "demo_lever",
+      "Type": "travel",
+      "Visuals": {
+        "BackgroundKey": "cave",
+        "GroundColor": "#333333",
+        "Zones": [
+          {
+            "X": 600,
+            "Y": 300,
+            "Width": 200,
+            "Height": 200,
+            "Type": "Trigger",
+            "ActionId": "demo_lever_pulled"
+          }
+        ]
+      },
+      "Branch": {
+        "Options": [
+          {
+            "Text": "Pull Lever",
+            "NextStepId": "demo_lever_pulled"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "demo_lever_pulled",
+      "Type": "dialogue",
+      "NextStepId": "demo_hub",
+      "Dialogue": {
+        "Speaker": "System",
+        "Lines": ["You pull the lever. A heavy grinding sound echoes from the forest."]
+      },
+      "Rewards": [
+        { "Type": "worldflag", "Value": "gate_open", "Amount": 1 }
+      ]
+    },
+    {
+      "Id": "demo_gate_unlocked",
+      "Type": "dialogue",
+      "NextStepId": "demo_boss",
+      "Dialogue": {
+        "Speaker": "Warden",
+        "Lines": ["The gate is open! You may proceed."]
+      }
+    },
+    {
+      "Id": "demo_boss",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          {
+            "Name": "Gate Keeper",
+            "Level": 5,
+            "MaxHP": 150,
+            "CurrentHP": 150,
+            "Attack": 15,
+            "Defense": 10,
+            "Speed": 12,
+            "SpriteKey": "knight",
+            "ExperienceReward": 500
+          }
+        ],
+        "BackgroundKey": "forest"
+      },
+      "Rewards": [
+        { "Type": "Gold", "Value": "100", "Amount": 100 },
+        { "Type": "Item", "Value": "Steel Sword", "Amount": 1 }
+      ]
+    }
+  ]
+}
