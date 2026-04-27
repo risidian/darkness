@@ -306,6 +306,10 @@ public partial class WorldScene : Node2D, IInitializable
 
                 foreach (var zone in _currentDialogueStep.Visuals.Zones)
                 {
+                    // Dynamic Visibility/Interaction Check
+                    if (!string.IsNullOrEmpty(zone.RequiredFlag) && !_questService.GetWorldFlag(zone.RequiredFlag)) continue;
+                    if (!string.IsNullOrEmpty(zone.ForbiddenFlag) && _questService.GetWorldFlag(zone.ForbiddenFlag)) continue;
+
                     Rect2 zoneRect = new Rect2(zone.X, zone.Y, zone.Width, zone.Height);
 
                     if (playerRect.Intersects(zoneRect))
@@ -329,12 +333,22 @@ public partial class WorldScene : Node2D, IInitializable
                         }
                         else if (zone.Type.Equals("Trigger", System.StringComparison.OrdinalIgnoreCase))
                         {
-                            if (!_isEncounterTriggered && (zone.ActionId == "next_step" || string.IsNullOrEmpty(zone.ActionId)))
+                            if (!_isEncounterTriggered)
                             {
-                                GD.Print($"[WorldScene] Trigger zone hit at X: {nextPos.X}, Y: {nextPos.Y}. Action: {zone.ActionId ?? "next_step"}");
-                                _targetPosition = null;
-                                intendedVelocity = Vector2.Zero;
-                                _ = TriggerEncounter(true);
+                                // Handle Interact Trigger (Specific ActionId)
+                                if (!string.IsNullOrEmpty(zone.ActionId) && zone.ActionId != "next_step")
+                                {
+                                    intendedVelocity = Vector2.Zero;
+                                    _ = HandleInteractTrigger(zone);
+                                }
+                                // Handle Generic Trigger (next_step or empty)
+                                else if (zone.ActionId == "next_step" || string.IsNullOrEmpty(zone.ActionId))
+                                {
+                                    GD.Print($"[WorldScene] Trigger zone hit at X: {nextPos.X}, Y: {nextPos.Y}. Action: {zone.ActionId ?? "next_step"}");
+                                    _targetPosition = null;
+                                    intendedVelocity = Vector2.Zero;
+                                    _ = TriggerEncounter(true);
+                                }
                             }
                         }
                     }
@@ -747,6 +761,40 @@ public partial class WorldScene : Node2D, IInitializable
         }
     }
 
+    private async Task HandleInteractTrigger(ZoneConfig zone)
+    {
+        GD.Print($"[WorldScene] Interact trigger zone hit: {zone.ActionId}");
+        _targetPosition = null;
+        _player.Velocity = Vector2.Zero; 
+        _isEncounterTriggered = true;
+        _state = WorldState.Transitioning;
+
+        var character = _session.CurrentCharacter;
+        var chain = _currentDialogueChain;
+        if (character != null && chain != null)
+        {
+            var nextStep = _questService.AdvanceStep(character, chain.Id, zone.ActionId);
+            await UpdateVisuals(nextStep, chain);
+
+            if (nextStep != null && nextStep.AutoTransition)
+            {
+                _isEncounterTriggered = false;
+                _state = WorldState.Exploring;
+                await TriggerEncounter();
+            }
+            else
+            {
+                _isEncounterTriggered = false;
+                _state = WorldState.Exploring;
+            }
+        }
+        else
+        {
+            _isEncounterTriggered = false;
+            _state = WorldState.Exploring;
+        }
+    }
+
     private async Task TriggerEncounter(bool isLocationTrigger = false)
     {
         GD.Print($"[WorldScene] TriggerEncounter called. isLocationTrigger: {isLocationTrigger}, _isEncounterTriggered: {_isEncounterTriggered}, _state: {_state}");
@@ -798,6 +846,36 @@ public partial class WorldScene : Node2D, IInitializable
         }
 
         GD.Print($"[WorldScene] Triggering step: {step.Id} from chain: {chain.Id} (type: {step.Type})");
+
+        if (step.Type == "travel")
+        {
+            if (isLocationTrigger)
+            {
+                GD.Print($"[WorldScene] Travel step '{step.Id}' reached destination. Advancing.");
+                var nextStep = _questService.AdvanceStep(character, chain.Id);
+                await UpdateVisuals(nextStep, chain);
+                
+                if (nextStep != null && nextStep.AutoTransition)
+                {
+                    _isEncounterTriggered = false;
+                    _state = WorldState.Exploring;
+                    await TriggerEncounter();
+                }
+                else
+                {
+                    _isEncounterTriggered = false;
+                    _state = WorldState.Exploring;
+                }
+                return;
+            }
+            else
+            {
+                GD.Print($"[WorldScene] Travel step '{step.Id}' non-blocking entry. Ignoring.");
+                _isEncounterTriggered = false;
+                _state = WorldState.Exploring;
+                return;
+            }
+        }
 
         if (step.Combat != null)
         {
