@@ -11,4 +11,6 @@ public class QuestStep
     public BranchData? Branch { get; set; }
     public VisualConfig? Visuals { get; set; }
     public bool AutoTransition { get; set; } = false;
+    public List<BranchCondition> Requirements { get; set; } = new();
+    public List<QuestReward> Rewards { get; set; } = new();
 }

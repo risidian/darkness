@@ -1,38 +1,43 @@
 using Darkness.Core.Interfaces;
+using Darkness.Core.Models;
 using LiteDB;
 using System.IO;
 
-namespace Darkness.Core.Data
+namespace Darkness.Core.Data;
+
+public class LocalDatabaseService
 {
-    public class LocalDatabaseService
+    private readonly IFileSystemService _fileSystem;
+    private readonly string _dbPath;
+    private static readonly BsonMapper _sharedMapper = new BsonMapper();
+
+    static LocalDatabaseService()
     {
-        private readonly IFileSystemService _fileSystem;
-        private readonly string _dbPath;
-        private static readonly BsonMapper _sharedMapper = new BsonMapper();
+        _sharedMapper.Entity<WorldFlag>().Id(x => x.Key);
+    }
 
-        public LocalDatabaseService(IFileSystemService fileSystem)
-        {
-            _fileSystem = fileSystem;
-            string directory = _fileSystem.AppDataDirectory;
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
-            _dbPath = Path.Combine(directory, "Darkness.db");
-        }
+    public LocalDatabaseService(IFileSystemService fileSystem)
+    {
+        _fileSystem = fileSystem;
+        string directory = _fileSystem.AppDataDirectory;
+        if (!Directory.Exists(directory))
+            Directory.CreateDirectory(directory);
+        _dbPath = Path.Combine(directory, "Darkness.db");
+    }
 
-        public string GetLocalFilePath(string filename)
+    public string GetLocalFilePath(string filename)
+    {
+        string directory = _fileSystem.AppDataDirectory;
+        if (!Directory.Exists(directory))
         {
-            string directory = _fileSystem.AppDataDirectory;
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-            return Path.Combine(directory, filename);
+            Directory.CreateDirectory(directory);
         }
+        return Path.Combine(directory, filename);
+    }
 
-        public LiteDatabase OpenDatabase()
-        {
-            var connectionString = $"Filename={_dbPath};Connection=shared";
-            return new LiteDatabase(connectionString, _sharedMapper);
-        }
+    public LiteDatabase OpenDatabase()
+    {
+        var connectionString = $"Filename={_dbPath};Connection=shared";
+        return new LiteDatabase(connectionString, _sharedMapper);
     }
 }
