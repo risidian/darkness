@@ -83,7 +83,33 @@ public partial class BattleScene : Control, IInitializable
                 _enemies.Clear();
                 _enemyMap.Clear();
                 _originalEnemies.Clear();
-                
+
+                // Load snapshot from DB BEFORE creating enemies, so spawn HP is up-to-date.
+                if (args.IsResuming && args.Snapshot == null && _session.CurrentCharacter != null && !string.IsNullOrEmpty(_questChainId))
+                {
+                    var state = _questService.GetQuestState(_session.CurrentCharacter.Id, _questChainId);
+                    if (state != null && state.CurrentCombatSnapshot != null)
+                    {
+                        GD.Print($"[BattleScene] Restoring combat snapshot from database for chain: {_questChainId}");
+                        args.Snapshot = state.CurrentCombatSnapshot;
+
+                        // Restore enemy HP into the spawn list (stable list, never mutated by combat).
+                        for (int i = 0; i < args.Combat.Enemies.Count; i++)
+                        {
+                            if (args.Snapshot.EnemyHP.TryGetValue(i, out int hp))
+                            {
+                                args.Combat.Enemies[i].CurrentHP = hp;
+                            }
+                        }
+
+                        // Restore party HP from snapshot
+                        if (args.Snapshot.PartyHP.TryGetValue(0, out int partyHp))
+                        {
+                            _session.CurrentCharacter.CurrentHP = partyHp;
+                        }
+                    }
+                }
+
                 foreach (var e in combat.Enemies)
                 {
                     // Start of battle: e.CurrentHP is usually 0 in JSON, so we use MaxHP.
@@ -132,38 +158,9 @@ public partial class BattleScene : Control, IInitializable
                     });
                 }
                 
-                // Remove dead enemies if we are resuming
+                // Remove dead enemies if we are resuming (snapshot was loaded above before enemy creation)
                 if (args.IsResuming)
                 {
-                    // If no snapshot was passed in memory, try to load from database
-                    if (args.Snapshot == null && _session.CurrentCharacter != null && !string.IsNullOrEmpty(_questChainId))
-                    {
-                        var state = _questService.GetQuestState(_session.CurrentCharacter.Id, _questChainId);
-                        if (state != null && state.CurrentCombatSnapshot != null)
-                        {
-                            GD.Print($"[BattleScene] Restoring combat snapshot from database for chain: {_questChainId}");
-                            args.Snapshot = state.CurrentCombatSnapshot;
-                            
-                            // Restore enemy HP from snapshot
-                            for (int i = 0; i < args.Combat.Enemies.Count; i++)
-                            {
-                                if (args.Snapshot.EnemyHP.TryGetValue(i, out int hp))
-                                {
-                                    args.Combat.Enemies[i].CurrentHP = hp;
-                                }
-                            }
-
-                            // Restore party HP from snapshot
-                            if (args.Snapshot.PartyHP.Count > 0 && _session.CurrentCharacter != null)
-                            {
-                                if (args.Snapshot.PartyHP.TryGetValue(0, out int partyHp))
-                                {
-                                    _session.CurrentCharacter.CurrentHP = partyHp;
-                                }
-                            }
-                        }
-                    }
-
                     _enemies.RemoveAll(e => e.CurrentHP <= 0);
                 }
             }
@@ -545,7 +542,7 @@ public partial class BattleScene : Control, IInitializable
                 _combatLog.AppendText($"\n[color=cyan]{character.Name}[/color] uses [b]{item.Name}[/b]!");
                 
                 // Basic healing logic
-                if (item.Name.Contains("Health Potion"))
+                if (item.Name == "Health Potion")
                 {
                     int healAmount = 30; // Standard heal for now
                     character.CurrentHP = Mathf.Min(character.CurrentHP + healAmount, character.MaxHP);

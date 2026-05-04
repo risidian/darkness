@@ -37,3 +37,11 @@
 ## Audit for beat_9 (beat_9_kyarias_final.json)
 
 - [CHECK] Combat step `beat_9_combat`: Engine defaults to advancing on victory. No explicit failure path found in data.
+
+## Audit for exploration_demo (exploration_demo.json)
+
+- [INFO] Step `demo_hub` has no NextStepId and is not the last step in JSON.
+
+- [INFO] Step `demo_lever` has no NextStepId and is not the last step in JSON.
+
+- [CHECK] Combat step `demo_boss`: Engine defaults to advancing on victory. No explicit failure path found in data.

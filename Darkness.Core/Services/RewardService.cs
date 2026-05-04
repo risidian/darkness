@@ -35,8 +35,7 @@ namespace Darkness.Core.Services
                     var item = itemCol.FindOne(x => x.Name == itemName);
                     if (item != null)
                     {
-                        character.Inventory.Add(item);
-                        result.ItemsAwarded.Add(item);
+                        TryAwardItem(character, item, result);
                     }
                 }
 
@@ -48,8 +47,7 @@ namespace Darkness.Core.Services
                         var item = itemCol.FindOne(x => x.Name == loot.ItemName);
                         if (item != null)
                         {
-                            character.Inventory.Add(item);
-                            result.ItemsAwarded.Add(item);
+                            TryAwardItem(character, item, result);
                         }
                     }
                 }
@@ -63,6 +61,18 @@ namespace Darkness.Core.Services
             charCol.Update(character);
 
             return result;
+        }
+
+        private static void TryAwardItem(Character character, Item template, BattleRewardResult result)
+        {
+            if (character.TotalWeight + template.Weight > character.CarryCapacity)
+            {
+                return; // Over-capacity drops are silently skipped — combat rewards never punish.
+            }
+            var copy = template.Clone();
+            copy.Quantity = 1;
+            character.Inventory.Add(copy);
+            result.ItemsAwarded.Add(copy);
         }
 
         public Task<List<Item>> CheckDailyRewardAsync(User user)
@@ -110,8 +120,10 @@ namespace Darkness.Core.Services
                                 {
                                     if (character.TotalWeight + itemTemplate.Weight <= character.CarryCapacity)
                                     {
-                                        character.Inventory.Add(itemTemplate);
-                                        awardedItems.Add(itemTemplate);
+                                        var copy = itemTemplate.Clone();
+                                        copy.Quantity = 1;
+                                        character.Inventory.Add(copy);
+                                        awardedItems.Add(copy);
                                     }
                                 }
                             }
@@ -129,18 +141,21 @@ namespace Darkness.Core.Services
                         {
                             if (character.TotalWeight + itemTemplate.Weight <= character.CarryCapacity)
                             {
-                                character.Inventory.Add(itemTemplate);
-                                awardedItems.Add(itemTemplate);
+                                var copy = itemTemplate.Clone();
+                                copy.Quantity = 1;
+                                character.Inventory.Add(copy);
+                                awardedItems.Add(copy);
                             }
                         }
                     }
 
-                    // 3. Update User and Character
-                    user.LastLogin = DateTime.UtcNow;
-                    _db.GetCollection<User>("users").Update(user);
-
+                    // 3. Update User and Character — only bump LastLogin if at least one reward landed,
+                    // so an over-capacity player can retry tomorrow.
                     if (awardedItems.Any())
                     {
+                        user.LastLogin = DateTime.UtcNow;
+                        _db.GetCollection<User>("users").Update(user);
+
                         character.ConsolidateInventory();
                         _db.GetCollection<Character>("characters").Update(character);
                     }

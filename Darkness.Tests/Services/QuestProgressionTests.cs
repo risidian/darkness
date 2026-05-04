@@ -35,7 +35,7 @@ public class QuestProgressionTests : IDisposable
             {
                 new() {
                     Id = "beat_1_intro",
-                    Type = "branch",
+                    Type = QuestStepType.Branch,
                     Branch = new BranchData {
                         Options = new() {
                             new BranchOption { Text = "Fight", NextStepId = "beat_1_combat_dialogue", MoralityImpact = 5 },
@@ -45,12 +45,12 @@ public class QuestProgressionTests : IDisposable
                 },
                 new() {
                     Id = "beat_1_combat_dialogue",
-                    Type = "dialogue",
+                    Type = QuestStepType.Dialogue,
                     NextStepId = "beat_1_combat"
                 },
                 new() {
                     Id = "beat_1_combat",
-                    Type = "combat"
+                    Type = QuestStepType.Combat
                 }
             }
         });
@@ -65,7 +65,7 @@ public class QuestProgressionTests : IDisposable
             Prerequisites = new() { "beat_1" },
             Steps = new List<QuestStep>
             {
-                new() { Id = "beat_2_dialogue", Type = "dialogue" }
+                new() { Id = "beat_2_dialogue", Type = QuestStepType.Dialogue }
             }
         });
     }

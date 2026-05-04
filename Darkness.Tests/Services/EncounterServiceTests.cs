@@ -146,7 +146,7 @@ public class EncounterServiceTests : IDisposable
     }
 
     [Fact]
-    public void RollForEncounter_ReturnsNullForEmptyEncounters()
+    public void RollForEncounter_EmptyEncounters_ReportsDidRollSoCounterResets()
     {
         // Arrange
         var table = new EncounterTable
@@ -161,9 +161,10 @@ public class EncounterServiceTests : IDisposable
         // Act
         var result = _service.RollForEncounter("empty", 100, out bool didRoll);
 
-        // Assert
+        // Assert — no combat, but didRoll=true so the caller resets distance counter
+        // and we don't re-query LiteDB every frame on a permanently-empty table.
         Assert.Null(result);
-        Assert.False(didRoll);
+        Assert.True(didRoll);
     }
 
     [Fact]

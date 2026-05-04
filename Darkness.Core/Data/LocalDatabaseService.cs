@@ -13,7 +13,6 @@ public class LocalDatabaseService
 
     static LocalDatabaseService()
     {
-        _sharedMapper.Entity<WorldFlag>().Id(x => x.Key);
     }
 
     public LocalDatabaseService(IFileSystemService fileSystem)

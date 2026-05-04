@@ -3,7 +3,7 @@ namespace Darkness.Core.Models;
 public class QuestStep
 {
     public string Id { get; set; } = string.Empty;
-    public string Type { get; set; } = string.Empty;
+    public QuestStepType Type { get; set; }
     public string? NextStepId { get; set; }
     public DialogueData? Dialogue { get; set; }
     public CombatData? Combat { get; set; }

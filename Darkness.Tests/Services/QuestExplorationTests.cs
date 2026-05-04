@@ -27,11 +27,11 @@ public class QuestExplorationTests : IDisposable
     [Fact]
     public void SetAndGetWorldFlag_WorksCorrectly()
     {
-        _questService.SetWorldFlag("test_flag", true);
-        Assert.True(_questService.GetWorldFlag("test_flag"));
+        _questService.SetWorldFlag(1, "test_flag", true);
+        Assert.True(_questService.GetWorldFlag(1, "test_flag"));
 
-        _questService.SetWorldFlag("test_flag", false);
-        Assert.False(_questService.GetWorldFlag("test_flag"));
+        _questService.SetWorldFlag(1, "test_flag", false);
+        Assert.False(_questService.GetWorldFlag(1, "test_flag"));
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class QuestExplorationTests : IDisposable
         Assert.Null(nextStep);
 
         // Set the flag and try again
-        _questService.SetWorldFlag("can_pass", true);
+        _questService.SetWorldFlag(1, "can_pass", true);
         nextStep = _questService.AdvanceStep(character, "test_chain");
         Assert.NotNull(nextStep);
         Assert.Equal("step_2", nextStep.Id);
@@ -76,8 +76,8 @@ public class QuestExplorationTests : IDisposable
                     NextStepId = "step_2",
                     Rewards = new List<QuestReward> 
                     { 
-                        new() { Type = "Experience", Value = "100" },
-                        new() { Type = "Gold", Value = "50" }
+                        new() { Type = QuestRewardType.Experience, Value = "100" },
+                        new() { Type = QuestRewardType.Gold, Value = "50" }
                     }
                 },
                 new() { Id = "step_2" }
@@ -105,7 +105,7 @@ public class QuestExplorationTests : IDisposable
                     Id = "only_step", 
                     Rewards = new List<QuestReward> 
                     { 
-                        new() { Type = "AttributePoint", Value = "2" }
+                        new() { Type = QuestRewardType.AttributePoint, Value = "2" }
                     }
                 }
             }
@@ -125,15 +125,16 @@ public class QuestExplorationTests : IDisposable
     {
         // Seed an item
         var items = _db.GetCollection<Item>("items");
-        items.Insert(new Item { Name = "Steel Sword", Type = "Weapon" });
+        items.Insert(new Item { Name = "Iron Sword", Type = "Weapon" });
+        var seedItem = items.FindOne(i => i.Name == "Iron Sword");
 
         var rewards = new List<QuestReward>
         {
-            new() { Type = "Item", Value = "Steel Sword", Amount = 1 }
+            new() { Type = QuestRewardType.Item, Value = "Iron Sword", Amount = 1 }
         };
 
         var character = new Character { Id = 1 };
-        
+
         // Manually call AdvanceStep with a chain that has this reward
         var chains = _db.GetCollection<QuestChain>("quest_chains");
         chains.Insert(new QuestChain
@@ -148,7 +149,73 @@ public class QuestExplorationTests : IDisposable
         _questService.AdvanceStep(character, "item_chain");
 
         Assert.Single(character.Inventory);
-        Assert.Equal("Steel Sword", character.Inventory[0].Name);
+        Assert.Equal("Iron Sword", character.Inventory[0].Name);
+        // Inventory item must be a clone, not a shared seed reference.
+        Assert.NotSame(seedItem, character.Inventory[0]);
+    }
+
+    [Fact]
+    public void GrantRewards_StackableItem_RespectsAmount()
+    {
+        // Regression for the Item.Clone() Quantity-propagation bug:
+        // a seed item with Quantity=5 + reward Amount=3 must yield exactly 3 stacks of 1
+        // (consolidated to a single stack of 3), not 15.
+        var items = _db.GetCollection<Item>("items");
+        items.Insert(new Item { Name = "Health Potion", Type = "Consumable", Quantity = 5 });
+
+        var character = new Character { Id = 42 };
+
+        var chains = _db.GetCollection<QuestChain>("quest_chains");
+        chains.Insert(new QuestChain
+        {
+            Id = "potion_chain",
+            Steps = new List<QuestStep>
+            {
+                new()
+                {
+                    Id = "step_1",
+                    Rewards = new List<QuestReward>
+                    {
+                        new() { Type = QuestRewardType.Item, Value = "Health Potion", Amount = 3 }
+                    }
+                }
+            }
+        });
+
+        _questService.AdvanceStep(character, "potion_chain");
+
+        // After consolidation, all matching items merge into one entry.
+        // (ConsolidateInventory is called by callers, but here we just count units.)
+        int totalPotions = character.Inventory.Where(i => i.Name == "Health Potion").Sum(i => i.Quantity);
+        Assert.Equal(3, totalPotions);
+    }
+
+    [Fact]
+    public void AdvanceStep_BrokenNextStepId_MarksChainBlocked()
+    {
+        var chains = _db.GetCollection<QuestChain>("quest_chains");
+        chains.Insert(new QuestChain
+        {
+            Id = "broken_chain",
+            Steps = new List<QuestStep>
+            {
+                new() { Id = "step_1", NextStepId = "missing_step" }
+            }
+        });
+
+        var character = new Character { Id = 1 };
+
+        var result = _questService.AdvanceStep(character, "broken_chain");
+        Assert.Null(result);
+
+        // State should be marked blocked, not absent — otherwise a retry would soft-loop step_1.
+        var state = _questService.GetQuestState(1, "broken_chain");
+        Assert.NotNull(state);
+        Assert.Equal("blocked", state.Status);
+
+        // A second attempt should not replay step_1.
+        var retry = _questService.AdvanceStep(character, "broken_chain");
+        Assert.Null(retry);
     }
 
     [Fact]
@@ -164,7 +231,7 @@ public class QuestExplorationTests : IDisposable
                     Id = "step_1", 
                     Rewards = new List<QuestReward> 
                     { 
-                        new() { Type = "WorldFlag", Value = "unlocked_gate" }
+                        new() { Type = QuestRewardType.WorldFlag, Value = "unlocked_gate" }
                     }
                 }
             }
@@ -173,6 +240,6 @@ public class QuestExplorationTests : IDisposable
         var character = new Character { Id = 1 };
         _questService.AdvanceStep(character, "flag_chain");
 
-        Assert.True(_questService.GetWorldFlag("unlocked_gate"));
+        Assert.True(_questService.GetWorldFlag(1, "unlocked_gate"));
     }
 }

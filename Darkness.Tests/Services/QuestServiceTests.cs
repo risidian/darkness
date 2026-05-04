@@ -22,14 +22,14 @@ public class QuestServiceTests : IDisposable
             Prerequisites = new(),
             Steps = new List<QuestStep>
             {
-                new() { Id = "beat_1_intro", Type = "branch",
+                new() { Id = "beat_1_intro", Type = QuestStepType.Branch,
                     Branch = new BranchData { Options = new()
                     {
                         new BranchOption { Text = "Fight", NextStepId = "beat_1_combat", MoralityImpact = 5 },
                         new BranchOption { Text = "Sneak", NextStepId = "beat_1_stealth", MoralityImpact = -5 }
                     }}},
-                new() { Id = "beat_1_combat", Type = "combat" },
-                new() { Id = "beat_1_stealth", Type = "location" }
+                new() { Id = "beat_1_combat", Type = QuestStepType.Combat },
+                new() { Id = "beat_1_stealth", Type = QuestStepType.Location }
             }
         });
         chains.Insert(new QuestChain
@@ -38,7 +38,7 @@ public class QuestServiceTests : IDisposable
             Prerequisites = new() { "beat_1" },
             Steps = new List<QuestStep>
             {
-                new() { Id = "beat_2_combat", Type = "combat" }
+                new() { Id = "beat_2_combat", Type = QuestStepType.Combat }
             }
         });
 

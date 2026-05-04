@@ -33,7 +33,7 @@ public class QuestSeederTests : IDisposable
             Id = id, Title = title, IsMainStory = true, SortOrder = sortOrder,
             Steps = new List<QuestStep>
             {
-                new() { Id = $"{id}_step1", Type = "dialogue",
+                new() { Id = $"{id}_step1", Type = QuestStepType.Dialogue,
                     Dialogue = new DialogueData { Speaker = "NPC", Lines = new() { "Hello" } } }
             }
         };

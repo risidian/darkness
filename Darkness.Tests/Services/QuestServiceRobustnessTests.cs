@@ -23,7 +23,7 @@ public class QuestServiceRobustnessTests : IDisposable
             Steps = new List<QuestStep>
             {
                 new() { Id = "step_1", NextStepId = "invalid_step_id" },
-                new() { Id = "step_branch", Type = "branch", Branch = new BranchData { Options = new() {
+                new() { Id = "step_branch", Type = QuestStepType.Branch, Branch = new BranchData { Options = new() {
                     new BranchOption { NextStepId = "step_2" }
                 }}},
                 new() { Id = "step_2" }

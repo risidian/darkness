@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
@@ -9,6 +10,7 @@ namespace Darkness.Core.Services;
 public class EncounterService : IEncounterService
 {
     private readonly LiteDatabase _db;
+    private readonly ConcurrentDictionary<string, EncounterTable?> _tableCache = new();
 
     public EncounterService(LiteDatabase db)
     {
@@ -19,41 +21,39 @@ public class EncounterService : IEncounterService
     {
         didRoll = false;
 
-        var col = _db.GetCollection<EncounterTable>("encounter_tables");
-        var table = col.FindOne(t => t.BackgroundKey == backgroundKey);
+        var table = _tableCache.GetOrAdd(backgroundKey, key =>
+            _db.GetCollection<EncounterTable>("encounter_tables").FindOne(t => t.BackgroundKey == key));
 
-        if (table == null || table.Encounters.Count == 0 || distanceMoved < table.EncounterDistance)
-        {
-            return null;
-        }
+        if (table == null) return null;
 
-        // Distance threshold was met — flag so caller resets distance
+        if (distanceMoved < table.EncounterDistance) return null;
+
+        // Distance threshold met — reset counter regardless of outcome (or empty table).
         didRoll = true;
 
+        if (table.Encounters.Count == 0) return null;
+
         int roll = Random.Shared.Next(1, 101);
-        if (roll <= table.EncounterChance)
+        if (roll > table.EncounterChance) return null;
+
+        int totalWeight = table.Encounters.Sum(e => e.Weight);
+        if (totalWeight <= 0)
         {
-            int totalWeight = table.Encounters.Sum(e => e.Weight);
-            if (totalWeight <= 0)
-            {
-                return table.Encounters.First().Combat;
-            }
-
-            int weightRoll = Random.Shared.Next(totalWeight);
-            int currentWeight = 0;
-
-            foreach (var entry in table.Encounters)
-            {
-                currentWeight += entry.Weight;
-                if (weightRoll < currentWeight)
-                {
-                    return entry.Combat;
-                }
-            }
-
-            return table.Encounters.Last().Combat;
+            return table.Encounters.First().Combat;
         }
 
-        return null;
+        int weightRoll = Random.Shared.Next(totalWeight);
+        int currentWeight = 0;
+
+        foreach (var entry in table.Encounters)
+        {
+            currentWeight += entry.Weight;
+            if (weightRoll < currentWeight)
+            {
+                return entry.Combat;
+            }
+        }
+
+        return table.Encounters.Last().Combat;
     }
 }

@@ -7,7 +7,7 @@
   "Steps": [
     {
       "Id": "demo_intro",
-      "Type": "dialogue",
+      "Type": "Dialogue",
       "NextStepId": "demo_hub",
       "Dialogue": {
         "Speaker": "Warden",
@@ -17,12 +17,12 @@
         ]
       },
       "Rewards": [
-        { "Type": "worldflag", "Value": "demo_started", "Amount": 1 }
+        { "Type": "WorldFlag", "Value": "demo_started", "Amount": 1 }
       ]
     },
     {
       "Id": "demo_hub",
-      "Type": "travel",
+      "Type": "Travel",
       "Visuals": {
         "BackgroundKey": "forest",
         "GroundColor": "#2d4c1e",
@@ -71,9 +71,9 @@
     },
     {
       "Id": "demo_lever",
-      "Type": "travel",
+      "Type": "Travel",
       "Visuals": {
-        "BackgroundKey": "cave",
+        "BackgroundKey": "dark_castle",
         "GroundColor": "#333333",
         "Zones": [
           {
@@ -97,19 +97,19 @@
     },
     {
       "Id": "demo_lever_pulled",
-      "Type": "dialogue",
+      "Type": "Dialogue",
       "NextStepId": "demo_hub",
       "Dialogue": {
         "Speaker": "System",
         "Lines": ["You pull the lever. A heavy grinding sound echoes from the forest."]
       },
       "Rewards": [
-        { "Type": "worldflag", "Value": "gate_open", "Amount": 1 }
+        { "Type": "WorldFlag", "Value": "gate_open", "Amount": 1 }
       ]
     },
     {
       "Id": "demo_gate_unlocked",
-      "Type": "dialogue",
+      "Type": "Dialogue",
       "NextStepId": "demo_boss",
       "Dialogue": {
         "Speaker": "Warden",
@@ -118,7 +118,7 @@
     },
     {
       "Id": "demo_boss",
-      "Type": "combat",
+      "Type": "Combat",
       "Combat": {
         "Enemies": [
           {
@@ -129,7 +129,7 @@
             "Attack": 15,
             "Defense": 10,
             "Speed": 12,
-            "SpriteKey": "knight",
+            "SpriteKey": "bosses/Balgathor",
             "ExperienceReward": 500
           }
         ],
@@ -137,7 +137,7 @@
       },
       "Rewards": [
         { "Type": "Gold", "Value": "100", "Amount": 100 },
-        { "Type": "Item", "Value": "Steel Sword", "Amount": 1 }
+        { "Type": "Item", "Value": "Iron Sword", "Amount": 1 }
       ]
     }
   ]

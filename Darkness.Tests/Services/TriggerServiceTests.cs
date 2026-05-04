@@ -21,7 +21,7 @@ public class TriggerServiceTests : IDisposable
             Id = "beat_1", Title = "Test", IsMainStory = true, SortOrder = 1,
             Steps = new()
             {
-                new() { Id = "beat_1_combat", Type = "combat",
+                new() { Id = "beat_1_combat", Type = QuestStepType.Combat,
                     Location = new LocationTrigger { LocationKey = "SandyShore_East" } }
             }
         });
@@ -63,7 +63,7 @@ public class TriggerServiceTests : IDisposable
             Prerequisites = new() { "beat_1" },
             Steps = new()
             {
-                new() { Id = "beat_2_loc", Type = "location",
+                new() { Id = "beat_2_loc", Type = QuestStepType.Location,
                     Location = new LocationTrigger { LocationKey = "Forest_Entrance" } }
             }
         });

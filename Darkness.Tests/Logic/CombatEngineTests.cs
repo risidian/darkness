@@ -97,6 +97,44 @@ namespace Darkness.Tests.Logic
             Assert.True(result.DamageDealt >= 1);
         }
 
+        // === Enemy Accuracy flow-through ===
+        [Fact]
+        public void CalculateDamage_EnemyVsChar_AccuracyAffectsHitRoll()
+        {
+            // Regression: a fix changed Enemy/Char→Char attacks from accuracy=0 to attacker.Accuracy.
+            // Lock in that the Enemy.Accuracy field actually flows into the attack roll.
+            // d20Roll fixed at 11 (critRoll=0.5). targetAC = 10 + ArmorClass + DexMod.
+            //   Defender: Dex=10 (mod 0), AC=15 → targetAC = 25.
+            //   Attacker STR=10 (mod 0), Attack=0, no skill.
+            // Low-accuracy enemy: roll = 11 + 0 + 5 = 16 < 25 → miss
+            // High-accuracy enemy: roll = 11 + 0 + 20 = 31 >= 25 → hit
+            var defender = new Character { BaseDexterity = 10, ArmorClass = 15, IsBlocking = false };
+
+            var lowAcc = new Enemy { STR = 10, Accuracy = 5, Attack = 0 };
+            var highAcc = new Enemy { STR = 10, Accuracy = 20, Attack = 0 };
+
+            var lowResult = _engine.CalculateDamage(lowAcc, defender, critRoll: 0.5);
+            var highResult = _engine.CalculateDamage(highAcc, defender, critRoll: 0.5);
+
+            Assert.False(lowResult.IsHit);
+            Assert.True(highResult.IsHit);
+        }
+
+        [Fact]
+        public void CalculateDamage_CharVsChar_AttackerAccuracyAffectsHitRoll()
+        {
+            // Same regression for the Character→Character path (also changed in the fix commit).
+            var defender = new Character { BaseDexterity = 10, ArmorClass = 15 };
+            var lowAcc = new Character { BaseStrength = 10, Accuracy = 5 };
+            var highAcc = new Character { BaseStrength = 10, Accuracy = 20 };
+
+            var lowResult = _engine.CalculateDamage(lowAcc, defender, critRoll: 0.5);
+            var highResult = _engine.CalculateDamage(highAcc, defender, critRoll: 0.5);
+
+            Assert.False(lowResult.IsHit);
+            Assert.True(highResult.IsHit);
+        }
+
         // === Enemy-vs-Character ===
         [Fact]
         public void CalculateDamage_EnemyVsChar_CriticalHitHits()

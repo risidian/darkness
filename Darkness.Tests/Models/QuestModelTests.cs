@@ -37,7 +37,7 @@ namespace Darkness.Tests.Models
                     new QuestStep
                     {
                         Id = "step_1",
-                        Type = "combat",
+                        Type = QuestStepType.Combat,
                         Combat = new CombatData()
                     }
                 }
@@ -57,7 +57,7 @@ namespace Darkness.Tests.Models
             var step = new QuestStep
             {
                 Id = "step_dialogue",
-                Type = "dialogue",
+                Type = QuestStepType.Dialogue,
                 Dialogue = new DialogueData
                 {
                     Speaker = "Old Man",
@@ -72,7 +72,7 @@ namespace Darkness.Tests.Models
                 }
             };
 
-            Assert.Equal("dialogue", step.Type);
+            Assert.Equal(QuestStepType.Dialogue, step.Type);
             Assert.NotNull(step.Dialogue);
             Assert.Single(step.Dialogue.Lines);
             Assert.NotNull(step.Branch);

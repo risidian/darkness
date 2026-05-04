@@ -49,7 +49,8 @@ public class QuestSeeder
                 var json = _fileSystem.ReadAllText(file);
                 var chain = SystemJson.JsonSerializer.Deserialize<QuestChain>(json, new SystemJson.JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
                 });
 
                 if (chain == null)

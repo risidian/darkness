@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Darkness.Core.Interfaces;
@@ -10,10 +11,15 @@ namespace Darkness.Core.Services;
 public class QuestService : IQuestService
 {
     private readonly LiteDatabase _db;
+    private readonly ConcurrentDictionary<(int CharacterId, string Key), bool> _flagCache = new();
 
     public QuestService(LiteDatabase db)
     {
         _db = db;
+
+        var col = _db.GetCollection<WorldFlag>("world_flags");
+        col.EnsureIndex(f => f.CharacterId);
+        col.EnsureIndex(f => f.Key);
     }
 
     public List<QuestChain> GetAvailableChains(Character character)
@@ -22,10 +28,12 @@ public class QuestService : IQuestService
         var stateCol = _db.GetCollection<QuestState>("quest_states");
 
         var completedIds = GetCompletedChainIds(character.Id);
+        var blockedIds = GetBlockedChainIds(character.Id);
         var allChains = chainCol.FindAll().ToList();
 
         var available = allChains.Where(c =>
             !completedIds.Contains(c.Id) &&
+            !blockedIds.Contains(c.Id) &&
             c.Prerequisites.All(p => completedIds.Contains(p))
         ).OrderBy(c => c.SortOrder).ToList();
 
@@ -64,11 +72,16 @@ public class QuestService : IQuestService
 
         var stateCol = _db.GetCollection<QuestState>("quest_states");
         var state = GetQuestState(character.Id, chainId);
-        
-        // If state is already completed, do nothing
+
+        // If state is already completed or blocked, do nothing
         if (state?.Status == "completed")
         {
             Console.Error.WriteLine($"[QuestService] WARN: Attempted to advance a completed quest chain: {chainId}");
+            return null;
+        }
+        if (state?.Status == "blocked")
+        {
+            Console.Error.WriteLine($"[QuestService] WARN: Attempted to advance a blocked quest chain: {chainId}");
             return null;
         }
 
@@ -79,7 +92,8 @@ public class QuestService : IQuestService
 
         if (currentStep == null)
         {
-            Console.Error.WriteLine($"[QuestService] ERROR: Current step '{currentStepId}' not found in chain '{chainId}'");
+            Console.Error.WriteLine($"[QuestService] ERROR: Current step '{currentStepId}' not found in chain '{chainId}'. Marking blocked.");
+            MarkBlocked(stateCol, state, character.Id, chainId, currentStepId ?? string.Empty);
             return null;
         }
 
@@ -97,7 +111,7 @@ public class QuestService : IQuestService
             var completedChainIds = GetCompletedChainIds(character.Id);
             var option = currentStep.Branch.Options.FirstOrDefault(o =>
                 o.NextStepId == choiceStepId &&
-                ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds, GetWorldFlag));
+                ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds, key => GetWorldFlag(character.Id, key)));
 
             if (option != null)
             {
@@ -121,7 +135,7 @@ public class QuestService : IQuestService
             if (nextStep != null)
             {
                 var completedChainIds = GetCompletedChainIds(character.Id);
-                if (!ConditionEvaluator.EvaluateAll(nextStep.Requirements, character, completedChainIds, GetWorldFlag))
+                if (!ConditionEvaluator.EvaluateAll(nextStep.Requirements, character, completedChainIds, key => GetWorldFlag(character.Id, key)))
                 {
                     Console.Error.WriteLine($"[QuestService] WARN: Requirements for next step '{nextStepId}' not met for character {character.Id}");
                     return null;
@@ -137,7 +151,8 @@ public class QuestService : IQuestService
                         CharacterId = character.Id,
                         ChainId = chainId,
                         CurrentStepId = nextStepId,
-                        Status = "in_progress"
+                        Status = "in_progress",
+                        CurrentCombatSnapshot = null
                     };
                     stateCol.Insert(state);
                 }
@@ -154,7 +169,9 @@ public class QuestService : IQuestService
             }
             else
             {
-                Console.Error.WriteLine($"[QuestService] ERROR: Next step '{nextStepId}' defined in data but missing from chain '{chainId}' steps.");
+                // Broken NextStepId — mark chain blocked so we don't soft-loop replaying step 0.
+                Console.Error.WriteLine($"[QuestService] ERROR: Next step '{nextStepId}' defined in data but missing from chain '{chainId}' steps. Marking blocked.");
+                MarkBlocked(stateCol, state, character.Id, chainId, currentStep.Id);
                 return null;
             }
         }
@@ -170,7 +187,8 @@ public class QuestService : IQuestService
                 CharacterId = character.Id,
                 ChainId = chainId,
                 CurrentStepId = currentStep.Id,
-                Status = "completed"
+                Status = "completed",
+                CurrentCombatSnapshot = null
             };
             stateCol.Insert(state);
         }
@@ -185,62 +203,67 @@ public class QuestService : IQuestService
         return null;
     }
 
+    private static void MarkBlocked(ILiteCollection<QuestState> stateCol, QuestState? state, int characterId, string chainId, string currentStepId)
+    {
+        if (state == null)
+        {
+            stateCol.Insert(new QuestState
+            {
+                CharacterId = characterId,
+                ChainId = chainId,
+                CurrentStepId = currentStepId,
+                Status = "blocked",
+                CurrentCombatSnapshot = null
+            });
+        }
+        else
+        {
+            state.Status = "blocked";
+            state.CurrentStepId = currentStepId;
+            state.CurrentCombatSnapshot = null;
+            stateCol.Update(state);
+        }
+    }
+
     private void GrantRewards(Character character, List<QuestReward> rewards)
     {
         if (rewards == null || rewards.Count == 0) return;
 
         foreach (var reward in rewards)
         {
-            switch (reward.Type.ToLower())
+            switch (reward.Type)
             {
-                case "experience":
+                case QuestRewardType.Experience:
                     if (int.TryParse(reward.Value, out var xp))
                         character.Experience += xp;
                     break;
-                case "gold":
+                case QuestRewardType.Gold:
                     if (int.TryParse(reward.Value, out var gold))
                         character.Gold += gold;
                     break;
-                case "item":
+                case QuestRewardType.Item:
                     var itemCol = _db.GetCollection<Item>("items");
                     var item = itemCol.FindOne(i => i.Name == reward.Value);
                     if (item != null)
                     {
                         for (int i = 0; i < reward.Amount; i++)
                         {
-                            // Create a copy of the item
-                            var newItem = new Item
-                            {
-                                Name = item.Name,
-                                Description = item.Description,
-                                Type = item.Type,
-                                Tier = item.Tier,
-                                Value = item.Value,
-                                Weight = item.Weight,
-                                Quantity = 1,
-                                Infusion = item.Infusion,
-                                StrengthBonus = item.StrengthBonus,
-                                DexterityBonus = item.DexterityBonus,
-                                IntelligenceBonus = item.IntelligenceBonus,
-                                DefenseBonus = item.DefenseBonus,
-                                AttackBonus = item.AttackBonus,
-                                ArmorClass = item.ArmorClass,
-                                DamageDice = item.DamageDice,
-                                EquipmentSlot = item.EquipmentSlot,
-                                EquipmentSpriteId = item.EquipmentSpriteId,
-                                RequiredStrength = item.RequiredStrength,
-                                RequiredDexterity = item.RequiredDexterity,
-                                RequiredIntelligence = item.RequiredIntelligence,
-                                RequiredLevel = item.RequiredLevel
-                            };
-                            character.Inventory.Add(newItem);
+                            // Clone() keeps a faithful copy; we explicitly set Quantity = 1
+                            // so reward.Amount loops produce the right total after consolidation.
+                            var copy = item.Clone();
+                            copy.Quantity = 1;
+                            character.Inventory.Add(copy);
                         }
                     }
+                    else
+                    {
+                        Console.Error.WriteLine($"[QuestService] ERROR: Reward item '{reward.Value}' not found in database.");
+                    }
                     break;
-                case "worldflag":
-                    SetWorldFlag(reward.Value, true);
+                case QuestRewardType.WorldFlag:
+                    SetWorldFlag(character.Id, reward.Value, true);
                     break;
-                case "attributepoint":
+                case QuestRewardType.AttributePoint:
                     if (int.TryParse(reward.Value, out var pts))
                         character.AttributePoints += pts;
                     break;
@@ -278,6 +301,14 @@ public class QuestService : IQuestService
             .ToList();
     }
 
+    private List<string> GetBlockedChainIds(int characterId)
+    {
+        var col = _db.GetCollection<QuestState>("quest_states");
+        return col.Find(s => s.CharacterId == characterId && s.Status == "blocked")
+            .Select(s => s.ChainId)
+            .ToList();
+    }
+
     public List<BranchOption> GetAvailableBranchOptions(Character character, string chainId, string stepId)
     {
         var chain = GetChainById(chainId);
@@ -286,29 +317,36 @@ public class QuestService : IQuestService
 
         var completedChainIds = GetCompletedChainIds(character.Id);
         return step.Branch.Options
-            .Where(o => ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds, GetWorldFlag))
+            .Where(o => ConditionEvaluator.EvaluateAll(o.Conditions, character, completedChainIds, key => GetWorldFlag(character.Id, key)))
             .ToList();
     }
 
-    public bool GetWorldFlag(string key)
+    public bool GetWorldFlag(int characterId, string key)
     {
+        if (_flagCache.TryGetValue((characterId, key), out bool cachedValue))
+            return cachedValue;
+
         var col = _db.GetCollection<WorldFlag>("world_flags");
-        var flag = col.FindOne(f => f.Key == key);
-        return flag != null && flag.Value.ToLower() == "true";
+        var flag = col.FindById(WorldFlag.MakeCompoundKey(characterId, key));
+        bool value = flag != null && flag.Value;
+
+        _flagCache[(characterId, key)] = value;
+        return value;
     }
 
-    public void SetWorldFlag(string key, bool value)
+    public void SetWorldFlag(int characterId, string key, bool value)
     {
+        _flagCache[(characterId, key)] = value;
+
         var col = _db.GetCollection<WorldFlag>("world_flags");
-        var flag = col.FindOne(f => f.Key == key);
-        if (flag == null)
+        var compoundKey = WorldFlag.MakeCompoundKey(characterId, key);
+        col.Upsert(new WorldFlag
         {
-            col.Insert(new WorldFlag { Key = key, Value = value.ToString().ToLower() });
-        }
-        else
-        {
-            flag.Value = value.ToString().ToLower();
-            col.Update(flag);
-        }
+            CompoundKey = compoundKey,
+            CharacterId = characterId,
+            Key = key,
+            Value = value
+        });
     }
+
 }

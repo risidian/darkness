@@ -26,7 +26,11 @@ public class QuestGraphAudit
 
         var questFiles = Directory.GetFiles(fullPath, "*.json");
         var reports = new List<string>();
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var options = new JsonSerializerOptions 
+        { 
+            PropertyNameCaseInsensitive = true 
+        };
+        options.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 
         foreach (var file in questFiles)
         {
@@ -40,7 +44,8 @@ public class QuestGraphAudit
             AuditChain(chain, reports);
         }
 
-        var docPath = Path.Combine(root, "docs", "superpowers", "audit", "report-agent-3.md");        var docDir = Path.GetDirectoryName(docPath);
+        var docPath = Path.Combine(root, "docs", "superpowers", "audit", "report-agent-3.md");
+        var docDir = Path.GetDirectoryName(docPath);
         if (!string.IsNullOrEmpty(docDir) && !Directory.Exists(docDir))
         {
             Directory.CreateDirectory(docDir);
@@ -67,20 +72,20 @@ public class QuestGraphAudit
         foreach (var step in chain.Steps)
         {
             // Check for missing NextStepId
-            if (step.Type != "branch" && !string.IsNullOrEmpty(step.NextStepId) && !stepIds.Contains(step.NextStepId))
+            if (step.Type != QuestStepType.Branch && !string.IsNullOrEmpty(step.NextStepId) && !stepIds.Contains(step.NextStepId))
             {
                 reports.Add($"- [ERROR] Step `{step.Id}` (type: {step.Type}) points to non-existent `{step.NextStepId}`");
             }
 
             // Check if non-branch, non-terminal step has no NextStepId
-            if (step.Type != "branch" && string.IsNullOrEmpty(step.NextStepId) && step != chain.Steps.Last())
+            if (step.Type != QuestStepType.Branch && string.IsNullOrEmpty(step.NextStepId) && step != chain.Steps.Last())
             {
                 // This might be okay if it's the intended end of a chain, but let's flag it if it's not the last step in the list
                 reports.Add($"- [INFO] Step `{step.Id}` has no NextStepId and is not the last step in JSON.");
             }
 
             // Check Branch Options
-            if (step.Type == "branch" && step.Branch != null)
+            if (step.Type == QuestStepType.Branch && step.Branch != null)
             {
                 if (!step.Branch.Options.Any())
                 {
@@ -130,7 +135,7 @@ public class QuestGraphAudit
             }
 
             // Combat specific check
-            if (step.Type == "combat")
+            if (step.Type == QuestStepType.Combat)
             {
                 reports.Add($"- [CHECK] Combat step `{step.Id}`: Engine defaults to advancing on victory. No explicit failure path found in data.");
             }

@@ -82,10 +82,77 @@ namespace Darkness.Tests.Services
             Assert.Empty(awardedItems);
             Assert.Single(character.Inventory);
             Assert.Equal("Heavy Rock", character.Inventory[0].Name);
-            
-            // Verify user was still updated (login recorded)
+
+            // LastLogin must NOT be bumped — otherwise an over-capacity player loses today's
+            // reward permanently. They should be able to retry tomorrow after dropping weight.
             var updatedUser = _db.GetCollection<User>("users").FindById(1);
-            Assert.True(updatedUser.LastLogin >= DateTime.Today);
+            Assert.True(updatedUser.LastLogin < DateTime.Today);
+        }
+
+        [Fact]
+        public void ProcessCombatRewards_RespectsCarryCapacity()
+        {
+            // Regression for missing encumbrance check on combat loot.
+            var character = new Character
+            {
+                Id = 99,
+                UserId = 99,
+                Name = "OverburdenedFighter",
+                BaseStrength = 10, // Capacity = 200
+                Inventory = new List<Item>
+                {
+                    new Item { Name = "Heavy Rock", Weight = 195, Quantity = 1, Type = "Material" }
+                }
+            };
+            _db.GetCollection<Character>("characters").Insert(character);
+
+            var itemCol = _db.GetCollection<Item>("items");
+            var heavyDrop = new Item { Name = "Greatsword", Weight = 50, Type = "Weapon" };
+            itemCol.Insert(heavyDrop);
+
+            var enemy = new Enemy
+            {
+                Name = "Ogre",
+                FixedDrops = new List<string> { "Greatsword" }
+            };
+
+            var result = _rewardService.ProcessCombatRewards(character, new List<Enemy> { enemy });
+
+            // The drop is too heavy → silently skipped.
+            Assert.Empty(result.ItemsAwarded);
+            Assert.DoesNotContain(character.Inventory, i => i.Name == "Greatsword");
+        }
+
+        [Fact]
+        public void ProcessCombatRewards_AwardsCloneNotSeedReference()
+        {
+            // Regression: combat drops used to add the LiteDB seed reference directly,
+            // causing cross-character item-state corruption.
+            var character = new Character
+            {
+                Id = 100,
+                UserId = 100,
+                BaseStrength = 30, // capacity 600
+                Inventory = new List<Item>()
+            };
+            _db.GetCollection<Character>("characters").Insert(character);
+
+            var itemCol = _db.GetCollection<Item>("items");
+            var template = new Item { Name = "Small Knife", Weight = 1, Type = "Weapon", Quantity = 1 };
+            itemCol.Insert(template);
+            var seed = itemCol.FindOne(i => i.Name == "Small Knife");
+
+            var enemy = new Enemy
+            {
+                Name = "Goblin",
+                FixedDrops = new List<string> { "Small Knife" }
+            };
+
+            var result = _rewardService.ProcessCombatRewards(character, new List<Enemy> { enemy });
+
+            Assert.Single(result.ItemsAwarded);
+            Assert.NotSame(seed, result.ItemsAwarded[0]);
+            Assert.NotSame(seed, character.Inventory.First(i => i.Name == "Small Knife"));
         }
 
         [Fact]
@@ -133,7 +200,7 @@ namespace Darkness.Tests.Services
             // Assert
             Assert.NotEmpty(awardedItems);
             Assert.Contains(awardedItems, i => i.Name == "Light Potion");
-            Assert.True(character.Inventory.Any(i => i.Name == "Light Potion"));
+            Assert.Contains(character.Inventory, i => i.Name == "Light Potion");
         }
     }
 }

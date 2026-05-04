@@ -45,5 +45,40 @@ namespace Darkness.Core.Models
         public int Tier { get; set; } = 0; // 0 = normal, 1 = +1, 2 = +2, etc.
         public string? Infusion { get; set; } // Elemental/Bonus effect (e.g., "Fire", "Life Steal")
         public int Quantity { get; set; } = 1;
+
+        /// <summary>
+        /// Returns a copy of this item suitable for adding to a character's Inventory list.
+        /// The clone's Id is reset to 0 — inventory items are embedded list entries, not LiteDB rows,
+        /// so they don't need a stable Id, and reusing the seed Id would falsely suggest a back-pointer.
+        /// Quantity is preserved; callers awarding stackable rewards should normalize Quantity = 1
+        /// before adding, then rely on ConsolidateInventory to merge stacks.
+        /// </summary>
+        public Item Clone()
+        {
+            return new Item
+            {
+                Name = Name,
+                Description = Description,
+                Type = Type,
+                Weight = Weight,
+                Value = Value,
+                StrengthBonus = StrengthBonus,
+                DexterityBonus = DexterityBonus,
+                IntelligenceBonus = IntelligenceBonus,
+                DefenseBonus = DefenseBonus,
+                AttackBonus = AttackBonus,
+                ArmorClass = ArmorClass,
+                DamageDice = DamageDice,
+                EquipmentSlot = EquipmentSlot,
+                EquipmentSpriteId = EquipmentSpriteId,
+                RequiredStrength = RequiredStrength,
+                RequiredDexterity = RequiredDexterity,
+                RequiredIntelligence = RequiredIntelligence,
+                RequiredLevel = RequiredLevel,
+                Tier = Tier,
+                Infusion = Infusion,
+                Quantity = Quantity
+            };
+        }
     }
 }
