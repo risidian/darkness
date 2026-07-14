@@ -30,5 +30,160 @@
       "EquipmentSpriteId": 102
     },
     "Materials": { "Iron Ore": 5 }
+  },
+  {
+    "Id": 3,
+    "Name": "Apprentice Wand",
+    "Result": {
+      "Name": "Apprentice Wand",
+      "Description": "A basic magic wand.",
+      "Type": "Weapon",
+      "IntelligenceBonus": 2,
+      "Value": 120,
+      "Weight": 1,
+      "DamageDice": "1d4",
+      "EquipmentSlot": "Weapon",
+      "EquipmentSpriteId": 103
+    },
+    "Materials": { "Iron Scrap": 2, "Magic Essence": 1 }
+  },
+  {
+    "Id": 4,
+    "Name": "Oak Staff",
+    "Result": {
+      "Name": "Oak Staff",
+      "Description": "A solid wooden staff.",
+      "Type": "Weapon",
+      "IntelligenceBonus": 4,
+      "Value": 200,
+      "Weight": 2,
+      "DamageDice": "1d6",
+      "EquipmentSlot": "Weapon",
+      "EquipmentSpriteId": 104
+    },
+    "Materials": { "Iron Ore": 1, "Magic Essence": 2 }
+  },
+  {
+    "Id": 5,
+    "Name": "Hunting Bow",
+    "Result": {
+      "Name": "Hunting Bow",
+      "Description": "A reliable hunting bow.",
+      "Type": "Weapon",
+      "DexterityBonus": 3,
+      "Value": 220,
+      "Weight": 2,
+      "DamageDice": "1d6",
+      "EquipmentSlot": "Weapon",
+      "EquipmentSpriteId": 105
+    },
+    "Materials": { "Leather Scraps": 3, "Iron Scrap": 1 }
+  },
+  {
+    "Id": 6,
+    "Name": "Iron Axe",
+    "Result": {
+      "Name": "Iron Axe",
+      "Description": "A heavy battle axe.",
+      "Type": "Weapon",
+      "AttackBonus": 6,
+      "Value": 240,
+      "Weight": 4,
+      "DamageDice": "1d8",
+      "EquipmentSlot": "Weapon",
+      "EquipmentSpriteId": 106
+    },
+    "Materials": { "Iron Ore": 4, "Iron Scrap": 2 }
+  },
+  {
+    "Id": 7,
+    "Name": "Iron Mace",
+    "Result": {
+      "Name": "Iron Mace",
+      "Description": "A blunt crushing mace.",
+      "Type": "Weapon",
+      "AttackBonus": 4,
+      "Value": 230,
+      "Weight": 4,
+      "DamageDice": "1d6",
+      "EquipmentSlot": "Weapon",
+      "EquipmentSpriteId": 107
+    },
+    "Materials": { "Iron Ore": 3, "Iron Scrap": 3 }
+  },
+  {
+    "Id": 8,
+    "Name": "Wooden Buckler",
+    "Result": {
+      "Name": "Wooden Buckler",
+      "Description": "A light wooden shield.",
+      "Type": "Shield",
+      "DefenseBonus": 2,
+      "Value": 60,
+      "Weight": 2,
+      "EquipmentSlot": "Shield",
+      "EquipmentSpriteId": 301
+    },
+    "Materials": { "Leather Scraps": 2, "Iron Scrap": 1 }
+  },
+  {
+    "Id": 9,
+    "Name": "Leather Helm",
+    "Result": {
+      "Name": "Leather Helm",
+      "Description": "A protective leather cap.",
+      "Type": "Armor",
+      "DefenseBonus": 1,
+      "Value": 80,
+      "Weight": 1,
+      "EquipmentSlot": "Head",
+      "EquipmentSpriteId": 201
+    },
+    "Materials": { "Leather Scraps": 2 }
+  },
+  {
+    "Id": 10,
+    "Name": "Leather Chest",
+    "Result": {
+      "Name": "Leather Chest",
+      "Description": "Reinforced leather chestpiece.",
+      "Type": "Armor",
+      "DefenseBonus": 3,
+      "Value": 180,
+      "Weight": 3,
+      "EquipmentSlot": "Body",
+      "EquipmentSpriteId": 202
+    },
+    "Materials": { "Leather Scraps": 5 }
+  },
+  {
+    "Id": 11,
+    "Name": "Leather Legs",
+    "Result": {
+      "Name": "Leather Legs",
+      "Description": "Durable leather trousers.",
+      "Type": "Armor",
+      "DefenseBonus": 2,
+      "Value": 130,
+      "Weight": 2,
+      "EquipmentSlot": "Legs",
+      "EquipmentSpriteId": 203
+    },
+    "Materials": { "Leather Scraps": 4 }
+  },
+  {
+    "Id": 12,
+    "Name": "Leather Boots",
+    "Result": {
+      "Name": "Leather Boots",
+      "Description": "Sturdy leather boots.",
+      "Type": "Armor",
+      "DefenseBonus": 1,
+      "Value": 70,
+      "Weight": 1,
+      "EquipmentSlot": "Feet",
+      "EquipmentSpriteId": 204
+    },
+    "Materials": { "Leather Scraps": 2 }
   }
 ]
