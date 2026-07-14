@@ -30,24 +30,20 @@ public class GodotDialogService : IDialogService
 
     public async Task<bool> DisplayConfirmAsync(string title, string message, string accept, string cancel)
     {
+        var tcs = new TaskCompletionSource<bool>();
         var dialog = new ConfirmationDialog();
         dialog.Title = title;
         dialog.DialogText = message;
         dialog.OkButtonText = accept;
         dialog.CancelButtonText = cancel;
 
+        dialog.Confirmed += () => tcs.TrySetResult(true);
+        dialog.Canceled += () => tcs.TrySetResult(false);
+
         _global.AddChild(dialog);
         dialog.PopupCentered();
 
-        var result = await _global.ToSignal(dialog, "confirmed");
-        // Note: ConfirmationDialog emits 'confirmed' on OK, and 'canceled' on Cancel.
-        // We need to handle both.
-
-        // This is a simplified version. In a robust implementation we'd check which signal was emitted.
-        // For this PoC, we'll assume confirmed means true.
-
-        bool confirmed = true; // Placeholder for logic
-
+        var confirmed = await tcs.Task;
         dialog.QueueFree();
         return confirmed;
     }
