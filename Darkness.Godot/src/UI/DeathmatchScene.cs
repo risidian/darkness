@@ -4,6 +4,7 @@ using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Darkness.Godot.UI;
@@ -63,9 +64,23 @@ public partial class DeathmatchScene : Control
     {
         if (_selectedEncounter == null) return;
 
-        await _navigation.NavigateToAsync("BattlePage", new Dictionary<string, object>
+        var combatData = new CombatData
         {
-            { "Encounter", _selectedEncounter }
-        });
+            Enemies = _selectedEncounter.Enemies.Select(e => new EnemySpawn
+            {
+                Name = e.Name,
+                Level = e.Level,
+                MaxHP = e.MaxHP,
+                CurrentHP = e.CurrentHP > 0 ? e.CurrentHP : e.MaxHP,
+                Attack = e.Attack,
+                Defense = e.Defense,
+                Speed = e.Speed,
+                Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
+                SpriteKey = e.SpriteKey ?? "knight"
+            }).ToList()
+        };
+
+        var args = new BattleArgs { Combat = combatData };
+        await _navigation.NavigateToAsync(Routes.Battle, args);
     }
 }
