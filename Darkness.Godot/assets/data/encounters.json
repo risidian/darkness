@@ -5,7 +5,7 @@
     "EncounterDistance": 1000,
     "Encounters": [
       {
-        "Weight": 50,
+        "Weight": 40,
         "Combat": {
           "Enemies": [
             {
@@ -25,7 +25,7 @@
         }
       },
       {
-        "Weight": 25,
+        "Weight": 20,
         "Combat": {
           "Enemies": [
             {
@@ -51,6 +51,294 @@
               "SpriteKey": "hound",
               "ExperienceReward": 20,
               "GoldReward": 2
+            }
+          ],
+          "BackgroundKey": "camelot_shore_2"
+        }
+      },
+      {
+        "Weight": 20,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Coastal Goblin",
+              "Level": 2,
+              "MaxHP": 30,
+              "CurrentHP": 30,
+              "Attack": 5,
+              "Defense": 3,
+              "Speed": 8,
+              "SpriteKey": "hound",
+              "ExperienceReward": 25,
+              "GoldReward": 3
+            }
+          ],
+          "BackgroundKey": "camelot_shore_2"
+        }
+      },
+      {
+        "Weight": 20,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Pesky Seagull",
+              "Level": 1,
+              "MaxHP": 15,
+              "CurrentHP": 15,
+              "Attack": 4,
+              "Defense": 1,
+              "Speed": 12,
+              "SpriteKey": "hound",
+              "ExperienceReward": 10,
+              "GoldReward": 1
+            }
+          ],
+          "BackgroundKey": "camelot_shore_2"
+        }
+      }
+    ]
+  },
+  {
+    "BackgroundKey": "forest",
+    "EncounterChance": 12,
+    "EncounterDistance": 800,
+    "Encounters": [
+      {
+        "Weight": 40,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Gray Wolf",
+              "Level": 3,
+              "MaxHP": 45,
+              "CurrentHP": 45,
+              "Attack": 8,
+              "Defense": 3,
+              "Speed": 11,
+              "SpriteKey": "hound",
+              "ExperienceReward": 30,
+              "GoldReward": 2
+            }
+          ],
+          "BackgroundKey": "forest"
+        }
+      },
+      {
+        "Weight": 30,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Goblin Scavenger",
+              "Level": 3,
+              "MaxHP": 40,
+              "CurrentHP": 40,
+              "Attack": 7,
+              "Defense": 4,
+              "Speed": 9,
+              "SpriteKey": "hound",
+              "ExperienceReward": 35,
+              "GoldReward": 5
+            }
+          ],
+          "BackgroundKey": "forest"
+        }
+      },
+      {
+        "Weight": 30,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Forest Bandit",
+              "Level": 4,
+              "MaxHP": 60,
+              "CurrentHP": 60,
+              "Attack": 10,
+              "Defense": 5,
+              "Speed": 8,
+              "SpriteKey": "hound",
+              "ExperienceReward": 50,
+              "GoldReward": 10
+            }
+          ],
+          "BackgroundKey": "forest"
+        }
+      }
+    ]
+  },
+  {
+    "BackgroundKey": "dark_castle",
+    "EncounterChance": 15,
+    "EncounterDistance": 600,
+    "Encounters": [
+      {
+        "Weight": 40,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Skeleton Warrior",
+              "Level": 9,
+              "MaxHP": 100,
+              "CurrentHP": 100,
+              "Attack": 16,
+              "Defense": 9,
+              "Speed": 7,
+              "SpriteKey": "hound",
+              "ExperienceReward": 120,
+              "GoldReward": 15
+            }
+          ],
+          "BackgroundKey": "dark_castle"
+        }
+      },
+      {
+        "Weight": 30,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Castle Wraith",
+              "Level": 10,
+              "MaxHP": 90,
+              "CurrentHP": 90,
+              "Attack": 18,
+              "Defense": 6,
+              "Speed": 12,
+              "SpriteKey": "hound",
+              "ExperienceReward": 150,
+              "GoldReward": 20
+            }
+          ],
+          "BackgroundKey": "dark_castle"
+        }
+      },
+      {
+        "Weight": 30,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Undead Knight",
+              "Level": 11,
+              "MaxHP": 140,
+              "CurrentHP": 140,
+              "Attack": 22,
+              "Defense": 14,
+              "Speed": 6,
+              "SpriteKey": "hound",
+              "ExperienceReward": 200,
+              "GoldReward": 35
+            }
+          ],
+          "BackgroundKey": "dark_castle"
+        }
+      }
+    ]
+  },
+  {
+    "BackgroundKey": "battlefield",
+    "EncounterChance": 10,
+    "EncounterDistance": 900,
+    "Encounters": [
+      {
+        "Weight": 40,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Imperial Soldier",
+              "Level": 6,
+              "MaxHP": 80,
+              "CurrentHP": 80,
+              "Attack": 12,
+              "Defense": 8,
+              "Speed": 8,
+              "SpriteKey": "hound",
+              "ExperienceReward": 80,
+              "GoldReward": 8
+            }
+          ],
+          "BackgroundKey": "battlefield"
+        }
+      },
+      {
+        "Weight": 30,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Mercenary Crossbowman",
+              "Level": 7,
+              "MaxHP": 70,
+              "CurrentHP": 70,
+              "Attack": 14,
+              "Defense": 6,
+              "Speed": 9,
+              "SpriteKey": "hound",
+              "ExperienceReward": 90,
+              "GoldReward": 12
+            }
+          ],
+          "BackgroundKey": "battlefield"
+        }
+      },
+      {
+        "Weight": 30,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Veteran Mercenary",
+              "Level": 8,
+              "MaxHP": 110,
+              "CurrentHP": 110,
+              "Attack": 18,
+              "Defense": 10,
+              "Speed": 7,
+              "SpriteKey": "hound",
+              "ExperienceReward": 110,
+              "GoldReward": 18
+            }
+          ],
+          "BackgroundKey": "battlefield"
+        }
+      }
+    ]
+  },
+  {
+    "BackgroundKey": "camelot_shore_2",
+    "EncounterChance": 8,
+    "EncounterDistance": 1000,
+    "Encounters": [
+      {
+        "Weight": 50,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Enraged Shore Crab",
+              "Level": 4,
+              "MaxHP": 55,
+              "CurrentHP": 55,
+              "Attack": 9,
+              "Defense": 8,
+              "Speed": 6,
+              "SpriteKey": "hound",
+              "ExperienceReward": 40,
+              "GoldReward": 3
+            }
+          ],
+          "BackgroundKey": "camelot_shore_2"
+        }
+      },
+      {
+        "Weight": 50,
+        "Combat": {
+          "Enemies": [
+            {
+              "Name": "Shore Pirate",
+              "Level": 5,
+              "MaxHP": 75,
+              "CurrentHP": 75,
+              "Attack": 12,
+              "Defense": 6,
+              "Speed": 10,
+              "SpriteKey": "hound",
+              "ExperienceReward": 60,
+              "GoldReward": 15
             }
           ],
           "BackgroundKey": "camelot_shore_2"
