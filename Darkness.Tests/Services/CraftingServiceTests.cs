@@ -152,5 +152,45 @@ namespace Darkness.Tests.Services
             Assert.Equal(10, craftedItem.IntelligenceBonus);
             Assert.Equal(5, craftedItem.RequiredLevel);
         }
+
+        [Fact]
+        public async Task UpgradeItem_Fails_When_Required_Materials_Missing()
+        {
+            var service = new CraftingService(CreateEmptyDb());
+            var character = new Character 
+            { 
+                Gold = 1000,
+                Inventory = new List<Item> { new Item { Name = "Iron Ore", Quantity = 1 } }
+            };
+            var item = new Item { Name = "Steel Sword", AttackBonus = 10, Tier = 0, Type = "Weapon" };
+            var requiredMaterials = new List<Item> { new Item { Name = "Iron Ore", Quantity = 2 } };
+
+            var result = await service.UpgradeItemAsync(character, item, requiredMaterials, 500);
+
+            Assert.False(result);
+            Assert.Equal(0, item.Tier);
+            Assert.Equal(1000, character.Gold);
+            Assert.Equal(1, character.Inventory.First(i => i.Name == "Iron Ore").Quantity);
+        }
+
+        [Fact]
+        public async Task UpgradeItem_Success_And_Consumes_Required_Materials()
+        {
+            var service = new CraftingService(CreateEmptyDb());
+            var character = new Character 
+            { 
+                Gold = 1000,
+                Inventory = new List<Item> { new Item { Name = "Iron Ore", Quantity = 3 } }
+            };
+            var item = new Item { Name = "Steel Sword", AttackBonus = 10, Tier = 0, Type = "Weapon" };
+            var requiredMaterials = new List<Item> { new Item { Name = "Iron Ore", Quantity = 2 } };
+
+            var result = await service.UpgradeItemAsync(character, item, requiredMaterials, 500);
+
+            Assert.True(result);
+            Assert.Equal(1, item.Tier);
+            Assert.Equal(500, character.Gold);
+            Assert.Equal(1, character.Inventory.First(i => i.Name == "Iron Ore").Quantity);
+        }
     }
 }

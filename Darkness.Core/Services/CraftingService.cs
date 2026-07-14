@@ -60,7 +60,29 @@ namespace Darkness.Core.Services
             if (item.Type != "Weapon" && item.Type != "Armor") return Task.FromResult(false);
             if (character.Gold < gold) return Task.FromResult(false);
 
-            // TODO: Check materials if any are required for the upgrade
+            // Check materials if any are required for the upgrade
+            if (materials != null)
+            {
+                foreach (var material in materials)
+                {
+                    var invItem = character.Inventory.FirstOrDefault(i => i.Name == material.Name);
+                    if (invItem == null || invItem.Quantity < material.Quantity)
+                    {
+                        return Task.FromResult(false);
+                    }
+                }
+
+                // If all are present, consume them
+                foreach (var material in materials)
+                {
+                    var invItem = character.Inventory.First(i => i.Name == material.Name);
+                    invItem.Quantity -= material.Quantity;
+                    if (invItem.Quantity <= 0)
+                    {
+                        character.Inventory.Remove(invItem);
+                    }
+                }
+            }
 
             character.Gold -= gold;
             item.Tier++;
