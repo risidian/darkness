@@ -1,0 +1,37 @@
+# Normalize all text files to LF in the repo and working tree.
+# Prevents the CRLF/LF churn that occurs editing this repo from both
+# Windows and WSL on the same /mnt/c working tree.
+* text=auto eol=lf
+
+# Windows-only scripts keep CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+
+# Binary assets — never normalize or diff as text
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.bmp   binary
+*.ico   binary
+*.webp  binary
+*.ogg   binary
+*.wav   binary
+*.mp3   binary
+*.flac  binary
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+*.jar   binary
+*.apk   binary
+*.aab   binary
+*.db    binary
+*.zip   binary
+*.7z    binary
+*.gz    binary
+*.dll   binary
+*.so    binary
+*.dylib binary
+*.pdf   binary
+*.exr   binary
