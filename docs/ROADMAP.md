@@ -44,7 +44,10 @@ Content and audio streams don't depend on the backend and should run concurrentl
 
 ---
 
-## Phase 0 — Foundation & Stabilisation  *(size: M — do first)*
+## Phase 0 — Foundation & Stabilisation  *(size: M — do first)*  — ✅ MOSTLY DONE (2026-07-17)
+**Done:** repo hygiene + `.gitignore` (`c94bd980d`); GitHub Actions CI building + testing on push (`c7b7c4a1f`); dead MonoGame test files removed + `SkillFilter` extracted to Core; repo-wide CRLF→LF normalization + `.gitattributes` (`fa20498ff`); flaky LiteDB `BsonMapper.Global` race fixed — CI now *reliably* green, 14 consecutive clean runs (`8a7f33db9`).
+**Deferred (lower-priority robustness, batch later):** the `async void` fire-and-forget stability audit; a scene-layer (Godot) test harness for BattleScene/WorldScene; minor — `CombatSim` writes to a tracked doc on every run (should target a gitignored path).
+
 Everything downstream rides on a stable, tested, automatable base.
 - **Repo hygiene:** extend `.gitignore` (`bin/`, `obj/`, `*.binlog`, `*.bak`, capture logs, generated sheets); purge committed debris (`exception.txt*`, `godot_*_captured*.txt`, `classes.jar`, `msbuild.binlog`, `Story-Flow.md.bak`, quest `.json.bak`); move `GeneratedSpriteSheets/` + `SpriteSheets/` out of the repo or under a build-output path.
 - **CI:** GitHub Actions to `dotnet build` + `dotnet test Darkness.Tests -p:ParallelizeTestCollections=false` on every push/PR; gate merges on green. (Today the only workflow is the Gemini auto-code bot — no build/test pipeline.)
