@@ -1,10 +1,14 @@
 # Darkness: Reforged — Road to Market (v1)
 
+> **"Darkness: Reforged" is a working title** — final store name TBD before launch (Phase 7). App id currently `com.risidian.darkness`.
+
 **Target for v1** (confirmed with product owner, 2026-07-17):
 - **Platform:** Android (Google Play). No iOS/Steam/Web for v1.
-- **Monetization:** Free-to-play. **Optional rewarded ads** grant materials; **IAP** sells materials/currency to skip the grind. No pay-to-win beyond convenience.
+- **Monetization:** Free-to-play, **convenience-only at this stage** — optional rewarded ads grant materials; IAP sells materials/currency to skip the grind. No directly-purchasable power, **no loot boxes/gacha**.
 - **Online:** **Accounts + cloud saves** (no real-time PVP). Game must stay fully playable offline and sync when online.
-- **Scope:** **Full Arc 1 commercial release** (Story-Flow Arc 1 = **beats 1–10**, realised to shippable depth). The story is already written/designed well beyond the repo — Story-Flow.md specs all 10 beats of Arc 1, and Arcs 2–10 ("Castle of Horror" … "Daverak") are titled and written. **The content model must be built to expand** so those arcs slot in as post-launch updates without rework — v1 ships Arc 1, the architecture holds the whole saga.
+- **Scope:** **Full Arc 1 commercial release** (Story-Flow Arc 1 = **beats 1–10**, realised to shippable depth), targeting **~8–10 hours of playtime**. The story is already written/designed well beyond the repo — Story-Flow.md specs all 10 beats of Arc 1, and Arcs 2–10 ("Castle of Horror" … "Daverak") are titled and written. **The content model must be built to expand** so those arcs slot in as post-launch updates without rework — v1 ships Arc 1, the architecture holds the whole saga.
+- **Audience / rating:** targeting **Teen (13+)** — dark fantasy RPG.
+- **Localization:** **English-only for v1**, but the content model is built **i18n-ready** (externalized text keys) so translations can be added without rework.
 
 Effort sizes are relative (S / M / L / XL), not calendar dates — dates depend on team velocity. Ask the product owner for capacity to timebox.
 
@@ -68,7 +72,7 @@ Everything downstream rides on a stable, tested, automatable base.
 The story is written; this phase is about **an authoring pipeline that scales to the whole saga** and then filling Arc 1 to shippable depth.
 - **Expandable content model (do first in this phase):** formalise arc-level organisation on top of the existing data-driven quest chains — an `Arc` grouping (id, title, sort order, prerequisites) so Arcs 1–10 (and beyond) slot in by adding data, not code. The engine already supports this shape (`QuestChain` has `Prerequisites`, `SortOrder`, `IsMainStory`); make it explicit and arc-aware so v1 ships Arc 1 while the model holds all 10 arcs.
 - **Authoring pipeline & tooling:** a repeatable path (schema + validation + the `QuestGraphAudit`/`QuestJsonRoundTrip` tests) so a writer/agent can add a beat as JSON and have it validated automatically. Throughput, not design, is the constraint — the writing exists.
-- **Author Arc 1 to depth:** expand each of beats 1–10 from ~2 steps to a full chapter — multi-step dialogue, meaningful branches + morality consequences, varied encounters, rewards. Today only beat_1 branches and beat_4 is a one-line stub; the beat-10 Kyarias undead-army finale needs completing.
+- **Author Arc 1 to depth (~8–10 hours):** expand each of beats 1–10 from ~2 steps into full chapters — multi-step dialogue, meaningful branches + morality consequences, varied encounters, side content, rewards. Today only beat_1 branches and beat_4 is a one-line stub; the beat-10 Kyarias undead-army finale needs completing. At 8–10 hours this is the single largest v1 workstream — budget accordingly and consider side-quests/exploration beats between main beats to reach the target without padding the critical path.
 - **Bosses:** wire the **12 existing boss sprites** (Tywin, Araknos, Kyarias, etc. — several already named in Story-Flow) into their climactic beats.
 - **Exit criteria:** Arc 1 (all 10 beats) playable end-to-end with branches, bosses, and a satisfying arc; arc/chain model proven expandable by stubbing Arc 2's shell from data alone; QuestGraphAudit green; target playtime met.
 
@@ -117,8 +121,16 @@ The story is written; this phase is about **an authoring pipeline that scales to
 **Locked:**
 - ✅ **Cloud-save model:** **full-save-blob sync.** The LiteDB save is serialised and stored as a versioned blob per account; offline-first, cheap, no server-authoritative game state. (Product owner, 2026-07-17.)
 - ✅ **Backend stack:** **Firebase** — Auth (accounts), Cloud Storage/Firestore (save blobs), Analytics, Crashlytics, and Remote Config in one Google-native SDK. **Retire the ASP.NET Core WebAPI scaffold** (orphaned, plaintext passwords, no migrations — the highest-lift path). Rationale: chosen over PlayFab on **platform longevity** (Firebase is a core Google product; PlayFab's roadmap under Microsoft is less certain), **ecosystem fit** (native with Play Billing + AdMob + unified analytics), and **right-sized scope** (accounts + cloud saves is Firebase's sweet spot — PlayFab's game-server/economy/LiveOps features are largely unused here). IAP receipt validation is a small Cloud Function rather than a reason to adopt PlayFab. Client access stays behind a Core interface so it's swappable. *(Confirmed by product owner, 2026-07-17.)*
-- ✅ **Ad network (recommended, working direction):** **AdMob with mediation enabled.** One SDK, Firebase-native, starts single-network and scales to multi-network fill/eCPM without re-architecting. Keeps ads + billing + analytics all in the Google ecosystem (simpler compliance).
+- ✅ **Ad network:** **AdMob with mediation enabled.** One SDK, Firebase-native, starts single-network and scales to multi-network fill/eCPM without re-architecting. Keeps ads + billing + analytics all in the Google ecosystem (simpler compliance).
+- ✅ **Monetization boundary:** **convenience-only at this stage** — no directly-purchasable power, no loot boxes/gacha. (Revisit only if the model changes post-launch.)
+- ✅ **Localization:** English-only v1; content model built i18n-ready (externalized text keys) so translations add without rework.
+- ✅ **Content depth:** Arc 1 authored to **~8–10 hours** of playtime. This makes story-authoring throughput the dominant v1 effort (see Phase 3 + Risks).
+- ✅ **Age rating:** target **Teen (13+)** — drives content limits, AdMob child-directed/consent config, and the Play data-safety form.
+- ✅ **Audio sourcing:** **free / self-made** assets (royalty-free/CC or self-produced) to keep cost near zero.
+- ✅ **Ownership & payouts:** Firebase project, Play Console, and AdMob all bound to **risidiangames@gmail.com**.
+- ✅ **Launch approach:** standard staged rollout (closed beta → soft launch → global) accepted.
 
 **Still open:**
-- **Store economy specifics:** currency names, IAP tiers/price points, ad-reward rates (needed for Phase 2 balancing).
+- **Store economy specifics (numbers):** currency names, IAP tiers/price points, ad-reward rates within the convenience-only boundary above (needed for Phase 2 balancing — I can draft a proposed economy for sign-off).
+- **Final store title:** "Darkness: Reforged" is a working title; confirm the real name + trademark sanity check before Phase 7.
 - **Team velocity:** needed to convert phase sizes into dates.
