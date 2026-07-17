@@ -94,6 +94,7 @@ public class SpriteSheetGenerator : IDisposable
         try { File.Delete(_dbPath); } catch { }
     }
 
+    [Trait("Category", "Generation")]
     [Theory]
     [InlineData("Knight", "Human Male")]
     [InlineData("Knight", "Human Female")]

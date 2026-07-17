@@ -35,8 +35,8 @@ namespace Darkness.Tests.Audit
                 report.AppendLine($"| {level} | {stats.HitRate:P2} | {stats.AvgDamage:F2} | {stats.MinDamage} | {stats.MaxDamage} | {stats.CritRate:P2} |");
             }
 
-            var reportPath = "C:\\Users\\Mayce\\Documents\\GitHub\\darkness\\docs\\superpowers\\audit\\report-agent-1.md";
-            Directory.CreateDirectory(Path.GetDirectoryName(reportPath));
+            var reportPath = Path.Combine(TestPaths.RepoRoot(), "docs", "superpowers", "audit", "report-agent-1.md");
+            Directory.CreateDirectory(Path.GetDirectoryName(reportPath)!);
             File.WriteAllText(reportPath, report.ToString());
             _output.WriteLine(report.ToString());
         }

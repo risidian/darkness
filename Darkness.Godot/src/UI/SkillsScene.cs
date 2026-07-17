@@ -1,6 +1,7 @@
 using Godot;
 using Darkness.Godot.Core;
 using Darkness.Core.Interfaces;
+using Darkness.Core.Logic;
 using Darkness.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -44,8 +45,7 @@ public partial class SkillsScene : Control
         var character = _session.CurrentCharacter;
         if (character == null) return;
 
-        var availableSkills = _weaponSkillService.GetAvailableSkills(character)
-            .Where(s => !s.IsPassive).ToList();
+        var availableSkills = SkillFilter.ActiveOnly(_weaponSkillService.GetAvailableSkills(character)).ToList();
 
         // Populate Available Skills
         foreach (var skill in availableSkills)
