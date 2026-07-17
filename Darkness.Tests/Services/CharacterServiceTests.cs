@@ -13,7 +13,7 @@ public class CharacterServiceTests : IDisposable
 
     public CharacterServiceTests()
     {
-        _db = new LiteDatabase(_ms);
+        _db = new LiteDatabase(_ms, new BsonMapper());
         _service = new CharacterService(_db);
     }
 

@@ -10,7 +10,7 @@ namespace Darkness.Tests.Services
 {
     public class CraftingServiceTests
     {
-        private static LiteDatabase CreateEmptyDb() => new LiteDatabase(new MemoryStream());
+        private static LiteDatabase CreateEmptyDb() => new LiteDatabase(new MemoryStream(), new BsonMapper());
 
         [Fact]
         public async Task CraftItem_Success_With_Materials()

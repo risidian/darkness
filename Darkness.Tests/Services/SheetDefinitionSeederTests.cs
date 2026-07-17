@@ -40,7 +40,7 @@ public class SheetDefinitionSeederTests
         mockFs.Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(json);
 
         var seeder = new SheetDefinitionSeeder(mockFs.Object);
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
 
         // Act
         seeder.Seed(db);

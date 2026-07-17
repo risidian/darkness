@@ -43,7 +43,7 @@ public class DeathmatchServiceTests : IDisposable
 
     public DeathmatchServiceTests()
     {
-        _db = new LiteDatabase(new MemoryStream());
+        _db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         _fsMock = new Mock<IFileSystemService>();
         _seeder = new DeathmatchSeeder(_fsMock.Object);
         _service = new DeathmatchService(_db);

@@ -13,7 +13,7 @@ public class UserServiceTests : IDisposable
 
     public UserServiceTests()
     {
-        _db = new LiteDatabase(_ms);
+        _db = new LiteDatabase(_ms, new BsonMapper());
         _service = new UserService(_db);
     }
 

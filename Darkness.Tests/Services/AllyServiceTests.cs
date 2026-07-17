@@ -10,7 +10,7 @@ namespace Darkness.Tests.Services
 {
     public class AllyServiceTests
     {
-        private static LiteDatabase CreateEmptyDb() => new LiteDatabase(new MemoryStream());
+        private static LiteDatabase CreateEmptyDb() => new LiteDatabase(new MemoryStream(), new BsonMapper());
 
         // ── GetAlliesForUserAsync ─────────────────────────────────────────────
 

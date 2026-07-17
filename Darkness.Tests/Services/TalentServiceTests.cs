@@ -13,7 +13,7 @@ public class TalentServiceTests
     public void GetAvailableTrees_ReturnsOnlyTreesWithMetPrerequisites()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         col.Insert(new TalentTree { Id = "tree1", Prerequisites = new Dictionary<string, int> { { "Level", 10 } } });
         col.Insert(new TalentTree { Id = "tree2", Prerequisites = new Dictionary<string, int> { { "Level", 1 } } });
@@ -33,7 +33,7 @@ public class TalentServiceTests
     public void CanPurchaseTalent_ReturnsFalse_WhenPointsInsufficient()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         var tree = new TalentTree 
         { 
@@ -56,7 +56,7 @@ public class TalentServiceTests
     public void CanPurchaseTalent_ReturnsTrue_WhenAllConditionsMet()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         var tree = new TalentTree 
         { 
@@ -79,7 +79,7 @@ public class TalentServiceTests
     public void CanPurchaseTalent_ReturnsFalse_WhenAlreadyUnlocked()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         var tree = new TalentTree 
         { 
@@ -102,7 +102,7 @@ public class TalentServiceTests
     public void CanPurchaseTalent_ReturnsFalse_WhenPrerequisiteNotMet()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         var tree = new TalentTree 
         { 
@@ -130,7 +130,7 @@ public class TalentServiceTests
     public void PurchaseTalent_DeductsPoint_And_AddsId()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         var tree = new TalentTree 
         { 
@@ -154,7 +154,7 @@ public class TalentServiceTests
     public void ApplyTalentPassives_AddsStats_And_UpdatesDerived()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         var tree = new TalentTree 
         { 
@@ -189,7 +189,7 @@ public class TalentServiceTests
     [Fact]
     public void GetAvailableTrees_FiltersByClass() {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         col.Insert(new TalentTree { Id = "mage_tree", RequiredClass = "Mage" });
         col.Insert(new TalentTree { Id = "knight_tree", RequiredClass = "Knight" });
@@ -208,7 +208,7 @@ public class TalentServiceTests
     [Fact]
     public void GetAvailableTrees_RespectsExclusivityGroup() {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         
         var tree1 = new TalentTree { Id = "tree1", ExclusiveGroupId = "groupA", Nodes = new List<TalentNode> { new TalentNode { Id = "node1" } } };
@@ -230,7 +230,7 @@ public class TalentServiceTests
     [Fact]
     public void GetAvailableTrees_HandlesHiddenTrees() {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         
         // Add a prerequisite (Level 10) so it's hidden if level < 10 AND no points spent
@@ -269,7 +269,7 @@ public class TalentServiceTests
     public void GetAvailableTrees_ShouldShowHiddenTree_WhenPrereqsMetButNoPointsSpent()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var col = db.GetCollection<TalentTree>("talent_trees");
         
         var tree = new TalentTree 
@@ -295,7 +295,7 @@ public class TalentServiceTests
     public void UnlockStartingTalents_UnlocksAutomaticallyUnlockedNodes_And_EquipsSkills()
     {
         // Arrange
-        using var db = new LiteDatabase(new MemoryStream());
+        using var db = new LiteDatabase(new MemoryStream(), new BsonMapper());
         var treeCol = db.GetCollection<TalentTree>("talent_trees");
         var skillCol = db.GetCollection<Skill>("skills");
 

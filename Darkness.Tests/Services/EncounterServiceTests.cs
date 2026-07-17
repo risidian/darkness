@@ -21,7 +21,7 @@ public class EncounterServiceTests : IDisposable
     public EncounterServiceTests()
     {
         _dbPath = Path.Combine(Path.GetTempPath(), $"EncounterServiceTests_{Guid.NewGuid()}.db");
-        _db = new LiteDatabase(_dbPath);
+        _db = new LiteDatabase(_dbPath, new BsonMapper());
         _fsMock = new Mock<IFileSystemService>();
         _seeder = new EncounterSeeder(_fsMock.Object);
         _service = new EncounterService(_db);
