@@ -106,6 +106,9 @@ namespace Darkness.Core.Models
         public string?[] Hotbar { get; set; } = new string?[5];
         public bool IsBlocking { get; set; } = false;
 
+        /// <summary>Wave IDs that this character has cleared in Deathmatch mode.</summary>
+        public List<int> ClearedDeathmatchWaves { get; set; } = new();
+
         public void ConsolidateInventory()
         {
             if (Inventory == null || Inventory.Count <= 1) return;

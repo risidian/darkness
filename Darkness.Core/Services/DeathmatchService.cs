@@ -1,62 +1,38 @@
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
+using LiteDB;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Darkness.Core.Services
 {
     public class DeathmatchService : IDeathmatchService
     {
-        public Task<List<DeathmatchEncounter>> GetEncountersAsync()
+        private readonly ILiteDatabase _db;
+
+        public DeathmatchService(ILiteDatabase db)
         {
-            var encounters = new List<DeathmatchEncounter>
+            _db = db;
+        }
+
+        /// <summary>
+        /// Returns all deathmatch encounters ordered by Id, with IsUnlocked computed
+        /// from the character's ClearedDeathmatchWaves. Encounters with no
+        /// UnlockRequirement are always unlocked. Null character = wave 1 only unlocked.
+        /// </summary>
+        public Task<List<DeathmatchEncounter>> GetEncountersAsync(Character? character = null)
+        {
+            var col = _db.GetCollection<DeathmatchEncounter>("deathmatch_encounters");
+            var encounters = col.FindAll().OrderBy(e => e.Id).ToList();
+
+            var cleared = character?.ClearedDeathmatchWaves ?? new List<int>();
+
+            foreach (var encounter in encounters)
             {
-                new DeathmatchEncounter
-                {
-                    Id = 1,
-                    Name = "Skeleton Squad",
-                    RequiredLevel = 1,
-                    Enemies = new List<Enemy>
-                    {
-                        new Enemy
-                        {
-                            Name = "Skeleton", Level = 1, MaxHP = 20, CurrentHP = 20, Attack = 5, Defense = 2, Speed = 3
-                        },
-                        new Enemy
-                        {
-                            Name = "Skeleton Archer", Level = 1, MaxHP = 15, CurrentHP = 15, Attack = 6, Defense = 1,
-                            Speed = 5
-                        }
-                    },
-                    Rewards = new List<Item>
-                    {
-                        new Item { Name = "Bone Sword", Type = "Weapon", Value = 10, AttackBonus = 2 }
-                    }
-                },
-                new DeathmatchEncounter
-                {
-                    Id = 2,
-                    Name = "Orc Raiders",
-                    RequiredLevel = 5,
-                    Enemies = new List<Enemy>
-                    {
-                        new Enemy
-                        {
-                            Name = "Orc Grunt", Level = 5, MaxHP = 50, CurrentHP = 50, Attack = 10, Defense = 5,
-                            Speed = 4
-                        },
-                        new Enemy
-                        {
-                            Name = "Orc Shaman", Level = 5, MaxHP = 40, CurrentHP = 40, Attack = 8, Defense = 3,
-                            Speed = 4
-                        }
-                    },
-                    Rewards = new List<Item>
-                    {
-                        new Item { Name = "Orcish Axe", Type = "Weapon", Value = 50, AttackBonus = 8 }
-                    }
-                }
-            };
+                encounter.IsUnlocked = encounter.UnlockRequirement == null
+                    || cleared.Contains(encounter.UnlockRequirement.Value);
+            }
 
             return Task.FromResult(encounters);
         }

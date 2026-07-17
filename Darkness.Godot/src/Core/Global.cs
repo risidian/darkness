@@ -42,7 +42,7 @@ public partial class Global : Node
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ICharacterService, CharacterService>();
             services.AddSingleton<ICraftingService>(sp => new CraftingService(sp.GetRequiredService<ILiteDatabase>()));
-            services.AddSingleton<IDeathmatchService, DeathmatchService>();
+            services.AddSingleton<IDeathmatchService>(sp => new DeathmatchService(sp.GetRequiredService<ILiteDatabase>()));
             services.AddSingleton<IAllyService>(sp => new AllyService(sp.GetRequiredService<LiteDatabase>()));
             services.AddSingleton<IQuestService, QuestService>();
             services.AddSingleton<ISettingsService, SettingsService>();
@@ -82,6 +82,7 @@ public partial class Global : Node
                 new ItemSeeder(fs).Seed(db);
                 new RewardSeeder(fs).Seed(db);
                 new EncounterSeeder(fs).Seed(db);
+                new DeathmatchSeeder(fs).Seed(db);
                 GD.Print("[Global] Data seeding complete.");
 
                 // Run Cross-Validation
