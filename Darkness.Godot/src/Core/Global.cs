@@ -43,7 +43,7 @@ public partial class Global : Node
             services.AddSingleton<ICharacterService, CharacterService>();
             services.AddSingleton<ICraftingService>(sp => new CraftingService(sp.GetRequiredService<ILiteDatabase>()));
             services.AddSingleton<IDeathmatchService, DeathmatchService>();
-            services.AddSingleton<IAllyService, AllyService>();
+            services.AddSingleton<IAllyService>(sp => new AllyService(sp.GetRequiredService<LiteDatabase>()));
             services.AddSingleton<IQuestService, QuestService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IRewardService, RewardService>();

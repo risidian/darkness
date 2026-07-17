@@ -1,63 +1,66 @@
 using Darkness.Core.Interfaces;
 using Darkness.Core.Models;
+using LiteDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace Darkness.Core.Services
+namespace Darkness.Core.Services;
+
+public class AllyService : IAllyService
 {
-    public class AllyService : IAllyService
+    private readonly LiteDatabase _db;
+
+    public AllyService(LiteDatabase db)
     {
-        private readonly List<Ally> _mockAllies;
+        _db = db;
+    }
 
-        public AllyService()
+    public Task<List<Ally>> GetAlliesForUserAsync(int userId)
+    {
+        var col = _db.GetCollection<Ally>("allies");
+        var allies = col.Find(a => a.UserId == userId).ToList();
+        return Task.FromResult(allies);
+    }
+
+    public Task<bool> SendAllyRequestAsync(int userId, int allyUserId, string allyUsername)
+    {
+        var col = _db.GetCollection<Ally>("allies");
+
+        // Prevent duplicate pending/accepted requests between same pair
+        var existing = col.FindOne(a => a.UserId == userId && a.AllyUserId == allyUserId);
+        if (existing != null)
+            return Task.FromResult(false);
+
+        col.Insert(new Ally
         {
-            _mockAllies = new List<Ally>
-            {
-                new Ally { Id = 1, UserId = 1, AllyUserId = 2, AllyUsername = "Friend1", Status = "Accepted" },
-                new Ally { Id = 2, UserId = 1, AllyUserId = 3, AllyUsername = "Friend2", Status = "Pending" }
-            };
+            UserId = userId,
+            AllyUserId = allyUserId,
+            AllyUsername = allyUsername,
+            Status = "Pending"
+        });
+
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> RespondToAllyRequestAsync(int allyId, bool accepted)
+    {
+        var col = _db.GetCollection<Ally>("allies");
+        var ally = col.FindById(allyId);
+
+        if (ally == null)
+            return Task.FromResult(false);
+
+        if (accepted)
+        {
+            ally.Status = "Accepted";
+            col.Update(ally);
+        }
+        else
+        {
+            col.Delete(allyId);
         }
 
-        public async Task<List<Ally>> GetAlliesForUserAsync(int userId)
-        {
-            await Task.Delay(100); // Simulate network/DB latency
-            return _mockAllies.Where(a => a.UserId == userId).ToList();
-        }
-
-        public async Task<bool> SendAllyRequestAsync(int userId, int allyUserId, string allyUsername)
-        {
-            await Task.Delay(100);
-            _mockAllies.Add(new Ally
-            {
-                Id = _mockAllies.Any() ? _mockAllies.Max(a => a.Id) + 1 : 1,
-                UserId = userId,
-                AllyUserId = allyUserId,
-                AllyUsername = allyUsername,
-                Status = "Pending"
-            });
-            return true;
-        }
-
-        public async Task<bool> RespondToAllyRequestAsync(int allyId, bool accepted)
-        {
-            await Task.Delay(100);
-            var ally = _mockAllies.FirstOrDefault(a => a.Id == allyId);
-            if (ally != null)
-            {
-                if (accepted)
-                {
-                    ally.Status = "Accepted";
-                }
-                else
-                {
-                    _mockAllies.Remove(ally);
-                }
-
-                return true;
-            }
-
-            return false;
-        }
+        return Task.FromResult(true);
     }
 }
