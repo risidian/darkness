@@ -9,7 +9,22 @@
 
 ## 🟠 Open Questions / Decisions (need product owner — non-blocking; I proceed on documented defaults)
 
-### Narrative canon (Arc 1)
+### 🔴 Bugs (found by the headless boot smoke test — fixing now)
+- [ ] **SkillSeeder seeds 0 skills** — missing `JsonStringEnumConverter`; `skills.json` string enums throw, `catch` swallows, skills collection empty. Add the converter + regression test.
+- [ ] **AppearanceSeeder duplicates `class_defaults` every boot** — `ClassDefault.Id=0` → `Upsert` inserts new rows each run. Fix upsert-by-name (or clear+insert) + regression test.
+
+### Narrative canon (Arc 1) — ⚠ REVISED after full Ch1–10 prose; see `docs/design/arc-1-revision-brief.md`
+**Load-bearing — beat-revision HELD until resolved (avoids rework):**
+- [ ] **Protagonist** — full prose confirms Darius IS the amnesiac hero and "Atriartous" (the prophecy). The game's PC-lead + Darius-companion is a deliberate divergence. Keep it (and where does the Atriartous reveal attach)?
+- [ ] **Arc-1 ending** — invented beat-10 "undead army" has NO prose basis and misuses Arc-2 characters (Kyarias/Kazarth/Balgathor). Re-end at the canonical **black-castle gate gauntlet** (introduces the Arc-2 cast), or keep an invented finale (and stop reusing those names)?
+- [ ] **Tywin's role** — prose: temporary companion who DEPARTS before the castle. Game: recruited permanent ally from beat 9. Keep the invention?
+- [ ] **Sorcerer (beat 5)** — prose: unnamed, unwinnable, leaves by choice. Game: "Risidian", winnable. Align or keep?
+- [ ] **Weapon** — adopt Darius's black greatsword (prose) as his signature, replacing Burgh's twin swords?
+- [ ] **Green-light Arc 2** — Chapters 4–10 ("Castle Horror interior") are substantial, written, ready for a separate spec pass.
+- [ ] **Boss names** — Balgathor→**Dariartimous** for the beat-4 cliff villain (Balgathor is a distinct Arc-2 char); Araknos→**Tauros** (bull). Confirm which asset names change.
+- [ ] **Source authority** — the PDF numbering is broken (no "Ch3", two "Ch4"s; Journey compressed) vs the fuller older Ch1–3 txt. Which wins where they differ?
+
+**Earlier canon items (still open):**
 - [ ] **Araknos design** — prose says a **bull/Tauros** demon; existing art is a hissing spider. Which is canon? *(Default in draft: bull, name kept "Araknos".)*
 - [ ] **Kyarias vs `KazarthEndGame` sprite** — final boss named Kyarias but uses the `bosses/KazarthEndGame` asset. Rename boss, or re-point to a Kyarias asset?
 - [ ] **Balgathor → Dariartimous?** — the cliff-duel villain is `Balgathor` in-game but is the prose's "Dariartimous, Seeker of Darkness." Rename to preserve the Daverak/Dariartimous/Atriartous/Darius name-web reveal?
