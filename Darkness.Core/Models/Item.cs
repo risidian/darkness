@@ -8,6 +8,11 @@ namespace Darkness.Core.Models
 
         public string Description { get; set; } = string.Empty;
 
+        // i18n readiness (Phase B): optional localization keys. Display sites may resolve
+        // these; identity/FK matching keeps using Name/Description. Null = English-only.
+        public string? NameKey { get; set; }
+        public string? DescriptionKey { get; set; }
+
         public string Type { get; set; } = string.Empty; // E.g., Weapon, Armor, Consumable
 
         public int Weight { get; set; }
@@ -59,6 +64,8 @@ namespace Darkness.Core.Models
             {
                 Name = Name,
                 Description = Description,
+                NameKey = NameKey,
+                DescriptionKey = DescriptionKey,
                 Type = Type,
                 Weight = Weight,
                 Value = Value,
