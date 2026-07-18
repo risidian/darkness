@@ -1,0 +1,14 @@
+; Engine configuration file.
+; Minimal Godot project used only to host gdUnit4 C# tests headlessly.
+
+config_version=5
+
+[application]
+
+config/name="Darkness.Godot.Tests"
+config/features=PackedStringArray("4.6", "C#")
+
+[dotnet]
+
+project/assembly_name="Darkness.Godot.Tests"
+project/solution_directory="../"

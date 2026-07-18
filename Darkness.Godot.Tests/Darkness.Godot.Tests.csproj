@@ -1,0 +1,31 @@
+<Project Sdk="Godot.NET.Sdk/4.6.1">
+
+  <PropertyGroup>
+    <!-- Godot projects must not use Central Package Management -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!-- Do NOT treat warnings as errors in the test project -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RootNamespace>Darkness.Godot.Tests</RootNamespace>
+    <!-- Ensures all dependencies are copied to output for headless test execution -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- Identifies this as a GdUnit4 test project for VSTest discovery -->
+    <TestFramework>GdUnit4</TestFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Core .NET testing infrastructure -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <!-- GdUnit4 C# testing framework -->
+    <PackageReference Include="gdUnit4.api" Version="5.1.0-rc5" />
+    <!-- VSTest adapter that launches Godot to run the tests -->
+    <PackageReference Include="gdUnit4.test.adapter" Version="3.1.1" />
+    <!-- Roslyn analyzers for gdUnit4 test authoring -->
+    <PackageReference Include="gdUnit4.analyzers" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

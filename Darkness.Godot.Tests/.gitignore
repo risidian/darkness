@@ -1,0 +1,14 @@
+# Godot 4+ generated cache. In this sandbox `.godot` is a symlink to a /tmp
+# dir (drvfs cannot host the cache); the bare entry also matches that symlink.
+.godot/
+.godot
+
+# .NET build output
+[Bb]in/
+[Oo]bj/
+
+# Test run output (trx / html reports)
+TestResults/
+
+# gdUnit4 test-adapter runner scene: auto-generated on every build; never commit.
+gdunit4_testadapter_v5/
