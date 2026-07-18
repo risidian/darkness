@@ -1,0 +1,16 @@
+{
+  "name": "Boomerang",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/boomerang",
+        "female": "weapons/ranged/boomerang"
+      },
+      "default_variant": "boomerang"
+    }
+  },
+  "variants": ["boomerang"],
+  "animations": ["walk"]
+}

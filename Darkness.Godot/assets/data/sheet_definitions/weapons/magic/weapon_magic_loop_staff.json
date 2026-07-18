@@ -1,0 +1,42 @@
+{
+  "name": "Looped Staff",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/loop/universal/foreground",
+        "female": "weapons/magic/loop/universal/foreground"
+      },
+      "default_variant": "loop"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/magic/loop/universal/background",
+        "female": "weapons/magic/loop/universal/background"
+      },
+      "default_variant": "loop"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/magic/loop/thrust/background",
+        "female": "weapons/magic/loop/thrust/background"
+      },
+      "default_variant": "loop"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/magic/loop/thrust/foreground",
+        "female": "weapons/magic/loop/thrust/foreground"
+      },
+      "default_variant": "loop"
+    }
+  },
+  "variants": ["loop"],
+  "animations": ["walk", "hurt", "thrust"]
+}

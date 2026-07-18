@@ -1,0 +1,42 @@
+{
+  "name": "Glowsword (Blue)",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/glowsword",
+        "female": "weapons/sword/glowsword"
+      },
+      "default_variant": "blue"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/sword/glowsword/universal_behind",
+        "female": "weapons/sword/glowsword/universal_behind"
+      },
+      "default_variant": "blue"
+    },
+    "slash_behind": {
+      "custom_animation": "slash_oversize",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/sword/glowsword/attack_slash/behind",
+        "female": "weapons/sword/glowsword/attack_slash/behind"
+      },
+      "default_variant": "blue"
+    },
+    "slash_front": {
+      "custom_animation": "slash_oversize",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/sword/glowsword/attack_slash",
+        "female": "weapons/sword/glowsword/attack_slash"
+      },
+      "default_variant": "blue"
+    }
+  },
+  "variants": ["blue", "red"],
+  "animations": ["walk", "hurt", "slash_oversize"]
+}

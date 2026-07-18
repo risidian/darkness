@@ -1,0 +1,42 @@
+{
+  "name": "Arcane Staff",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/s/universal/foreground",
+        "female": "weapons/magic/s/universal/foreground"
+      },
+      "default_variant": "s"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/magic/s/universal/background",
+        "female": "weapons/magic/s/universal/background"
+      },
+      "default_variant": "s"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/magic/s/thrust/background",
+        "female": "weapons/magic/s/thrust/background"
+      },
+      "default_variant": "s"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/magic/s/thrust/foreground",
+        "female": "weapons/magic/s/thrust/foreground"
+      },
+      "default_variant": "s"
+    }
+  },
+  "variants": ["s"],
+  "animations": ["walk", "hurt", "thrust"]
+}

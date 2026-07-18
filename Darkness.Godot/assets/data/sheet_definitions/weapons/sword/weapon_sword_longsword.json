@@ -1,0 +1,60 @@
+{
+  "name": "Longsword",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/longsword",
+        "female": "weapons/sword/longsword"
+      },
+      "default_variant": "longsword"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/sword/longsword/universal_behind",
+        "female": "weapons/sword/longsword/universal_behind"
+      },
+      "default_variant": "longsword"
+    },
+    "slash_behind": {
+      "custom_animation": "slash_oversize",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/sword/longsword/attack_slash/behind",
+        "female": "weapons/sword/longsword/attack_slash/behind"
+      },
+      "default_variant": "longsword"
+    },
+    "slash_front": {
+      "custom_animation": "slash_oversize",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/sword/longsword/attack_slash",
+        "female": "weapons/sword/longsword/attack_slash"
+      },
+      "default_variant": "longsword"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust_oversize",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/sword/longsword/attack_thrust/behind",
+        "female": "weapons/sword/longsword/attack_thrust/behind"
+      },
+      "default_variant": "longsword"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust_oversize",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/sword/longsword/attack_thrust",
+        "female": "weapons/sword/longsword/attack_thrust"
+      },
+      "default_variant": "longsword"
+    }
+  },
+  "variants": ["longsword"],
+  "animations": ["walk", "hurt", "slash_oversize", "thrust_oversize"]
+}

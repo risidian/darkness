@@ -1,0 +1,24 @@
+{
+  "name": "Slingshot",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/slingshot/foreground",
+        "female": "weapons/ranged/slingshot/foreground"
+      },
+      "default_variant": "slingshot"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/ranged/slingshot/background",
+        "female": "weapons/ranged/slingshot/background"
+      },
+      "default_variant": "slingshot"
+    }
+  },
+  "variants": ["slingshot"],
+  "animations": ["walk", "shoot", "hurt"]
+}

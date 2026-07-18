@@ -1,0 +1,24 @@
+{
+  "name": "Crossbow",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/crossbow/foreground",
+        "female": "weapons/ranged/crossbow/foreground"
+      },
+      "default_variant": "crossbow"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/ranged/crossbow/background",
+        "female": "weapons/ranged/crossbow/background"
+      },
+      "default_variant": "crossbow"
+    }
+  },
+  "variants": ["crossbow"],
+  "animations": ["walk", "thrust", "hurt"]
+}

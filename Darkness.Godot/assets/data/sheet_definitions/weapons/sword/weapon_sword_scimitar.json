@@ -1,0 +1,16 @@
+{
+  "name": "Scimitar",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/scimitar",
+        "female": "weapons/sword/scimitar"
+      },
+      "default_variant": "scimitar"
+    }
+  },
+  "variants": ["scimitar"],
+  "animations": ["walk", "slash"]
+}

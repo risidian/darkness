@@ -1,0 +1,35 @@
+{
+  "name": "Great Bow",
+  "slot": "Weapon",
+  "layers": {
+    "shoot_front": {
+      "custom_animation": "shoot",
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/bow/great/universal/foreground",
+        "female": "weapons/ranged/bow/great/universal/foreground"
+      },
+      "default_variant": "great"
+    },
+    "walk_behind": {
+      "custom_animation": "walk",
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/ranged/bow/great/walk/background",
+        "female": "weapons/ranged/bow/great/walk/background"
+      },
+      "default_variant": "great"
+    },
+    "walk_front": {
+      "custom_animation": "walk",
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/bow/great/walk/foreground",
+        "female": "weapons/ranged/bow/great/walk/foreground"
+      },
+      "default_variant": "great"
+    }
+  },
+  "variants": ["great"],
+  "animations": ["walk", "shoot"]
+}

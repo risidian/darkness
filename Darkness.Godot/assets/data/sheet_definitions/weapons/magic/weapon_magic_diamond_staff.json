@@ -1,0 +1,42 @@
+{
+  "name": "Diamond Staff",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/diamond/universal/foreground",
+        "female": "weapons/magic/diamond/universal/foreground"
+      },
+      "default_variant": "diamond"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/magic/diamond/universal/background",
+        "female": "weapons/magic/diamond/universal/background"
+      },
+      "default_variant": "diamond"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/magic/diamond/thrust/background",
+        "female": "weapons/magic/diamond/thrust/background"
+      },
+      "default_variant": "diamond"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/magic/diamond/thrust/foreground",
+        "female": "weapons/magic/diamond/thrust/foreground"
+      },
+      "default_variant": "diamond"
+    }
+  },
+  "variants": ["diamond"],
+  "animations": ["walk", "hurt", "thrust"]
+}

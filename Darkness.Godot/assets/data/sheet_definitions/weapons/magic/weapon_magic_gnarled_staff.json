@@ -1,0 +1,42 @@
+{
+  "name": "Gnarled Staff",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/gnarled/universal/foreground",
+        "female": "weapons/magic/gnarled/universal/foreground"
+      },
+      "default_variant": "gnarled"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/magic/gnarled/universal/background",
+        "female": "weapons/magic/gnarled/universal/background"
+      },
+      "default_variant": "gnarled"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/magic/gnarled/thrust/background",
+        "female": "weapons/magic/gnarled/thrust/background"
+      },
+      "default_variant": "gnarled"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/magic/gnarled/thrust/foreground",
+        "female": "weapons/magic/gnarled/thrust/foreground"
+      },
+      "default_variant": "gnarled"
+    }
+  },
+  "variants": ["gnarled"],
+  "animations": ["walk", "hurt", "thrust"]
+}

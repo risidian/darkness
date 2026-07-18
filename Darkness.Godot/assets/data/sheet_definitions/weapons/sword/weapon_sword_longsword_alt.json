@@ -1,0 +1,16 @@
+{
+  "name": "Alt Longsword",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/longsword_alt",
+        "female": "weapons/sword/longsword_alt"
+      },
+      "default_variant": "longsword_alt"
+    }
+  },
+  "variants": ["longsword_alt"],
+  "animations": ["walk", "slash"]
+}

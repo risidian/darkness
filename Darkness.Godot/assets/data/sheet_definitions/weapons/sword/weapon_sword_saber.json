@@ -1,0 +1,42 @@
+{
+  "name": "Saber",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/saber",
+        "female": "weapons/sword/saber"
+      },
+      "default_variant": "saber"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/sword/saber/universal_behind",
+        "female": "weapons/sword/saber/universal_behind"
+      },
+      "default_variant": "saber"
+    },
+    "slash_behind": {
+      "custom_animation": "slash_oversize",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/sword/saber/attack_slash/behind",
+        "female": "weapons/sword/saber/attack_slash/behind"
+      },
+      "default_variant": "saber"
+    },
+    "slash_front": {
+      "custom_animation": "slash_oversize",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/sword/saber/attack_slash",
+        "female": "weapons/sword/saber/attack_slash"
+      },
+      "default_variant": "saber"
+    }
+  },
+  "variants": ["saber"],
+  "animations": ["walk", "hurt", "slash_oversize"]
+}

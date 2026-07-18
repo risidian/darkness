@@ -1,0 +1,44 @@
+{
+  "name": "Short Bow",
+  "slot": "Weapon",
+  "layers": {
+    "shoot_behind": {
+      "custom_animation": "shoot",
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/ranged/bow/normal/universal/background",
+        "female": "weapons/ranged/bow/normal/universal/background"
+      },
+      "default_variant": "normal"
+    },
+    "shoot_front": {
+      "custom_animation": "shoot",
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/bow/normal/universal/foreground",
+        "female": "weapons/ranged/bow/normal/universal/foreground"
+      },
+      "default_variant": "normal"
+    },
+    "walk_behind": {
+      "custom_animation": "walk",
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/ranged/bow/normal/walk/background",
+        "female": "weapons/ranged/bow/normal/walk/background"
+      },
+      "default_variant": "normal"
+    },
+    "walk_front": {
+      "custom_animation": "walk",
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/bow/normal/walk/foreground",
+        "female": "weapons/ranged/bow/normal/walk/foreground"
+      },
+      "default_variant": "normal"
+    }
+  },
+  "variants": ["normal"],
+  "animations": ["walk", "shoot"]
+}

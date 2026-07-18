@@ -1,0 +1,16 @@
+{
+  "name": "Katana",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/katana",
+        "female": "weapons/sword/katana"
+      },
+      "default_variant": "katana"
+    }
+  },
+  "variants": ["katana"],
+  "animations": ["walk", "slash"]
+}

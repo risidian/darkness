@@ -1,0 +1,42 @@
+{
+  "name": "Rapier",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/sword/rapier",
+        "female": "weapons/sword/rapier"
+      },
+      "default_variant": "rapier"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/sword/rapier/universal_behind",
+        "female": "weapons/sword/rapier/universal_behind"
+      },
+      "default_variant": "rapier"
+    },
+    "slash_behind": {
+      "custom_animation": "slash_oversize",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/sword/rapier/attack_slash/behind",
+        "female": "weapons/sword/rapier/attack_slash/behind"
+      },
+      "default_variant": "rapier"
+    },
+    "slash_front": {
+      "custom_animation": "slash_oversize",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/sword/rapier/attack_slash",
+        "female": "weapons/sword/rapier/attack_slash"
+      },
+      "default_variant": "rapier"
+    }
+  },
+  "variants": ["rapier"],
+  "animations": ["walk", "hurt", "slash_oversize"]
+}

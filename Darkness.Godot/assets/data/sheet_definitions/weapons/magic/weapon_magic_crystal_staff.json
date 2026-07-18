@@ -1,0 +1,42 @@
+{
+  "name": "Crystal Staff",
+  "slot": "Weapon",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/crystal/universal/foreground",
+        "female": "weapons/magic/crystal/universal/foreground"
+      },
+      "default_variant": "crystal"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/magic/crystal/universal/background",
+        "female": "weapons/magic/crystal/universal/background"
+      },
+      "default_variant": "crystal"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/magic/crystal/thrust/background",
+        "female": "weapons/magic/crystal/thrust/background"
+      },
+      "default_variant": "crystal"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/magic/crystal/thrust/foreground",
+        "female": "weapons/magic/crystal/thrust/foreground"
+      },
+      "default_variant": "crystal"
+    }
+  },
+  "variants": ["crystal"],
+  "animations": ["walk", "hurt", "thrust"]
+}

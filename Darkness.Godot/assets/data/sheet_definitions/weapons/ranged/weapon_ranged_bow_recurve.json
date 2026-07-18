@@ -1,0 +1,44 @@
+{
+  "name": "Recurve Bow",
+  "slot": "Weapon",
+  "layers": {
+    "shoot_behind": {
+      "custom_animation": "shoot",
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/ranged/bow/recurve/universal/background",
+        "female": "weapons/ranged/bow/recurve/universal/background"
+      },
+      "default_variant": "recurve"
+    },
+    "shoot_front": {
+      "custom_animation": "shoot",
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/bow/recurve/universal/foreground",
+        "female": "weapons/ranged/bow/recurve/universal/foreground"
+      },
+      "default_variant": "recurve"
+    },
+    "walk_behind": {
+      "custom_animation": "walk",
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/ranged/bow/recurve/walk/background",
+        "female": "weapons/ranged/bow/recurve/walk/background"
+      },
+      "default_variant": "recurve"
+    },
+    "walk_front": {
+      "custom_animation": "walk",
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/ranged/bow/recurve/walk/foreground",
+        "female": "weapons/ranged/bow/recurve/walk/foreground"
+      },
+      "default_variant": "recurve"
+    }
+  },
+  "variants": ["recurve"],
+  "animations": ["walk", "shoot"]
+}
