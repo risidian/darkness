@@ -51,4 +51,30 @@ public class AppearanceSeederTests : IDisposable
         Assert.Equal(2, col.Count());
         Assert.NotNull(col.FindOne(x => x.DisplayName == "Long"));
     }
+
+    [Fact]
+    public void Seed_RunTwice_DoesNotDuplicateClassDefaults()
+    {
+        // Regression: ClassDefault.Id is an int defaulting to 0, so Upsert auto-assigned
+        // a fresh id on each boot, duplicating same-named rows (count grew 5 -> 10 -> 15).
+        var json = @"{
+            ""ClassDefaults"": {
+                ""Warrior"": { ""ArmorType"": ""Plate"" },
+                ""Mage"": { ""ArmorType"": ""Robe"" },
+                ""Rogue"": { ""ArmorType"": ""Leather"" }
+            }
+        }";
+        _fsMock.Setup(f => f.ReadAllText("assets/data/sprite-catalog.json")).Returns(json);
+
+        var seeder = new AppearanceSeeder(_fsMock.Object);
+        seeder.Seed(_db);
+        var col = _db.GetCollection<ClassDefault>("class_defaults");
+        var countAfterFirst = col.Count();
+
+        seeder.Seed(_db);
+        var countAfterSecond = col.Count();
+
+        Assert.Equal(3, countAfterFirst);
+        Assert.Equal(countAfterFirst, countAfterSecond);
+    }
 }

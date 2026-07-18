@@ -34,7 +34,8 @@ public class SkillSeeder
         {
             skills = SystemJson.JsonSerializer.Deserialize<List<Skill>>(json, new SystemJson.JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
             });
         }
         catch (SystemJson.JsonException ex)

@@ -72,19 +72,18 @@ public class AppearanceSeeder
         Console.WriteLine($"[AppearanceSeeder] INFO: Synced {optionCol.Count()} appearance options");
 
         var defaultsCol = db.GetCollection<ClassDefault>("class_defaults");
-        var loadedDefaultNames = new List<string>();
+        // ClassDefault.Id is an int defaulting to 0, so Upsert would auto-assign a fresh
+        // id on every boot and duplicate same-named rows. Clear and re-insert for idempotency.
+        defaultsCol.DeleteAll();
         if (data.ClassDefaults != null)
         {
             foreach (var kvp in data.ClassDefaults)
             {
                 var cd = kvp.Value;
                 cd.ClassName = kvp.Key;
-                defaultsCol.Upsert(cd);
-                loadedDefaultNames.Add(cd.ClassName);
+                defaultsCol.Insert(cd);
             }
         }
-        // Cleanup orphaned class defaults
-        defaultsCol.DeleteMany(x => !loadedDefaultNames.Contains(x.ClassName));
 
         defaultsCol.EnsureIndex(c => c.ClassName);
 
