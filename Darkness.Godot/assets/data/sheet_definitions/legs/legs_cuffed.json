@@ -1,0 +1,16 @@
+{
+  "name": "Cuffed",
+  "slot": "Legs",
+  "layers": {
+    "main": {
+      "zPos": 40,
+      "paths": {
+        "male": "legs/cuffed/male",
+        "female": "legs/cuffed/female"
+      },
+      "default_variant": "black"
+    }
+  },
+  "variants": ["black"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

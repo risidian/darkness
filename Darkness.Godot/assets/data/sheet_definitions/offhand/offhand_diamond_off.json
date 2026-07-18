@@ -1,0 +1,42 @@
+{
+  "name": "Diamond Focus (Off-Hand)",
+  "slot": "OffHand",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/diamond_off/universal/foreground",
+        "female": "weapons/magic/diamond_off/universal/foreground"
+      },
+      "default_variant": "diamond_off"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/magic/diamond_off/universal/background",
+        "female": "weapons/magic/diamond_off/universal/background"
+      },
+      "default_variant": "diamond_off"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/magic/diamond_off/thrust/background",
+        "female": "weapons/magic/diamond_off/thrust/background"
+      },
+      "default_variant": "diamond_off"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/magic/diamond_off/thrust/foreground",
+        "female": "weapons/magic/diamond_off/thrust/foreground"
+      },
+      "default_variant": "diamond_off"
+    }
+  },
+  "variants": ["diamond_off"],
+  "animations": ["walk", "hurt", "thrust"]
+}

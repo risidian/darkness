@@ -1,0 +1,16 @@
+{
+  "name": "Longsleeve (Brown)",
+  "slot": "Armor",
+  "layers": {
+    "main": {
+      "zPos": 60,
+      "paths": {
+        "male": "torso/jacket/tabard/male",
+        "female": "torso/robes/female"
+      },
+      "default_variant": "brown"
+    }
+  },
+  "variants": ["brown"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

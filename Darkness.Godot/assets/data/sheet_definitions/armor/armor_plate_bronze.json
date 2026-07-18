@@ -1,0 +1,16 @@
+{
+  "name": "Plate (Bronze)",
+  "slot": "Armor",
+  "layers": {
+    "main": {
+      "zPos": 60,
+      "paths": {
+        "male": "armor/plate/male",
+        "female": "armor/plate/female"
+      },
+      "default_variant": "bronze"
+    }
+  },
+  "variants": ["bronze"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

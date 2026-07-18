@@ -1,0 +1,42 @@
+{
+  "name": "Looped Focus (Off-Hand)",
+  "slot": "OffHand",
+  "layers": {
+    "main": {
+      "zPos": 140,
+      "paths": {
+        "male": "weapons/magic/loop_off/universal/foreground",
+        "female": "weapons/magic/loop_off/universal/foreground"
+      },
+      "default_variant": "loop_off"
+    },
+    "behind": {
+      "zPos": 9,
+      "paths": {
+        "male": "weapons/magic/loop_off/universal/background",
+        "female": "weapons/magic/loop_off/universal/background"
+      },
+      "default_variant": "loop_off"
+    },
+    "thrust_behind": {
+      "custom_animation": "thrust",
+      "zPos": -1,
+      "paths": {
+        "male": "weapons/magic/loop_off/thrust/background",
+        "female": "weapons/magic/loop_off/thrust/background"
+      },
+      "default_variant": "loop_off"
+    },
+    "thrust_front": {
+      "custom_animation": "thrust",
+      "zPos": 150,
+      "paths": {
+        "male": "weapons/magic/loop_off/thrust/foreground",
+        "female": "weapons/magic/loop_off/thrust/foreground"
+      },
+      "default_variant": "loop_off"
+    }
+  },
+  "variants": ["loop_off"],
+  "animations": ["walk", "hurt", "thrust"]
+}

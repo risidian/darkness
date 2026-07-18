@@ -1,0 +1,16 @@
+{
+  "name": "Plate (Copper)",
+  "slot": "Armor",
+  "layers": {
+    "main": {
+      "zPos": 60,
+      "paths": {
+        "male": "armor/plate/male",
+        "female": "armor/plate/female"
+      },
+      "default_variant": "copper"
+    }
+  },
+  "variants": ["copper"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}

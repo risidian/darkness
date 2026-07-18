@@ -1,0 +1,16 @@
+{
+  "name": "Leather (Brown)",
+  "slot": "Armor",
+  "layers": {
+    "main": {
+      "zPos": 60,
+      "paths": {
+        "male": "armor/leather/male",
+        "female": "armor/leather/female"
+      },
+      "default_variant": "brown"
+    }
+  },
+  "variants": ["brown"],
+  "animations": ["walk", "idle", "slash", "thrust", "shoot", "hurt"]
+}
