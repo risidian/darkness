@@ -13,16 +13,19 @@
 - [ ] **SkillSeeder seeds 0 skills** — missing `JsonStringEnumConverter`; `skills.json` string enums throw, `catch` swallows, skills collection empty. Add the converter + regression test.
 - [ ] **AppearanceSeeder duplicates `class_defaults` every boot** — `ClassDefault.Id=0` → `Upsert` inserts new rows each run. Fix upsert-by-name (or clear+insert) + regression test.
 
-### Narrative canon (Arc 1) — ⚠ REVISED after full Ch1–10 prose; see `docs/design/arc-1-revision-brief.md`
-**Load-bearing — beat-revision HELD until resolved (avoids rework):**
-- [ ] **Protagonist** — full prose confirms Darius IS the amnesiac hero and "Atriartous" (the prophecy). The game's PC-lead + Darius-companion is a deliberate divergence. Keep it (and where does the Atriartous reveal attach)?
-- [ ] **Arc-1 ending** — invented beat-10 "undead army" has NO prose basis and misuses Arc-2 characters (Kyarias/Kazarth/Balgathor). Re-end at the canonical **black-castle gate gauntlet** (introduces the Arc-2 cast), or keep an invented finale (and stop reusing those names)?
-- [ ] **Tywin's role** — prose: temporary companion who DEPARTS before the castle. Game: recruited permanent ally from beat 9. Keep the invention?
+### Narrative canon (Arc 1) — reconciled with full Ch1–10 prose; see `docs/design/arc-1-revision-brief.md`
+**DECIDED (product owner, 2026-07-18) — drive the pending Arc-1 revision pass:**
+- [x] **Protagonist** — keep PC as lead (inherits the amnesiac/Atriartous prophecy arc); Darius stays companion. (Divergence from prose, confirmed.)
+- [x] **Arc-1 ending** — re-end at the **black-castle gate gauntlet** (skeleton horde → Kyarias → Arthoros → Balgathor admits the party); replaces the invented undead-army finale; sets up Arc 2.
+- [x] **Tywin** — keep as a **permanent party ally** from beat 9 (divergence from prose departure).
+- [x] **Boss names** — Balgathor→**Dariartimous** (beat-4 cliff villain); Araknos→**Tauros** (bull).
+- [x] **Arc 2 green-lit** — Ch4–10 "Castle Horror interior" gets its own spec pass later.
+
+**Still open (smaller):**
 - [ ] **Sorcerer (beat 5)** — prose: unnamed, unwinnable, leaves by choice. Game: "Risidian", winnable. Align or keep?
-- [ ] **Weapon** — adopt Darius's black greatsword (prose) as his signature, replacing Burgh's twin swords?
-- [ ] **Green-light Arc 2** — Chapters 4–10 ("Castle Horror interior") are substantial, written, ready for a separate spec pass.
-- [ ] **Boss names** — Balgathor→**Dariartimous** for the beat-4 cliff villain (Balgathor is a distinct Arc-2 char); Araknos→**Tauros** (bull). Confirm which asset names change.
-- [ ] **Source authority** — the PDF numbering is broken (no "Ch3", two "Ch4"s; Journey compressed) vs the fuller older Ch1–3 txt. Which wins where they differ?
+- [ ] **Weapon** — adopt Darius's black greatsword (prose) as his signature?
+- [ ] **Beat-2 tavern → Bria's Colosseum shelter** (no tavern in prose); **beat-7 goblins → bandits**.
+- [ ] **Source authority** — PDF numbering broken (no "Ch3", two "Ch4"s; Journey compressed) vs the fuller older Ch1–3 txt. Which wins where they differ?
 
 **Earlier canon items (still open):**
 - [ ] **Araknos design** — prose says a **bull/Tauros** demon; existing art is a hissing spider. Which is canon? *(Default in draft: bull, name kept "Araknos".)*
