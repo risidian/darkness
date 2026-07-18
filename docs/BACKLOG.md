@@ -36,12 +36,16 @@
 
 ## 🟢 Action Items — execution queue (me, autonomous)
 
-### In flight
-- [ ] Prove GdUnit4 headless local test loop (addon + test project + `scripts/run-godot-tests.sh`); commit; flip `godot-tests.yml` CI trigger to push/PR.
+### Done
+- [x] **GdUnit4 headless local test loop working** — `scripts/run-godot-tests.sh`, net10.0, 2/2 proven (`845f04919`). I can now compile + scene-test Godot code locally instead of pushing to CI.
 
-### Next (now locally verifiable via the Godot sandbox)
-- [ ] **`BattleScene` multi-party/ally wiring** — delegate to the tested `PartyBattleController`; render Darius/Tywin (full-sheet sprite path); de-hardcode `_party[0]`/`_session.CurrentCharacter`; ally-AI turns; verify locally (compile + GdUnit4) before commit.
-- [ ] Add a GdUnit4 scene test for the party/ally battle flow.
+### In flight
+- [ ] **`BattleScene` multi-party/ally wiring** — `PartyFactory` (Core, tested) + delegate to `PartyBattleController`; render Darius/Tywin (full-sheet path); de-hardcode `_party[0]`/`_session.CurrentCharacter`; ally-AI turns; **compile-checked locally** before commit.
+
+### Next
+- [ ] **Extend test harness to real game scenes** — load scenes needing the `/root/Global` autoload (DI + LiteDB + seeders) so BattleScene etc. are scene-testable headless. Deferred in favor of extract-to-Core + compile-check; revisit if scene behavior needs direct coverage.
+- [ ] Flip `godot-tests.yml` CI trigger to push/PR once the `gdUnit4-action` CI path is validated (local loop is the primary; CI is a bonus).
+- [ ] Add a GdUnit4 scene test for the party/ally battle flow (needs the game-scene harness above).
 
 ### Content & systems depth (Phase 4)
 - [ ] Wardrobe batches: armor/legs/off-hand staves/shields (weapons done).
