@@ -46,6 +46,13 @@ public partial class BattleScene : Control, IInitializable
 
     private TurnManager _turnManager = new();
 
+    // Humble-object controller: owns the party-vs-enemies DECISIONS (roles, target selection,
+    // win/loss). The scene's _turnManager still drives turn sequencing + snapshot bookkeeping;
+    // the controller is queried only via order-independent methods so the two never desync.
+    private PartyBattleController _battle = null!;
+    // Ally Character -> render sprite key (e.g. "bosses/Darius"). PC is never present (renders via compositing).
+    private Dictionary<Character, string> _allySpriteKeys = new();
+
     private List<Character> _party = new();
     private List<Enemy> _enemies = new();
     private Dictionary<Enemy, EnemySpawn> _enemyMap = new();
@@ -114,28 +121,7 @@ public partial class BattleScene : Control, IInitializable
                 {
                     // Start of battle: e.CurrentHP is usually 0 in JSON, so we use MaxHP.
                     // Resuming: args.IsResuming will be true, so we use e.CurrentHP (even if 0).
-                    int initialHP = e.CurrentHP;
-                    if (initialHP <= 0 && !args.IsResuming) initialHP = e.MaxHP;
-
-                    var enemy = new Enemy
-                    {
-                        Name = e.Name,
-                        Level = e.Level,
-                        MaxHP = e.MaxHP,
-                        CurrentHP = initialHP,
-                        Attack = e.Attack > 0 ? e.Attack : 10,
-                        Defense = e.Defense > 0 ? e.Defense : 5,
-                        Speed = e.Speed > 0 ? e.Speed : 10,
-                        Accuracy = e.Accuracy > 0 ? e.Accuracy : 80,
-                        Evasion = e.Evasion,
-                        SpriteKey = e.SpriteKey ?? "knight",
-                        SpriteOffsetX = e.SpriteOffsetX,
-                        SpriteOffsetY = e.SpriteOffsetY,
-                        IsInvincible = e.IsInvincible,
-                        MoralityImpact = e.MoralityImpact,
-                        ExperienceReward = e.ExperienceReward,
-                        GoldReward = e.GoldReward
-                    };
+                    var enemy = PartyFactory.CreateEnemy(e, args.IsResuming);
 
                     _enemies.Add(enemy);
                     _enemyMap[enemy] = e;
@@ -339,11 +325,10 @@ public partial class BattleScene : Control, IInitializable
     {
         if (_party.Count == 0 && _session.CurrentCharacter != null)
         {
-            var pc = _session.CurrentCharacter;
-            if (pc.MaxHP <= 0) pc.MaxHP = 100;
-            if (pc.CurrentHP <= 0) pc.CurrentHP = pc.MaxHP;
-            pc.IsBlocking = false;
-            _party.Add(pc);
+            // PC first (player-controlled), then any declared quest allies (Darius, Tywin) as AI members.
+            var built = PartyFactory.BuildParty(_session.CurrentCharacter, _battleArgs?.Combat);
+            _party.AddRange(built.Party);
+            _allySpriteKeys = built.AllySpriteKeys;
         }
 
         if (_enemies.Count == 0)
@@ -392,6 +377,10 @@ public partial class BattleScene : Control, IInitializable
         }
 
         _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
+
+        // Controller shares the same _party/_enemies references; its role/target/win-loss decisions
+        // read live HP + roster membership, so they stay correct regardless of the scene's turn order.
+        _battle = new PartyBattleController(_party, _enemies, (CombatEngine)_combat, _survivalTurns > 0 ? _survivalTurns : null);
 
         if (_battleArgs != null && _battleArgs.IsResuming && _battleArgs.Snapshot != null)
         {
@@ -623,10 +612,11 @@ public partial class BattleScene : Control, IInitializable
             }
         }
 
-        if (_party.Count > 0)
+        // Restore the whole party (PC + allies), not just the PC.
+        foreach (var member in _party)
         {
-            _party[0].CurrentHP = _party[0].MaxHP;
-            _party[0].IsBlocking = false;
+            member.CurrentHP = member.MaxHP;
+            member.IsBlocking = false;
         }
 
         if (_survivalBar != null) _survivalBar.Value = 0;
@@ -635,8 +625,9 @@ public partial class BattleScene : Control, IInitializable
         _combatLog.Clear();
         _combatLog.AppendText("Retrying battle...");
         _selectedEnemyIndex = 0;
-        
+
         _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
+        _battle = new PartyBattleController(_party, _enemies, (CombatEngine)_combat, _survivalTurns > 0 ? _survivalTurns : null);
         UpdateTurnOrderUI();
         SetupWeaponSkills();
         SetupHotbar();
@@ -721,7 +712,16 @@ public partial class BattleScene : Control, IInitializable
             sprite.Scale = new Vector2(2.5f, 2.5f);
             _partySprites.Add(sprite);
 
-            await sprite.SetupCharacter(character, _catalog, _fileSystem, _compositor);
+            // AI allies declared as full-sheet sprites (e.g. "bosses/Darius") render via the full-sheet
+            // path; the PC and equipment-based allies composite from appearance/equipment.
+            if (_allySpriteKeys.TryGetValue(character, out var allyKey) && allyKey.StartsWith("bosses/"))
+            {
+                await sprite.SetupFullSheet("assets/sprites/" + allyKey + ".png", _fileSystem);
+            }
+            else
+            {
+                await sprite.SetupCharacter(character, _catalog, _fileSystem, _compositor);
+            }
             sprite.Play("idle_right");
         }
 
@@ -843,6 +843,17 @@ public partial class BattleScene : Control, IInitializable
         if (currentEntity is Character character)
         {
             _combat.HandleTurnStart(character);
+
+            if (_battle.IsAiAlly(character))
+            {
+                // AI-controlled party ally (Darius, Tywin, ...): auto-act, never hand input to the player.
+                EnablePlayerInput(false);
+                _combatLog.AppendText($"\n\n--- [color=lightgreen]{character.Name}'s Turn[/color] ---");
+                await ExecuteAllyTurn(character);
+                return;
+            }
+
+            // Player-controlled PC: tick skill cooldowns and hand over input.
             foreach (var key in _skillCooldowns.Keys.ToList())
             {
                 _skillCooldowns[key]--;
@@ -916,15 +927,21 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
-    private async Task ExecuteEnemyTurn(Enemy target)
+    private async Task ExecuteEnemyTurn(Enemy enemy)
     {
         _isProcessingTurn = true;
         try
         {
-            var attacker = _party[0]; // Player is the only valid target currently
-            if (attacker.CurrentHP <= 0) return;
+            // Enemy attacks a living party member (PC or ally) chosen by the humble-object controller.
+            var victim = _battle.ChooseEnemyTarget();
+            if (victim == null)
+            {
+                Defeat();
+                return;
+            }
+            int victimIndex = _party.IndexOf(victim);
 
-            int actualIndex = _enemies.IndexOf(target);
+            int actualIndex = _enemies.IndexOf(enemy);
             if (actualIndex < 0)
             {
                 _turnManager.NextTurn();
@@ -932,54 +949,158 @@ public partial class BattleScene : Control, IInitializable
                 return;
             }
 
-            var targetSprite = _enemySprites[actualIndex];
+            var attackerSprite = _enemySprites[actualIndex];
 
             await ToSignal(GetTree().CreateTimer(0.5), "timeout");
 
-            string enemyAnim = target.SpriteKey == "hound"
+            string enemyAnim = enemy.SpriteKey == "hound"
                 ? "jump"
-                : (targetSprite.HasAnimation("slash_left") ? "slash_left" : "walk_left");
-            var eOriginalPos = targetSprite.Position;
+                : (attackerSprite.HasAnimation("slash_left") ? "slash_left" : "walk_left");
+            var eOriginalPos = attackerSprite.Position;
             var eLungePos = eOriginalPos + new Vector2(-50, 0);
             var eTween = GetTree().CreateTween();
-            eTween.TweenProperty(targetSprite, "position", eLungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
+            eTween.TweenProperty(attackerSprite, "position", eLungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.Out);
 
-            targetSprite.Play(enemyAnim);
+            attackerSprite.Play(enemyAnim);
 
-            var enemyCombatResult = _combat.CalculateDamage(target, attacker);
-            
+            var enemyCombatResult = _combat.CalculateDamage(enemy, victim);
+
             if (enemyCombatResult.IsHit)
             {
-                attacker.CurrentHP -= enemyCombatResult.DamageDealt;
-                _partyHealthBars[0].UpdateValue(attacker.CurrentHP, attacker.MaxHP);
+                victim.CurrentHP -= enemyCombatResult.DamageDealt;
+                if (victimIndex >= 0 && victimIndex < _partyHealthBars.Count)
+                    _partyHealthBars[victimIndex].UpdateValue(victim.CurrentHP, victim.MaxHP);
                 SyncCombatState();
 
-                string defendMsg = attacker.IsBlocking ? " (Blocked!)" : "";
+                string defendMsg = victim.IsBlocking ? " (Blocked!)" : "";
                 string eCritMsg = enemyCombatResult.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
-                _combatLog.AppendText($"\n{eCritMsg}[color=orange]{target.Name}[/color] attacks for {enemyCombatResult.DamageDealt} damage!{defendMsg}");
+                _combatLog.AppendText($"\n{eCritMsg}[color=orange]{enemy.Name}[/color] attacks [color=cyan]{victim.Name}[/color] for {enemyCombatResult.DamageDealt} damage!{defendMsg}");
             }
             else
             {
                 string eMissMsg = enemyCombatResult.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
-                _combatLog.AppendText($"\n{eMissMsg}[color=orange]{target.Name}[/color] attacks but misses!");
+                _combatLog.AppendText($"\n{eMissMsg}[color=orange]{enemy.Name}[/color] attacks [color=cyan]{victim.Name}[/color] but misses!");
             }
 
             await ToSignal(eTween, "finished");
             await ToSignal(GetTree().CreateTimer(0.2), "timeout");
 
             var eReturnTween = GetTree().CreateTween();
-            eReturnTween.TweenProperty(targetSprite, "position", eOriginalPos, 0.15f)
+            eReturnTween.TweenProperty(attackerSprite, "position", eOriginalPos, 0.15f)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
             await ToSignal(eReturnTween, "finished");
-            targetSprite.Play(target.SpriteKey == "hound" ? "idle" : "idle_left");
+            attackerSprite.Play(enemy.SpriteKey == "hound" ? "idle" : "idle_left");
 
-            if (attacker.CurrentHP <= 0)
+            // A fallen party member drops out of the rotation but stays in _party for defeat counting.
+            if (victim.CurrentHP <= 0)
+            {
+                _combatLog.AppendText($"\n[color=gray]{victim.Name} has fallen![/color]");
+                _turnManager.RemoveEntity(victim);
+            }
+
+            if (_battle.IsDefeat())
             {
                 Defeat();
                 return;
             }
-            
+
+            _turnManager.NextTurn();
+            ProcessNextTurn();
+        }
+        finally
+        {
+            _isProcessingTurn = false;
+        }
+    }
+
+    /// <summary>
+    /// Auto-resolves an AI ally's turn: the ally attacks a living enemy chosen by the controller.
+    /// Mirrors the enemy-turn flow (no player input, delegated targeting) but from the party side.
+    /// </summary>
+    private async Task ExecuteAllyTurn(Character ally)
+    {
+        _isProcessingTurn = true;
+        try
+        {
+            if (ally.CurrentHP <= 0)
+            {
+                _turnManager.RemoveEntity(ally);
+                _turnManager.NextTurn();
+                ProcessNextTurn();
+                return;
+            }
+
+            var target = _battle.ChooseAllyAiTarget();
+            if (target == null)
+            {
+                Victory();
+                return;
+            }
+            int targetIndex = _enemies.IndexOf(target);
+            int allyIndex = _party.IndexOf(ally);
+
+            await ToSignal(GetTree().CreateTimer(0.4), "timeout");
+
+            LayeredSprite? allySprite = allyIndex >= 0 && allyIndex < _partySprites.Count ? _partySprites[allyIndex] : null;
+            var originalPos = allySprite?.Position ?? Vector2.Zero;
+            if (allySprite != null)
+            {
+                var lungePos = originalPos + new Vector2(50, 0);
+                var tween = GetTree().CreateTween();
+                tween.TweenProperty(allySprite, "position", lungePos, 0.15f).SetTrans(Tween.TransitionType.Quad)
+                    .SetEase(Tween.EaseType.Out);
+                if (allySprite.HasAnimation("slash_right")) allySprite.Play("slash_right");
+                else if (allySprite.HasAnimation("walk_right")) allySprite.Play("walk_right");
+                await ToSignal(tween, "finished");
+            }
+            await ToSignal(GetTree().CreateTimer(0.3), "timeout");
+
+            var result = _combat.CalculateDamage(ally, target);
+            if (result.IsHit)
+            {
+                target.CurrentHP -= result.DamageDealt;
+                if (targetIndex >= 0 && targetIndex < _enemyHealthBars.Count)
+                    _enemyHealthBars[targetIndex].UpdateValue(target.CurrentHP, (int)target.MaxHP);
+                SyncCombatState();
+
+                string critMsg = result.IsCriticalHit ? "[color=yellow]CRITICAL HIT! [/color]" : "";
+                _combatLog.AppendText($"\n{critMsg}[color=lightgreen]{ally.Name}[/color] strikes {target.Name} for {result.DamageDealt} damage!");
+            }
+            else
+            {
+                string missMsg = result.IsCriticalMiss ? "[color=gray]CRITICAL MISS! [/color]" : "[color=gray]Miss! [/color]";
+                _combatLog.AppendText($"\n{missMsg}[color=lightgreen]{ally.Name}[/color] attacks {target.Name} but misses!");
+            }
+
+            if (allySprite != null)
+            {
+                var returnTween = GetTree().CreateTween();
+                returnTween.TweenProperty(allySprite, "position", originalPos, 0.15f)
+                    .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+                await ToSignal(returnTween, "finished");
+                allySprite.Play("idle_right");
+            }
+
+            var defeatedEnemies = _enemies.Where(e => e.CurrentHP <= 0).ToList();
+            foreach (var defeated in defeatedEnemies)
+            {
+                _combatLog.AppendText($"\n[color=gold]{defeated.Name} is defeated![/color]");
+                _turnManager.RemoveEntity(defeated);
+                _enemies.Remove(defeated);
+            }
+            if (defeatedEnemies.Count > 0)
+            {
+                _selectedEnemyIndex = 0;
+                await UpdateSprites();
+            }
+
+            if (_battle.IsVictory() || _enemies.Count == 0)
+            {
+                Victory();
+                return;
+            }
+
             _turnManager.NextTurn();
             ProcessNextTurn();
         }
