@@ -16,6 +16,7 @@
 - [ ] **Protagonist arc (confirm the default)** — PC (player-created) inherits the amnesiac-hero + Atriartous-prophecy arc; Darius is the companion. *(Assumed; the story's spine — flag if wrong.)*
 - [ ] **Content review** — skim `Darkness.Godot/assets/data/quests/beat_1..beat_10.json`; it's your story, adjust anything off.
 - [ ] **Dialogue structure** — a few beats pack two speakers into one bubble via inline `Darius:`/`Tywin:` prefixes. Keep, or split into one-speaker-per-step?
+- [ ] **Defeat rule** — battles now end in defeat only when the WHOLE party is down (the PC can fall if Darius/Tywin survive, and they fight on). Confirm, or make **PC death = immediate game over**?
 
 ### Monetization / economy (needed for Phase 2)
 - [ ] **Economy numbers** — currency names (soft/hard), IAP tiers & price points, rewarded-ad material grants + daily cap. *(I can draft a proposal for sign-off.)*
@@ -39,8 +40,11 @@
 ### Done
 - [x] **GdUnit4 headless local test loop working** — `scripts/run-godot-tests.sh`, net10.0, 2/2 proven (`845f04919`). I can now compile + scene-test Godot code locally instead of pushing to CI.
 
+### Done (recent)
+- [x] **`BattleScene` multi-party/ally wiring** (`3596eca82`) — `PartyFactory` + `PartyBattleController`; ally-AI turns; compile-verified locally. In-editor visual QA pending.
+
 ### In flight
-- [ ] **`BattleScene` multi-party/ally wiring** — `PartyFactory` (Core, tested) + delegate to `PartyBattleController`; render Darius/Tywin (full-sheet path); de-hardcode `_party[0]`/`_session.CurrentCharacter`; ally-AI turns; **compile-checked locally** before commit.
+- [ ] Talent subclass trees — authoring the 16 trees from `docs/design/talent-subclass-trees.md` (+ tier-3 gate fix).
 
 ### Next
 - [ ] **Extend test harness to real game scenes** — load scenes needing the `/root/Global` autoload (DI + LiteDB + seeders) so BattleScene etc. are scene-testable headless. Deferred in favor of extract-to-Core + compile-check; revisit if scene behavior needs direct coverage.
