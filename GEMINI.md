@@ -77,17 +77,18 @@ After context compaction: trust `.superpowers/sdd/progress.md` and `git log -n 2
 
 # Project Reference
 
-Everything below is the ground truth Jeff enforces on every dispatch. Verified against the repo on 2026-07-17.
+Everything below is the ground truth Jeff enforces on every dispatch. Verified against the repo on 2026-07-18.
 
 ## 1. Overview & Projects
-*Darkness: Reforged* is a cross-platform RPG built on **.NET 10**, hosted in **Godot 4.6.1 (.NET)**, with all game logic in a platform-agnostic core library. Content is **data-driven** — new equipment, quests, encounters, etc. require only JSON edits, no code.
+*Darkness: Reforged* is a cross-platform RPG built on **.NET 10**, hosted in **Godot 4.6.1 (.NET)**, with all game logic in a platform-agnostic core library. Content is **data-driven** — new equipment, quests, encounters, arcs, etc. require only JSON edits, no code. Text is authored **i18n-ready**: display strings resolve through an inline-English fallback so translation catalogs can be added later without code changes (see §5a). The v1 commercial target is **Story-Flow Arc 1 (beats 1–10)** — see `docs/ROADMAP.md`.
 
 | Project | Role |
 |---------|------|
-| **Darkness.Core** | Platform-agnostic business logic. **49 models**, **23 interfaces**, **~20 services + 11 seeders**, combat engine, LiteDB persistence. All game logic lives here. |
-| **Darkness.Godot** | The game host — Godot 4.6.1 (.NET). **23 scenes**, 5 platform service implementations, all rendering/UI/input. |
+| **Darkness.Core** | Platform-agnostic business logic. **50 models**, **24 interfaces**, **21 services + 13 seeders**, combat engine (incl. party/ally combat + localization), LiteDB persistence. All game logic lives here. |
+| **Darkness.Godot** | The game host — Godot 4.6.1 (.NET). **24 scenes**, 5 platform service implementations, all rendering/UI/input. |
 | **Darkness.WebAPI** | ASP.NET Core 10 + EF Core (SQL Server). Currently a stub: `ValuesController` and two EF models (Characters, Users) via `DarknessContext`. Not yet wired into the game. |
-| **Darkness.Tests** | xUnit + Moq. **275 discovered tests across 56 active test files**; 5 legacy files excluded from compilation (they depended on the removed MonoGame project). References Darkness.Core only. |
+| **Darkness.Tests** | xUnit + Moq. **~349 discovered tests** referencing Darkness.Core only. Includes **asserting content audits** (`QuestGraphAudit`, `ArcGraphAudit`, `SheetDefinitionAudit` — `[Trait("Category","Audit")]`) and an opt-in `SpriteSheetGenerator` (`[Trait("Category","Generation")]`, not run in the normal loop). |
+| **Darkness.Godot.Tests** | Local **gdUnit4** C# harness for the Godot layer (headless). Driven by `scripts/run-godot-tests.sh` (needs a Godot 4.6.1 mono binary via `GODOT_BIN`); `scripts/smoke-boot.sh` boots the real project headless to prove DI + all seeders run against authored content. Not part of `Darkness.sln`'s normal xUnit loop. |
 
 **Data flow:** `Godot Scenes → Services (in Core) → LiteDB`.
 
@@ -105,31 +106,37 @@ pwsh build-android.ps1                            # Build the Android APK
 
 ## 3. Architecture & Dependency Injection
 - **DI** is configured in `Darkness.Godot/src/Core/Global.cs` (`_Ready`) using `Microsoft.Extensions.DependencyInjection`. **All services are singletons.** Scenes resolve services via `Global.Services` in `_Ready()`. No `new Service()` — always DI.
-- **Interface-driven:** Core defines **23 interfaces**; Godot provides 5 platform implementations (`GodotNavigationService`, `GodotFileSystemService`, `GodotDispatcherService`, `GodotDialogService`, `SkiaSharpSpriteCompositor`).
-- **Startup seeding:** the 11 seeders run on a background `Task` (so `SplashScene` can await/catch), then `DataValidator.Validate(db)` runs and runtime indexes are created (`characters.UserId`, `quest_states.CharacterId`, `quest_states.Status`). Errors are logged but don't crash startup.
-- **Local data:** LiteDB (embedded, offline). Collections include: `characters`, `users`, `quest_chains`, `quest_states`, `world_flags`, `skills`, `talent_trees`, `items`, `recipes`, `sheet_definitions`, `appearance_options`, `encounter_tables`, plus deathmatch encounters.
+- **Interface-driven:** Core defines **24 interfaces**; Godot provides 5 platform implementations (`GodotNavigationService`, `GodotFileSystemService`, `GodotDispatcherService`, `GodotDialogService`, `SkiaSharpSpriteCompositor`).
+- **Startup seeding:** the **13 seeders** run on a background `Task` (so `SplashScene` can await/catch), then `DataValidator.Validate(db)` runs and runtime indexes are created (`characters.UserId`, `quest_states.CharacterId`, `quest_states.Status`). Errors are logged but don't crash startup.
+- **Local data:** LiteDB (embedded, offline). Collections include: `characters`, `users`, `quest_chains`, `arcs`, `quest_states`, `world_flags`, `skills`, `talent_trees`, `items`, `recipes`, `sheet_definitions`, `appearance_options`, `encounter_tables`, plus deathmatch encounters.
 
-### Core Interfaces (23)
-`IAllyService`, `ICharacterService`, `ICombatService`, `ICraftingService`, `IDeathmatchService`, `IDialogService`, `IDispatcherService`, `IEncounterService`, `IEquipmentService`, `IFileSystemService`, `IGameEngineFactory`, `ILevelingService`, `INavigationService`, `IQuestService`, `IRewardService`, `ISessionService`, `ISettingsService`, `ISheetDefinitionCatalog`, `ISpriteCompositor`, `ITalentService`, `ITriggerService`, `IUserService`, `IWeaponSkillService`. (`LocalDatabaseService` is the concrete LiteDB-access class, also registered as a singleton.)
+### Core Interfaces (24)
+`IAllyService`, `ICharacterService`, `ICombatService`, `ICraftingService`, `IDeathmatchService`, `IDialogService`, `IDispatcherService`, `IEncounterService`, `IEquipmentService`, `IFileSystemService`, `IGameEngineFactory`, `ILevelingService`, `ILocalizationService`, `INavigationService`, `IQuestService`, `IRewardService`, `ISessionService`, `ISettingsService`, `ISheetDefinitionCatalog`, `ISpriteCompositor`, `ITalentService`, `ITriggerService`, `IUserService`, `IWeaponSkillService`. (`LocalDatabaseService` is the concrete LiteDB-access class, also registered as a singleton.)
 
 ## 4. Data-Driven Content & Seeders
-Game content is authored as human-readable JSON in `Darkness.Godot/assets/data/`, loaded into LiteDB at startup. **11 seeders** run in this order (from `Global.cs`), all using the idempotent `DeleteAll()` + re-insert pattern:
+Game content is authored as human-readable JSON in `Darkness.Godot/assets/data/`, loaded into LiteDB (or the in-memory localization store) at startup. **13 seeders** run in this exact order (from `Global.cs`), all using the idempotent `DeleteAll()` + re-insert (or reload) pattern:
 
 | # | Seeder | Content | Seed file(s) |
 |---|--------|---------|--------------|
 | 1 | `SheetDefinitionSeeder` | Equipment sprite layers | `assets/data/sheet_definitions/**` |
 | 2 | `AppearanceSeeder` | Hair/skin/face/eye options | `assets/data/sprite-catalog.json` |
 | 3 | `QuestSeeder` | Quest chains | `assets/data/quests/*.json` |
-| 4 | `LevelSeeder` | XP thresholds (20 levels) | `assets/data/level-table.json` |
-| 5 | `TalentSeeder` | Talent trees | `assets/data/talent-trees.json` |
-| 6 | `SkillSeeder` | Skills | `assets/data/skills.json` |
-| 7 | `RecipeSeeder` | Crafting recipes | `assets/data/recipes.json` |
-| 8 | `ItemSeeder` | Items | `assets/data/items.json` |
-| 9 | `RewardSeeder` | Random rewards | `assets/data/random-rewards.json` |
-| 10 | `EncounterSeeder` | Random-encounter tables | `assets/data/encounters.json` |
-| 11 | `DeathmatchSeeder` | Deathmatch waves | `assets/data/deathmatch-encounters.json` |
+| 4 | `ArcSeeder` | Story arcs (arc → chain mapping) | `assets/data/arcs/*.json` |
+| 5 | `LocalizationSeeder` | i18n catalogs (into `ILocalizationService`, not LiteDB) | `assets/data/i18n/{locale}/*.json` (optional; no-op if absent) |
+| 6 | `LevelSeeder` | XP thresholds (20 levels) | `assets/data/level-table.json` |
+| 7 | `TalentSeeder` | Talent trees | `assets/data/talent-trees.json` |
+| 8 | `SkillSeeder` | Skills | `assets/data/skills.json` |
+| 9 | `RecipeSeeder` | Crafting recipes | `assets/data/recipes.json` |
+| 10 | `ItemSeeder` | Items | `assets/data/items.json` |
+| 11 | `RewardSeeder` | Random rewards | `assets/data/random-rewards.json` |
+| 12 | `EncounterSeeder` | Random-encounter tables | `assets/data/encounters.json` |
+| 13 | `DeathmatchSeeder` | Deathmatch waves | `assets/data/deathmatch-encounters.json` |
 
 (`assets/data/login-calendar.json` also exists for daily login rewards.)
+
+## 5a. Story Arcs & Localization
+- **Arc layer (`Arc` model + `ArcSeeder`):** `Arc` (`Id`, `TitleKey`, `Order`, `Prerequisites` (arc-id DAG), `MainChainIds` (critical-path beats in order), `SideChainIds`) sits atop the quest graph. `QuestChain.ArcId` back-links each chain to its arc (nullable — `null` = un-arced, e.g. `exploration_demo`). v1 ships **`arc_1.json`** ("Darkness: Revenge") whose main line is `beat_1`…`beat_10`. `ArcGraphAudit` asserts bidirectional arc↔chain consistency, DAG-only prerequisites, unique ordering, and reachability.
+- **Localization (`ILocalizationService` / `LocalizationService`):** in-memory `locale → key → value` store. `Resolve(key, fallback?, tokens?)` resolves against the active locale, then `"en"`, then the inline-English `fallback`, then the key literal; applies `{token}` interpolation (e.g. `{playerName}`). **Behavior-neutral by design** — with no catalogs loaded it returns the inline-English fallback, so display sites render identically to today. `LocalizationSeeder` loads `assets/data/i18n/{locale}/*.json` (flat `{key:value}` maps); no directory = no-op. English-only for v1, i18n-ready for later.
 
 ## 5. Sprite Composition Pipeline
 Character appearance is an 11+ layer system composited at runtime:
@@ -141,7 +148,7 @@ Character appearance is an 11+ layer system composited at runtime:
 - **To add equipment:** add a JSON in the right `sheet_definitions/` subfolder. **To add appearance options:** edit `sprite-catalog.json`.
 
 ## 6. Quest System
-- One JSON per chain in `assets/data/quests/` (`beat_1_the_awakening.json` … `beat_9_kyarias_final.json`, plus `exploration_demo.json`), seeded into LiteDB.
+- One JSON per chain in `assets/data/quests/` (`beat_1.json` … `beat_10.json`, plus `exploration_demo.json`), seeded into LiteDB. (The old `beat_*_*.json` long-name files were removed; chains now sit under Arc 1 — see §5a.)
 - **`QuestChain`** → typed **`QuestStep`**s: `dialogue`, `combat`, `location`, `branch`.
 - **`BranchData` / `BranchOption`**: text, next step ID, morality impact, optional `BranchCondition`s (`morality`, `class`, `has_item`, `quest_completed`; operators `>=`, `<=`, `==`, `contains`).
 - **`QuestState`** (LiteDB): per-character, per-chain progress (current step, status `in_progress`/`completed`/`blocked`).
@@ -170,7 +177,9 @@ Character appearance is an 11+ layer system composited at runtime:
 ## 11. D20 Combat
 `CombatEngine` (`ICombatService`): d20 hit roll `+ STR/INT modifier + accuracy` vs AC; **natural 20 = crit** (doubles the damage dice), **natural 1 = miss**; `XdY` dice parser; initiative from DEX modifier. Handles Character↔Enemy, Enemy↔Character, and Character↔Character. Skills apply armor penetration, accuracy %, and damage multiplier; blocking reduces damage (shield 60% / weapon 20% / bare 5%); status effects are resisted via WIS. A `critRoll` seam lets tests force deterministic rolls.
 
-## 12. Scene Flow (23 scenes)
+**Party / ally combat (Core `Logic/`):** `CombatData.Allies` (a `List<EnemySpawn>`) declares AI-controlled party members alongside `Enemies`. `PartyFactory` builds the player-side roster (`PartyBuildResult`: PC first, then allies, plus each ally's render sprite key). `PartyBattleController` runs multi-combatant turn order, tagging each participant `PlayerControlled` / `AiAlly` / `Enemy` so the UI drives the PC and the AI drives the rest. `SkillFilter` holds pure skill-collection helpers (e.g. active vs passive) shared by the Godot UI and tests.
+
+## 12. Scene Flow (24 scenes)
 `SplashScene` (init + DB health check) → `LoadUserScene` → `CreateUserScene` (new user) → `CharactersScene` → **`MainMenuScene` (hub)** → `WorldScene`, `BattleScene`, `StealthScene` (timing-bar minigame, 5 successes / 3 failures), `DeathmatchScene`, `CharacterGenScene` (3-step, live preview), `InventoryScene`, `ForgeScene` (crafting/upgrade/infusion), `SkillsScene`, `TalentTreeScene`, `StudyScene` (stat allocation), `AlliesScene`, `SettingsScene`. `PauseMenu` is available in-game.
 
 - **`GodotNavigationService`**: `INavigationService` via `GetTree().ChangeSceneToFile()` with fade transitions and `IInitializable` parameter injection.
@@ -189,13 +198,28 @@ Character appearance is an 11+ layer system composited at runtime:
 ## 15. Workflow Requirements
 - **Always use superpowers skills** for all work: `brainstorming` before creative/design work, TDD for implementation, `systematic-debugging` for bugs, `writing-plans` for multi-step tasks. Never skip the skill workflow.
 - **Regression testing:** every bug fix MUST add a new regression test in `Darkness.Tests`.
-- **Continuous validation:** run `dotnet test Darkness.Tests -p:ParallelizeTestCollections=false` after every code change.
+- **Continuous validation:** run the test suite after every code change.
 - **All tests must pass before committing.** Never commit with failing tests. If a pre-existing test fails, fix it or explicitly flag it — never ignore it.
+- **Content changes** (quests, arcs, sheet definitions) are guarded by the asserting audits (`[Trait("Category","Audit")]`) — a broken arc/quest graph or sheet definition fails the suite, not just startup logging.
+
+### 15a. Local Dev on WSL / test invocation
+The repo is edited from both Windows and WSL on the same `/mnt/c` (drvfs) working tree, which needs a few workarounds:
+- **LF normalization:** `.gitattributes` forces `eol=lf` for all text (except `*.bat`/`*.cmd` → CRLF; binary assets never diffed). Do not reintroduce CRLF.
+- **Test parallelism:** `Darkness.Tests/xunit.runner.json` sets `parallelizeTestCollections: false` (the shared static `BsonMapper.Global` is not thread-safe). This JSON is the *effective* control — the MSBuild `-p:ParallelizeTestCollections=false` flag does **not** affect xUnit's runtime parallelism.
+- **Build output redirect:** root `Directory.Build.props` redirects `bin`/`obj` to `/tmp/darkness/...` to dodge the drvfs timestamp bug that breaks incremental builds on `/mnt/c`.
+- **Invariant globalization:** run tests / headless Godot with `DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1` (no ICU in the sandbox). Godot host: symlink `Darkness.Godot/.godot` → a `/tmp` path so its cache also avoids drvfs.
+- **Test command (WSL):** `PATH=$HOME/.dotnet:$PATH DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet test Darkness.Tests`.
+- **Godot-layer tests:** `scripts/run-godot-tests.sh` (gdUnit4, needs `GODOT_BIN`) and `scripts/smoke-boot.sh` (headless DI + seeder smoke boot).
+
+### 15b. Docs
+- `docs/ROADMAP.md` — Road to market (v1 = Arc 1, beats 1–10; Android/Play; phasing).
+- `docs/BACKLOG.md` — live action items + open questions for the product owner.
+- `docs/design/` — design specs & briefs (`arc-1-spec.md`, `arc-1-authoring-brief.md`, `arc-content-model.md`, `talent-subclass-trees.md`, `gdunit4-setup.md`, …).
 
 ## 16. Project Conventions
 - .NET 10 with `ImplicitUsings`, `Nullable`, and `TreatWarningsAsErrors` enabled.
 - App identifier: `com.risidian.darkness`.
 - Rendering: `gl_compatibility` mode. Viewport 1280×720, stretch `canvas_items`, pixel snapping enabled.
-- Sprite assets in `assets/sprites/full/` (LPC-based).
-- Seed data in `Darkness.Godot/assets/data/` (sprite-catalog.json, skills.json, talent-trees.json, level-table.json, encounters.json, deathmatch-encounters.json, quests/*.json, recipes.json, items.json, random-rewards.json, login-calendar.json, sheet_definitions/*.json).
+- Sprite assets in `assets/sprites/full/` (LPC-based); the weapon + armor wardrobe (`sheet_definitions/`) has been substantially expanded.
+- Seed data in `Darkness.Godot/assets/data/` (sprite-catalog.json, skills.json, talent-trees.json, level-table.json, encounters.json, deathmatch-encounters.json, quests/*.json, arcs/*.json, recipes.json, items.json, random-rewards.json, login-calendar.json, sheet_definitions/*.json, and optional i18n/{locale}/*.json).
 - Key dependencies: CommunityToolkit.Mvvm 8.4.2, LiteDB 5.0.21, Newtonsoft.Json 13.0.3 (Core); Microsoft.Extensions.DependencyInjection 9.0.2 (Godot); SkiaSharp 3.119.2 (Tests).
