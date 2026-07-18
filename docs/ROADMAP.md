@@ -71,7 +71,11 @@ Everything downstream rides on a stable, tested, automatable base.
 - **Analytics:** Firebase Analytics events/funnels/retention (needed to tune the economy) — none exists today; comes largely for free once the Firebase SDK from Phase 1 is in.
 - **Exit criteria:** validated test purchases, rewarded-ad grants materials, economy dashboards live, balance pass done.
 
-## Phase 3 — Story Content & Expandable Narrative Model (Arc 1, beats 1–10)  *(size: XL — biggest content lift; parallel)*
+## Phase 3 — Story Content & Expandable Narrative Model (Arc 1, beats 1–10)  *(size: XL — biggest content lift; parallel)*  — ✅ FIRST DRAFT DONE (2026-07-18)
+**Done:** expandable `Arc` model + seeders + arc queries + i18n-ready `LocalizationService` (Phases B/C); Arc 1 authored as `beat_1..beat_10.json` + `arcs/arc_1.json` from the `darkness-story` prose (PC-lead + Darius/Tywin allies); graph validation hardened (`QuestGraphAudit` now asserts, new `ArcGraphAudit`). Canon + per-beat brief in `docs/design/arc-1-authoring-brief.md`.
+**Pending product owner:** content review of the beats; canon calls (Araknos bull-vs-spider, Kyarias/KazarthEndGame, Balgathor→Dariartimous, confirm PC-inherits-hero-arc); missing backdrop/sprite art (`cliff`/`road`/`throne_room` + enemy placeholders).
+**Deferred:** i18n key-extraction tool (`LocExtract`) — content is inline English (fallback-safe) until translation is pursued.
+
 The story is written; this phase is about **an authoring pipeline that scales to the whole saga** and then filling Arc 1 to shippable depth.
 - **Expandable content model (do first in this phase):** formalise arc-level organisation on top of the existing data-driven quest chains — an `Arc` grouping (id, title, sort order, prerequisites) so Arcs 1–10 (and beyond) slot in by adding data, not code. The engine already supports this shape (`QuestChain` has `Prerequisites`, `SortOrder`, `IsMainStory`); make it explicit and arc-aware so v1 ships Arc 1 while the model holds all 10 arcs.
 - **Authoring pipeline & tooling:** a repeatable path (schema + validation + the `QuestGraphAudit`/`QuestJsonRoundTrip` tests) so a writer/agent can add a beat as JSON and have it validated automatically. Throughput, not design, is the constraint — the writing exists.
@@ -79,7 +83,9 @@ The story is written; this phase is about **an authoring pipeline that scales to
 - **Bosses:** wire the **12 existing boss sprites** (Tywin, Araknos, Kyarias, etc. — several already named in Story-Flow) into their climactic beats.
 - **Exit criteria:** Arc 1 (all 10 beats) playable end-to-end with branches, bosses, and a satisfying arc; arc/chain model proven expandable by stubbing Arc 2's shell from data alone; QuestGraphAudit green; target playtime met.
 
-## Phase 4 — Systems Depth  *(size: L — high ROI; parallel)*
+## Phase 4 — Systems Depth  *(size: L — high ROI; parallel)*  — 🔶 STARTED (2026-07-18)
+**Done:** weapon wardrobe wired (defs 5→24: swords/staves/ranged) + `SheetDefinitionAudit` (asset paths fail CI); combat **party model** `PartyBattleController` extracted to Core + tested (multi-party, Darius/Tywin allies), `CombatData.Allies` added. **Godot BattleScene multi-party/ally wiring is NOT done** — blocked on the GdUnit4 harness one-time setup so it's verifiable (see `docs/design/gdunit4-setup.md`).
+**Remaining:** armor/legs/off-hand wardrobe batches; talent subclass trees; item/recipe/skill expansion + class tagging; enemy variety; balance pass.
 - **Wardrobe wiring (quick win / highest ROI):** the art is already drawn — expand `sheet_definitions` from 21 pieces toward the full library (9+ sword types, 4 ranged, ~6 staves, extra armor/legs/feet). Mostly JSON authoring; huge perceived depth for the effort.
 - **Talents:** flesh out the 16 stub subclass trees (currently 1 node each) into real trees with prerequisites and effects.
 - **Items/recipes/skills:** grow the item catalogue (29 → shippable), add recipes, tag skills by class (all `ClassRequirement` are null today).
