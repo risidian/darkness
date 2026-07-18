@@ -1,0 +1,36 @@
+# GdUnit4 headless scene tests for Darkness.Godot (C#).
+# SCAFFOLD: manual-trigger only until the one-time local setup lands
+# (see docs/design/gdunit4-setup.md — install addon, add NuGet packages,
+# confirm .NET-10 vs net9 target, first local `dotnet test` green).
+# After that, change `on:` to push/pull_request to gate merges.
+name: Godot Scene Tests
+
+on:
+  workflow_dispatch: {}
+  # push:
+  #   branches: [master]
+  # pull_request:
+  #   branches: [master]
+
+jobs:
+  scene-tests:
+    name: GdUnit4 (headless)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Run GdUnit4 C# scene tests (headless)
+        uses: godot-gdunit-labs/gdUnit4-action@v1
+        with:
+          godot-version: '4.6.1'
+          godot-net: true            # .NET/C# build + tests
+          paths: 'res://test'        # scene-test folder (create in the one-time setup)
+          timeout: 10
+          report-name: godot-scene-test-report
