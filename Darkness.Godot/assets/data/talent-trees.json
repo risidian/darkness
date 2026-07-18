@@ -172,6 +172,50 @@
                                          "Value":  5
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "hk_valor",
+                          "Name":  "Valor",
+                          "Description":  "Righteous conviction increases Attack by 2.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "hk_faith" ],
+                          "Effect":  { "Stat":  "Attack", "Value":  2 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "hk_aegis",
+                          "Name":  "Aegis",
+                          "Description":  "A shield of faith increases Defense by 2.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "hk_faith" ],
+                          "Effect":  { "Stat":  "Defense", "Value":  2 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "hk_holystrike",
+                          "Name":  "Holy Strike",
+                          "Description":  "Unleash a strike of divine light against your foe.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "hk_valor" ],
+                          "Effect":  { "Skill":  "Holy Strike" },
+                          "IsPassive":  false
+                      },
+                      {
+                          "Id":  "hk_paragon",
+                          "Name":  "Paragon",
+                          "Description":  "The paragon of holy virtue increases Constitution by 3.",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "hk_smite" ],
+                          "Effect":  { "Stat":  "Constitution", "Value":  3 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -186,7 +230,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Strength":  20,
-                              "SpentInTree:holy_knight_tree":  20
+                              "SpentInTree:holy_knight_tree":  5
                           },
         "Nodes":  [
                       {
@@ -204,6 +248,61 @@
                                          "Value":  5
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "c_zeal",
+                          "Name":  "Holy Zeal",
+                          "Description":  "Burning zeal increases Attack by 5.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "c_righteousness" ],
+                          "Effect":  { "Stat":  "Attack", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "c_holy_wrath",
+                          "Name":  "Holy Wrath",
+                          "Description":  "Channel divine fury (+10 Holy Damage).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "c_righteousness" ],
+                          "Effect":  { "Stat":  "HolyDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "c_crusade",
+                          "Name":  "Crusade",
+                          "Description":  "Fervor sharpens your strikes (+5 Critical Chance).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "c_zeal" ],
+                          "Effect":  { "Stat":  "CriticalChance", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "c_divine_shield",
+                          "Name":  "Divine Shield",
+                          "Description":  "A shield of light increases Defense by 5.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "c_holy_wrath" ],
+                          "Effect":  { "Stat":  "Defense", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "c_champion",
+                          "Name":  "Champion of the Faith",
+                          "Description":  "The holy champion's might increases Strength by 10.",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "c_crusade", "c_divine_shield" ],
+                          "Effect":  { "Stat":  "Strength", "Value":  10 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -218,7 +317,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Strength":  20,
-                              "SpentInTree:holy_knight_tree":  20
+                              "SpentInTree:holy_knight_tree":  5
                           },
         "Nodes":  [
                       {
@@ -236,6 +335,61 @@
                                          "Value":  5
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ob_dread",
+                          "Name":  "Dread",
+                          "Description":  "Fear-driven ferocity increases Attack by 5.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "ob_darkness" ],
+                          "Effect":  { "Stat":  "Attack", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ob_unholy",
+                          "Name":  "Unholy Might",
+                          "Description":  "Corrupted power increases Critical Damage by 10.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "ob_darkness" ],
+                          "Effect":  { "Stat":  "CriticalDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ob_terror",
+                          "Name":  "Terror",
+                          "Description":  "Strike fear to expose weakness (+5 Critical Chance).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "ob_dread" ],
+                          "Effect":  { "Stat":  "CriticalChance", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ob_leech",
+                          "Name":  "Life Leech",
+                          "Description":  "Drain the life of your foes (+20 Max HP).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "ob_unholy" ],
+                          "Effect":  { "Stat":  "MaxHP", "Value":  20 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ob_deathknight",
+                          "Name":  "Death Knight",
+                          "Description":  "Embrace the fallen oath's power (+10 Strength).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "ob_terror", "ob_leech" ],
+                          "Effect":  { "Stat":  "Strength", "Value":  10 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -249,7 +403,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Constitution":  20,
-                              "SpentInTree:holy_knight_tree":  20
+                              "SpentInTree:holy_knight_tree":  5
                           },
         "Nodes":  [
                       {
@@ -266,6 +420,61 @@
                                          "Stat":  "Constitution",
                                          "Value":  5
                                      },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "kg_bulwark",
+                          "Name":  "Bulwark",
+                          "Description":  "Stand as a living wall (+5 Armor Class).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "kg_loyalty" ],
+                          "Effect":  { "Stat":  "ArmorClass", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "kg_vigilance",
+                          "Name":  "Vigilance",
+                          "Description":  "Ever watchful, increasing Defense by 5.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "kg_loyalty" ],
+                          "Effect":  { "Stat":  "Defense", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "kg_shieldwall",
+                          "Name":  "Shield Wall",
+                          "Description":  "An impenetrable guard (+10 Block).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "kg_bulwark" ],
+                          "Effect":  { "Stat":  "Block", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "kg_resolve",
+                          "Name":  "Resolve",
+                          "Description":  "Unshakable will increases Magic Defense by 5.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "kg_vigilance" ],
+                          "Effect":  { "Stat":  "MagicDefense", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "kg_immortal",
+                          "Name":  "Immortal Guard",
+                          "Description":  "The undying protector's vitality (+10 Constitution).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "kg_shieldwall", "kg_resolve" ],
+                          "Effect":  { "Stat":  "Constitution", "Value":  10 },
                           "IsPassive":  true
                       }
                   ]
@@ -417,6 +626,61 @@
                                          "Value":  2
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "b_frenzy",
+                          "Name":  "Frenzy",
+                          "Description":  "A frenzied assault increases Attack by 3.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "b_bloodlust" ],
+                          "Effect":  { "Stat":  "Attack", "Value":  3 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "b_reckless",
+                          "Name":  "Reckless Abandon",
+                          "Description":  "Fight without caution (+3 Critical Chance).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "b_bloodlust" ],
+                          "Effect":  { "Stat":  "CriticalChance", "Value":  3 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "b_bloodthirst",
+                          "Name":  "Bloodthirst",
+                          "Description":  "Battle sustains you (+2 Constitution).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "b_frenzy" ],
+                          "Effect":  { "Stat":  "Constitution", "Value":  2 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "b_savagery",
+                          "Name":  "Savagery",
+                          "Description":  "Savage blows increase Critical Damage by 5.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "b_reckless" ],
+                          "Effect":  { "Stat":  "CriticalDamage", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "b_unbridled",
+                          "Name":  "Unbridled Fury",
+                          "Description":  "Rage unleashed increases Strength by 3.",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "b_bloodthirst", "b_savagery" ],
+                          "Effect":  { "Stat":  "Strength", "Value":  3 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -430,7 +694,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Constitution":  20,
-                              "SpentInTree:berserker_tree":  20
+                              "SpentInTree:berserker_tree":  5
                           },
         "Nodes":  [
                       {
@@ -448,6 +712,61 @@
                                          "Value":  5
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wl_tactician",
+                          "Name":  "Tactician",
+                          "Description":  "Superior tactics increase Attack by 5.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "wl_leadership" ],
+                          "Effect":  { "Stat":  "Attack", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wl_banner",
+                          "Name":  "War Banner",
+                          "Description":  "Rally under your banner (+25 Max HP).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "wl_leadership" ],
+                          "Effect":  { "Stat":  "MaxHP", "Value":  25 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wl_rally",
+                          "Name":  "Rally",
+                          "Description":  "Steady the line, increasing Defense by 5.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "wl_tactician" ],
+                          "Effect":  { "Stat":  "Defense", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wl_warcry",
+                          "Name":  "War Cry",
+                          "Description":  "A thunderous cry that stuns your enemy.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "wl_banner" ],
+                          "Effect":  { "Skill":  "Stun" },
+                          "IsPassive":  false
+                      },
+                      {
+                          "Id":  "wl_conqueror",
+                          "Name":  "Conqueror",
+                          "Description":  "The unbeaten warlord's vitality (+10 Constitution).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "wl_rally", "wl_warcry" ],
+                          "Effect":  { "Stat":  "Constitution", "Value":  10 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -461,7 +780,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Strength":  25,
-                              "SpentInTree:berserker_tree":  20
+                              "SpentInTree:berserker_tree":  5
                           },
         "Nodes":  [
                       {
@@ -478,6 +797,61 @@
                                          "Stat":  "Strength",
                                          "Value":  10
                                      },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "jn_momentum",
+                          "Name":  "Momentum",
+                          "Description":  "Unstoppable momentum increases Attack by 5.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "jn_unstoppable" ],
+                          "Effect":  { "Stat":  "Attack", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "jn_ironhide",
+                          "Name":  "Iron Hide",
+                          "Description":  "Skin like iron (+5 Armor Class).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "jn_unstoppable" ],
+                          "Effect":  { "Stat":  "ArmorClass", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "jn_crushing",
+                          "Name":  "Crushing Blows",
+                          "Description":  "Overwhelming force increases Critical Damage by 10.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "jn_momentum" ],
+                          "Effect":  { "Stat":  "CriticalDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "jn_fortress",
+                          "Name":  "Fortress",
+                          "Description":  "An immovable fortress (+5 Constitution).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "jn_ironhide" ],
+                          "Effect":  { "Stat":  "Constitution", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "jn_titan",
+                          "Name":  "Titan",
+                          "Description":  "Attain titanic power (+10 Strength).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "jn_crushing", "jn_fortress" ],
+                          "Effect":  { "Stat":  "Strength", "Value":  10 },
                           "IsPassive":  true
                       }
                   ]
@@ -613,6 +987,61 @@
                                          "Value":  2
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wiz_pyromancy",
+                          "Name":  "Pyromancy",
+                          "Description":  "Mastery of flame (+5 Fire Damage).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "wiz_power" ],
+                          "Effect":  { "Stat":  "FireDamage", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wiz_cryomancy",
+                          "Name":  "Cryomancy",
+                          "Description":  "Mastery of frost (+5 Frost Damage).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "wiz_power" ],
+                          "Effect":  { "Stat":  "FrostDamage", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wiz_focus",
+                          "Name":  "Arcane Focus",
+                          "Description":  "Deepen your reserves (+20 Mana).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "wiz_pyromancy" ],
+                          "Effect":  { "Stat":  "Mana", "Value":  20 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wiz_ward",
+                          "Name":  "Arcane Ward",
+                          "Description":  "A protective ward (+3 Magic Defense).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "wiz_cryomancy" ],
+                          "Effect":  { "Stat":  "MagicDefense", "Value":  3 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "wiz_mastery",
+                          "Name":  "Arcane Mastery",
+                          "Description":  "Mastery over the arcane (+3 Intelligence).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "wiz_focus", "wiz_ward" ],
+                          "Effect":  { "Stat":  "Intelligence", "Value":  3 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -626,7 +1055,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Intelligence":  20,
-                              "SpentInTree:wizard_tree":  20
+                              "SpentInTree:wizard_tree":  5
                           },
         "Nodes":  [
                       {
@@ -644,6 +1073,61 @@
                                          "Value":  5
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "am_conflagration",
+                          "Name":  "Conflagration",
+                          "Description":  "Unleash a firestorm (+10 Fire Damage).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "am_eternity" ],
+                          "Effect":  { "Stat":  "FireDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "am_absolute_zero",
+                          "Name":  "Absolute Zero",
+                          "Description":  "Command absolute cold (+10 Frost Damage).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "am_eternity" ],
+                          "Effect":  { "Stat":  "FrostDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "am_manawell",
+                          "Name":  "Mana Well",
+                          "Description":  "A bottomless well of power (+40 Mana).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "am_conflagration" ],
+                          "Effect":  { "Stat":  "Mana", "Value":  40 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "am_spellward",
+                          "Name":  "Spell Ward",
+                          "Description":  "A masterful ward (+5 Magic Defense).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "am_absolute_zero" ],
+                          "Effect":  { "Stat":  "MagicDefense", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "am_transcendence",
+                          "Name":  "Transcendence",
+                          "Description":  "Transcend mortal limits (+10 Intelligence).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "am_manawell", "am_spellward" ],
+                          "Effect":  { "Stat":  "Intelligence", "Value":  10 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -657,7 +1141,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Wisdom":  20,
-                              "SpentInTree:wizard_tree":  20
+                              "SpentInTree:wizard_tree":  5
                           },
         "Nodes":  [
                       {
@@ -674,6 +1158,61 @@
                                          "Stat":  "Wisdom",
                                          "Value":  5
                                      },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "nm_decay",
+                          "Name":  "Decay",
+                          "Description":  "Rot the essence of magic (+5 Magic Defense).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "nm_death" ],
+                          "Effect":  { "Stat":  "MagicDefense", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "nm_soulharvest",
+                          "Name":  "Soul Harvest",
+                          "Description":  "Harvest souls for power (+30 Mana).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "nm_death" ],
+                          "Effect":  { "Stat":  "Mana", "Value":  30 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "nm_bonearmor",
+                          "Name":  "Bone Armor",
+                          "Description":  "Encase yourself in bone (+5 Armor Class).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "nm_decay" ],
+                          "Effect":  { "Stat":  "ArmorClass", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "nm_lifedrain",
+                          "Name":  "Life Drain",
+                          "Description":  "Siphon the living (+30 Max HP).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "nm_soulharvest" ],
+                          "Effect":  { "Stat":  "MaxHP", "Value":  30 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "nm_lichdom",
+                          "Name":  "Lichdom",
+                          "Description":  "Ascend to undeath (+10 Wisdom).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "nm_bonearmor", "nm_lifedrain" ],
+                          "Effect":  { "Stat":  "Wisdom", "Value":  10 },
                           "IsPassive":  true
                       }
                   ]
@@ -792,6 +1331,61 @@
                                          "Value":  2
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "as_precision",
+                          "Name":  "Precision",
+                          "Description":  "Pinpoint accuracy (+10 Accuracy).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "as_lethality" ],
+                          "Effect":  { "Stat":  "Accuracy", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "as_deadly",
+                          "Name":  "Deadly Aim",
+                          "Description":  "Find the vital spot (+3 Critical Chance).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "as_lethality" ],
+                          "Effect":  { "Stat":  "CriticalChance", "Value":  3 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "as_ambush",
+                          "Name":  "Ambush",
+                          "Description":  "A sudden off-hand strike from the shadows.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "as_precision" ],
+                          "Effect":  { "Skill":  "Offhand Stab" },
+                          "IsPassive":  false
+                      },
+                      {
+                          "Id":  "as_venom",
+                          "Name":  "Venom",
+                          "Description":  "Coat your blades in poison (+5 Critical Damage).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "as_deadly" ],
+                          "Effect":  { "Stat":  "CriticalDamage", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "as_killer",
+                          "Name":  "Master Killer",
+                          "Description":  "The perfect assassin (+3 Dexterity).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "as_ambush", "as_venom" ],
+                          "Effect":  { "Stat":  "Dexterity", "Value":  3 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -805,7 +1399,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Dexterity":  20,
-                              "SpentInTree:assassin_tree":  20
+                              "SpentInTree:assassin_tree":  5
                           },
         "Nodes":  [
                       {
@@ -823,6 +1417,61 @@
                                          "Value":  5
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "sb_swiftness",
+                          "Name":  "Swiftness",
+                          "Description":  "Move like the wind (+5 Speed).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "sb_shadows" ],
+                          "Effect":  { "Stat":  "Speed", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "sb_shadowstrike",
+                          "Name":  "Shadow Strike",
+                          "Description":  "Strike from darkness (+10 Critical Damage).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "sb_shadows" ],
+                          "Effect":  { "Stat":  "CriticalDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "sb_evasion",
+                          "Name":  "Evasion",
+                          "Description":  "Slip away from danger (+5 Evasion).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "sb_swiftness" ],
+                          "Effect":  { "Stat":  "Evasion", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "sb_deathmark",
+                          "Name":  "Death Mark",
+                          "Description":  "Mark your prey for death (+5 Critical Chance).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "sb_shadowstrike" ],
+                          "Effect":  { "Stat":  "CriticalChance", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "sb_nightblade",
+                          "Name":  "Nightblade",
+                          "Description":  "The perfect shadow assassin (+10 Dexterity).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "sb_evasion", "sb_deathmark" ],
+                          "Effect":  { "Stat":  "Dexterity", "Value":  10 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -836,7 +1485,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Stealth":  20,
-                              "SpentInTree:assassin_tree":  20
+                              "SpentInTree:assassin_tree":  5
                           },
         "Nodes":  [
                       {
@@ -853,6 +1502,61 @@
                                          "Stat":  "Stealth",
                                          "Value":  10
                                      },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ns_prowl",
+                          "Name":  "Prowl",
+                          "Description":  "Stalk unseen (+5 Evasion).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "ns_night" ],
+                          "Effect":  { "Stat":  "Evasion", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ns_snipe",
+                          "Name":  "Snipe",
+                          "Description":  "A deadly ranged shot from concealment.",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "ns_night" ],
+                          "Effect":  { "Skill":  "Snipe" },
+                          "IsPassive":  false
+                      },
+                      {
+                          "Id":  "ns_shadowstep",
+                          "Name":  "Shadowstep",
+                          "Description":  "Flit between shadows (+5 Speed).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  0,
+                          "PrerequisiteNodeIds":  [ "ns_prowl" ],
+                          "Effect":  { "Stat":  "Speed", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ns_ambush",
+                          "Name":  "Killing Blow",
+                          "Description":  "The perfect ambush (+10 Critical Damage).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "ns_snipe" ],
+                          "Effect":  { "Stat":  "CriticalDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "ns_apex",
+                          "Name":  "Apex Predator",
+                          "Description":  "The ultimate hunter (+10 Dexterity).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "ns_shadowstep", "ns_ambush" ],
+                          "Effect":  { "Stat":  "Dexterity", "Value":  10 },
                           "IsPassive":  true
                       }
                   ]
@@ -987,6 +1691,61 @@
                                          "Value":  2
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "p_mending",
+                          "Name":  "Mending",
+                          "Description":  "Improve your restorative power (+5 Healing).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "p_spirituality" ],
+                          "Effect":  { "Stat":  "Healing", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "p_faithshield",
+                          "Name":  "Faith Shield",
+                          "Description":  "Faith wards off magic (+3 Magic Defense).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "p_spirituality" ],
+                          "Effect":  { "Stat":  "MagicDefense", "Value":  3 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "p_greaterheal",
+                          "Name":  "Greater Heal",
+                          "Description":  "Potent restoration (+10 Healing).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "p_mending" ],
+                          "Effect":  { "Stat":  "Healing", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "p_sanctify",
+                          "Name":  "Sanctify",
+                          "Description":  "Sanctified reserves (+20 Mana).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "p_faithshield" ],
+                          "Effect":  { "Stat":  "Mana", "Value":  20 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "p_saint",
+                          "Name":  "Sainthood",
+                          "Description":  "Attain sainthood (+3 Wisdom).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "p_greaterheal", "p_sanctify" ],
+                          "Effect":  { "Stat":  "Wisdom", "Value":  3 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -1000,7 +1759,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Wisdom":  20,
-                              "SpentInTree:priest_tree":  20
+                              "SpentInTree:priest_tree":  5
                           },
         "Nodes":  [
                       {
@@ -1018,6 +1777,61 @@
                                          "Value":  5
                                      },
                           "IsPassive":  true
+                      },
+                      {
+                          "Id":  "o_foresight",
+                          "Name":  "Foresight",
+                          "Description":  "Foresee attacks (+5 Evasion).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "o_vision" ],
+                          "Effect":  { "Stat":  "Evasion", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "o_prophecy",
+                          "Name":  "Prophecy",
+                          "Description":  "Prophetic wards (+5 Magic Defense).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "o_vision" ],
+                          "Effect":  { "Stat":  "MagicDefense", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "o_renewal",
+                          "Name":  "Renewal",
+                          "Description":  "Renew the wounded (+15 Healing).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "o_foresight" ],
+                          "Effect":  { "Stat":  "Healing", "Value":  15 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "o_clarity",
+                          "Name":  "Clarity",
+                          "Description":  "Perfect clarity of mind (+40 Mana).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "o_prophecy" ],
+                          "Effect":  { "Stat":  "Mana", "Value":  40 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "o_ascension",
+                          "Name":  "Ascension",
+                          "Description":  "Ascend to divine insight (+10 Wisdom).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "o_renewal", "o_clarity" ],
+                          "Effect":  { "Stat":  "Wisdom", "Value":  10 },
+                          "IsPassive":  true
                       }
                   ]
     },
@@ -1031,7 +1845,7 @@
         "Prerequisites":  {
                               "Level":  40,
                               "Strength":  20,
-                              "SpentInTree:priest_tree":  20
+                              "SpentInTree:priest_tree":  5
                           },
         "Nodes":  [
                       {
@@ -1048,6 +1862,61 @@
                                          "Stat":  "Strength",
                                          "Value":  5
                                      },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "in_smite",
+                          "Name":  "Smite",
+                          "Description":  "Smite the wicked (+10 Holy Damage).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "in_zeal" ],
+                          "Effect":  { "Stat":  "HolyDamage", "Value":  10 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "in_judgment",
+                          "Name":  "Judgment",
+                          "Description":  "Pass righteous judgment (+5 Attack).",
+                          "PointsRequired":  1,
+                          "Row":  2,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "in_zeal" ],
+                          "Effect":  { "Stat":  "Attack", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "in_holystrike",
+                          "Name":  "Holy Strike",
+                          "Description":  "Strike down the heretic with holy light.",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  1,
+                          "PrerequisiteNodeIds":  [ "in_smite" ],
+                          "Effect":  { "Skill":  "Holy Strike" },
+                          "IsPassive":  false
+                      },
+                      {
+                          "Id":  "in_purge",
+                          "Name":  "Purge",
+                          "Description":  "Purge with deadly precision (+5 Critical Chance).",
+                          "PointsRequired":  1,
+                          "Row":  3,
+                          "Column":  3,
+                          "PrerequisiteNodeIds":  [ "in_judgment" ],
+                          "Effect":  { "Stat":  "CriticalChance", "Value":  5 },
+                          "IsPassive":  true
+                      },
+                      {
+                          "Id":  "in_grandinquisitor",
+                          "Name":  "Grand Inquisitor",
+                          "Description":  "The scourge of heresy (+10 Strength).",
+                          "PointsRequired":  1,
+                          "Row":  4,
+                          "Column":  2,
+                          "PrerequisiteNodeIds":  [ "in_holystrike", "in_purge" ],
+                          "Effect":  { "Stat":  "Strength", "Value":  10 },
                           "IsPassive":  true
                       }
                   ]
