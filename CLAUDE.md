@@ -88,7 +88,7 @@ Everything below is the ground truth Jeff enforces on every dispatch. Verified a
 | **Darkness.Godot** | The game host — Godot 4.6.1 (.NET). **24 scenes**, 5 platform service implementations, all rendering/UI/input. |
 | **Darkness.WebAPI** | ASP.NET Core 10 + EF Core (SQL Server). Currently a stub: `ValuesController` and two EF models (Characters, Users) via `DarknessContext`. Not yet wired into the game. |
 | **Darkness.Tests** | xUnit + Moq. **~349 discovered tests** referencing Darkness.Core only. Includes **asserting content audits** (`QuestGraphAudit`, `ArcGraphAudit`, `SheetDefinitionAudit` — `[Trait("Category","Audit")]`) and an opt-in `SpriteSheetGenerator` (`[Trait("Category","Generation")]`, not run in the normal loop). |
-| **Darkness.Godot.Tests** | Local **gdUnit4** C# harness for the Godot layer (headless). Driven by `scripts/run-godot-tests.sh` (needs a Godot 4.6.1 mono binary via `GODOT_BIN`); `scripts/smoke-boot.sh` boots the real project headless to prove DI + all seeders run against authored content. Not part of `Darkness.sln`'s normal xUnit loop. |
+| **Darkness.Godot.Tests** | Local **gdUnit4** C# harness for the Godot layer (headless). Driven by `scripts/run-godot-tests.sh` (auto-downloads + caches Godot 4.6.1-mono on first run via `scripts/fetch-godot.sh`; override with `GODOT_BIN`); `scripts/smoke-boot.sh` boots the real project headless to prove DI + all seeders run against authored content. Not part of `Darkness.sln`'s normal xUnit loop. |
 
 **Data flow:** `Godot Scenes → Services (in Core) → LiteDB`.
 
@@ -209,7 +209,7 @@ The repo is edited from both Windows and WSL on the same `/mnt/c` (drvfs) workin
 - **Build output redirect:** root `Directory.Build.props` redirects `bin`/`obj` to `/tmp/darkness/...` to dodge the drvfs timestamp bug that breaks incremental builds on `/mnt/c`.
 - **Invariant globalization:** run tests / headless Godot with `DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1` (no ICU in the sandbox). Godot host: symlink `Darkness.Godot/.godot` → a `/tmp` path so its cache also avoids drvfs.
 - **Test command (WSL):** `PATH=$HOME/.dotnet:$PATH DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 dotnet test Darkness.Tests`.
-- **Godot-layer tests:** `scripts/run-godot-tests.sh` (gdUnit4, needs `GODOT_BIN`) and `scripts/smoke-boot.sh` (headless DI + seeder smoke boot).
+- **Godot-layer tests (turnkey, no setup):** `scripts/run-godot-tests.sh` (gdUnit4) and `scripts/smoke-boot.sh` (headless DI + seeder smoke boot) — both auto-download + cache Godot 4.6.1-mono on first run (`scripts/fetch-godot.sh`; ~97MB → `~/.cache`, not the repo). Override with `GODOT_BIN`.
 
 ### 15b. Docs
 - `docs/ROADMAP.md` — Road to market (v1 = Arc 1, beats 1–10; Android/Play; phasing).

@@ -1,15 +1,31 @@
 # GdUnit4 Scene-Test Harness — Setup & Workflow
 
-Godot scene/integration tests for `Darkness.Godot` (C#), run **headless in CI** so they're
-verifiable without a local editor. Complements the "humble object" extraction pattern
-(logic lives in `Darkness.Core`, unit-tested by `Darkness.Tests`); GdUnit4 covers what
-extraction can't — real scene wiring, node lifecycle, input, rendering.
+Godot scene/integration tests for `Darkness.Godot` (C#), run **headless**. Complements the
+"humble object" extraction pattern (logic lives in `Darkness.Core`, unit-tested by
+`Darkness.Tests`); GdUnit4 covers what extraction can't — real scene wiring, node lifecycle,
+input, rendering.
 
 Ref: <https://github.com/godot-gdunit-labs/gdUnit4> · docs <https://godot-gdunit-labs.github.io/gdUnit4/latest/> · CI action <https://github.com/godot-gdunit-labs/gdUnit4-action>
 
-## Division of labor
-- **CI is the AI's execution loop:** tests are written in-repo, pushed, and run headless by `gdUnit4-action`; results come back in the Actions log. No local Godot needed to *read* results.
-- **One-time setup needs the Godot editor** (engine-dependent), so it's a human step (below).
+## ✅ IMPLEMENTED — run it turnkey (no editor, no manual setup)
+The harness is committed: addon vendored at `Darkness.Godot/addons/gdUnit4`, test project `Darkness.Godot.Tests/`, net10.0, plugin enabled in `project.godot`. To run the Godot-layer tests headless from a clean machine:
+
+```bash
+./scripts/run-godot-tests.sh     # gdUnit4 scene/unit tests
+./scripts/smoke-boot.sh          # boots the real game headless; asserts DI + all seeders run
+```
+
+Both scripts **auto-download + cache Godot 4.6.1-mono on first run** via `scripts/fetch-godot.sh`
+(~97MB → `~/.cache/darkness/godot`, NOT committed — the mono runtime is 213MB, over GitHub's
+100MB limit). Override the engine with `GODOT_BIN=/path/to/godot_mono`. Linux/WSL auto-download;
+on macOS/Windows set `GODOT_BIN` yourself (or run from the editor). The scripts also handle the
+WSL drvfs quirks (`.godot`→`/tmp` symlink, invariant globalization).
+
+CI (`.github/workflows/godot-tests.yml`, `gdUnit4-action`) is a **bonus** path, still manual-trigger
+until validated — local is the primary loop now.
+
+## Original setup notes (historical — already done above)
+The addon + packages below are already installed/committed; kept for reference / re-provisioning.
 
 ## One-time setup (needs Godot 4.6.1-mono editor) — human step
 1. **Install the addon:** Godot editor → AssetLib → search **"GdUnit4"** (asset id 1522) → install into `addons/gdUnit4/`. Enable it in Project Settings → Plugins. Commit `addons/gdUnit4/`.

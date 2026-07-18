@@ -41,13 +41,11 @@ export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT="${DOTNET_SYSTEM_GLOBALIZATION_INVA
 QUIT_AFTER="${QUIT_AFTER:-1200}"
 BOOT_LOG="$(mktemp -t darkness-smoke-boot.XXXXXX.log)"
 
-# --- Godot binary -------------------------------------------------------------
-export GODOT_BIN="${GODOT_BIN:-/tmp/godot-mono/Godot_v4.6.1-stable_mono_linux_x86_64/Godot_v4.6.1-stable_mono_linux.x86_64}"
-if [ ! -x "$GODOT_BIN" ]; then
-    echo "ERROR: GODOT_BIN is not an executable file: $GODOT_BIN" >&2
-    echo "       Set GODOT_BIN to a Godot 4.6.1 mono binary and re-run." >&2
-    exit 1
+# --- Godot binary (auto-downloads + caches Godot 4.6.1-mono on first use) ------
+if [ -z "${GODOT_BIN:-}" ] || [ ! -x "${GODOT_BIN:-}" ]; then
+    GODOT_BIN="$(bash "$(dirname "$0")/fetch-godot.sh")"
 fi
+export GODOT_BIN
 echo "GODOT_BIN = $GODOT_BIN"
 "$GODOT_BIN" --headless --version
 
