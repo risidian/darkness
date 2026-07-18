@@ -45,7 +45,7 @@
 
 ### Content & systems depth (Phase 4)
 - [ ] Wardrobe batches: armor/legs/off-hand staves/shields (weapons done).
-- [ ] Talent subclass trees — flesh out the 16 one-node stubs.
+- [ ] Talent subclass trees — flesh out the 16 one-node stubs. **Design ready** → `docs/design/talent-subclass-trees.md`. Includes a pre-existing fix: lower tier-3 `SpentInTree` gate 20→5 (else subclass end-game trees are unreachable). Flavor stat keys (HolyDamage/Healing/etc.) still not wired into formulas — separate item.
 - [ ] Items/recipes/skills expansion + tag skills by class (all `ClassRequirement` null today).
 - [ ] Enemy variety + combat balance pass (leverage `CombatSim`).
 - [ ] Author real content for placeholder-heavy beats once art/canon land.
