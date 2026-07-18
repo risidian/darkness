@@ -1,0 +1,170 @@
+{
+  "Id": "beat_1",
+  "Title": "The Awakening",
+  "IsMainStory": true,
+  "SortOrder": 1,
+  "ArcId": "arc_1",
+  "Prerequisites": [],
+  "Steps": [
+    {
+      "Id": "beat_1_wake",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_1_darius",
+      "Visuals": {
+        "BackgroundKey": "camelot_shore",
+        "GroundColor": "#C2B280",
+        "WaterColor": "#4a5a68",
+        "PlayerPositionX": 300,
+        "PlayerPositionY": 560
+      },
+      "Dialogue": {
+        "Speaker": "Narrator",
+        "Lines": [
+          "Grey sky. Cold sand. The taste of salt and copper.",
+          "No name. No memory of the sea. Only a hollow where something should have been.",
+          "The wreckage of a ship litters the shore. The drowned crew lie where the tide left them."
+        ]
+      }
+    },
+    {
+      "Id": "beat_1_darius",
+      "Type": "dialogue",
+      "NextStepId": "beat_1_bria",
+      "Visuals": {
+        "BackgroundKey": "camelot_shore",
+        "GroundColor": "#C2B280",
+        "WaterColor": "#4a5a68",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 520
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "You're breathing. Good.",
+          "That makes two of us the sea didn't want."
+        ]
+      }
+    },
+    {
+      "Id": "beat_1_bria",
+      "Type": "dialogue",
+      "NextStepId": "beat_1_choice",
+      "Visuals": {
+        "BackgroundKey": "camelot_shore",
+        "GroundColor": "#C2B280",
+        "WaterColor": "#4a5a68",
+        "Npc": {
+          "Name": "Bria",
+          "PositionX": 620,
+          "PositionY": 260,
+          "Appearance": {
+            "HairStyle": "Long",
+            "HairColor": "#7a6a55",
+            "SkinColor": "Light",
+            "Head": "Human Female",
+            "Face": "Old",
+            "ArmorType": "None",
+            "Legs": "Skirt",
+            "Feet": "Shoes"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Bria",
+        "Lines": [
+          "This is the Shore of Camelot. You came in with the wreckage, {playerName} - and the dead.",
+          "The pale arches up the rise are the old Colosseum ruins. My roof. Broth and bandages, if you can walk to them.",
+          "But the road there is not clean. Something has been coming down off the cliffs at dusk."
+        ]
+      }
+    },
+    {
+      "Id": "beat_1_choice",
+      "Type": "branch",
+      "AutoTransition": false,
+      "Visuals": {
+        "BackgroundKey": "camelot_shore",
+        "GroundColor": "#C2B280",
+        "WaterColor": "#4a5a68",
+        "Npc": {
+          "Name": "Bria",
+          "PositionX": 620,
+          "PositionY": 260,
+          "Appearance": {
+            "HairStyle": "Long",
+            "HairColor": "#7a6a55",
+            "SkinColor": "Light",
+            "Head": "Human Female",
+            "Face": "Old",
+            "ArmorType": "None",
+            "Legs": "Skirt",
+            "Feet": "Shoes"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Bria",
+        "Lines": [
+          "So. How do you mean to reach my door, {playerName}?"
+        ]
+      },
+      "Branch": {
+        "Options": [
+          { "Text": "[Fight] Head-on. Whatever comes, I put it down.", "NextStepId": "beat_1_resolve_fight", "MoralityImpact": 5 },
+          { "Text": "[Sneak] Quietly. No sense feeding the dark.", "NextStepId": "beat_1_resolve_sneak", "MoralityImpact": -5 }
+        ]
+      }
+    },
+    {
+      "Id": "beat_1_resolve_fight",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "camelot_shore",
+        "GroundColor": "#C2B280",
+        "WaterColor": "#4a5a68",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 520
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "Head-on, then.",
+          "I'll be on your right.",
+          "Try to keep up."
+        ]
+      }
+    },
+    {
+      "Id": "beat_1_resolve_sneak",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "camelot_shore",
+        "GroundColor": "#C2B280",
+        "WaterColor": "#4a5a68",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 520
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "Quiet works too.",
+          "Stay low. Stay behind me.",
+          "It finds us anyway. It always does."
+        ]
+      }
+    }
+  ]
+}

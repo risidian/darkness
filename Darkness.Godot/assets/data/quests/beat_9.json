@@ -1,0 +1,117 @@
+{
+  "Id": "beat_9",
+  "Title": "Joint Forces",
+  "IsMainStory": true,
+  "SortOrder": 9,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_8"],
+  "Steps": [
+    {
+      "Id": "beat_9_join",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_9_demon",
+      "Visuals": {
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a2e26",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 500,
+          "PositionY": 320
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "Two swords are better than one, my good sir.",
+          "And I'll be honest - I'd prefer not to die alone.",
+          "Whatever that is on the ridge, it's ours now. Together."
+        ]
+      }
+    },
+    {
+      "Id": "beat_9_demon",
+      "Type": "dialogue",
+      "NextStepId": "beat_9_plan",
+      "Visuals": {
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a2e26",
+        "Npc": {
+          "Name": "Araknos",
+          "SpriteKey": "bosses/Raknith",
+          "PositionX": 660,
+          "PositionY": 260
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Araknos",
+        "Lines": [
+          "Thirteen feet of horn and hate, and it smells you on the wind.",
+          "Ember eyes. A greataxe the size of a door. A hide that has turned every blade ever raised against it.",
+          "It does not speak. It only lowers its horns."
+        ]
+      }
+    },
+    {
+      "Id": "beat_9_plan",
+      "Type": "dialogue",
+      "NextStepId": "beat_9_combat",
+      "Visuals": {
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a2e26",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 500,
+          "PositionY": 320
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "Its hide turns steel - go for the joints! The legs, {playerName}, buy Darius the opening!",
+          "Darius: The head. Get me to the head.",
+          "Tywin: Then keep it looking at me. NOW - KILL IT!"
+        ]
+      }
+    },
+    {
+      "Id": "beat_9_combat",
+      "Type": "combat",
+      "NextStepId": "beat_9_after",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Araknos", "Level": 10, "MaxHP": 620, "CurrentHP": 620, "Attack": 22, "Defense": 18, "Speed": 14, "SpriteKey": "bosses/Raknith", "ExperienceReward": 2000, "GoldReward": 40 }
+        ],
+        "Allies": [
+          { "Name": "Darius", "Level": 9, "MaxHP": 150, "CurrentHP": 150, "Attack": 24, "Defense": 12, "Speed": 15, "SpriteKey": "bosses/Darius" },
+          { "Name": "Tywin", "Level": 9, "MaxHP": 140, "CurrentHP": 140, "Attack": 20, "Defense": 16, "Speed": 17, "SpriteKey": "bosses/Tywin" }
+        ],
+        "BackgroundKey": "cliff"
+      }
+    },
+    {
+      "Id": "beat_9_after",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a2e26",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 500,
+          "PositionY": 320
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "The axe goes over the cliff. Good riddance. That was messy.",
+          "Still glad you didn't want to die alone, my good sir?",
+          "...For now."
+        ]
+      }
+    }
+  ]
+}

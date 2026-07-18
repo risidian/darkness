@@ -1,0 +1,135 @@
+{
+  "Id": "beat_7",
+  "Title": "Journey Begins",
+  "IsMainStory": true,
+  "SortOrder": 7,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_6"],
+  "Steps": [
+    {
+      "Id": "beat_7_scout",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_7_choice",
+      "Visuals": {
+        "BackgroundKey": "forest",
+        "GroundColor": "#2d4c1e",
+        "Npc": {
+          "Name": "Scout",
+          "PositionX": 450,
+          "PositionY": 220,
+          "Appearance": {
+            "HairStyle": "Short",
+            "HairColor": "#221100",
+            "SkinColor": "Tan",
+            "Head": "Human Male",
+            "Face": "Default",
+            "ArmorType": "Leather",
+            "Legs": "Pants",
+            "Feet": "Boots"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Scout",
+        "Lines": [
+          "Don't go on - the woods are crawling. They've set a trap.",
+          "Six of them, at least. Goblins, but wrong. Hungry the way the fog is hungry.",
+          "There's a game trail east if you want to slip past. Your call, strangers."
+        ]
+      }
+    },
+    {
+      "Id": "beat_7_choice",
+      "Type": "branch",
+      "AutoTransition": false,
+      "Visuals": {
+        "BackgroundKey": "forest",
+        "GroundColor": "#2d4c1e",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "Six of them. They think numbers are enough.",
+          "Trail, or teeth. Say the word."
+        ]
+      },
+      "Branch": {
+        "Options": [
+          { "Text": "Take the trail. Hit them from where they aren't looking.", "NextStepId": "beat_7_flank", "MoralityImpact": 0 },
+          { "Text": "Straight through. Let them come.", "NextStepId": "beat_7_charge", "MoralityImpact": 0 }
+        ]
+      }
+    },
+    {
+      "Id": "beat_7_flank",
+      "Type": "dialogue",
+      "NextStepId": "beat_7_combat",
+      "Visuals": {
+        "BackgroundKey": "forest",
+        "GroundColor": "#2d4c1e",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "Smart.",
+          "We take the trail. They'll never hear us.",
+          "Then they hear everything at once."
+        ]
+      }
+    },
+    {
+      "Id": "beat_7_charge",
+      "Type": "dialogue",
+      "NextStepId": "beat_7_combat",
+      "Visuals": {
+        "BackgroundKey": "forest",
+        "GroundColor": "#2d4c1e",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "The world's feeling thin.",
+          "Everything hungry crawls out of it.",
+          "So we make more room. Go."
+        ]
+      }
+    },
+    {
+      "Id": "beat_7_combat",
+      "Type": "combat",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Goblin Raider", "Level": 5, "MaxHP": 70, "CurrentHP": 70, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "goblin", "SpriteOffsetX": -40, "ExperienceReward": 180, "GoldReward": 4 },
+          { "Name": "Goblin Raider", "Level": 5, "MaxHP": 70, "CurrentHP": 70, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "goblin", "SpriteOffsetX": 0, "ExperienceReward": 180, "GoldReward": 4 },
+          { "Name": "Goblin Raider", "Level": 5, "MaxHP": 70, "CurrentHP": 70, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "goblin", "SpriteOffsetX": 40, "ExperienceReward": 180, "GoldReward": 4 },
+          { "Name": "Goblin Archer", "Level": 5, "MaxHP": 52, "CurrentHP": 52, "Attack": 14, "Defense": 4, "Speed": 18, "SpriteKey": "goblin", "SpriteOffsetX": -60, "SpriteOffsetY": -30, "ExperienceReward": 180, "GoldReward": 5 },
+          { "Name": "Goblin Archer", "Level": 5, "MaxHP": 52, "CurrentHP": 52, "Attack": 14, "Defense": 4, "Speed": 18, "SpriteKey": "goblin", "SpriteOffsetX": 60, "SpriteOffsetY": -30, "ExperienceReward": 180, "GoldReward": 5 },
+          { "Name": "Goblin Warleader", "Level": 6, "MaxHP": 95, "CurrentHP": 95, "Attack": 15, "Defense": 8, "Speed": 16, "SpriteKey": "goblin", "SpriteOffsetX": 0, "SpriteOffsetY": 30, "ExperienceReward": 260, "GoldReward": 10 }
+        ],
+        "Allies": [
+          { "Name": "Darius", "Level": 6, "MaxHP": 95, "CurrentHP": 95, "Attack": 16, "Defense": 9, "Speed": 14, "SpriteKey": "bosses/Darius" }
+        ],
+        "BackgroundKey": "forest"
+      }
+    }
+  ]
+}

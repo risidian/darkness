@@ -1,0 +1,143 @@
+{
+  "Id": "beat_5",
+  "Title": "The Sorcerer",
+  "IsMainStory": true,
+  "SortOrder": 5,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_4"],
+  "Steps": [
+    {
+      "Id": "beat_5_intro",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_5_choice",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#4a4438",
+        "Npc": {
+          "Name": "Risidian",
+          "SpriteKey": "bosses/Risidian",
+          "PositionX": 620,
+          "PositionY": 260
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Risidian",
+        "Lines": [
+          "Twice now you've crept up on me. Bold. Or stupid.",
+          "You wish to harm me? Whatever for?",
+          "Speak plainly. I have little patience and less time."
+        ]
+      }
+    },
+    {
+      "Id": "beat_5_choice",
+      "Type": "branch",
+      "AutoTransition": false,
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#4a4438",
+        "Npc": {
+          "Name": "Risidian",
+          "SpriteKey": "bosses/Risidian",
+          "PositionX": 620,
+          "PositionY": 260
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Risidian",
+        "Lines": [
+          "Well? What is it you seek?"
+        ]
+      },
+      "Branch": {
+        "Options": [
+          { "Text": "The tower has poisoned this land. Help us end it.", "NextStepId": "beat_5_plead", "MoralityImpact": 5 },
+          { "Text": "Power. Enough to destroy the Black Knight.", "NextStepId": "beat_5_demand", "MoralityImpact": -5 }
+        ]
+      }
+    },
+    {
+      "Id": "beat_5_plead",
+      "Type": "dialogue",
+      "NextStepId": "beat_5_combat",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#4a4438",
+        "Npc": {
+          "Name": "Risidian",
+          "SpriteKey": "bosses/Risidian",
+          "PositionX": 620,
+          "PositionY": 260
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Risidian",
+        "Lines": [
+          "The land. How very noble.",
+          "Nobility is a fine word for a corpse. Still - let us see if your arm is worth your tongue.",
+          "Raise your blade, then. I'll not make it gentle."
+        ]
+      }
+    },
+    {
+      "Id": "beat_5_demand",
+      "Type": "dialogue",
+      "NextStepId": "beat_5_combat",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#4a4438",
+        "Npc": {
+          "Name": "Risidian",
+          "SpriteKey": "bosses/Risidian",
+          "PositionX": 620,
+          "PositionY": 260
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Risidian",
+        "Lines": [
+          "Power. Of course.",
+          "That? You won't find it here. Move on.",
+          "But you won't, will you. Very well. Take it from me if you can."
+        ]
+      }
+    },
+    {
+      "Id": "beat_5_combat",
+      "Type": "combat",
+      "NextStepId": "beat_5_depart",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Risidian", "Level": 8, "MaxHP": 130, "CurrentHP": 130, "Attack": 20, "Defense": 8, "Speed": 20, "SpriteKey": "bosses/Risidian", "ExperienceReward": 1000, "GoldReward": 25 }
+        ],
+        "Allies": [
+          { "Name": "Darius", "Level": 5, "MaxHP": 80, "CurrentHP": 80, "Attack": 14, "Defense": 8, "Speed": 13, "SpriteKey": "bosses/Darius" }
+        ],
+        "BackgroundKey": "dark_castle"
+      }
+    },
+    {
+      "Id": "beat_5_depart",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#4a4438",
+        "Npc": {
+          "Name": "Risidian",
+          "SpriteKey": "bosses/Risidian",
+          "PositionX": 620,
+          "PositionY": 260
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Risidian",
+        "Lines": [
+          "Enough. You have earned a truth, if not my aid.",
+          "What you hunt is no knight. It is older than the tower it sits in, and it knows your face, {playerName}.",
+          "Go north. And do try to be worth the trouble you have cost me."
+        ]
+      }
+    }
+  ]
+}

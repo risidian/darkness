@@ -1,0 +1,113 @@
+{
+  "Id": "beat_2",
+  "Title": "The Tavern",
+  "IsMainStory": true,
+  "SortOrder": 2,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_1"],
+  "Steps": [
+    {
+      "Id": "beat_2_enter",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_2_world",
+      "Visuals": {
+        "BackgroundKey": "tavern",
+        "GroundColor": "#4a2e19",
+        "Npc": {
+          "Name": "Bria",
+          "PositionX": 560,
+          "PositionY": 260,
+          "Appearance": {
+            "HairStyle": "Long",
+            "HairColor": "#7a6a55",
+            "SkinColor": "Light",
+            "Head": "Human Female",
+            "Face": "Old",
+            "ArmorType": "None",
+            "Legs": "Skirt",
+            "Feet": "Shoes"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Bria",
+        "Lines": [
+          "In. Sit. You've the look of the drowned about you, {playerName} - sit before you fall.",
+          "This is what's left of the Rusty Tankard. Half a roof and honest broth. It has kept better folk than you alive.",
+          "Burgh will see to your friend's cuts. Eat first. Questions after."
+        ]
+      }
+    },
+    {
+      "Id": "beat_2_world",
+      "Type": "dialogue",
+      "NextStepId": "beat_2_darius",
+      "Visuals": {
+        "BackgroundKey": "tavern",
+        "GroundColor": "#4a2e19",
+        "Npc": {
+          "Name": "Bria",
+          "PositionX": 560,
+          "PositionY": 260,
+          "Appearance": {
+            "HairStyle": "Long",
+            "HairColor": "#7a6a55",
+            "SkinColor": "Light",
+            "Head": "Human Female",
+            "Face": "Old",
+            "ArmorType": "None",
+            "Legs": "Skirt",
+            "Feet": "Shoes"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Bria",
+        "Lines": [
+          "The dusk comes wrong now. Fog off the sea before the sun's even down.",
+          "The shadows are bolder every night. Folk who walk the roads don't come back the same - if they come back.",
+          "It started when the black tower rose in the north. Old men say a name for what sits in it. I won't say it under my own roof."
+        ]
+      }
+    },
+    {
+      "Id": "beat_2_darius",
+      "Type": "dialogue",
+      "NextStepId": "beat_2_rest",
+      "Visuals": {
+        "BackgroundKey": "tavern",
+        "GroundColor": "#4a2e19",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 540,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "We rest. We eat.",
+          "Then we find whatever did this."
+        ]
+      }
+    },
+    {
+      "Id": "beat_2_rest",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "tavern",
+        "GroundColor": "#4a2e19"
+      },
+      "Dialogue": {
+        "Speaker": "Narrator",
+        "Lines": [
+          "You sleep. For the first time since the sea, the hollow inside you is quiet.",
+          "Wounds close. Strength returns.",
+          "At first light, the fog is already at the door. The road north is waiting."
+        ]
+      }
+    }
+  ]
+}

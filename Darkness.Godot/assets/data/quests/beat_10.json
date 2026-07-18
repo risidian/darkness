@@ -1,0 +1,123 @@
+{
+  "Id": "beat_10",
+  "Title": "The Undead Army",
+  "IsMainStory": true,
+  "SortOrder": 10,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_9"],
+  "Steps": [
+    {
+      "Id": "beat_10_arrival",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_10_kyarias",
+      "Visuals": {
+        "BackgroundKey": "throne_room",
+        "GroundColor": "#2b2b2b",
+        "PlayerPositionX": 200,
+        "PlayerPositionY": 560
+      },
+      "Dialogue": {
+        "Speaker": "Narrator",
+        "Lines": [
+          "The plain before the tower is not empty. It is standing.",
+          "Skeletons in rusted mail. Bloated dead that were farmers a season ago. Row upon row, and at their head, a crown of bone.",
+          "This is the dominion Daverak promised. This is who keeps it."
+        ]
+      }
+    },
+    {
+      "Id": "beat_10_kyarias",
+      "Type": "dialogue",
+      "NextStepId": "beat_10_party",
+      "Visuals": {
+        "BackgroundKey": "throne_room",
+        "GroundColor": "#2b2b2b",
+        "Npc": {
+          "Name": "Kyarias",
+          "SpriteKey": "bosses/KazarthEndGame",
+          "PositionX": 640,
+          "PositionY": 220
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Kyarias",
+        "Lines": [
+          "The little ant has reached the throne. All games end.",
+          "I am Kyarias. My lord Daverak keeps the tower; I keep the ground before it, and everything under it.",
+          "Every soul that falls joins my ranks. Yours will make fine additions."
+        ]
+      }
+    },
+    {
+      "Id": "beat_10_party",
+      "Type": "dialogue",
+      "NextStepId": "beat_10_combat",
+      "Visuals": {
+        "BackgroundKey": "throne_room",
+        "GroundColor": "#2b2b2b",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 500,
+          "PositionY": 320
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "That's a great many of them, my good sir.",
+          "Darius: Then we make it a great many fewer.",
+          "Tywin: ...I do like a man with a plan. Shoulder to shoulder, {playerName}."
+        ]
+      }
+    },
+    {
+      "Id": "beat_10_combat",
+      "Type": "combat",
+      "NextStepId": "beat_10_victory",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Kyarias", "Level": 15, "MaxHP": 1000, "CurrentHP": 1000, "Attack": 25, "Defense": 20, "Speed": 35, "SpriteKey": "bosses/KazarthEndGame", "ExperienceReward": 3000, "GoldReward": 100 },
+          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": -80, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
+          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": -40, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
+          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": 0, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
+          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": 40, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
+          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": 80, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
+          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": -80, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
+          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": -40, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
+          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": 0, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
+          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": 40, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
+          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": 80, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 }
+        ],
+        "Allies": [
+          { "Name": "Darius", "Level": 12, "MaxHP": 200, "CurrentHP": 200, "Attack": 30, "Defense": 15, "Speed": 16, "SpriteKey": "bosses/Darius" },
+          { "Name": "Tywin", "Level": 12, "MaxHP": 185, "CurrentHP": 185, "Attack": 26, "Defense": 20, "Speed": 18, "SpriteKey": "bosses/Tywin" }
+        ],
+        "BackgroundKey": "throne_room"
+      }
+    },
+    {
+      "Id": "beat_10_victory",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "throne_room",
+        "GroundColor": "#2b2b2b",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 320
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "The crown of bone goes still. The army with it. Ash on the wind, like the hounds on the shore.",
+          "The tower is still standing, {playerName}. This was the gate. Not the throne.",
+          "You spoke a name in your sleep once. I think the thing in that tower knows it. I think, soon, so will you."
+        ]
+      }
+    }
+  ]
+}

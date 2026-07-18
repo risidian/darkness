@@ -1,0 +1,143 @@
+{
+  "Id": "beat_8",
+  "Title": "The Knight",
+  "IsMainStory": true,
+  "SortOrder": 8,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_7"],
+  "Steps": [
+    {
+      "Id": "beat_8_halt",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_8_choice",
+      "Visuals": {
+        "BackgroundKey": "road",
+        "GroundColor": "#555555",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 620,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "Halt. These cliffs swallow strangers.",
+          "Prove you're not one more thing crawling out of the thin places.",
+          "Tywin of the Round Table. Sixteen years and still breathing, which out here is a boast. Draw, or turn back."
+        ]
+      }
+    },
+    {
+      "Id": "beat_8_choice",
+      "Type": "branch",
+      "AutoTransition": false,
+      "Visuals": {
+        "BackgroundKey": "road",
+        "GroundColor": "#555555",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 620,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "Well? Words or steel, {playerName}?"
+        ]
+      },
+      "Branch": {
+        "Options": [
+          { "Text": "We're no shadow. But if a blade is the only word you trust - so be it.", "NextStepId": "beat_8_words", "MoralityImpact": 5 },
+          { "Text": "Stand aside or be moved.", "NextStepId": "beat_8_steel", "MoralityImpact": -5 }
+        ]
+      }
+    },
+    {
+      "Id": "beat_8_words",
+      "Type": "dialogue",
+      "NextStepId": "beat_8_combat",
+      "Visuals": {
+        "BackgroundKey": "road",
+        "GroundColor": "#555555",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 620,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "Honest. I like honest.",
+          "But the fog wears honest faces too. So - forgive me.",
+          "One pass. Show me. Then we'll talk like men."
+        ]
+      }
+    },
+    {
+      "Id": "beat_8_steel",
+      "Type": "dialogue",
+      "NextStepId": "beat_8_combat",
+      "Visuals": {
+        "BackgroundKey": "road",
+        "GroundColor": "#555555",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 620,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "Moved. He says.",
+          "By all means. Try.",
+          "Rapier's already out, my good sir."
+        ]
+      }
+    },
+    {
+      "Id": "beat_8_combat",
+      "Type": "combat",
+      "NextStepId": "beat_8_yield",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Tywin", "Level": 6, "MaxHP": 250, "CurrentHP": 250, "Attack": 14, "Defense": 15, "Speed": 16, "SpriteKey": "bosses/Tywin", "ExperienceReward": 1000, "GoldReward": 0 }
+        ],
+        "Allies": [
+          { "Name": "Darius", "Level": 7, "MaxHP": 110, "CurrentHP": 110, "Attack": 18, "Defense": 10, "Speed": 14, "SpriteKey": "bosses/Darius" }
+        ],
+        "BackgroundKey": "road"
+      }
+    },
+    {
+      "Id": "beat_8_yield",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "road",
+        "GroundColor": "#555555",
+        "Npc": {
+          "Name": "Tywin",
+          "SpriteKey": "bosses/Tywin",
+          "PositionX": 620,
+          "PositionY": 300
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Tywin",
+        "Lines": [
+          "Enough - you've made your point, my good sir.",
+          "Good. Most don't last this long. Most aren't worth the road.",
+          "You are. So I'll walk it with you a while - if only to see how it ends."
+        ]
+      }
+    }
+  ]
+}

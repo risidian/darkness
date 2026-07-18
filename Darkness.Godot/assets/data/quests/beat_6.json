@@ -1,0 +1,121 @@
+{
+  "Id": "beat_6",
+  "Title": "Lore of the Shadow",
+  "IsMainStory": true,
+  "SortOrder": 6,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_5"],
+  "Steps": [
+    {
+      "Id": "beat_6_vision",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_6_ritual",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#1a1420"
+      },
+      "Dialogue": {
+        "Speaker": "Narrator",
+        "Lines": [
+          "That night the hollow inside you fills - not with memory, but with a dream that is not yours.",
+          "A storm cliff. The world ending over a black sea.",
+          "Five weapons torn from the dark and driven into the stone: a meteoric hammer, a sword wreathed in flame, a moonlit spear, a great two-handed blade, a pair of bone daggers.",
+          "A seal carved in ruin. The castle woke - and the world knew something terrible had begun."
+        ]
+      }
+    },
+    {
+      "Id": "beat_6_ritual",
+      "Type": "dialogue",
+      "NextStepId": "beat_6_daverak",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#1a1420",
+        "Npc": {
+          "Name": "Dariartimous",
+          "SpriteKey": "bosses/Balgathor",
+          "PositionX": 420,
+          "PositionY": 380
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Dariartimous",
+        "Lines": [
+          "The seal is set, my lord. The five are given.",
+          "The tower stands.",
+          "It shall be done."
+        ]
+      }
+    },
+    {
+      "Id": "beat_6_daverak",
+      "Type": "dialogue",
+      "NextStepId": "beat_6_decree",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#1a1420",
+        "Npc": {
+          "Name": "Daverak",
+          "SpriteKey": "bosses/Kazarth",
+          "PositionX": 640,
+          "PositionY": 230
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Daverak",
+        "Lines": [
+          "Thy loyalty draws nigh its proving, Seeker.",
+          "The prophecy is not silent. One is born who at his eighteenth year may sunder me. Atriartous. That is the name the stars have carved.",
+          "Only one can sunder me. See that he is undone - before he knows what he is."
+        ]
+      }
+    },
+    {
+      "Id": "beat_6_decree",
+      "Type": "dialogue",
+      "NextStepId": "beat_6_wake",
+      "Visuals": {
+        "BackgroundKey": "dark_castle",
+        "GroundColor": "#1a1420",
+        "Npc": {
+          "Name": "Dariartimous",
+          "SpriteKey": "bosses/Balgathor",
+          "PositionX": 420,
+          "PositionY": 380
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Dariartimous",
+        "Lines": [
+          "It shall be done, my lord.",
+          "A ship crosses the northern water tonight. The boy is aboard it.",
+          "The sea will take him. And with him, every memory of the name you fear."
+        ]
+      }
+    },
+    {
+      "Id": "beat_6_wake",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "camelot_shore",
+        "GroundColor": "#C2B280",
+        "WaterColor": "#4a5a68",
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 520,
+          "PositionY": 520
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "You were talking in your sleep. A name.",
+          "You didn't recognise it. I could tell.",
+          "The sea didn't take everything. Remember the rest, and we'll know what we're walking toward."
+        ]
+      }
+    }
+  ]
+}

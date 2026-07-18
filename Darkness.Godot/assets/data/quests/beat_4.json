@@ -1,0 +1,132 @@
+{
+  "Id": "beat_4",
+  "Title": "The Dark Warrior",
+  "IsMainStory": true,
+  "SortOrder": 4,
+  "ArcId": "arc_1",
+  "Prerequisites": ["beat_3"],
+  "Steps": [
+    {
+      "Id": "beat_4_intro",
+      "Type": "dialogue",
+      "AutoTransition": false,
+      "NextStepId": "beat_4_defiance",
+      "Visuals": {
+        "PlayerPositionX": 180,
+        "PlayerPositionY": 560,
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a3630",
+        "WaterColor": null,
+        "Npc": {
+          "Name": "Dark Warrior",
+          "SpriteKey": "bosses/Balgathor",
+          "PositionX": 650,
+          "PositionY": 380
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Dark Warrior",
+        "Lines": [
+          "Do you remember me, {playerName}?",
+          "No. Of course not. The sea took that from you. I made certain of it.",
+          "I am the Seeker of Darkness. And you were never meant to reach this shore alive."
+        ]
+      }
+    },
+    {
+      "Id": "beat_4_defiance",
+      "Type": "dialogue",
+      "NextStepId": "beat_4_combat",
+      "Visuals": {
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a3630",
+        "WaterColor": null,
+        "Npc": {
+          "Name": "Darius",
+          "SpriteKey": "bosses/Darius",
+          "PositionX": 420,
+          "PositionY": 540
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Darius",
+        "Lines": [
+          "I don't remember you. I don't need to.",
+          "Two blades. One of you.",
+          "Come on then."
+        ]
+      }
+    },
+    {
+      "Id": "beat_4_combat",
+      "Type": "combat",
+      "NextStepId": "beat_4_vanish",
+      "Combat": {
+        "Enemies": [
+          { "Name": "Balgathor", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 1500, "GoldReward": 20 }
+        ],
+        "Allies": [
+          { "Name": "Darius", "Level": 3, "MaxHP": 55, "CurrentHP": 55, "Attack": 11, "Defense": 6, "Speed": 12, "SpriteKey": "bosses/Darius" }
+        ],
+        "SurvivalTurns": 5,
+        "BackgroundKey": "cliff"
+      }
+    },
+    {
+      "Id": "beat_4_vanish",
+      "Type": "dialogue",
+      "NextStepId": "beat_4_burgh",
+      "Visuals": {
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a3630",
+        "WaterColor": null,
+        "Npc": {
+          "Name": "Dark Warrior",
+          "SpriteKey": "bosses/Balgathor",
+          "PositionX": 650,
+          "PositionY": 380
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Dark Warrior",
+        "Lines": [
+          "Do you feel it? What you were meant to be?",
+          "You are not ready. Not yet.",
+          "We will meet again, {playerName} - when the name returns to you."
+        ]
+      }
+    },
+    {
+      "Id": "beat_4_burgh",
+      "Type": "dialogue",
+      "Visuals": {
+        "BackgroundKey": "cliff",
+        "GroundColor": "#3a3630",
+        "WaterColor": null,
+        "Npc": {
+          "Name": "Burgh",
+          "PositionX": 560,
+          "PositionY": 260,
+          "Appearance": {
+            "HairStyle": "Short",
+            "HairColor": "#3a2a1a",
+            "SkinColor": "Tan",
+            "Head": "Human Male",
+            "Face": "Default",
+            "ArmorType": "Leather",
+            "Legs": "Pants",
+            "Feet": "Boots"
+          }
+        }
+      },
+      "Dialogue": {
+        "Speaker": "Burgh",
+        "Lines": [
+          "I heard steel out there. Followed the sound. Found these in the scorch where he stood.",
+          "Two blades. Good ones. Better than anything you're carrying.",
+          "Keep them. Whatever that thing was - you'll need them."
+        ]
+      }
+    }
+  ]
+}
