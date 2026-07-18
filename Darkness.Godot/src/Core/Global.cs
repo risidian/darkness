@@ -45,6 +45,7 @@ public partial class Global : Node
             services.AddSingleton<IDeathmatchService>(sp => new DeathmatchService(sp.GetRequiredService<ILiteDatabase>()));
             services.AddSingleton<IAllyService>(sp => new AllyService(sp.GetRequiredService<LiteDatabase>()));
             services.AddSingleton<IQuestService, QuestService>();
+            services.AddSingleton<ILocalizationService, LocalizationService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IRewardService, RewardService>();
             services.AddSingleton<ICombatService, CombatEngine>();
@@ -70,11 +71,14 @@ public partial class Global : Node
             {
                 var db = Services.GetRequiredService<ILiteDatabase>();
                 var fs = Services.GetRequiredService<IFileSystemService>();
+                var loc = Services.GetRequiredService<ILocalizationService>();
 
                 GD.Print("[Global] Seeding data...");
                 new SheetDefinitionSeeder(fs).Seed(db);
                 new AppearanceSeeder(fs).Seed(db);
                 new QuestSeeder(fs).Seed(db);
+                new ArcSeeder(fs).Seed(db);
+                new LocalizationSeeder(loc, fs).Seed();
                 new LevelSeeder(fs).Seed(db);
                 new TalentSeeder(fs).Seed(db);
                 new SkillSeeder(fs).Seed(db);

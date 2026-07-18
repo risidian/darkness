@@ -321,6 +321,46 @@ public class QuestService : IQuestService
             .ToList();
     }
 
+    public List<Arc> GetAvailableArcs(Character character)
+    {
+        var arcCol = _db.GetCollection<Arc>("arcs");
+        var allArcs = arcCol.FindAll().ToList();
+        if (allArcs.Count == 0) return new List<Arc>();
+
+        var completedChainIds = GetCompletedChainIds(character.Id);
+
+        // An arc is complete when all its main-path chains are completed.
+        bool ArcComplete(Arc arc) =>
+            arc.MainChainIds.Count > 0 && arc.MainChainIds.All(id => completedChainIds.Contains(id));
+
+        // Available = every prerequisite ARC is complete, and this arc is not itself complete.
+        return allArcs
+            .Where(a => !ArcComplete(a))
+            .Where(a => a.Prerequisites.All(p =>
+            {
+                var prereq = allArcs.FirstOrDefault(x => x.Id == p);
+                return prereq != null && ArcComplete(prereq);
+            }))
+            .OrderBy(a => a.Order)
+            .ToList();
+    }
+
+    public bool IsArcComplete(Character character, string arcId)
+    {
+        var arcCol = _db.GetCollection<Arc>("arcs");
+        var arc = arcCol.FindOne(a => a.Id == arcId);
+        if (arc == null || arc.MainChainIds.Count == 0) return false;
+
+        var completedChainIds = GetCompletedChainIds(character.Id);
+        return arc.MainChainIds.All(id => completedChainIds.Contains(id));
+    }
+
+    public Arc? GetCurrentArc(Character character)
+    {
+        // Lowest-Order arc that is available (prerequisites met) and not yet complete.
+        return GetAvailableArcs(character).FirstOrDefault();
+    }
+
     public bool GetWorldFlag(int characterId, string key)
     {
         if (_flagCache.TryGetValue((characterId, key), out bool cachedValue))
