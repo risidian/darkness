@@ -1,144 +1,163 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Darkness.Core.Models;
-using System.Text.Json;
 using Xunit;
 
 namespace Darkness.Tests.Audit;
 
+/// <summary>
+/// Asserting audit of the quest content graph. Loads the on-disk quest JSON
+/// (the same source the runtime seeder consumes) and fails the build if any
+/// chain is structurally broken: dangling step targets, empty/invalid
+/// branches, unreachable steps, or a soft-locked chain with no terminal path.
+/// </summary>
 [Trait("Category", "Audit")]
 public class QuestGraphAudit
 {
-    private const string QuestDataPath = "../../../Darkness.Godot/assets/data/quests/";      
+    private static readonly string[] ValidOperators =
+        { "==", "!=", ">=", "<=", ">", "<", "contains" };
 
     [Fact]
-    public void AuditAllQuests()
+    public void QuestGraphIsValid()
     {
-        var root = FindSolutionRoot();
-        var fullPath = Path.Combine(root, "Darkness.Godot", "assets", "data", "quests");     
+        var root = TestPaths.RepoRoot();
+        var chains = AuditContentLoader.LoadChains(root);
 
-        if (!Directory.Exists(fullPath))
+        var failures = new List<string>();
+        var report = new List<string>();
+
+        foreach (var (file, chain) in chains)
         {
-            throw new DirectoryNotFoundException($"Could not find quest data at {fullPath}");
+            report.Add($"## {chain.Id} ({file})");
+            AuditChain(chain, file, failures, report);
         }
 
-        var questFiles = Directory.GetFiles(fullPath, "*.json");
-        var reports = new List<string>();
-        var options = new JsonSerializerOptions 
-        { 
-            PropertyNameCaseInsensitive = true 
-        };
-        options.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        WriteReport(root, report);
 
-        foreach (var file in questFiles)
-        {
-            if (file.EndsWith(".bak")) continue;
-
-            var content = File.ReadAllText(file);
-            var chain = JsonSerializer.Deserialize<QuestChain>(content, options);
-            if (chain == null) continue;
-
-            reports.Add($"## Audit for {chain.Id} ({Path.GetFileName(file)})");
-            AuditChain(chain, reports);
-        }
-
-        var docPath = Path.Combine(root, "docs", "superpowers", "audit", "report-agent-3.md");
-        var docDir = Path.GetDirectoryName(docPath);
-        if (!string.IsNullOrEmpty(docDir) && !Directory.Exists(docDir))
-        {
-            Directory.CreateDirectory(docDir);
-        }
-
-        File.WriteAllText(docPath, 
-            "# Quest Logic Audit Report\n\n" + string.Join("\n\n", reports));
+        Assert.Empty(failures);
     }
 
-    private string FindSolutionRoot()
+    private void AuditChain(QuestChain chain, string file, List<string> failures, List<string> report)
     {
-        var current = AppContext.BaseDirectory;
-        while (!string.IsNullOrEmpty(current) && Directory.GetFiles(current, "Darkness.sln").Length == 0)
-        {
-            current = Path.GetDirectoryName(current);
-        }
-        return current ?? throw new Exception("Could not find Darkness.sln root");
-    }
+        string Ctx(string stepId) => $"[{file}:{chain.Id}] step `{stepId}`";
 
-    private void AuditChain(QuestChain chain, List<string> reports)
-    {
+        if (chain.Steps.Count == 0)
+        {
+            failures.Add($"[{file}:{chain.Id}] chain has no steps.");
+            return;
+        }
+
+        // Duplicate step ids break target resolution and reachability.
+        var duplicateIds = chain.Steps
+            .GroupBy(s => s.Id)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToList();
+        foreach (var dup in duplicateIds)
+            failures.Add($"[{file}:{chain.Id}] duplicate step id `{dup}`.");
+
         var stepIds = chain.Steps.Select(s => s.Id).ToHashSet();
-        
+
         foreach (var step in chain.Steps)
         {
-            // Check for missing NextStepId
-            if (step.Type != QuestStepType.Branch && !string.IsNullOrEmpty(step.NextStepId) && !stepIds.Contains(step.NextStepId))
-            {
-                reports.Add($"- [ERROR] Step `{step.Id}` (type: {step.Type}) points to non-existent `{step.NextStepId}`");
-            }
+            // A branch-typed step must carry options.
+            if (step.Type == QuestStepType.Branch && (step.Branch == null || step.Branch.Options.Count == 0))
+                failures.Add($"{Ctx(step.Id)} is a branch with no options.");
 
-            // Check if non-branch, non-terminal step has no NextStepId
-            if (step.Type != QuestStepType.Branch && string.IsNullOrEmpty(step.NextStepId) && step != chain.Steps.Last())
-            {
-                // This might be okay if it's the intended end of a chain, but let's flag it if it's not the last step in the list
-                reports.Add($"- [INFO] Step `{step.Id}` has no NextStepId and is not the last step in JSON.");
-            }
+            // NextStepId is valid on any step type and must resolve when present.
+            if (!string.IsNullOrEmpty(step.NextStepId) && !stepIds.Contains(step.NextStepId))
+                failures.Add($"{Ctx(step.Id)} (type {step.Type}) targets non-existent step `{step.NextStepId}`.");
 
-            // Check Branch Options
-            if (step.Type == QuestStepType.Branch && step.Branch != null)
+            // Branch options may appear on any step type (e.g. Travel hubs) and are validated wherever present.
+            if (step.Branch != null)
             {
-                if (!step.Branch.Options.Any())
-                {
-                    reports.Add($"- [ERROR] Branch step `{step.Id}` has no options.");
-                }
-
                 foreach (var opt in step.Branch.Options)
                 {
                     if (string.IsNullOrEmpty(opt.NextStepId))
-                    {
-                        reports.Add($"- [ERROR] Step `{step.Id}` branch option `{opt.Text}` has empty NextStepId.");
-                    }
+                        failures.Add($"{Ctx(step.Id)} branch option \"{opt.Text}\" has an empty NextStepId.");
                     else if (!stepIds.Contains(opt.NextStepId))
-                    {
-                        reports.Add($"- [ERROR] Step `{step.Id}` branch option `{opt.Text}` points to non-existent `{opt.NextStepId}`");
-                    }
+                        failures.Add($"{Ctx(step.Id)} branch option \"{opt.Text}\" targets non-existent step `{opt.NextStepId}`.");
 
-                    // Impossible condition check (basic)
-                    if (opt.Conditions != null)
-                    {
-                        foreach (var cond in opt.Conditions)
-                        {
-                            if (cond.Type == "morality")
-                            {
-                                if (int.TryParse(cond.Value, out var val))
-                                {
-                                    if (val > 100 || val < -100) 
-                                        reports.Add($"- [WARNING] Step `{step.Id}` has unlikely morality condition: {cond.Operator} {val}");
-                                }
-                            }
-                            
-                            // Check for invalid operators
-                            var validOps = new[] { "==", "!=", ">=", "<=", ">", "<", "contains" };
-                            if (!validOps.Contains(cond.Operator))
-                            {
-                                reports.Add($"- [ERROR] Step `{step.Id}` has invalid operator `{cond.Operator}` in condition.");
-                            }
-                        }
-                    }
-                }
-                
-                // Check if ALL options have conditions (potential soft-lock if none are met)
-                if (step.Branch.Options.Count > 0 && step.Branch.Options.All(o => o.Conditions != null && o.Conditions.Any()))
-                {
-                    reports.Add($"- [INFO] Step `{step.Id}`: All options have conditions. Ensure at least one is always meetable.");
+                    ValidateConditions(opt.Conditions, $"{Ctx(step.Id)} branch option \"{opt.Text}\"", failures);
                 }
             }
 
-            // Combat specific check
-            if (step.Type == QuestStepType.Combat)
+            ValidateConditions(step.Requirements, $"{Ctx(step.Id)} requirement", failures);
+        }
+
+        // Reachability + terminal-path analysis from the entry step (Steps[0]).
+        var byId = chain.Steps.ToDictionary(s => s.Id);
+        var reachable = new HashSet<string>();
+        var queue = new Queue<string>();
+        queue.Enqueue(chain.Steps[0].Id);
+        reachable.Add(chain.Steps[0].Id);
+
+        bool reachableTerminalExists = false;
+
+        while (queue.Count > 0)
+        {
+            var current = byId[queue.Dequeue()];
+            var outgoing = OutgoingTargets(current, stepIds).ToList();
+
+            if (outgoing.Count == 0)
+                reachableTerminalExists = true;
+
+            foreach (var target in outgoing)
             {
-                reports.Add($"- [CHECK] Combat step `{step.Id}`: Engine defaults to advancing on victory. No explicit failure path found in data.");
+                if (reachable.Add(target))
+                    queue.Enqueue(target);
             }
         }
+
+        var unreachable = chain.Steps.Select(s => s.Id).Where(id => !reachable.Contains(id)).ToList();
+        foreach (var id in unreachable)
+            failures.Add($"[{file}:{chain.Id}] step `{id}` is unreachable from entry step `{chain.Steps[0].Id}`.");
+
+        if (!reachableTerminalExists)
+            failures.Add($"[{file}:{chain.Id}] has no reachable terminal step (potential soft-lock).");
+
+        report.Add(unreachable.Count == 0 && !duplicateIds.Any()
+            ? "- OK"
+            : $"- {unreachable.Count} unreachable, {duplicateIds.Count} duplicate id(s)");
+    }
+
+    /// <summary>
+    /// Resolves the set of valid, existing step ids a step can transition to:
+    /// the union of NextStepId and any branch-option targets. Branch blocks can
+    /// appear on any step type (e.g. Travel hubs in exploration_demo), so both
+    /// edge sources are considered regardless of Type. Empty or dangling targets
+    /// are excluded here (reported as failures elsewhere).
+    /// </summary>
+    private static IEnumerable<string> OutgoingTargets(QuestStep step, HashSet<string> stepIds)
+    {
+        if (!string.IsNullOrEmpty(step.NextStepId) && stepIds.Contains(step.NextStepId))
+            yield return step.NextStepId;
+
+        if (step.Branch != null)
+        {
+            foreach (var opt in step.Branch.Options)
+            {
+                if (!string.IsNullOrEmpty(opt.NextStepId) && stepIds.Contains(opt.NextStepId))
+                    yield return opt.NextStepId;
+            }
+        }
+    }
+
+    private void ValidateConditions(IEnumerable<BranchCondition>? conditions, string context, List<string> failures)
+    {
+        if (conditions == null) return;
+        foreach (var cond in conditions)
+        {
+            if (!ValidOperators.Contains(cond.Operator))
+                failures.Add($"{context} has invalid branch-condition operator `{cond.Operator}`.");
+        }
+    }
+
+    private static void WriteReport(string root, List<string> report)
+    {
+        var reportPath = Path.Combine(root, "TestResults", "quest-graph-audit.md");
+        Directory.CreateDirectory(Path.GetDirectoryName(reportPath)!);
+        File.WriteAllText(reportPath, "# Quest Graph Audit\n\n" + string.Join("\n", report) + "\n");
     }
 }
