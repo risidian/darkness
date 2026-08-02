@@ -38,4 +38,17 @@ public class CharacterStatTests
         // Base(10/2) + Gear(5) + Talent(3) = 5 + 5 + 3 = 13
         Assert.Equal(13, character.ArmorClass);
     }
+
+    [Theory]
+    [InlineData(10, 0)]
+    [InlineData(11, 0)]
+    [InlineData(12, 1)]
+    [InlineData(13, 1)]
+    [InlineData(9, -1)]
+    [InlineData(8, -1)]
+    [InlineData(7, -2)]
+    public void GetStatModifier_CalculatesCorrectly(int statValue, int expectedMod)
+    {
+        Assert.Equal(expectedMod, Character.GetStatModifier(statValue));
+    }
 }

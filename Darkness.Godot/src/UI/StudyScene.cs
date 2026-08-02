@@ -174,8 +174,10 @@ public partial class StudyScene : Control
         // For now we'll just show the raw attribute values for damage scaling to keep it simple,
         // or call combat engine calculations if needed. 
         // We'll approximate purely based on attributes as done in standard D20.
-        _lblMeleeDamage.Text = $"Melee Dmg Mod: +{(_character.Strength - 10) / 2}";
-        _lblMagicDamage.Text = $"Magic Dmg Mod: +{(_character.Intelligence - 10) / 2}";
+        int meleeMod = Character.GetStatModifier(_character.Strength);
+        int magicMod = Character.GetStatModifier(_character.Intelligence);
+        _lblMeleeDamage.Text = $"Melee Dmg Mod: {(meleeMod >= 0 ? "+" : "")}{meleeMod}";
+        _lblMagicDamage.Text = $"Magic Dmg Mod: {(magicMod >= 0 ? "+" : "")}{magicMod}";
     }
 
     private void ModifyAttribute(string attribute, int delta)
@@ -237,7 +239,7 @@ public partial class StudyScene : Control
         _character.RecalculateDerivedStats();
     }
 
-    private void OnBackButtonPressed()
+    private async void OnBackButtonPressed()
     {
         if (HasUnsavedChanges())
         {
@@ -245,7 +247,7 @@ public partial class StudyScene : Control
         }
         else
         {
-            _navigation.GoBackAsync();
+            await _navigation.GoBackAsync();
         }
     }
 }

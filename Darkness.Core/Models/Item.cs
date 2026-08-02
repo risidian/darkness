@@ -88,5 +88,20 @@ namespace Darkness.Core.Models
                 Quantity = Quantity
             };
         }
+
+        public int GetHealAmount(int maxStat)
+        {
+            if (Description.Contains("all HP", StringComparison.OrdinalIgnoreCase) || 
+                Description.Contains("all MP", StringComparison.OrdinalIgnoreCase))
+            {
+                return maxStat;
+            }
+            var match = System.Text.RegularExpressions.Regex.Match(Description, @"\d+");
+            if (match.Success)
+            {
+                return int.Parse(match.Value);
+            }
+            return Value;
+        }
     }
 }

@@ -177,6 +177,8 @@ namespace Darkness.Core.Models
             (TalentStatBonuses.TryGetValue(key, out var tb) ? tb : 0);
 
         private int GetTalentBonus(string key) => TalentStatBonuses.TryGetValue(key, out var val) ? val : 0;
+        
+        public static int GetStatModifier(int statValue) => (int)Math.Floor((statValue - 10) / 2.0);
 
         public CharacterSnapshot ToSnapshot() => new CharacterSnapshot(
             Name, Class, CurrentHP, MaxHP, Level, Thumbnail, HairColor, HairStyle, SkinColor

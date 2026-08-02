@@ -530,19 +530,26 @@ public partial class BattleScene : Control, IInitializable
             {
                 _combatLog.AppendText($"\n[color=cyan]{character.Name}[/color] uses [b]{item.Name}[/b]!");
                 
-                // Basic healing logic
-                if (item.Name == "Health Potion")
+                int healAmount = item.GetHealAmount(
+                    item.Name.Contains("Mana", StringComparison.OrdinalIgnoreCase) ? character.MaxMana : character.MaxHP
+                );
+
+                if (item.Name.Contains("Mana", StringComparison.OrdinalIgnoreCase))
                 {
-                    int healAmount = 30; // Standard heal for now
-                    character.CurrentHP = Mathf.Min(character.CurrentHP + healAmount, character.MaxHP);
-                    if (_partyHealthBars.Count > 0)
-                        _partyHealthBars[0].UpdateValue(character.CurrentHP, character.MaxHP);
-                    
-                    _combatLog.AppendText($"\nHealed for {healAmount} HP!");
+                    healAmount = Mathf.Min(healAmount, character.MaxMana - character.Mana);
+                    character.Mana += healAmount;
+                    _combatLog.AppendText($"\nRestored {healAmount} MP!");
                 }
                 else
                 {
-                    _combatLog.AppendText("\nNo effect!");
+                    healAmount = Mathf.Min(healAmount, character.MaxHP - character.CurrentHP);
+                    character.CurrentHP += healAmount;
+                    int partyIndex = _party.IndexOf(character);
+                    if (partyIndex >= 0 && partyIndex < _partyHealthBars.Count)
+                    {
+                        _partyHealthBars[partyIndex].UpdateValue(character.CurrentHP, character.MaxHP);
+                    }
+                    _combatLog.AppendText($"\nHealed for {healAmount} HP!");
                 }
                 
                 // Decrement quantity
