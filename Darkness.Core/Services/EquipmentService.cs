@@ -20,8 +20,7 @@ public class EquipmentService : IEquipmentService
         AddBonus(character.StatBonuses, "Intelligence", item.IntelligenceBonus);
         AddBonus(character.StatBonuses, "Defense", item.DefenseBonus);
         AddBonus(character.StatBonuses, "Attack", item.AttackBonus);
-
-        character.EquipmentSlots[item.EquipmentSlot] = item.Name;
+        character.EquipmentSlots[item.EquipmentSlot] = item.SpriteDefinitionName ?? item.Name;
 
         // Ensure the item is in inventory so Unequip can find it for bonus reversal
         if (!character.Inventory.Any(i => i.Name == item.Name))
@@ -36,8 +35,8 @@ public class EquipmentService : IEquipmentService
         if (character == null || string.IsNullOrEmpty(slot)) return false;
         if (!character.EquipmentSlots.ContainsKey(slot)) return false;
 
-        var itemName = character.EquipmentSlots[slot];
-        var item = character.Inventory.FirstOrDefault(i => i.Name == itemName);
+        var slotValue = character.EquipmentSlots[slot];
+        var item = character.Inventory.FirstOrDefault(i => i.Name == slotValue || i.SpriteDefinitionName == slotValue);
 
         if (item != null)
         {

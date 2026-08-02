@@ -57,4 +57,28 @@ public class EquipmentServiceTests
         Assert.Equal(7, character.StatBonuses.GetValueOrDefault("Attack"));
         Assert.Equal("Steel Sword", character.EquipmentSlots["Weapon"]);
     }
+
+    [Fact]
+    public void Equip_UsesSpriteDefinitionNameIfAvailable()
+    {
+        var character = new Character { BaseStrength = 10 };
+        var sword = new Item { Name = "Iron Sword", SpriteDefinitionName = "Arming Sword (Steel)", Type = "Weapon", EquipmentSlot = "Weapon" };
+
+        _service.Equip(character, sword);
+
+        Assert.Equal("Arming Sword (Steel)", character.EquipmentSlots["Weapon"]);
+    }
+
+    [Fact]
+    public void Unequip_WithSpriteDefinitionName_RemovesStatBonuses()
+    {
+        var character = new Character { BaseStrength = 10 };
+        var sword = new Item { Name = "Iron Sword", SpriteDefinitionName = "Arming Sword (Steel)", Type = "Weapon", EquipmentSlot = "Weapon", AttackBonus = 5, StrengthBonus = 2 };
+
+        _service.Equip(character, sword);
+        _service.Unequip(character, "Weapon");
+
+        Assert.Equal(0, character.StatBonuses.GetValueOrDefault("Strength"));
+        Assert.Equal(0, character.StatBonuses.GetValueOrDefault("Attack"));
+    }
 }

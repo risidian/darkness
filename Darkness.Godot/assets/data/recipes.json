@@ -12,7 +12,9 @@
       "DamageDice": "1d4",
       "EquipmentSlot": "Weapon"
     },
-    "Materials": { "Iron Ore": 2 }
+    "Materials": {
+      "Iron Ore": 2
+    }
   },
   {
     "Id": 2,
@@ -27,7 +29,9 @@
       "DamageDice": "1d8",
       "EquipmentSlot": "Weapon"
     },
-    "Materials": { "Iron Ore": 5 }
+    "Materials": {
+      "Iron Ore": 5
+    }
   },
   {
     "Id": 3,
@@ -42,7 +46,10 @@
       "DamageDice": "1d4",
       "EquipmentSlot": "Weapon"
     },
-    "Materials": { "Iron Scrap": 2, "Magic Essence": 1 }
+    "Materials": {
+      "Iron Scrap": 2,
+      "Magic Essence": 1
+    }
   },
   {
     "Id": 4,
@@ -57,7 +64,10 @@
       "DamageDice": "1d6",
       "EquipmentSlot": "Weapon"
     },
-    "Materials": { "Iron Ore": 1, "Magic Essence": 2 }
+    "Materials": {
+      "Iron Ore": 1,
+      "Magic Essence": 2
+    }
   },
   {
     "Id": 5,
@@ -72,7 +82,10 @@
       "DamageDice": "1d6",
       "EquipmentSlot": "Weapon"
     },
-    "Materials": { "Leather Scraps": 3, "Iron Scrap": 1 }
+    "Materials": {
+      "Leather Scraps": 3,
+      "Iron Scrap": 1
+    }
   },
   {
     "Id": 6,
@@ -87,7 +100,10 @@
       "DamageDice": "1d8",
       "EquipmentSlot": "Weapon"
     },
-    "Materials": { "Iron Ore": 4, "Iron Scrap": 2 }
+    "Materials": {
+      "Iron Ore": 4,
+      "Iron Scrap": 2
+    }
   },
   {
     "Id": 7,
@@ -102,7 +118,10 @@
       "DamageDice": "1d6",
       "EquipmentSlot": "Weapon"
     },
-    "Materials": { "Iron Ore": 3, "Iron Scrap": 3 }
+    "Materials": {
+      "Iron Ore": 3,
+      "Iron Scrap": 3
+    }
   },
   {
     "Id": 8,
@@ -116,7 +135,10 @@
       "Weight": 2,
       "EquipmentSlot": "Shield"
     },
-    "Materials": { "Leather Scraps": 2, "Iron Scrap": 1 }
+    "Materials": {
+      "Leather Scraps": 2,
+      "Iron Scrap": 1
+    }
   },
   {
     "Id": 9,
@@ -130,7 +152,9 @@
       "Weight": 1,
       "EquipmentSlot": "Head"
     },
-    "Materials": { "Leather Scraps": 2 }
+    "Materials": {
+      "Leather Scraps": 2
+    }
   },
   {
     "Id": 10,
@@ -144,7 +168,9 @@
       "Weight": 3,
       "EquipmentSlot": "Body"
     },
-    "Materials": { "Leather Scraps": 5 }
+    "Materials": {
+      "Leather Scraps": 5
+    }
   },
   {
     "Id": 11,
@@ -158,7 +184,9 @@
       "Weight": 2,
       "EquipmentSlot": "Legs"
     },
-    "Materials": { "Leather Scraps": 4 }
+    "Materials": {
+      "Leather Scraps": 4
+    }
   },
   {
     "Id": 12,
@@ -172,7 +200,9 @@
       "Weight": 1,
       "EquipmentSlot": "Feet"
     },
-    "Materials": { "Leather Scraps": 2 }
+    "Materials": {
+      "Leather Scraps": 2
+    }
   },
   {
     "Id": 13,
@@ -185,7 +215,9 @@
       "Weight": 2,
       "Quantity": 1
     },
-    "Materials": { "Iron Ore": 2 }
+    "Materials": {
+      "Iron Ore": 2
+    }
   },
   {
     "Id": 14,
@@ -199,7 +231,10 @@
       "Weight": 4,
       "EquipmentSlot": "Head"
     },
-    "Materials": { "Steel Ingot": 2, "Leather Scraps": 1 }
+    "Materials": {
+      "Steel Ingot": 2,
+      "Leather Scraps": 1
+    }
   },
   {
     "Id": 15,
@@ -213,7 +248,10 @@
       "Weight": 10,
       "EquipmentSlot": "Body"
     },
-    "Materials": { "Steel Ingot": 5, "Leather Scraps": 2 }
+    "Materials": {
+      "Steel Ingot": 5,
+      "Leather Scraps": 2
+    }
   },
   {
     "Id": 16,
@@ -227,7 +265,10 @@
       "Weight": 7,
       "EquipmentSlot": "Legs"
     },
-    "Materials": { "Steel Ingot": 4, "Leather Scraps": 1 }
+    "Materials": {
+      "Steel Ingot": 4,
+      "Leather Scraps": 1
+    }
   },
   {
     "Id": 17,
@@ -241,7 +282,10 @@
       "Weight": 4,
       "EquipmentSlot": "Feet"
     },
-    "Materials": { "Steel Ingot": 2, "Leather Scraps": 1 }
+    "Materials": {
+      "Steel Ingot": 2,
+      "Leather Scraps": 1
+    }
   },
   {
     "Id": 18,
@@ -255,7 +299,10 @@
       "Weight": 5,
       "EquipmentSlot": "Head"
     },
-    "Materials": { "Dark Ore": 2, "Steel Ingot": 1 }
+    "Materials": {
+      "Dark Ore": 2,
+      "Steel Ingot": 1
+    }
   },
   {
     "Id": 19,
@@ -269,7 +316,10 @@
       "Weight": 12,
       "EquipmentSlot": "Body"
     },
-    "Materials": { "Dark Ore": 5, "Steel Ingot": 2 }
+    "Materials": {
+      "Dark Ore": 5,
+      "Steel Ingot": 2
+    }
   },
   {
     "Id": 20,
@@ -283,7 +333,10 @@
       "Weight": 8,
       "EquipmentSlot": "Legs"
     },
-    "Materials": { "Dark Ore": 4, "Steel Ingot": 1 }
+    "Materials": {
+      "Dark Ore": 4,
+      "Steel Ingot": 1
+    }
   },
   {
     "Id": 21,
@@ -297,7 +350,10 @@
       "Weight": 5,
       "EquipmentSlot": "Feet"
     },
-    "Materials": { "Dark Ore": 2, "Steel Ingot": 1 }
+    "Materials": {
+      "Dark Ore": 2,
+      "Steel Ingot": 1
+    }
   },
   {
     "Id": 22,
@@ -310,7 +366,10 @@
       "Weight": 1,
       "Quantity": 1
     },
-    "Materials": { "Light Essence": 2, "Magic Essence": 1 }
+    "Materials": {
+      "Light Essence": 2,
+      "Magic Essence": 1
+    }
   },
   {
     "Id": 23,
@@ -323,6 +382,8 @@
       "Weight": 1,
       "Quantity": 1
     },
-    "Materials": { "Magic Essence": 3 }
+    "Materials": {
+      "Magic Essence": 3
+    }
   }
 ]

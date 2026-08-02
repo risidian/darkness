@@ -15,6 +15,7 @@ public class ItemCloneTests
             Id = 99, // intentionally non-zero — see assertion below
             Name = "Mythril Greatsword",
             Description = "A legendary blade.",
+            SpriteDefinitionName = "Greatsword (Mythril)",
             Type = "Weapon",
             Weight = 12,
             Value = 500,
@@ -44,6 +45,7 @@ public class ItemCloneTests
 
         Assert.Equal(original.Name, clone.Name);
         Assert.Equal(original.Description, clone.Description);
+        Assert.Equal(original.SpriteDefinitionName, clone.SpriteDefinitionName);
         Assert.Equal(original.Type, clone.Type);
         Assert.Equal(original.Weight, clone.Weight);
         Assert.Equal(original.Value, clone.Value);

@@ -13,6 +13,8 @@ namespace Darkness.Core.Models
         public string? NameKey { get; set; }
         public string? DescriptionKey { get; set; }
 
+        public string? SpriteDefinitionName { get; set; }
+
         public string Type { get; set; } = string.Empty; // E.g., Weapon, Armor, Consumable
 
         public int Weight { get; set; }
@@ -67,6 +69,7 @@ namespace Darkness.Core.Models
                 Description = Description,
                 NameKey = NameKey,
                 DescriptionKey = DescriptionKey,
+                SpriteDefinitionName = SpriteDefinitionName,
                 Type = Type,
                 Weight = Weight,
                 Value = Value,
