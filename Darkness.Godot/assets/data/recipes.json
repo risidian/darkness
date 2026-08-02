@@ -385,5 +385,57 @@
     "Materials": {
       "Magic Essence": 3
     }
+  },
+  {
+    "Id": 24,
+    "Name": "Slingshot",
+    "Result": {
+      "Name": "Slingshot",
+      "Description": "A simple slingshot.",
+      "Type": "Weapon",
+      "DexterityBonus": 1,
+      "Value": 50,
+      "Weight": 1,
+      "DamageDice": "1d4",
+      "EquipmentSlot": "Weapon"
+    },
+    "Materials": {
+      "Leather Scraps": 1,
+      "Iron Scrap": 1
+    }
+  },
+  {
+    "Id": 25,
+    "Name": "Leather Gloves",
+    "Result": {
+      "Name": "Leather Gloves",
+      "Description": "Simple leather gloves.",
+      "Type": "Armor",
+      "DefenseBonus": 1,
+      "Value": 50,
+      "Weight": 1,
+      "EquipmentSlot": "Arms"
+    },
+    "Materials": {
+      "Leather Scraps": 2
+    }
+  },
+  {
+    "Id": 26,
+    "Name": "Gnarled Staff",
+    "Result": {
+      "Name": "Gnarled Staff",
+      "Description": "A twisted magical staff.",
+      "Type": "Weapon",
+      "IntelligenceBonus": 5,
+      "Value": 250,
+      "Weight": 3,
+      "DamageDice": "1d6",
+      "EquipmentSlot": "Weapon"
+    },
+    "Materials": {
+      "Magic Essence": 3,
+      "Iron Scrap": 2
+    }
   }
 ]
