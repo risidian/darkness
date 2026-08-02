@@ -1,6 +1,6 @@
 {
   "name": "Looped Focus (Off-Hand)",
-  "slot": "OffHand",
+  "Slot": "Shield",
   "layers": {
     "main": {
       "zPos": 140,
