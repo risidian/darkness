@@ -291,11 +291,15 @@ public partial class WorldScene : Node2D, IInitializable
             Vector2 nextPos = _player.GlobalPosition + (intendedVelocity * (float)delta);
             
             // Hard boundaries (Screen Edges)
-            // Assuming default Godot viewport size 1920x1080 and character sprite ~100px wide/tall
-            float minX = 50f;
-            float maxX = GetViewportRect().Size.X - 50f;
-            float minY = 50f;
-            float maxY = GetViewportRect().Size.Y - 50f;
+            const float ScreenMargin = 25f;
+            const float SpriteHalfSize = 25f; // Account for 50x50 player rect
+            const float TotalMargin = ScreenMargin + SpriteHalfSize;
+
+            Vector2 viewportSize = GetViewportRect().Size;
+            float minX = TotalMargin;
+            float maxX = viewportSize.X - TotalMargin;
+            float minY = TotalMargin;
+            float maxY = viewportSize.Y - TotalMargin;
 
             if (nextPos.X < minX || nextPos.X > maxX) intendedVelocity.X = 0;
             if (nextPos.Y < minY || nextPos.Y > maxY) intendedVelocity.Y = 0;
@@ -328,9 +332,24 @@ public partial class WorldScene : Node2D, IInitializable
                         GD.Print($"[WorldScene] Intersecting zone type: {zone.Type} at {zone.X},{zone.Y}");
                         if (zone.Type.Equals("Block", System.StringComparison.OrdinalIgnoreCase))
                         {
-                            // Simple block: zero velocity entirely for now to prevent getting stuck
-                            intendedVelocity = Vector2.Zero;
-                            _targetPosition = null; // Cancel pathfinding
+                            Vector2 zoneCenter = new Vector2(zone.X + zone.Width / 2f, zone.Y + zone.Height / 2f);
+                            Vector2 diff = nextPos - zoneCenter;
+
+                            float overlapX = (zone.Width / 2f + 25f) - System.Math.Abs(diff.X);
+                            float overlapY = (zone.Height / 2f + 25f) - System.Math.Abs(diff.Y);
+
+                            Vector2 normal = overlapX < overlapY 
+                                ? new Vector2(System.Math.Sign(diff.X), 0) 
+                                : new Vector2(0, System.Math.Sign(diff.Y));
+
+                            if (normal.X != 0 && System.Math.Sign(intendedVelocity.X) != System.Math.Sign(normal.X))
+                                intendedVelocity.X = 0;
+                            
+                            if (normal.Y != 0 && System.Math.Sign(intendedVelocity.Y) != System.Math.Sign(normal.Y))
+                                intendedVelocity.Y = 0;
+
+                            if (intendedVelocity == Vector2.Zero)
+                                _targetPosition = null; // Cancel pathfinding
                         }
                         else if (zone.Type.Equals("Text", System.StringComparison.OrdinalIgnoreCase))
                         {
