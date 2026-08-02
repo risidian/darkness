@@ -4,7 +4,9 @@
   "IsMainStory": true,
   "SortOrder": 5,
   "ArcId": "arc_1",
-  "Prerequisites": ["beat_4"],
+  "Prerequisites": [
+    "beat_4"
+  ],
   "Steps": [
     {
       "Id": "beat_5_intro",
@@ -52,8 +54,16 @@
       },
       "Branch": {
         "Options": [
-          { "Text": "The tower has poisoned this land. Help us end it.", "NextStepId": "beat_5_plead", "MoralityImpact": 5 },
-          { "Text": "Power. Enough to destroy the Black Knight.", "NextStepId": "beat_5_demand", "MoralityImpact": -5 }
+          {
+            "Text": "The tower has poisoned this land. Help us end it.",
+            "NextStepId": "beat_5_plead",
+            "MoralityImpact": 5
+          },
+          {
+            "Text": "Power. Enough to destroy the Black Knight.",
+            "NextStepId": "beat_5_demand",
+            "MoralityImpact": -5
+          }
         ]
       }
     },
@@ -109,10 +119,30 @@
       "NextStepId": "beat_5_depart",
       "Combat": {
         "Enemies": [
-          { "Name": "Risidian", "Level": 8, "MaxHP": 130, "CurrentHP": 130, "Attack": 20, "Defense": 8, "Speed": 20, "SpriteKey": "bosses/Risidian", "ExperienceReward": 1000, "GoldReward": 25 }
+          {
+            "Name": "Risidian",
+            "Level": 8,
+            "MaxHP": 130,
+            "CurrentHP": 130,
+            "Attack": 20,
+            "Defense": 8,
+            "Speed": 20,
+            "SpriteKey": "bosses/Risidian",
+            "ExperienceReward": 1000,
+            "GoldReward": 25
+          }
         ],
         "Allies": [
-          { "Name": "Darius", "Level": 5, "MaxHP": 80, "CurrentHP": 80, "Attack": 14, "Defense": 8, "Speed": 13, "SpriteKey": "bosses/Darius" }
+          {
+            "Name": "Darius",
+            "Level": 5,
+            "MaxHP": 80,
+            "CurrentHP": 80,
+            "Attack": 14,
+            "Defense": 8,
+            "Speed": 13,
+            "SpriteKey": "bosses/Darius"
+          }
         ],
         "BackgroundKey": "dark_castle"
       }

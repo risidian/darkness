@@ -4,7 +4,9 @@
   "IsMainStory": true,
   "SortOrder": 4,
   "ArcId": "arc_1",
-  "Prerequisites": ["beat_3"],
+  "Prerequisites": [
+    "beat_3"
+  ],
   "Steps": [
     {
       "Id": "beat_4_intro",
@@ -63,10 +65,31 @@
       "NextStepId": "beat_4_vanish",
       "Combat": {
         "Enemies": [
-          { "Name": "Dariartimous", "Level": 20, "MaxHP": 9999, "CurrentHP": 9999, "Attack": 50, "Defense": 100, "Speed": 30, "IsInvincible": true, "SpriteKey": "bosses/Balgathor", "ExperienceReward": 1500, "GoldReward": 20 }
+          {
+            "Name": "Dariartimous",
+            "Level": 20,
+            "MaxHP": 9999,
+            "CurrentHP": 9999,
+            "Attack": 50,
+            "Defense": 100,
+            "Speed": 30,
+            "IsInvincible": true,
+            "SpriteKey": "bosses/Balgathor",
+            "ExperienceReward": 1500,
+            "GoldReward": 20
+          }
         ],
         "Allies": [
-          { "Name": "Darius", "Level": 3, "MaxHP": 55, "CurrentHP": 55, "Attack": 11, "Defense": 6, "Speed": 12, "SpriteKey": "bosses/Darius" }
+          {
+            "Name": "Darius",
+            "Level": 3,
+            "MaxHP": 55,
+            "CurrentHP": 55,
+            "Attack": 11,
+            "Defense": 6,
+            "Speed": 12,
+            "SpriteKey": "bosses/Darius"
+          }
         ],
         "SurvivalTurns": 5,
         "BackgroundKey": "cliff"

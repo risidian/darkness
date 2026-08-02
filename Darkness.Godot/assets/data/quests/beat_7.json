@@ -4,7 +4,9 @@
   "IsMainStory": true,
   "SortOrder": 7,
   "ArcId": "arc_1",
-  "Prerequisites": ["beat_6"],
+  "Prerequisites": [
+    "beat_6"
+  ],
   "Steps": [
     {
       "Id": "beat_7_scout",
@@ -62,8 +64,16 @@
       },
       "Branch": {
         "Options": [
-          { "Text": "Take the trail. Hit them from where they aren't looking.", "NextStepId": "beat_7_flank", "MoralityImpact": 0 },
-          { "Text": "Straight through. Let them come.", "NextStepId": "beat_7_charge", "MoralityImpact": 0 }
+          {
+            "Text": "Take the trail. Hit them from where they aren't looking.",
+            "NextStepId": "beat_7_flank",
+            "MoralityImpact": 0
+          },
+          {
+            "Text": "Straight through. Let them come.",
+            "NextStepId": "beat_7_charge",
+            "MoralityImpact": 0
+          }
         ]
       }
     },
@@ -118,15 +128,99 @@
       "Type": "combat",
       "Combat": {
         "Enemies": [
-          { "Name": "Goblin Raider", "Level": 5, "MaxHP": 70, "CurrentHP": 70, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "goblin", "SpriteOffsetX": -40, "ExperienceReward": 180, "GoldReward": 4 },
-          { "Name": "Goblin Raider", "Level": 5, "MaxHP": 70, "CurrentHP": 70, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "goblin", "SpriteOffsetX": 0, "ExperienceReward": 180, "GoldReward": 4 },
-          { "Name": "Goblin Raider", "Level": 5, "MaxHP": 70, "CurrentHP": 70, "Attack": 12, "Defense": 6, "Speed": 15, "SpriteKey": "goblin", "SpriteOffsetX": 40, "ExperienceReward": 180, "GoldReward": 4 },
-          { "Name": "Goblin Archer", "Level": 5, "MaxHP": 52, "CurrentHP": 52, "Attack": 14, "Defense": 4, "Speed": 18, "SpriteKey": "goblin", "SpriteOffsetX": -60, "SpriteOffsetY": -30, "ExperienceReward": 180, "GoldReward": 5 },
-          { "Name": "Goblin Archer", "Level": 5, "MaxHP": 52, "CurrentHP": 52, "Attack": 14, "Defense": 4, "Speed": 18, "SpriteKey": "goblin", "SpriteOffsetX": 60, "SpriteOffsetY": -30, "ExperienceReward": 180, "GoldReward": 5 },
-          { "Name": "Goblin Warleader", "Level": 6, "MaxHP": 95, "CurrentHP": 95, "Attack": 15, "Defense": 8, "Speed": 16, "SpriteKey": "goblin", "SpriteOffsetX": 0, "SpriteOffsetY": 30, "ExperienceReward": 260, "GoldReward": 10 }
+          {
+            "Name": "Goblin Raider",
+            "Level": 5,
+            "MaxHP": 70,
+            "CurrentHP": 70,
+            "Attack": 12,
+            "Defense": 6,
+            "Speed": 15,
+            "SpriteKey": "goblin",
+            "SpriteOffsetX": -40,
+            "ExperienceReward": 180,
+            "GoldReward": 4
+          },
+          {
+            "Name": "Goblin Raider",
+            "Level": 5,
+            "MaxHP": 70,
+            "CurrentHP": 70,
+            "Attack": 12,
+            "Defense": 6,
+            "Speed": 15,
+            "SpriteKey": "goblin",
+            "SpriteOffsetX": 0,
+            "ExperienceReward": 180,
+            "GoldReward": 4
+          },
+          {
+            "Name": "Goblin Raider",
+            "Level": 5,
+            "MaxHP": 70,
+            "CurrentHP": 70,
+            "Attack": 12,
+            "Defense": 6,
+            "Speed": 15,
+            "SpriteKey": "goblin",
+            "SpriteOffsetX": 40,
+            "ExperienceReward": 180,
+            "GoldReward": 4
+          },
+          {
+            "Name": "Goblin Archer",
+            "Level": 5,
+            "MaxHP": 52,
+            "CurrentHP": 52,
+            "Attack": 14,
+            "Defense": 4,
+            "Speed": 18,
+            "SpriteKey": "goblin",
+            "SpriteOffsetX": -60,
+            "SpriteOffsetY": -30,
+            "ExperienceReward": 180,
+            "GoldReward": 5
+          },
+          {
+            "Name": "Goblin Archer",
+            "Level": 5,
+            "MaxHP": 52,
+            "CurrentHP": 52,
+            "Attack": 14,
+            "Defense": 4,
+            "Speed": 18,
+            "SpriteKey": "goblin",
+            "SpriteOffsetX": 60,
+            "SpriteOffsetY": -30,
+            "ExperienceReward": 180,
+            "GoldReward": 5
+          },
+          {
+            "Name": "Goblin Warleader",
+            "Level": 6,
+            "MaxHP": 95,
+            "CurrentHP": 95,
+            "Attack": 15,
+            "Defense": 8,
+            "Speed": 16,
+            "SpriteKey": "goblin",
+            "SpriteOffsetX": 0,
+            "SpriteOffsetY": 30,
+            "ExperienceReward": 260,
+            "GoldReward": 10
+          }
         ],
         "Allies": [
-          { "Name": "Darius", "Level": 6, "MaxHP": 95, "CurrentHP": 95, "Attack": 16, "Defense": 9, "Speed": 14, "SpriteKey": "bosses/Darius" }
+          {
+            "Name": "Darius",
+            "Level": 6,
+            "MaxHP": 95,
+            "CurrentHP": 95,
+            "Attack": 16,
+            "Defense": 9,
+            "Speed": 14,
+            "SpriteKey": "bosses/Darius"
+          }
         ],
         "BackgroundKey": "forest"
       }

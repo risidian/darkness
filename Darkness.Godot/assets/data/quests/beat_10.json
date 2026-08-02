@@ -4,7 +4,9 @@
   "IsMainStory": true,
   "SortOrder": 10,
   "ArcId": "arc_1",
-  "Prerequisites": ["beat_9"],
+  "Prerequisites": [
+    "beat_9"
+  ],
   "Steps": [
     {
       "Id": "beat_10_arrival",
@@ -78,21 +80,180 @@
       "NextStepId": "beat_10_victory",
       "Combat": {
         "Enemies": [
-          { "Name": "Kyarias", "Level": 15, "MaxHP": 1000, "CurrentHP": 1000, "Attack": 25, "Defense": 20, "Speed": 35, "SpriteKey": "bosses/KazarthEndGame", "ExperienceReward": 3000, "GoldReward": 100 },
-          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": -80, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
-          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": -40, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
-          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": 0, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
-          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": 40, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
-          { "Name": "Skeleton Warrior", "Level": 10, "MaxHP": 90, "CurrentHP": 90, "Attack": 16, "Defense": 12, "Speed": 12, "SpriteKey": "knight", "SpriteOffsetX": 80, "SpriteOffsetY": -40, "ExperienceReward": 200, "GoldReward": 5 },
-          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": -80, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
-          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": -40, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
-          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": 0, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
-          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": 40, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 },
-          { "Name": "Rotting Zombie", "Level": 9, "MaxHP": 120, "CurrentHP": 120, "Attack": 14, "Defense": 6, "Speed": 7, "SpriteKey": "orc", "SpriteOffsetX": 80, "SpriteOffsetY": 40, "ExperienceReward": 180, "GoldReward": 3 }
+          {
+            "Name": "Kyarias",
+            "Level": 15,
+            "MaxHP": 1000,
+            "CurrentHP": 1000,
+            "Attack": 25,
+            "Defense": 20,
+            "Speed": 35,
+            "SpriteKey": "bosses/KazarthEndGame",
+            "ExperienceReward": 3000,
+            "GoldReward": 100
+          },
+          {
+            "Name": "Skeleton Warrior",
+            "Level": 10,
+            "MaxHP": 90,
+            "CurrentHP": 90,
+            "Attack": 16,
+            "Defense": 12,
+            "Speed": 12,
+            "SpriteKey": "knight",
+            "SpriteOffsetX": -80,
+            "SpriteOffsetY": -40,
+            "ExperienceReward": 200,
+            "GoldReward": 5
+          },
+          {
+            "Name": "Skeleton Warrior",
+            "Level": 10,
+            "MaxHP": 90,
+            "CurrentHP": 90,
+            "Attack": 16,
+            "Defense": 12,
+            "Speed": 12,
+            "SpriteKey": "knight",
+            "SpriteOffsetX": -40,
+            "SpriteOffsetY": -40,
+            "ExperienceReward": 200,
+            "GoldReward": 5
+          },
+          {
+            "Name": "Skeleton Warrior",
+            "Level": 10,
+            "MaxHP": 90,
+            "CurrentHP": 90,
+            "Attack": 16,
+            "Defense": 12,
+            "Speed": 12,
+            "SpriteKey": "knight",
+            "SpriteOffsetX": 0,
+            "SpriteOffsetY": -40,
+            "ExperienceReward": 200,
+            "GoldReward": 5
+          },
+          {
+            "Name": "Skeleton Warrior",
+            "Level": 10,
+            "MaxHP": 90,
+            "CurrentHP": 90,
+            "Attack": 16,
+            "Defense": 12,
+            "Speed": 12,
+            "SpriteKey": "knight",
+            "SpriteOffsetX": 40,
+            "SpriteOffsetY": -40,
+            "ExperienceReward": 200,
+            "GoldReward": 5
+          },
+          {
+            "Name": "Skeleton Warrior",
+            "Level": 10,
+            "MaxHP": 90,
+            "CurrentHP": 90,
+            "Attack": 16,
+            "Defense": 12,
+            "Speed": 12,
+            "SpriteKey": "knight",
+            "SpriteOffsetX": 80,
+            "SpriteOffsetY": -40,
+            "ExperienceReward": 200,
+            "GoldReward": 5
+          },
+          {
+            "Name": "Rotting Zombie",
+            "Level": 9,
+            "MaxHP": 120,
+            "CurrentHP": 120,
+            "Attack": 14,
+            "Defense": 6,
+            "Speed": 7,
+            "SpriteKey": "orc",
+            "SpriteOffsetX": -80,
+            "SpriteOffsetY": 40,
+            "ExperienceReward": 180,
+            "GoldReward": 3
+          },
+          {
+            "Name": "Rotting Zombie",
+            "Level": 9,
+            "MaxHP": 120,
+            "CurrentHP": 120,
+            "Attack": 14,
+            "Defense": 6,
+            "Speed": 7,
+            "SpriteKey": "orc",
+            "SpriteOffsetX": -40,
+            "SpriteOffsetY": 40,
+            "ExperienceReward": 180,
+            "GoldReward": 3
+          },
+          {
+            "Name": "Rotting Zombie",
+            "Level": 9,
+            "MaxHP": 120,
+            "CurrentHP": 120,
+            "Attack": 14,
+            "Defense": 6,
+            "Speed": 7,
+            "SpriteKey": "orc",
+            "SpriteOffsetX": 0,
+            "SpriteOffsetY": 40,
+            "ExperienceReward": 180,
+            "GoldReward": 3
+          },
+          {
+            "Name": "Rotting Zombie",
+            "Level": 9,
+            "MaxHP": 120,
+            "CurrentHP": 120,
+            "Attack": 14,
+            "Defense": 6,
+            "Speed": 7,
+            "SpriteKey": "orc",
+            "SpriteOffsetX": 40,
+            "SpriteOffsetY": 40,
+            "ExperienceReward": 180,
+            "GoldReward": 3
+          },
+          {
+            "Name": "Rotting Zombie",
+            "Level": 9,
+            "MaxHP": 120,
+            "CurrentHP": 120,
+            "Attack": 14,
+            "Defense": 6,
+            "Speed": 7,
+            "SpriteKey": "orc",
+            "SpriteOffsetX": 80,
+            "SpriteOffsetY": 40,
+            "ExperienceReward": 180,
+            "GoldReward": 3
+          }
         ],
         "Allies": [
-          { "Name": "Darius", "Level": 12, "MaxHP": 200, "CurrentHP": 200, "Attack": 30, "Defense": 15, "Speed": 16, "SpriteKey": "bosses/Darius" },
-          { "Name": "Tywin", "Level": 12, "MaxHP": 185, "CurrentHP": 185, "Attack": 26, "Defense": 20, "Speed": 18, "SpriteKey": "bosses/Tywin" }
+          {
+            "Name": "Darius",
+            "Level": 12,
+            "MaxHP": 200,
+            "CurrentHP": 200,
+            "Attack": 30,
+            "Defense": 15,
+            "Speed": 16,
+            "SpriteKey": "bosses/Darius"
+          },
+          {
+            "Name": "Tywin",
+            "Level": 12,
+            "MaxHP": 185,
+            "CurrentHP": 185,
+            "Attack": 26,
+            "Defense": 20,
+            "Speed": 18,
+            "SpriteKey": "bosses/Tywin"
+          }
         ],
         "BackgroundKey": "throne_room"
       }

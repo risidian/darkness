@@ -4,7 +4,9 @@
   "IsMainStory": true,
   "SortOrder": 9,
   "ArcId": "arc_1",
-  "Prerequisites": ["beat_8"],
+  "Prerequisites": [
+    "beat_8"
+  ],
   "Steps": [
     {
       "Id": "beat_9_join",
@@ -82,11 +84,40 @@
       "NextStepId": "beat_9_after",
       "Combat": {
         "Enemies": [
-          { "Name": "Tauros", "Level": 10, "MaxHP": 620, "CurrentHP": 620, "Attack": 22, "Defense": 18, "Speed": 14, "SpriteKey": "bosses/Raknith", "ExperienceReward": 2000, "GoldReward": 40 }
+          {
+            "Name": "Tauros",
+            "Level": 10,
+            "MaxHP": 620,
+            "CurrentHP": 620,
+            "Attack": 22,
+            "Defense": 18,
+            "Speed": 14,
+            "SpriteKey": "bosses/Raknith",
+            "ExperienceReward": 2000,
+            "GoldReward": 40
+          }
         ],
         "Allies": [
-          { "Name": "Darius", "Level": 9, "MaxHP": 150, "CurrentHP": 150, "Attack": 24, "Defense": 12, "Speed": 15, "SpriteKey": "bosses/Darius" },
-          { "Name": "Tywin", "Level": 9, "MaxHP": 140, "CurrentHP": 140, "Attack": 20, "Defense": 16, "Speed": 17, "SpriteKey": "bosses/Tywin" }
+          {
+            "Name": "Darius",
+            "Level": 9,
+            "MaxHP": 150,
+            "CurrentHP": 150,
+            "Attack": 24,
+            "Defense": 12,
+            "Speed": 15,
+            "SpriteKey": "bosses/Darius"
+          },
+          {
+            "Name": "Tywin",
+            "Level": 9,
+            "MaxHP": 140,
+            "CurrentHP": 140,
+            "Attack": 20,
+            "Defense": 16,
+            "Speed": 17,
+            "SpriteKey": "bosses/Tywin"
+          }
         ],
         "BackgroundKey": "cliff"
       }

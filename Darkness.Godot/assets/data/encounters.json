@@ -18,7 +18,21 @@
               "Speed": 10,
               "SpriteKey": "hound",
               "ExperienceReward": 15,
-              "GoldReward": 1
+              "GoldReward": 1,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.3
+                },
+                {
+                  "ItemName": "Leather Scraps",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Simple Dagger",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "camelot_shore_2"
@@ -38,7 +52,21 @@
               "Speed": 5,
               "SpriteKey": "crab",
               "ExperienceReward": 20,
-              "GoldReward": 2
+              "GoldReward": 2,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.3
+                },
+                {
+                  "ItemName": "Leather Scraps",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Simple Dagger",
+                  "Chance": 0.1
+                }
+              ]
             },
             {
               "Name": "Shore Crab",
@@ -50,7 +78,21 @@
               "Speed": 5,
               "SpriteKey": "crab",
               "ExperienceReward": 20,
-              "GoldReward": 2
+              "GoldReward": 2,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.3
+                },
+                {
+                  "ItemName": "Leather Scraps",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Simple Dagger",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "camelot_shore_2"
@@ -70,7 +112,21 @@
               "Speed": 8,
               "SpriteKey": "goblin",
               "ExperienceReward": 25,
-              "GoldReward": 3
+              "GoldReward": 3,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.3
+                },
+                {
+                  "ItemName": "Leather Scraps",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Simple Dagger",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "camelot_shore_2"
@@ -90,7 +146,21 @@
               "Speed": 12,
               "SpriteKey": "seagull",
               "ExperienceReward": 10,
-              "GoldReward": 1
+              "GoldReward": 1,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.3
+                },
+                {
+                  "ItemName": "Leather Scraps",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Simple Dagger",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "camelot_shore_2"
@@ -117,7 +187,21 @@
               "Speed": 11,
               "SpriteKey": "wolf",
               "ExperienceReward": 30,
-              "GoldReward": 2
+              "GoldReward": 2,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Iron Sword",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Iron Ore",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "forest"
@@ -137,7 +221,21 @@
               "Speed": 9,
               "SpriteKey": "goblin",
               "ExperienceReward": 35,
-              "GoldReward": 5
+              "GoldReward": 5,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Iron Sword",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Iron Ore",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "forest"
@@ -157,7 +255,21 @@
               "Speed": 8,
               "SpriteKey": "bandit",
               "ExperienceReward": 50,
-              "GoldReward": 10
+              "GoldReward": 10,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Iron Sword",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Iron Ore",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "forest"
@@ -184,7 +296,29 @@
               "Speed": 7,
               "SpriteKey": "skeleton",
               "ExperienceReward": 120,
-              "GoldReward": 15
+              "GoldReward": 15,
+              "RandomDrops": [
+                {
+                  "ItemName": "Large Mana Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Large Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Dark Ore",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Dark Helm",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Shadow Blade",
+                  "Chance": 0.05
+                }
+              ]
             }
           ],
           "BackgroundKey": "dark_castle"
@@ -204,7 +338,29 @@
               "Speed": 12,
               "SpriteKey": "wraith",
               "ExperienceReward": 150,
-              "GoldReward": 20
+              "GoldReward": 20,
+              "RandomDrops": [
+                {
+                  "ItemName": "Large Mana Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Large Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Dark Ore",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Dark Helm",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Shadow Blade",
+                  "Chance": 0.05
+                }
+              ]
             }
           ],
           "BackgroundKey": "dark_castle"
@@ -224,7 +380,29 @@
               "Speed": 6,
               "SpriteKey": "knight",
               "ExperienceReward": 200,
-              "GoldReward": 35
+              "GoldReward": 35,
+              "RandomDrops": [
+                {
+                  "ItemName": "Large Mana Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Large Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Dark Ore",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Dark Helm",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Shadow Blade",
+                  "Chance": 0.05
+                }
+              ]
             }
           ],
           "BackgroundKey": "dark_castle"
@@ -251,7 +429,25 @@
               "Speed": 8,
               "SpriteKey": "soldier",
               "ExperienceReward": 80,
-              "GoldReward": 8
+              "GoldReward": 8,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Mana Potion",
+                  "Chance": 0.2
+                },
+                {
+                  "ItemName": "Large Health Potion",
+                  "Chance": 0.2
+                },
+                {
+                  "ItemName": "Steel Chest",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Steel Ingot",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "battlefield"
@@ -271,7 +467,25 @@
               "Speed": 9,
               "SpriteKey": "crossbowman",
               "ExperienceReward": 90,
-              "GoldReward": 12
+              "GoldReward": 12,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Mana Potion",
+                  "Chance": 0.2
+                },
+                {
+                  "ItemName": "Large Health Potion",
+                  "Chance": 0.2
+                },
+                {
+                  "ItemName": "Steel Chest",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Steel Ingot",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "battlefield"
@@ -291,7 +505,29 @@
               "Speed": 7,
               "SpriteKey": "mercenary",
               "ExperienceReward": 110,
-              "GoldReward": 18
+              "GoldReward": 18,
+              "RandomDrops": [
+                {
+                  "ItemName": "Large Mana Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Large Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Dark Ore",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Dark Helm",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Shadow Blade",
+                  "Chance": 0.05
+                }
+              ]
             }
           ],
           "BackgroundKey": "battlefield"
@@ -318,7 +554,21 @@
               "Speed": 6,
               "SpriteKey": "crab",
               "ExperienceReward": 40,
-              "GoldReward": 3
+              "GoldReward": 3,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Health Potion",
+                  "Chance": 0.25
+                },
+                {
+                  "ItemName": "Iron Sword",
+                  "Chance": 0.08
+                },
+                {
+                  "ItemName": "Iron Ore",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "camelot_shore_2"
@@ -338,7 +588,25 @@
               "Speed": 10,
               "SpriteKey": "pirate",
               "ExperienceReward": 60,
-              "GoldReward": 15
+              "GoldReward": 15,
+              "RandomDrops": [
+                {
+                  "ItemName": "Small Mana Potion",
+                  "Chance": 0.2
+                },
+                {
+                  "ItemName": "Large Health Potion",
+                  "Chance": 0.2
+                },
+                {
+                  "ItemName": "Steel Chest",
+                  "Chance": 0.1
+                },
+                {
+                  "ItemName": "Steel Ingot",
+                  "Chance": 0.1
+                }
+              ]
             }
           ],
           "BackgroundKey": "camelot_shore_2"

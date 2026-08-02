@@ -8,11 +8,38 @@
     "RequiredLevel": 1,
     "UnlockRequirement": null,
     "Enemies": [
-      { "Name": "Goblin Scout", "Level": 1, "MaxHP": 30, "CurrentHP": 30, "Attack": 5, "Defense": 2, "Speed": 4, "Accuracy": 75, "ExperienceReward": 25, "SpriteKey": "goblin" },
-      { "Name": "Goblin Runt", "Level": 1, "MaxHP": 20, "CurrentHP": 20, "Attack": 4, "Defense": 1, "Speed": 5, "Accuracy": 70, "ExperienceReward": 15, "SpriteKey": "goblin" }
+      {
+        "Name": "Goblin Scout",
+        "Level": 1,
+        "MaxHP": 30,
+        "CurrentHP": 30,
+        "Attack": 5,
+        "Defense": 2,
+        "Speed": 4,
+        "Accuracy": 75,
+        "ExperienceReward": 25,
+        "SpriteKey": "goblin"
+      },
+      {
+        "Name": "Goblin Runt",
+        "Level": 1,
+        "MaxHP": 20,
+        "CurrentHP": 20,
+        "Attack": 4,
+        "Defense": 1,
+        "Speed": 5,
+        "Accuracy": 70,
+        "ExperienceReward": 15,
+        "SpriteKey": "goblin"
+      }
     ],
     "Rewards": [
-      { "Name": "Rusty Dagger", "Type": "Weapon", "Value": 5, "AttackBonus": 1 }
+      {
+        "Name": "Rusty Dagger",
+        "Type": "Weapon",
+        "Value": 5,
+        "AttackBonus": 1
+      }
     ]
   },
   {
@@ -24,11 +51,38 @@
     "RequiredLevel": 3,
     "UnlockRequirement": 1,
     "Enemies": [
-      { "Name": "Goblin Warrior", "Level": 2, "MaxHP": 40, "CurrentHP": 40, "Attack": 7, "Defense": 3, "Speed": 4, "Accuracy": 75, "ExperienceReward": 40, "SpriteKey": "goblin" },
-      { "Name": "Goblin Shaman", "Level": 2, "MaxHP": 30, "CurrentHP": 30, "Attack": 9, "Defense": 2, "Speed": 3, "Accuracy": 80, "ExperienceReward": 50, "SpriteKey": "goblin" }
+      {
+        "Name": "Goblin Warrior",
+        "Level": 2,
+        "MaxHP": 40,
+        "CurrentHP": 40,
+        "Attack": 7,
+        "Defense": 3,
+        "Speed": 4,
+        "Accuracy": 75,
+        "ExperienceReward": 40,
+        "SpriteKey": "goblin"
+      },
+      {
+        "Name": "Goblin Shaman",
+        "Level": 2,
+        "MaxHP": 30,
+        "CurrentHP": 30,
+        "Attack": 9,
+        "Defense": 2,
+        "Speed": 3,
+        "Accuracy": 80,
+        "ExperienceReward": 50,
+        "SpriteKey": "goblin"
+      }
     ],
     "Rewards": [
-      { "Name": "Bone Sword", "Type": "Weapon", "Value": 20, "AttackBonus": 3 }
+      {
+        "Name": "Bone Sword",
+        "Type": "Weapon",
+        "Value": 20,
+        "AttackBonus": 3
+      }
     ]
   },
   {
@@ -40,11 +94,38 @@
     "RequiredLevel": 5,
     "UnlockRequirement": 2,
     "Enemies": [
-      { "Name": "Orc Scout", "Level": 4, "MaxHP": 60, "CurrentHP": 60, "Attack": 10, "Defense": 5, "Speed": 4, "Accuracy": 78, "ExperienceReward": 60, "SpriteKey": "orc" },
-      { "Name": "Orc Archer", "Level": 4, "MaxHP": 45, "CurrentHP": 45, "Attack": 12, "Defense": 3, "Speed": 5, "Accuracy": 85, "ExperienceReward": 65, "SpriteKey": "orc" }
+      {
+        "Name": "Orc Scout",
+        "Level": 4,
+        "MaxHP": 60,
+        "CurrentHP": 60,
+        "Attack": 10,
+        "Defense": 5,
+        "Speed": 4,
+        "Accuracy": 78,
+        "ExperienceReward": 60,
+        "SpriteKey": "orc"
+      },
+      {
+        "Name": "Orc Archer",
+        "Level": 4,
+        "MaxHP": 45,
+        "CurrentHP": 45,
+        "Attack": 12,
+        "Defense": 3,
+        "Speed": 5,
+        "Accuracy": 85,
+        "ExperienceReward": 65,
+        "SpriteKey": "orc"
+      }
     ],
     "Rewards": [
-      { "Name": "Orcish Buckler", "Type": "Shield", "Value": 40, "DefenseBonus": 4 }
+      {
+        "Name": "Orcish Buckler",
+        "Type": "Shield",
+        "Value": 40,
+        "DefenseBonus": 4
+      }
     ]
   },
   {
@@ -56,11 +137,38 @@
     "RequiredLevel": 7,
     "UnlockRequirement": 3,
     "Enemies": [
-      { "Name": "Orc Grunt", "Level": 5, "MaxHP": 75, "CurrentHP": 75, "Attack": 12, "Defense": 6, "Speed": 4, "Accuracy": 80, "ExperienceReward": 80, "SpriteKey": "orc" },
-      { "Name": "Orc Berserker", "Level": 6, "MaxHP": 70, "CurrentHP": 70, "Attack": 16, "Defense": 4, "Speed": 6, "Accuracy": 75, "ExperienceReward": 90, "SpriteKey": "orc" }
+      {
+        "Name": "Orc Grunt",
+        "Level": 5,
+        "MaxHP": 75,
+        "CurrentHP": 75,
+        "Attack": 12,
+        "Defense": 6,
+        "Speed": 4,
+        "Accuracy": 80,
+        "ExperienceReward": 80,
+        "SpriteKey": "orc"
+      },
+      {
+        "Name": "Orc Berserker",
+        "Level": 6,
+        "MaxHP": 70,
+        "CurrentHP": 70,
+        "Attack": 16,
+        "Defense": 4,
+        "Speed": 6,
+        "Accuracy": 75,
+        "ExperienceReward": 90,
+        "SpriteKey": "orc"
+      }
     ],
     "Rewards": [
-      { "Name": "Orcish Axe", "Type": "Weapon", "Value": 60, "AttackBonus": 8 }
+      {
+        "Name": "Orcish Axe",
+        "Type": "Weapon",
+        "Value": 60,
+        "AttackBonus": 8
+      }
     ]
   },
   {
@@ -72,11 +180,38 @@
     "RequiredLevel": 10,
     "UnlockRequirement": 4,
     "Enemies": [
-      { "Name": "Dark Knight", "Level": 7, "MaxHP": 100, "CurrentHP": 100, "Attack": 16, "Defense": 9, "Speed": 5, "Accuracy": 82, "ExperienceReward": 120, "SpriteKey": "knight" },
-      { "Name": "Dark Mage", "Level": 7, "MaxHP": 70, "CurrentHP": 70, "Attack": 20, "Defense": 5, "Speed": 4, "Accuracy": 88, "ExperienceReward": 130, "SpriteKey": "wraith" }
+      {
+        "Name": "Dark Knight",
+        "Level": 7,
+        "MaxHP": 100,
+        "CurrentHP": 100,
+        "Attack": 16,
+        "Defense": 9,
+        "Speed": 5,
+        "Accuracy": 82,
+        "ExperienceReward": 120,
+        "SpriteKey": "knight"
+      },
+      {
+        "Name": "Dark Mage",
+        "Level": 7,
+        "MaxHP": 70,
+        "CurrentHP": 70,
+        "Attack": 20,
+        "Defense": 5,
+        "Speed": 4,
+        "Accuracy": 88,
+        "ExperienceReward": 130,
+        "SpriteKey": "wraith"
+      }
     ],
     "Rewards": [
-      { "Name": "Shadow Blade", "Type": "Weapon", "Value": 100, "AttackBonus": 14 }
+      {
+        "Name": "Shadow Blade",
+        "Type": "Weapon",
+        "Value": 100,
+        "AttackBonus": 14
+      }
     ]
   },
   {
@@ -88,11 +223,37 @@
     "RequiredLevel": 12,
     "UnlockRequirement": 5,
     "Enemies": [
-      { "Name": "Shadow Wraith", "Level": 9, "MaxHP": 130, "CurrentHP": 130, "Attack": 20, "Defense": 11, "Speed": 7, "Accuracy": 85, "ExperienceReward": 160, "SpriteKey": "wraith" },
-      { "Name": "Void Stalker", "Level": 9, "MaxHP": 110, "CurrentHP": 110, "Attack": 22, "Defense": 8, "Speed": 8, "Accuracy": 90, "ExperienceReward": 170, "SpriteKey": "skeleton" }
+      {
+        "Name": "Shadow Wraith",
+        "Level": 9,
+        "MaxHP": 130,
+        "CurrentHP": 130,
+        "Attack": 20,
+        "Defense": 11,
+        "Speed": 7,
+        "Accuracy": 85,
+        "ExperienceReward": 160,
+        "SpriteKey": "wraith"
+      },
+      {
+        "Name": "Void Stalker",
+        "Level": 9,
+        "MaxHP": 110,
+        "CurrentHP": 110,
+        "Attack": 22,
+        "Defense": 8,
+        "Speed": 8,
+        "Accuracy": 90,
+        "ExperienceReward": 170,
+        "SpriteKey": "skeleton"
+      }
     ],
     "Rewards": [
-      { "Name": "Void Essence", "Type": "Material", "Value": 80 }
+      {
+        "Name": "Void Essence",
+        "Type": "Material",
+        "Value": 80
+      }
     ]
   },
   {
@@ -104,11 +265,37 @@
     "RequiredLevel": 15,
     "UnlockRequirement": 6,
     "Enemies": [
-      { "Name": "Demon Lord", "Level": 12, "MaxHP": 180, "CurrentHP": 180, "Attack": 28, "Defense": 15, "Speed": 6, "Accuracy": 88, "ExperienceReward": 250, "SpriteKey": "bosses/Balgathor" },
-      { "Name": "Demon Soldier", "Level": 11, "MaxHP": 140, "CurrentHP": 140, "Attack": 22, "Defense": 12, "Speed": 5, "Accuracy": 85, "ExperienceReward": 200, "SpriteKey": "mercenary" }
+      {
+        "Name": "Demon Lord",
+        "Level": 12,
+        "MaxHP": 180,
+        "CurrentHP": 180,
+        "Attack": 28,
+        "Defense": 15,
+        "Speed": 6,
+        "Accuracy": 88,
+        "ExperienceReward": 250,
+        "SpriteKey": "bosses/Balgathor"
+      },
+      {
+        "Name": "Demon Soldier",
+        "Level": 11,
+        "MaxHP": 140,
+        "CurrentHP": 140,
+        "Attack": 22,
+        "Defense": 12,
+        "Speed": 5,
+        "Accuracy": 85,
+        "ExperienceReward": 200,
+        "SpriteKey": "mercenary"
+      }
     ],
     "Rewards": [
-      { "Name": "Demon's Heart", "Type": "Material", "Value": 200 }
+      {
+        "Name": "Demon's Heart",
+        "Type": "Material",
+        "Value": 200
+      }
     ]
   },
   {
@@ -120,11 +307,37 @@
     "RequiredLevel": 20,
     "UnlockRequirement": 7,
     "Enemies": [
-      { "Name": "Dragon Overlord", "Level": 15, "MaxHP": 250, "CurrentHP": 250, "Attack": 40, "Defense": 20, "Speed": 7, "Accuracy": 90, "ExperienceReward": 400, "SpriteKey": "bosses/KazarthEndGame" },
-      { "Name": "Dragon Whelp", "Level": 13, "MaxHP": 150, "CurrentHP": 150, "Attack": 28, "Defense": 14, "Speed": 6, "Accuracy": 85, "ExperienceReward": 250, "SpriteKey": "skeleton" }
+      {
+        "Name": "Dragon Overlord",
+        "Level": 15,
+        "MaxHP": 250,
+        "CurrentHP": 250,
+        "Attack": 40,
+        "Defense": 20,
+        "Speed": 7,
+        "Accuracy": 90,
+        "ExperienceReward": 400,
+        "SpriteKey": "bosses/KazarthEndGame"
+      },
+      {
+        "Name": "Dragon Whelp",
+        "Level": 13,
+        "MaxHP": 150,
+        "CurrentHP": 150,
+        "Attack": 28,
+        "Defense": 14,
+        "Speed": 6,
+        "Accuracy": 85,
+        "ExperienceReward": 250,
+        "SpriteKey": "skeleton"
+      }
     ],
     "Rewards": [
-      { "Name": "Dragon Scale", "Type": "Material", "Value": 500 }
+      {
+        "Name": "Dragon Scale",
+        "Type": "Material",
+        "Value": 500
+      }
     ]
   }
 ]

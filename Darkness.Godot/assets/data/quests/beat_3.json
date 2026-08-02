@@ -4,7 +4,9 @@
   "IsMainStory": true,
   "SortOrder": 3,
   "ArcId": "arc_1",
-  "Prerequisites": ["beat_2"],
+  "Prerequisites": [
+    "beat_2"
+  ],
   "Steps": [
     {
       "Id": "beat_3_intro",
@@ -61,15 +63,65 @@
       "Type": "combat",
       "AutoTransition": false,
       "NextStepId": "beat_3_after",
-      "Location": { "LocationKey": "SandyShore_East" },
+      "Location": {
+        "LocationKey": "SandyShore_East"
+      },
       "Combat": {
         "Enemies": [
-          { "Name": "Hell Hound Alpha", "Level": 2, "MaxHP": 34, "CurrentHP": 34, "Attack": 8, "Defense": 4, "Speed": 13, "SpriteKey": "hound", "SpriteOffsetX": -20, "SpriteOffsetY": 20, "ExperienceReward": 90, "GoldReward": 3 },
-          { "Name": "Hell Hound Beta", "Level": 1, "MaxHP": 22, "CurrentHP": 22, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "SpriteOffsetX": 20, "SpriteOffsetY": 0, "ExperienceReward": 75, "GoldReward": 2 },
-          { "Name": "Hell Hound Gamma", "Level": 1, "MaxHP": 22, "CurrentHP": 22, "Attack": 6, "Defense": 3, "Speed": 12, "SpriteKey": "hound", "SpriteOffsetX": -20, "SpriteOffsetY": -20, "ExperienceReward": 75, "GoldReward": 2 }
+          {
+            "Name": "Hell Hound Alpha",
+            "Level": 2,
+            "MaxHP": 34,
+            "CurrentHP": 34,
+            "Attack": 8,
+            "Defense": 4,
+            "Speed": 13,
+            "SpriteKey": "hound",
+            "SpriteOffsetX": -20,
+            "SpriteOffsetY": 20,
+            "ExperienceReward": 90,
+            "GoldReward": 3
+          },
+          {
+            "Name": "Hell Hound Beta",
+            "Level": 1,
+            "MaxHP": 22,
+            "CurrentHP": 22,
+            "Attack": 6,
+            "Defense": 3,
+            "Speed": 12,
+            "SpriteKey": "hound",
+            "SpriteOffsetX": 20,
+            "SpriteOffsetY": 0,
+            "ExperienceReward": 75,
+            "GoldReward": 2
+          },
+          {
+            "Name": "Hell Hound Gamma",
+            "Level": 1,
+            "MaxHP": 22,
+            "CurrentHP": 22,
+            "Attack": 6,
+            "Defense": 3,
+            "Speed": 12,
+            "SpriteKey": "hound",
+            "SpriteOffsetX": -20,
+            "SpriteOffsetY": -20,
+            "ExperienceReward": 75,
+            "GoldReward": 2
+          }
         ],
         "Allies": [
-          { "Name": "Darius", "Level": 2, "MaxHP": 42, "CurrentHP": 42, "Attack": 9, "Defense": 5, "Speed": 12, "SpriteKey": "bosses/Darius" }
+          {
+            "Name": "Darius",
+            "Level": 2,
+            "MaxHP": 42,
+            "CurrentHP": 42,
+            "Attack": 9,
+            "Defense": 5,
+            "Speed": 12,
+            "SpriteKey": "bosses/Darius"
+          }
         ],
         "BackgroundKey": "camelot_shore_2"
       }

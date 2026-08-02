@@ -4,7 +4,9 @@
   "IsMainStory": true,
   "SortOrder": 8,
   "ArcId": "arc_1",
-  "Prerequisites": ["beat_7"],
+  "Prerequisites": [
+    "beat_7"
+  ],
   "Steps": [
     {
       "Id": "beat_8_halt",
@@ -52,8 +54,16 @@
       },
       "Branch": {
         "Options": [
-          { "Text": "We're no shadow. But if a blade is the only word you trust - so be it.", "NextStepId": "beat_8_words", "MoralityImpact": 5 },
-          { "Text": "Stand aside or be moved.", "NextStepId": "beat_8_steel", "MoralityImpact": -5 }
+          {
+            "Text": "We're no shadow. But if a blade is the only word you trust - so be it.",
+            "NextStepId": "beat_8_words",
+            "MoralityImpact": 5
+          },
+          {
+            "Text": "Stand aside or be moved.",
+            "NextStepId": "beat_8_steel",
+            "MoralityImpact": -5
+          }
         ]
       }
     },
@@ -109,10 +119,30 @@
       "NextStepId": "beat_8_yield",
       "Combat": {
         "Enemies": [
-          { "Name": "Tywin", "Level": 6, "MaxHP": 250, "CurrentHP": 250, "Attack": 14, "Defense": 15, "Speed": 16, "SpriteKey": "bosses/Tywin", "ExperienceReward": 1000, "GoldReward": 0 }
+          {
+            "Name": "Tywin",
+            "Level": 6,
+            "MaxHP": 250,
+            "CurrentHP": 250,
+            "Attack": 14,
+            "Defense": 15,
+            "Speed": 16,
+            "SpriteKey": "bosses/Tywin",
+            "ExperienceReward": 1000,
+            "GoldReward": 0
+          }
         ],
         "Allies": [
-          { "Name": "Darius", "Level": 7, "MaxHP": 110, "CurrentHP": 110, "Attack": 18, "Defense": 10, "Speed": 14, "SpriteKey": "bosses/Darius" }
+          {
+            "Name": "Darius",
+            "Level": 7,
+            "MaxHP": 110,
+            "CurrentHP": 110,
+            "Attack": 18,
+            "Defense": 10,
+            "Speed": 14,
+            "SpriteKey": "bosses/Darius"
+          }
         ],
         "BackgroundKey": "road"
       }
