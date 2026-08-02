@@ -757,13 +757,7 @@ public partial class BattleScene : Control, IInitializable
             
             _enemySprites.Add(sprite);
 
-            if (enemy.SpriteKey == "hound")
-            {
-                sprite.Scale = new Vector2(2.5f, 2.5f);
-                await sprite.SetupMonster("hound", _fileSystem);
-                sprite.Play("idle");
-            }
-            else if (enemy.SpriteKey.StartsWith("bosses/"))
+            if (enemy.SpriteKey.StartsWith("bosses/"))
             {
                 sprite.Scale = new Vector2(2.5f, 2.5f);
                 await sprite.SetupFullSheet("assets/sprites/" + enemy.SpriteKey + ".png", _fileSystem);
@@ -779,17 +773,26 @@ public partial class BattleScene : Control, IInitializable
             else
             {
                 sprite.Scale = new Vector2(2.5f, 2.5f);
-                var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
-                await sprite.SetupCharacter(new Character
+                string sheetPath = "assets/sprites/" + enemy.SpriteKey + ".png";
+                if (global::Godot.FileAccess.FileExists("res://" + sheetPath) || global::Godot.ResourceLoader.Exists("res://" + sheetPath))
                 {
-                    SkinColor = knightAppearance.SkinColor,
-                    Head = "Human Male",
-                    ArmorType = knightAppearance.ArmorType,
-                    WeaponType = knightAppearance.WeaponType,
-                    Legs = knightAppearance.Legs,
-                    Feet = knightAppearance.Feet
-                }, _catalog, _fileSystem, _compositor);
-                sprite.Play("idle_left");
+                    await sprite.SetupFullSheet(sheetPath, _fileSystem);
+                    sprite.Play("idle_left");
+                }
+                else
+                {
+                    var knightAppearance = _catalog.GetDefaultAppearanceForClass("Knight");
+                    await sprite.SetupCharacter(new Character
+                    {
+                        SkinColor = knightAppearance.SkinColor,
+                        Head = "Human Male",
+                        ArmorType = knightAppearance.ArmorType,
+                        WeaponType = knightAppearance.WeaponType,
+                        Legs = knightAppearance.Legs,
+                        Feet = knightAppearance.Feet
+                    }, _catalog, _fileSystem, _compositor);
+                    sprite.Play("idle_left");
+                }
             }
 
             if (i == _selectedEnemyIndex) hpBar.SetHighlighted(true);
@@ -953,9 +956,7 @@ public partial class BattleScene : Control, IInitializable
 
             await ToSignal(GetTree().CreateTimer(0.5), "timeout");
 
-            string enemyAnim = enemy.SpriteKey == "hound"
-                ? "jump"
-                : (attackerSprite.HasAnimation("slash_left") ? "slash_left" : "walk_left");
+            string enemyAnim = "slash_left";
             var eOriginalPos = attackerSprite.Position;
             var eLungePos = eOriginalPos + new Vector2(-50, 0);
             var eTween = GetTree().CreateTween();
@@ -990,7 +991,7 @@ public partial class BattleScene : Control, IInitializable
             eReturnTween.TweenProperty(attackerSprite, "position", eOriginalPos, 0.15f)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
             await ToSignal(eReturnTween, "finished");
-            attackerSprite.Play(enemy.SpriteKey == "hound" ? "idle" : "idle_left");
+            attackerSprite.Play("idle_left");
 
             // A fallen party member drops out of the rotation but stays in _party for defeat counting.
             if (victim.CurrentHP <= 0)

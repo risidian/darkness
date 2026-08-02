@@ -36,7 +36,7 @@
               "Attack": 6,
               "Defense": 5,
               "Speed": 5,
-              "SpriteKey": "hound",
+              "SpriteKey": "crab",
               "ExperienceReward": 20,
               "GoldReward": 2
             },
@@ -48,7 +48,7 @@
               "Attack": 6,
               "Defense": 5,
               "Speed": 5,
-              "SpriteKey": "hound",
+              "SpriteKey": "crab",
               "ExperienceReward": 20,
               "GoldReward": 2
             }
@@ -68,7 +68,7 @@
               "Attack": 5,
               "Defense": 3,
               "Speed": 8,
-              "SpriteKey": "hound",
+              "SpriteKey": "goblin",
               "ExperienceReward": 25,
               "GoldReward": 3
             }
@@ -88,7 +88,7 @@
               "Attack": 4,
               "Defense": 1,
               "Speed": 12,
-              "SpriteKey": "hound",
+              "SpriteKey": "seagull",
               "ExperienceReward": 10,
               "GoldReward": 1
             }
@@ -115,7 +115,7 @@
               "Attack": 8,
               "Defense": 3,
               "Speed": 11,
-              "SpriteKey": "hound",
+              "SpriteKey": "wolf",
               "ExperienceReward": 30,
               "GoldReward": 2
             }
@@ -135,7 +135,7 @@
               "Attack": 7,
               "Defense": 4,
               "Speed": 9,
-              "SpriteKey": "hound",
+              "SpriteKey": "goblin",
               "ExperienceReward": 35,
               "GoldReward": 5
             }
@@ -155,7 +155,7 @@
               "Attack": 10,
               "Defense": 5,
               "Speed": 8,
-              "SpriteKey": "hound",
+              "SpriteKey": "bandit",
               "ExperienceReward": 50,
               "GoldReward": 10
             }
@@ -182,7 +182,7 @@
               "Attack": 16,
               "Defense": 9,
               "Speed": 7,
-              "SpriteKey": "hound",
+              "SpriteKey": "skeleton",
               "ExperienceReward": 120,
               "GoldReward": 15
             }
@@ -202,7 +202,7 @@
               "Attack": 18,
               "Defense": 6,
               "Speed": 12,
-              "SpriteKey": "hound",
+              "SpriteKey": "wraith",
               "ExperienceReward": 150,
               "GoldReward": 20
             }
@@ -222,7 +222,7 @@
               "Attack": 22,
               "Defense": 14,
               "Speed": 6,
-              "SpriteKey": "hound",
+              "SpriteKey": "knight",
               "ExperienceReward": 200,
               "GoldReward": 35
             }
@@ -249,7 +249,7 @@
               "Attack": 12,
               "Defense": 8,
               "Speed": 8,
-              "SpriteKey": "hound",
+              "SpriteKey": "soldier",
               "ExperienceReward": 80,
               "GoldReward": 8
             }
@@ -269,7 +269,7 @@
               "Attack": 14,
               "Defense": 6,
               "Speed": 9,
-              "SpriteKey": "hound",
+              "SpriteKey": "crossbowman",
               "ExperienceReward": 90,
               "GoldReward": 12
             }
@@ -289,7 +289,7 @@
               "Attack": 18,
               "Defense": 10,
               "Speed": 7,
-              "SpriteKey": "hound",
+              "SpriteKey": "mercenary",
               "ExperienceReward": 110,
               "GoldReward": 18
             }
@@ -316,7 +316,7 @@
               "Attack": 9,
               "Defense": 8,
               "Speed": 6,
-              "SpriteKey": "hound",
+              "SpriteKey": "crab",
               "ExperienceReward": 40,
               "GoldReward": 3
             }
@@ -336,7 +336,7 @@
               "Attack": 12,
               "Defense": 6,
               "Speed": 10,
-              "SpriteKey": "hound",
+              "SpriteKey": "pirate",
               "ExperienceReward": 60,
               "GoldReward": 15
             }

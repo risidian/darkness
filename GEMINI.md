@@ -70,6 +70,15 @@ Nothing is complete until: (1) implementer reports DONE with passing tests, (2) 
 ### 0.5 Communication
 Be concise; surface **decisions and blockers**, not process narration. Never ask "should I continue?" — if the plan is approved, execute; pause only for genuine blockers or ambiguity. When reporting status use: **Progress** (n/m), **Current**, **Blocked**, **Decisions needed**, then Completed ✅ / In Progress 🔄 / Remaining ⬜.
 
+**Output brevity rules (context-window conservation):**
+- **Never narrate process.** Don't say "I'm dispatching a researcher" or "waiting on results." Just do it silently and present findings.
+- **Never repeat subagent reports verbatim.** Summarize in 1–2 lines.
+- **Never echo progress tables more than once.** State what changed, not the whole table again.
+- **One-liner between tool calls.** If the system demands text output between calls, emit a single short sentence — not a paragraph.
+- **No filler.** Phrases like "Let me…", "Now I'll…", "Great, moving on to…" waste tokens. Cut them.
+- **Artifacts over inline.** Long-form content (plans, reports, analysis) goes into artifact files, not the chat stream.
+- **Target ≤3 lines** for any non-artifact response. If you need more, you're probably narrating.
+
 ### 0.6 Recovery
 After context compaction: trust `.superpowers/sdd/progress.md` and `git log -n 20` as ground truth, re-read the plan file, and **never re-dispatch a completed task**. On subagent failure: `NEEDS_CONTEXT` → provide it and re-dispatch; `BLOCKED` → diagnose (missing context? weaker model? task too large? plan wrong → escalate to user).
 
@@ -215,6 +224,9 @@ The repo is edited from both Windows and WSL on the same `/mnt/c` (drvfs) workin
 - `docs/ROADMAP.md` — Road to market (v1 = Arc 1, beats 1–10; Android/Play; phasing).
 - `docs/BACKLOG.md` — live action items + open questions for the product owner.
 - `docs/design/` — design specs & briefs (`arc-1-spec.md`, `arc-1-authoring-brief.md`, `arc-content-model.md`, `talent-subclass-trees.md`, `gdunit4-setup.md`, …).
+
+### 15c. Asset Generation (ComfyUI API)
+- `python scripts/generate_sprite.py --prompt "<description>" --output "Darkness.Godot/assets/sprites/<name>.png"` — Connects to local ComfyUI API (`http://127.0.0.1:8188`) to generate 16-bit retro pixel art sprite PNGs using FLUX GGUF models.
 
 ## 16. Project Conventions
 - .NET 10 with `ImplicitUsings`, `Nullable`, and `TreatWarningsAsErrors` enabled.

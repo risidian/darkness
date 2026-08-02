@@ -43,6 +43,11 @@ public partial class SettingsScene : Control
         _settingsService.SfxVolume = _sfxSlider.Value;
 
         await _settingsService.SaveSettingsAsync();
+        
+        // Apply volume changes immediately
+        var audioService = GetNode<Global>("/root/Global").Services!.GetRequiredService<IAudioService>();
+        audioService.ApplyVolumeSettings();
+
         await _navigation.GoBackAsync();
     }
 

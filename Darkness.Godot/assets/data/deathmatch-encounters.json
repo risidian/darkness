@@ -73,7 +73,7 @@
     "UnlockRequirement": 4,
     "Enemies": [
       { "Name": "Dark Knight", "Level": 7, "MaxHP": 100, "CurrentHP": 100, "Attack": 16, "Defense": 9, "Speed": 5, "Accuracy": 82, "ExperienceReward": 120, "SpriteKey": "knight" },
-      { "Name": "Dark Mage", "Level": 7, "MaxHP": 70, "CurrentHP": 70, "Attack": 20, "Defense": 5, "Speed": 4, "Accuracy": 88, "ExperienceReward": 130, "SpriteKey": "mage" }
+      { "Name": "Dark Mage", "Level": 7, "MaxHP": 70, "CurrentHP": 70, "Attack": 20, "Defense": 5, "Speed": 4, "Accuracy": 88, "ExperienceReward": 130, "SpriteKey": "wraith" }
     ],
     "Rewards": [
       { "Name": "Shadow Blade", "Type": "Weapon", "Value": 100, "AttackBonus": 14 }
@@ -88,8 +88,8 @@
     "RequiredLevel": 12,
     "UnlockRequirement": 5,
     "Enemies": [
-      { "Name": "Shadow Wraith", "Level": 9, "MaxHP": 130, "CurrentHP": 130, "Attack": 20, "Defense": 11, "Speed": 7, "Accuracy": 85, "ExperienceReward": 160, "SpriteKey": "knight" },
-      { "Name": "Void Stalker", "Level": 9, "MaxHP": 110, "CurrentHP": 110, "Attack": 22, "Defense": 8, "Speed": 8, "Accuracy": 90, "ExperienceReward": 170, "SpriteKey": "knight" }
+      { "Name": "Shadow Wraith", "Level": 9, "MaxHP": 130, "CurrentHP": 130, "Attack": 20, "Defense": 11, "Speed": 7, "Accuracy": 85, "ExperienceReward": 160, "SpriteKey": "wraith" },
+      { "Name": "Void Stalker", "Level": 9, "MaxHP": 110, "CurrentHP": 110, "Attack": 22, "Defense": 8, "Speed": 8, "Accuracy": 90, "ExperienceReward": 170, "SpriteKey": "skeleton" }
     ],
     "Rewards": [
       { "Name": "Void Essence", "Type": "Material", "Value": 80 }
@@ -104,8 +104,8 @@
     "RequiredLevel": 15,
     "UnlockRequirement": 6,
     "Enemies": [
-      { "Name": "Demon Lord", "Level": 12, "MaxHP": 180, "CurrentHP": 180, "Attack": 28, "Defense": 15, "Speed": 6, "Accuracy": 88, "ExperienceReward": 250, "SpriteKey": "knight" },
-      { "Name": "Demon Soldier", "Level": 11, "MaxHP": 140, "CurrentHP": 140, "Attack": 22, "Defense": 12, "Speed": 5, "Accuracy": 85, "ExperienceReward": 200, "SpriteKey": "knight" }
+      { "Name": "Demon Lord", "Level": 12, "MaxHP": 180, "CurrentHP": 180, "Attack": 28, "Defense": 15, "Speed": 6, "Accuracy": 88, "ExperienceReward": 250, "SpriteKey": "bosses/Balgathor" },
+      { "Name": "Demon Soldier", "Level": 11, "MaxHP": 140, "CurrentHP": 140, "Attack": 22, "Defense": 12, "Speed": 5, "Accuracy": 85, "ExperienceReward": 200, "SpriteKey": "mercenary" }
     ],
     "Rewards": [
       { "Name": "Demon's Heart", "Type": "Material", "Value": 200 }
@@ -120,8 +120,8 @@
     "RequiredLevel": 20,
     "UnlockRequirement": 7,
     "Enemies": [
-      { "Name": "Dragon Overlord", "Level": 15, "MaxHP": 250, "CurrentHP": 250, "Attack": 40, "Defense": 20, "Speed": 7, "Accuracy": 90, "ExperienceReward": 400, "SpriteKey": "knight" },
-      { "Name": "Dragon Whelp", "Level": 13, "MaxHP": 150, "CurrentHP": 150, "Attack": 28, "Defense": 14, "Speed": 6, "Accuracy": 85, "ExperienceReward": 250, "SpriteKey": "knight" }
+      { "Name": "Dragon Overlord", "Level": 15, "MaxHP": 250, "CurrentHP": 250, "Attack": 40, "Defense": 20, "Speed": 7, "Accuracy": 90, "ExperienceReward": 400, "SpriteKey": "bosses/KazarthEndGame" },
+      { "Name": "Dragon Whelp", "Level": 13, "MaxHP": 150, "CurrentHP": 150, "Attack": 28, "Defense": 14, "Speed": 6, "Accuracy": 85, "ExperienceReward": 250, "SpriteKey": "skeleton" }
     ],
     "Rewards": [
       { "Name": "Dragon Scale", "Type": "Material", "Value": 500 }

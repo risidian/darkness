@@ -26,14 +26,14 @@ public class ItemCloneTests
             ArmorClass = 4,
             DamageDice = "2d8",
             EquipmentSlot = "Weapon",
-            EquipmentSpriteId = 17,
             RequiredStrength = 14,
             RequiredDexterity = 12,
             RequiredIntelligence = 10,
             RequiredLevel = 8,
             Tier = 2,
             Infusion = "Fire",
-            Quantity = 5
+            Quantity = 5,
+            ClassRequirement = "Knight"
         };
 
         var clone = original.Clone();
@@ -55,7 +55,6 @@ public class ItemCloneTests
         Assert.Equal(original.ArmorClass, clone.ArmorClass);
         Assert.Equal(original.DamageDice, clone.DamageDice);
         Assert.Equal(original.EquipmentSlot, clone.EquipmentSlot);
-        Assert.Equal(original.EquipmentSpriteId, clone.EquipmentSpriteId);
         Assert.Equal(original.RequiredStrength, clone.RequiredStrength);
         Assert.Equal(original.RequiredDexterity, clone.RequiredDexterity);
         Assert.Equal(original.RequiredIntelligence, clone.RequiredIntelligence);
@@ -63,6 +62,7 @@ public class ItemCloneTests
         Assert.Equal(original.Tier, clone.Tier);
         Assert.Equal(original.Infusion, clone.Infusion);
         Assert.Equal(original.Quantity, clone.Quantity);
+        Assert.Equal(original.ClassRequirement, clone.ClassRequirement);
     }
 
     [Fact]

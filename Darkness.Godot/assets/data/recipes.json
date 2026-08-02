@@ -10,8 +10,7 @@
       "Value": 100,
       "Weight": 1,
       "DamageDice": "1d4",
-      "EquipmentSlot": "Weapon",
-      "EquipmentSpriteId": 101
+      "EquipmentSlot": "Weapon"
     },
     "Materials": { "Iron Ore": 2 }
   },
@@ -26,8 +25,7 @@
       "Value": 250,
       "Weight": 3,
       "DamageDice": "1d8",
-      "EquipmentSlot": "Weapon",
-      "EquipmentSpriteId": 102
+      "EquipmentSlot": "Weapon"
     },
     "Materials": { "Iron Ore": 5 }
   },
@@ -42,8 +40,7 @@
       "Value": 120,
       "Weight": 1,
       "DamageDice": "1d4",
-      "EquipmentSlot": "Weapon",
-      "EquipmentSpriteId": 103
+      "EquipmentSlot": "Weapon"
     },
     "Materials": { "Iron Scrap": 2, "Magic Essence": 1 }
   },
@@ -58,8 +55,7 @@
       "Value": 200,
       "Weight": 2,
       "DamageDice": "1d6",
-      "EquipmentSlot": "Weapon",
-      "EquipmentSpriteId": 104
+      "EquipmentSlot": "Weapon"
     },
     "Materials": { "Iron Ore": 1, "Magic Essence": 2 }
   },
@@ -74,8 +70,7 @@
       "Value": 220,
       "Weight": 2,
       "DamageDice": "1d6",
-      "EquipmentSlot": "Weapon",
-      "EquipmentSpriteId": 105
+      "EquipmentSlot": "Weapon"
     },
     "Materials": { "Leather Scraps": 3, "Iron Scrap": 1 }
   },
@@ -90,8 +85,7 @@
       "Value": 240,
       "Weight": 4,
       "DamageDice": "1d8",
-      "EquipmentSlot": "Weapon",
-      "EquipmentSpriteId": 106
+      "EquipmentSlot": "Weapon"
     },
     "Materials": { "Iron Ore": 4, "Iron Scrap": 2 }
   },
@@ -106,8 +100,7 @@
       "Value": 230,
       "Weight": 4,
       "DamageDice": "1d6",
-      "EquipmentSlot": "Weapon",
-      "EquipmentSpriteId": 107
+      "EquipmentSlot": "Weapon"
     },
     "Materials": { "Iron Ore": 3, "Iron Scrap": 3 }
   },
@@ -121,8 +114,7 @@
       "DefenseBonus": 2,
       "Value": 60,
       "Weight": 2,
-      "EquipmentSlot": "Shield",
-      "EquipmentSpriteId": 301
+      "EquipmentSlot": "Shield"
     },
     "Materials": { "Leather Scraps": 2, "Iron Scrap": 1 }
   },
@@ -136,8 +128,7 @@
       "DefenseBonus": 1,
       "Value": 80,
       "Weight": 1,
-      "EquipmentSlot": "Head",
-      "EquipmentSpriteId": 201
+      "EquipmentSlot": "Head"
     },
     "Materials": { "Leather Scraps": 2 }
   },
@@ -151,8 +142,7 @@
       "DefenseBonus": 3,
       "Value": 180,
       "Weight": 3,
-      "EquipmentSlot": "Body",
-      "EquipmentSpriteId": 202
+      "EquipmentSlot": "Body"
     },
     "Materials": { "Leather Scraps": 5 }
   },
@@ -166,8 +156,7 @@
       "DefenseBonus": 2,
       "Value": 130,
       "Weight": 2,
-      "EquipmentSlot": "Legs",
-      "EquipmentSpriteId": 203
+      "EquipmentSlot": "Legs"
     },
     "Materials": { "Leather Scraps": 4 }
   },
@@ -181,9 +170,159 @@
       "DefenseBonus": 1,
       "Value": 70,
       "Weight": 1,
-      "EquipmentSlot": "Feet",
-      "EquipmentSpriteId": 204
+      "EquipmentSlot": "Feet"
     },
     "Materials": { "Leather Scraps": 2 }
+  },
+  {
+    "Id": 13,
+    "Name": "Steel Ingot",
+    "Result": {
+      "Name": "Steel Ingot",
+      "Description": "Refined steel.",
+      "Type": "Material",
+      "Value": 50,
+      "Weight": 2,
+      "Quantity": 1
+    },
+    "Materials": { "Iron Ore": 2 }
+  },
+  {
+    "Id": 14,
+    "Name": "Steel Helm",
+    "Result": {
+      "Name": "Steel Helm",
+      "Description": "A sturdy steel helmet.",
+      "Type": "Armor",
+      "DefenseBonus": 4,
+      "Value": 350,
+      "Weight": 4,
+      "EquipmentSlot": "Head"
+    },
+    "Materials": { "Steel Ingot": 2, "Leather Scraps": 1 }
+  },
+  {
+    "Id": 15,
+    "Name": "Steel Chest",
+    "Result": {
+      "Name": "Steel Chest",
+      "Description": "A heavy steel breastplate.",
+      "Type": "Armor",
+      "DefenseBonus": 12,
+      "Value": 800,
+      "Weight": 10,
+      "EquipmentSlot": "Body"
+    },
+    "Materials": { "Steel Ingot": 5, "Leather Scraps": 2 }
+  },
+  {
+    "Id": 16,
+    "Name": "Steel Legs",
+    "Result": {
+      "Name": "Steel Legs",
+      "Description": "Thick steel greaves.",
+      "Type": "Armor",
+      "DefenseBonus": 7,
+      "Value": 500,
+      "Weight": 7,
+      "EquipmentSlot": "Legs"
+    },
+    "Materials": { "Steel Ingot": 4, "Leather Scraps": 1 }
+  },
+  {
+    "Id": 17,
+    "Name": "Steel Boots",
+    "Result": {
+      "Name": "Steel Boots",
+      "Description": "Solid steel boots.",
+      "Type": "Armor",
+      "DefenseBonus": 4,
+      "Value": 300,
+      "Weight": 4,
+      "EquipmentSlot": "Feet"
+    },
+    "Materials": { "Steel Ingot": 2, "Leather Scraps": 1 }
+  },
+  {
+    "Id": 18,
+    "Name": "Dark Helm",
+    "Result": {
+      "Name": "Dark Helm",
+      "Description": "A helmet forged from dark ore.",
+      "Type": "Armor",
+      "DefenseBonus": 6,
+      "Value": 700,
+      "Weight": 5,
+      "EquipmentSlot": "Head"
+    },
+    "Materials": { "Dark Ore": 2, "Steel Ingot": 1 }
+  },
+  {
+    "Id": 19,
+    "Name": "Dark Chest",
+    "Result": {
+      "Name": "Dark Chest",
+      "Description": "An impenetrable dark breastplate.",
+      "Type": "Armor",
+      "DefenseBonus": 16,
+      "Value": 1500,
+      "Weight": 12,
+      "EquipmentSlot": "Body"
+    },
+    "Materials": { "Dark Ore": 5, "Steel Ingot": 2 }
+  },
+  {
+    "Id": 20,
+    "Name": "Dark Legs",
+    "Result": {
+      "Name": "Dark Legs",
+      "Description": "Heavy dark greaves.",
+      "Type": "Armor",
+      "DefenseBonus": 10,
+      "Value": 1000,
+      "Weight": 8,
+      "EquipmentSlot": "Legs"
+    },
+    "Materials": { "Dark Ore": 4, "Steel Ingot": 1 }
+  },
+  {
+    "Id": 21,
+    "Name": "Dark Boots",
+    "Result": {
+      "Name": "Dark Boots",
+      "Description": "Weighted dark boots.",
+      "Type": "Armor",
+      "DefenseBonus": 6,
+      "Value": 600,
+      "Weight": 5,
+      "EquipmentSlot": "Feet"
+    },
+    "Materials": { "Dark Ore": 2, "Steel Ingot": 1 }
+  },
+  {
+    "Id": 22,
+    "Name": "Full Health Potion",
+    "Result": {
+      "Name": "Full Health Potion",
+      "Description": "Restores all HP.",
+      "Type": "Consumable",
+      "Value": 250,
+      "Weight": 1,
+      "Quantity": 1
+    },
+    "Materials": { "Light Essence": 2, "Magic Essence": 1 }
+  },
+  {
+    "Id": 23,
+    "Name": "Full Mana Potion",
+    "Result": {
+      "Name": "Full Mana Potion",
+      "Description": "Restores all MP.",
+      "Type": "Consumable",
+      "Value": 250,
+      "Weight": 1,
+      "Quantity": 1
+    },
+    "Materials": { "Magic Essence": 3 }
   }
 ]

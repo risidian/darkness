@@ -238,7 +238,7 @@ public class PartyBattleControllerTests
     public void SurvivalBeat_Victory_AfterSurvivingRequiredRounds_VsInvincibleBoss()
     {
         var party = new List<Character> { Pc("Hero"), Pc("Darius") };
-        var boss = Foe("Balgathor", invincible: true, hp: 999);
+        var boss = Foe("Dariartimous", invincible: true, hp: 999);
         var sut = new PartyBattleController(party, new List<Enemy> { boss }, survivalTurns: 5);
 
         Assert.True(sut.HasInvincibleBoss);
@@ -280,7 +280,7 @@ public class PartyBattleControllerTests
         {
             BackgroundKey = "cliff",
             SurvivalTurns = 5,
-            Enemies = { new EnemySpawn { Name = "Araknos", MaxHP = 120, Attack = 15 } },
+            Enemies = { new EnemySpawn { Name = "Tauros", MaxHP = 120, Attack = 15 } },
             Allies =
             {
                 new EnemySpawn { Name = "Darius", SpriteKey = "darius", MaxHP = 40, Attack = 8, Defense = 4, Speed = 6 },
@@ -297,7 +297,7 @@ public class PartyBattleControllerTests
         Assert.Equal("tywin", restored.Allies[1].SpriteKey);
         // Existing fields still round-trip unaffected.
         Assert.Single(restored.Enemies);
-        Assert.Equal("Araknos", restored.Enemies[0].Name);
+        Assert.Equal("Tauros", restored.Enemies[0].Name);
         Assert.Equal("cliff", restored.BackgroundKey);
         Assert.Equal(5, restored.SurvivalTurns);
     }

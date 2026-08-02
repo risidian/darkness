@@ -97,5 +97,41 @@ namespace Darkness.Tests.Models
             Assert.Contains("Strength 15", missing);
             Assert.Contains("Level 10", missing);
         }
+
+        [Fact]
+        public void CanEquip_ReturnsTrue_WhenClassMatches()
+        {
+            var character = new Character { Class = "Knight" };
+            var item = new Item { ClassRequirement = "Knight" };
+
+            var result = item.CanEquip(character, out var missing);
+
+            Assert.True(result);
+            Assert.Empty(missing);
+        }
+
+        [Fact]
+        public void CanEquip_ReturnsFalse_WhenClassDoesNotMatch()
+        {
+            var character = new Character { Class = "Mage" };
+            var item = new Item { ClassRequirement = "Knight" };
+
+            var result = item.CanEquip(character, out var missing);
+
+            Assert.False(result);
+            Assert.Contains("Class Knight", missing);
+        }
+
+        [Fact]
+        public void CanEquip_ReturnsTrue_WhenClassRequirementIsNull()
+        {
+            var character = new Character { Class = "Rogue" };
+            var item = new Item { ClassRequirement = null };
+
+            var result = item.CanEquip(character, out var missing);
+
+            Assert.True(result);
+            Assert.Empty(missing);
+        }
     }
 }

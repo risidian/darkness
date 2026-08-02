@@ -107,17 +107,23 @@ public class QuestSeederTests : IDisposable
         Assert.Equal(2, _db.GetCollection<QuestChain>("quest_chains").Count());
     }
 
+    private static string FindSolutionRoot([System.Runtime.CompilerServices.CallerFilePath] string callerPath = "")
+    {
+        var current = Path.GetDirectoryName(callerPath);
+        while (!string.IsNullOrEmpty(current) && Directory.GetFiles(current, "Darkness.sln").Length == 0)
+        {
+            current = Path.GetDirectoryName(current);
+        }
+        return current ?? throw new Exception("Could not find Darkness.sln root");
+    }
+
     [Fact]
     public void Regression_AllLiveDataFiles_AreValidJson()
     {
         // This test recursively checks ALL JSON files in the assets/data directory
         // to ensure no syntax errors exist in any game data.
-        string dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../Darkness.Godot/assets/data");
-        
-        if (!Directory.Exists(dataDir))
-        {
-            dataDir = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../../../Darkness.Godot/assets/data"));
-        }
+        var root = FindSolutionRoot();
+        var dataDir = Path.Combine(root, "Darkness.Godot", "assets", "data");
 
         Assert.True(Directory.Exists(dataDir), $"Data directory not found at: {dataDir}");
 

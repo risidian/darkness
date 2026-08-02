@@ -163,7 +163,7 @@ namespace Darkness.Tests.Services
             {
                 Id = 2,
                 Username = "fituser",
-                LastLogin = DateTime.Today.AddDays(-1)
+                LastLogin = DateTime.UtcNow.AddDays(-1)
             };
             _db.GetCollection<User>("users").Insert(user);
 

@@ -38,14 +38,14 @@
         "BackgroundKey": "cliff",
         "GroundColor": "#3a2e26",
         "Npc": {
-          "Name": "Araknos",
+          "Name": "Tauros",
           "SpriteKey": "bosses/Raknith",
           "PositionX": 660,
           "PositionY": 260
         }
       },
       "Dialogue": {
-        "Speaker": "Araknos",
+        "Speaker": "Tauros",
         "Lines": [
           "Thirteen feet of horn and hate, and it smells you on the wind.",
           "Ember eyes. A greataxe the size of a door. A hide that has turned every blade ever raised against it.",
@@ -82,7 +82,7 @@
       "NextStepId": "beat_9_after",
       "Combat": {
         "Enemies": [
-          { "Name": "Araknos", "Level": 10, "MaxHP": 620, "CurrentHP": 620, "Attack": 22, "Defense": 18, "Speed": 14, "SpriteKey": "bosses/Raknith", "ExperienceReward": 2000, "GoldReward": 40 }
+          { "Name": "Tauros", "Level": 10, "MaxHP": 620, "CurrentHP": 620, "Attack": 22, "Defense": 18, "Speed": 14, "SpriteKey": "bosses/Raknith", "ExperienceReward": 2000, "GoldReward": 40 }
         ],
         "Allies": [
           { "Name": "Darius", "Level": 9, "MaxHP": 150, "CurrentHP": 150, "Attack": 24, "Defense": 12, "Speed": 15, "SpriteKey": "bosses/Darius" },

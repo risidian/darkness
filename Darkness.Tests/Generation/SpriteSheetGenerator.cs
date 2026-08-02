@@ -72,17 +72,17 @@ public class SpriteSheetGenerator : IDisposable
         _compositor = new SkiaSharpSpriteCompositor();
     }
 
-    private static string FindSeedFile()
+    private static string FindSeedFile([System.Runtime.CompilerServices.CallerFilePath] string callerPath = "")
     {
-        var dir = Directory.GetCurrentDirectory();
+        var dir = Path.GetDirectoryName(callerPath);
         while (dir != null && !File.Exists(Path.Combine(dir, "Darkness.sln")))
             dir = Directory.GetParent(dir)?.FullName;
         return Path.Combine(dir!, "Darkness.Godot", "assets", "data", "sprite-catalog.json");
     }
 
-    private static string GetProjectRoot()
+    private static string GetProjectRoot([System.Runtime.CompilerServices.CallerFilePath] string callerPath = "")
     {
-        var dir = Directory.GetCurrentDirectory();
+        var dir = Path.GetDirectoryName(callerPath);
         while (dir != null && !File.Exists(Path.Combine(dir, "Darkness.sln")))
             dir = Directory.GetParent(dir)?.FullName;
         return dir!;

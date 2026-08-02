@@ -7,7 +7,8 @@
     "DamageMultiplier": 1.1,
     "ManaCost": 5,
     "AssociatedAction": "Shoot",
-    "WeaponRequirement": "Wand"
+    "WeaponRequirement": "Wand",
+    "ClassRequirement": "Mage"
   },
   {
     "Id": 2,
@@ -19,7 +20,8 @@
     "ManaCost": 10,
     "Cooldown": 2,
     "AssociatedAction": "Shoot",
-    "WeaponRequirement": "Wand"
+    "WeaponRequirement": "Wand",
+    "ClassRequirement": "Mage"
   },
   {
     "Id": 3,
@@ -30,7 +32,8 @@
     "AccuracyModifier": 10,
     "StaminaCost": 5,
     "AssociatedAction": "Shoot",
-    "WeaponRequirement": "Bow"
+    "WeaponRequirement": "Bow",
+    "ClassRequirement": "Rogue"
   },
   {
     "Id": 4,
@@ -42,7 +45,8 @@
     "StaminaCost": 10,
     "Cooldown": 1,
     "AssociatedAction": "Shoot",
-    "WeaponRequirement": "Bow"
+    "WeaponRequirement": "Bow",
+    "ClassRequirement": "Rogue"
   },
   {
     "Id": 5,
@@ -53,7 +57,8 @@
     "AccuracyModifier": 20,
     "StaminaCost": 4,
     "AssociatedAction": "Thrust",
-    "WeaponRequirement": "Dagger"
+    "WeaponRequirement": "Dagger",
+    "ClassRequirement": "Rogue"
   },
   {
     "Id": 6,
@@ -65,7 +70,8 @@
     "StaminaCost": 8,
     "Cooldown": 1,
     "AssociatedAction": "Thrust",
-    "WeaponRequirement": "Dagger"
+    "WeaponRequirement": "Dagger",
+    "ClassRequirement": "Rogue"
   },
   {
     "Id": 7,
@@ -78,7 +84,8 @@
     "StaminaCost": 12,
     "Cooldown": 2,
     "AssociatedAction": "Slash",
-    "WeaponRequirement": "Axe"
+    "WeaponRequirement": "Axe",
+    "ClassRequirement": "Warrior"
   },
   {
     "Id": 8,
@@ -90,7 +97,8 @@
     "StaminaCost": 10,
     "Cooldown": 1,
     "AssociatedAction": "Slash",
-    "WeaponRequirement": "Axe"
+    "WeaponRequirement": "Axe",
+    "ClassRequirement": "Warrior"
   },
   {
     "Id": 9,
@@ -102,7 +110,8 @@
     "StaminaCost": 8,
     "Cooldown": 1,
     "AssociatedAction": "Slash",
-    "WeaponRequirement": "Mace"
+    "WeaponRequirement": "Mace",
+    "ClassRequirement": "Warrior"
   },
   {
     "Id": 10,
@@ -114,7 +123,8 @@
     "StaminaCost": 10,
     "Cooldown": 3,
     "AssociatedAction": "Slash",
-    "WeaponRequirement": "Mace"
+    "WeaponRequirement": "Mace",
+    "ClassRequirement": null
   },
   {
     "Id": 11,
@@ -125,7 +135,8 @@
     "AccuracyModifier": -10,
     "StaminaCost": 6,
     "AssociatedAction": "Slash",
-    "WeaponRequirement": "Sword"
+    "WeaponRequirement": "Sword",
+    "ClassRequirement": "Knight"
   },
   {
     "Id": 12,
@@ -137,7 +148,8 @@
     "StaminaCost": 8,
     "Cooldown": 1,
     "AssociatedAction": "Thrust",
-    "WeaponRequirement": "Sword"
+    "WeaponRequirement": "Sword",
+    "ClassRequirement": "Knight"
   },
   {
     "Id": 13,
@@ -147,7 +159,8 @@
     "DamageMultiplier": 0.5,
     "StaminaCost": 2,
     "AssociatedAction": "Punch",
-    "WeaponRequirement": "None"
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Warrior"
   },
   {
     "Id": 14,
@@ -159,7 +172,8 @@
     "StaminaCost": 5,
     "Cooldown": 1,
     "AssociatedAction": "Kick",
-    "WeaponRequirement": "None"
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Warrior"
   },
   {
     "Id": 15,
@@ -170,7 +184,8 @@
     "ManaCost": 15,
     "Cooldown": 3,
     "AssociatedAction": "Block",
-    "WeaponRequirement": "Wand"
+    "WeaponRequirement": "Wand",
+    "ClassRequirement": "Mage"
   },
   {
     "Id": 16,
@@ -181,7 +196,8 @@
     "StaminaCost": 10,
     "Cooldown": 3,
     "AssociatedAction": "Block",
-    "WeaponRequirement": "Bow"
+    "WeaponRequirement": "Bow",
+    "ClassRequirement": "Rogue"
   },
   {
     "Id": 17,
@@ -192,7 +208,8 @@
     "StaminaCost": 12,
     "Cooldown": 3,
     "AssociatedAction": "Block",
-    "WeaponRequirement": "Dagger"
+    "WeaponRequirement": "Dagger",
+    "ClassRequirement": "Knight"
   },
   {
     "Id": 18,
@@ -203,7 +220,8 @@
     "StaminaCost": 15,
     "Cooldown": 2,
     "AssociatedAction": "Block",
-    "WeaponRequirement": "Shield"
+    "WeaponRequirement": "Shield",
+    "ClassRequirement": "Knight"
   },
   {
     "Id": 19,
@@ -214,7 +232,8 @@
     "StaminaCost": 10,
     "Cooldown": 2,
     "AssociatedAction": "Block",
-    "WeaponRequirement": "Sword"
+    "WeaponRequirement": "Sword",
+    "ClassRequirement": "Knight"
   },
   {
     "Id": 20,
@@ -225,7 +244,8 @@
     "StaminaCost": 5,
     "Cooldown": 2,
     "AssociatedAction": "Block",
-    "WeaponRequirement": "None"
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Warrior"
   },
   {
     "Id": 21,
@@ -237,7 +257,8 @@
     "Cooldown": 2,
     "AssociatedAction": "Slash",
     "WeaponRequirement": "None",
-    "TalentRequirement": "holy_strike_node"
+    "TalentRequirement": "holy_strike_node",
+    "ClassRequirement": "Cleric"
   },
   {
     "Id": 22,
@@ -249,6 +270,176 @@
     "StaminaCost": 5,
     "AssociatedAction": "Thrust",
     "WeaponRequirement": "Dagger",
-    "IsOffHand": true
+    "IsOffHand": true,
+    "ClassRequirement": "Rogue"
+  },
+  {
+    "Id": 23,
+    "Name": "Ice Shard",
+    "Description": "Blasts enemies with freezing shards. (1.2x Magic Dmg, AOE)",
+    "SkillType": "Magical",
+    "IsAOE": true,
+    "DamageMultiplier": 1.2,
+    "ManaCost": 12,
+    "Cooldown": 2,
+    "AssociatedAction": "Shoot",
+    "WeaponRequirement": "Wand",
+    "ClassRequirement": "Mage"
+  },
+  {
+    "Id": 24,
+    "Name": "Lightning Bolt",
+    "Description": "A high damage single target blast. (2.0x Magic Dmg)",
+    "SkillType": "Magical",
+    "DamageMultiplier": 2.0,
+    "ManaCost": 18,
+    "Cooldown": 3,
+    "AssociatedAction": "Shoot",
+    "WeaponRequirement": "Wand",
+    "ClassRequirement": "Mage"
+  },
+  {
+    "Id": 25,
+    "Name": "Teleport",
+    "Description": "Instantly repositions to avoid attacks. (100% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 1.0,
+    "ManaCost": 20,
+    "Cooldown": 5,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Mage"
+  },
+  {
+    "Id": 26,
+    "Name": "Backstab",
+    "Description": "A precise strike to the back. (1.5x Dmg, +30 Accuracy)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.5,
+    "AccuracyModifier": 30,
+    "StaminaCost": 12,
+    "Cooldown": 2,
+    "AssociatedAction": "Thrust",
+    "WeaponRequirement": "Dagger",
+    "ClassRequirement": "Rogue"
+  },
+  {
+    "Id": 27,
+    "Name": "Poison Strike",
+    "Description": "A strike that applies poison. (1.0x Dmg)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 1.0,
+    "StaminaCost": 8,
+    "Cooldown": 2,
+    "AssociatedAction": "Thrust",
+    "WeaponRequirement": "Dagger",
+    "ClassRequirement": "Rogue"
+  },
+  {
+    "Id": 28,
+    "Name": "Evasion",
+    "Description": "Greatly increases dodge chance. (80% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.8,
+    "StaminaCost": 15,
+    "Cooldown": 4,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Rogue"
+  },
+  {
+    "Id": 29,
+    "Name": "Berserker Rage",
+    "Description": "Enters a furious state. (Boosts Dmg)",
+    "SkillType": "Physical",
+    "StaminaCost": 20,
+    "Cooldown": 5,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Axe",
+    "ClassRequirement": "Warrior"
+  },
+  {
+    "Id": 30,
+    "Name": "Ground Slam",
+    "Description": "Slams the ground to hit all enemies. (1.2x Dmg, AOE)",
+    "SkillType": "Physical",
+    "IsAOE": true,
+    "DamageMultiplier": 1.2,
+    "StaminaCost": 15,
+    "Cooldown": 3,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Mace",
+    "ClassRequirement": "Warrior"
+  },
+  {
+    "Id": 31,
+    "Name": "Taunt",
+    "Description": "Forces enemies to attack the user. (50% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.5,
+    "StaminaCost": 10,
+    "Cooldown": 3,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Warrior"
+  },
+  {
+    "Id": 32,
+    "Name": "Shield Bash",
+    "Description": "Bashes target with shield, attempting stun. (0.8x Dmg)",
+    "SkillType": "Physical",
+    "DamageMultiplier": 0.8,
+    "StaminaCost": 12,
+    "Cooldown": 3,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Shield",
+    "ClassRequirement": "Knight"
+  },
+  {
+    "Id": 33,
+    "Name": "Righteous Strike",
+    "Description": "A holy attack that smites evil. (1.5x Magic Dmg)",
+    "SkillType": "Magical",
+    "DamageMultiplier": 1.5,
+    "ManaCost": 12,
+    "Cooldown": 2,
+    "AssociatedAction": "Slash",
+    "WeaponRequirement": "Sword",
+    "ClassRequirement": "Knight"
+  },
+  {
+    "Id": 34,
+    "Name": "Heal",
+    "Description": "Restores health to an ally.",
+    "SkillType": "Magical",
+    "ManaCost": 15,
+    "Cooldown": 2,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Cleric"
+  },
+  {
+    "Id": 35,
+    "Name": "Smite",
+    "Description": "A blast of holy power. (1.4x Magic Dmg)",
+    "SkillType": "Magical",
+    "DamageMultiplier": 1.4,
+    "ManaCost": 12,
+    "Cooldown": 1,
+    "AssociatedAction": "Shoot",
+    "WeaponRequirement": "Mace",
+    "ClassRequirement": "Cleric"
+  },
+  {
+    "Id": 36,
+    "Name": "Divine Shield",
+    "Description": "Creates an impenetrable holy barrier. (90% Block)",
+    "SkillType": "Defensive",
+    "BlockReduction": 0.9,
+    "ManaCost": 20,
+    "Cooldown": 4,
+    "AssociatedAction": "Block",
+    "WeaponRequirement": "None",
+    "ClassRequirement": "Cleric"
   }
 ]

@@ -309,6 +309,9 @@ dotnet test Darkness.Tests --filter "FullyQualifiedName~TestMethodName"
 
 # Android build
 pwsh build-android.ps1
+
+# Generate sprite asset (ComfyUI API)
+python scripts/generate_sprite.py --prompt "description" --output "Darkness.Godot/assets/sprites/filename.png"
 ```
 
 ---

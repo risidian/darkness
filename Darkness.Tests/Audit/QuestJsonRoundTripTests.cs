@@ -67,9 +67,9 @@ public class QuestJsonRoundTripTests
         Assert.True(failures.Count == 0, "Quest JSON round-trip failures:\n  " + string.Join("\n  ", failures));
     }
 
-    private static string FindSolutionRoot()
+    private static string FindSolutionRoot([System.Runtime.CompilerServices.CallerFilePath] string callerPath = "")
     {
-        var current = AppContext.BaseDirectory;
+        var current = Path.GetDirectoryName(callerPath);
         while (!string.IsNullOrEmpty(current) && Directory.GetFiles(current, "Darkness.sln").Length == 0)
         {
             current = Path.GetDirectoryName(current);

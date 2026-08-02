@@ -158,7 +158,7 @@ public class PartyFactoryTests
         var pc = Pc();
         var combat = new CombatData
         {
-            Enemies = { new EnemySpawn { Name = "Araknos", MaxHP = 120 } },
+            Enemies = { new EnemySpawn { Name = "Tauros", MaxHP = 120 } },
             Allies = { Ally("Darius", "bosses/Darius"), Ally("Tywin", "bosses/Tywin") },
         };
 

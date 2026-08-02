@@ -58,6 +58,11 @@ public partial class Global : Node
             services.AddSingleton<ITriggerService, TriggerService>();
             services.AddSingleton<IEquipmentService, EquipmentService>();
             services.AddSingleton<INavigationService>(sp => new GodotNavigationService(this));
+            
+            // Audio Service
+            var audioService = new GodotAudioService(services.BuildServiceProvider().GetRequiredService<ISettingsService>());
+            AddChild(audioService);
+            services.AddSingleton<IAudioService>(audioService);
 
             Services = services.BuildServiceProvider();
             GD.Print("[Global] DI Container initialized.");

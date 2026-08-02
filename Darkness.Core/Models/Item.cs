@@ -28,13 +28,13 @@ namespace Darkness.Core.Models
         public int ArmorClass { get; set; }
         public string DamageDice { get; set; } = "1d4"; // Default fallback
         public string? EquipmentSlot { get; set; }
-        public int? EquipmentSpriteId { get; set; }
 
         // Stat requirements
         public int RequiredStrength { get; set; }
         public int RequiredDexterity { get; set; }
         public int RequiredIntelligence { get; set; }
         public int RequiredLevel { get; set; }
+        public string? ClassRequirement { get; set; }
 
         public bool CanEquip(Character character, out List<string> missingRequirements)
         {
@@ -43,6 +43,7 @@ namespace Darkness.Core.Models
             if (character.Dexterity < RequiredDexterity) missingRequirements.Add($"Dexterity {RequiredDexterity}");
             if (character.Intelligence < RequiredIntelligence) missingRequirements.Add($"Intelligence {RequiredIntelligence}");
             if (character.Level < RequiredLevel) missingRequirements.Add($"Level {RequiredLevel}");
+            if (!string.IsNullOrEmpty(ClassRequirement) && ClassRequirement != character.Class) missingRequirements.Add($"Class {ClassRequirement}");
 
             return missingRequirements.Count == 0;
         }
@@ -77,11 +78,11 @@ namespace Darkness.Core.Models
                 ArmorClass = ArmorClass,
                 DamageDice = DamageDice,
                 EquipmentSlot = EquipmentSlot,
-                EquipmentSpriteId = EquipmentSpriteId,
                 RequiredStrength = RequiredStrength,
                 RequiredDexterity = RequiredDexterity,
                 RequiredIntelligence = RequiredIntelligence,
                 RequiredLevel = RequiredLevel,
+                ClassRequirement = ClassRequirement,
                 Tier = Tier,
                 Infusion = Infusion,
                 Quantity = Quantity
