@@ -318,7 +318,7 @@ public partial class BattleScene : Control, IInitializable
         SetupWeaponSkills();
         SetupHotbar();
         await UpdateSprites();
-        ProcessNextTurn();
+        ProcessNextTurn().FireAndForget();
     }
 
     private void SetupBattle()
@@ -444,7 +444,7 @@ public partial class BattleScene : Control, IInitializable
                 foreach (var connection in btn.GetSignalConnectionList("pressed"))
                     btn.Disconnect("pressed", connection["callable"].AsCallable());
 
-                btn.Pressed += () => ExecuteWeaponSkill(skill);
+                btn.Pressed += () => ExecuteWeaponSkill(skill).FireAndForget();
                 btn.Show();
             }
             else
@@ -511,136 +511,150 @@ public partial class BattleScene : Control, IInitializable
 
     private async void UseHotbarItem(int slot)
     {
-        if (_isProcessingTurn || _session.CurrentCharacter == null || !IsInsideTree()) return;
-        
-        var character = _session.CurrentCharacter;
-        string? itemName = character.Hotbar[slot];
-        if (string.IsNullOrEmpty(itemName)) return;
-
-        var item = character.Inventory.FirstOrDefault(it => it.Name == itemName);
-        if (item == null || item.Quantity <= 0) return;
-
-        _isProcessingTurn = true;
-        EnablePlayerInput(false);
-        character.IsBlocking = false;
-
         try
         {
-            if (item.Type == "Consumable")
-            {
-                _combatLog.AppendText($"\n[color=cyan]{character.Name}[/color] uses [b]{item.Name}[/b]!");
-                
-                int healAmount = item.GetHealAmount(
-                    item.Name.Contains("Mana", StringComparison.OrdinalIgnoreCase) ? character.MaxMana : character.MaxHP
-                );
+            if (_isProcessingTurn || _session.CurrentCharacter == null || !IsInsideTree()) return;
+            
+            var character = _session.CurrentCharacter;
+            string? itemName = character.Hotbar[slot];
+            if (string.IsNullOrEmpty(itemName)) return;
 
-                if (item.Name.Contains("Mana", StringComparison.OrdinalIgnoreCase))
+            var item = character.Inventory.FirstOrDefault(it => it.Name == itemName);
+            if (item == null || item.Quantity <= 0) return;
+
+            _isProcessingTurn = true;
+            EnablePlayerInput(false);
+            character.IsBlocking = false;
+
+            try
+            {
+                if (item.Type == "Consumable")
                 {
-                    healAmount = Mathf.Min(healAmount, character.MaxMana - character.Mana);
-                    character.Mana += healAmount;
-                    _combatLog.AppendText($"\nRestored {healAmount} MP!");
+                    _combatLog.AppendText($"\n[color=cyan]{character.Name}[/color] uses [b]{item.Name}[/b]!");
+                    
+                    int healAmount = item.GetHealAmount(
+                        item.Name.Contains("Mana", StringComparison.OrdinalIgnoreCase) ? character.MaxMana : character.MaxHP
+                    );
+
+                    if (item.Name.Contains("Mana", StringComparison.OrdinalIgnoreCase))
+                    {
+                        healAmount = Mathf.Min(healAmount, character.MaxMana - character.Mana);
+                        character.Mana += healAmount;
+                        _combatLog.AppendText($"\nRestored {healAmount} MP!");
+                    }
+                    else
+                    {
+                        healAmount = Mathf.Min(healAmount, character.MaxHP - character.CurrentHP);
+                        character.CurrentHP += healAmount;
+                        int partyIndex = _party.IndexOf(character);
+                        if (partyIndex >= 0 && partyIndex < _partyHealthBars.Count)
+                        {
+                            _partyHealthBars[partyIndex].UpdateValue(character.CurrentHP, character.MaxHP);
+                        }
+                        _combatLog.AppendText($"\nHealed for {healAmount} HP!");
+                    }
+                    
+                    // Decrement quantity
+                    item.Quantity--;
+                    if (item.Quantity <= 0)
+                    {
+                        character.Inventory.Remove(item);
+                    }
+                    
+                    await Task.Run(() => _characterService.SaveCharacter(character));
+                    
+                    SetupHotbar(); // Refresh hotbar icons/visibility
                 }
                 else
                 {
-                    healAmount = Mathf.Min(healAmount, character.MaxHP - character.CurrentHP);
-                    character.CurrentHP += healAmount;
-                    int partyIndex = _party.IndexOf(character);
-                    if (partyIndex >= 0 && partyIndex < _partyHealthBars.Count)
-                    {
-                        _partyHealthBars[partyIndex].UpdateValue(character.CurrentHP, character.MaxHP);
-                    }
-                    _combatLog.AppendText($"\nHealed for {healAmount} HP!");
+                     _combatLog.AppendText($"\n[color=gray]Cannot use {item.Name} in battle.[/color]");
+                     EnablePlayerInput(true);
+                     _isProcessingTurn = false;
+                     return;
                 }
-                
-                // Decrement quantity
-                item.Quantity--;
-                if (item.Quantity <= 0)
-                {
-                    character.Inventory.Remove(item);
-                }
-                
-                await Task.Run(() => _characterService.SaveCharacter(character));
-                
-                SetupHotbar(); // Refresh hotbar icons/visibility
-            }
-            else
-            {
-                 _combatLog.AppendText($"\n[color=gray]Cannot use {item.Name} in battle.[/color]");
-                 EnablePlayerInput(true);
-                 _isProcessingTurn = false;
-                 return;
-            }
 
-            await ToSignal(GetTree().CreateTimer(0.5), "timeout");
-            
-            _turnManager.NextTurn();
-            ProcessNextTurn();
+                await ToSignal(GetTree().CreateTimer(0.5), "timeout");
+                
+                _turnManager.NextTurn();
+                ProcessNextTurn().FireAndForget();
+            }
+            finally
+            {
+                _isProcessingTurn = false;
+            }
         }
-        finally
+        catch (System.Exception ex)
         {
-            _isProcessingTurn = false;
+            GD.PrintErr($"UseHotbarItem failed: {ex}");
         }
     }
 
     private async void RetryBattle()
     {
-        _endBattlePanel.Hide();
-        _enemies.Clear();
-        _enemyMap.Clear();
-        
-        foreach (var e in _originalEnemies)
+        try
         {
-            var enemy = new Enemy
-            {
-                Name = e.Name,
-                MaxHP = e.MaxHP,
-                CurrentHP = e.MaxHP,
-                Attack = e.Attack,
-                Defense = e.Defense,
-                Accuracy = e.Accuracy,
-                Speed = e.Speed,
-                SpriteKey = e.SpriteKey,
-                IsInvincible = e.IsInvincible,
-                MoralityImpact = e.MoralityImpact,
-                ExperienceReward = e.ExperienceReward,
-                GoldReward = e.GoldReward
-            };
-            _enemies.Add(enemy);
+            _endBattlePanel.Hide();
+            _enemies.Clear();
+            _enemyMap.Clear();
             
-            // Link to the original spawn if we have BattleArgs
-            if (_battleArgs?.Combat != null)
+            foreach (var e in _originalEnemies)
             {
-                var spawn = _battleArgs.Combat.Enemies.FirstOrDefault(s => s.Name == e.Name);
-                if (spawn != null)
+                var enemy = new Enemy
                 {
-                    spawn.CurrentHP = e.MaxHP;
-                    _enemyMap[enemy] = spawn;
+                    Name = e.Name,
+                    MaxHP = e.MaxHP,
+                    CurrentHP = e.MaxHP,
+                    Attack = e.Attack,
+                    Defense = e.Defense,
+                    Accuracy = e.Accuracy,
+                    Speed = e.Speed,
+                    SpriteKey = e.SpriteKey,
+                    IsInvincible = e.IsInvincible,
+                    MoralityImpact = e.MoralityImpact,
+                    ExperienceReward = e.ExperienceReward,
+                    GoldReward = e.GoldReward
+                };
+                _enemies.Add(enemy);
+                
+                // Link to the original spawn if we have BattleArgs
+                if (_battleArgs?.Combat != null)
+                {
+                    var spawn = _battleArgs.Combat.Enemies.FirstOrDefault(s => s.Name == e.Name);
+                    if (spawn != null)
+                    {
+                        spawn.CurrentHP = e.MaxHP;
+                        _enemyMap[enemy] = spawn;
+                    }
                 }
             }
-        }
 
-        // Restore the whole party (PC + allies), not just the PC.
-        foreach (var member in _party)
+            // Restore the whole party (PC + allies), not just the PC.
+            foreach (var member in _party)
+            {
+                member.CurrentHP = member.MaxHP;
+                member.IsBlocking = false;
+            }
+
+            if (_survivalBar != null) _survivalBar.Value = 0;
+            if (_survivalLabel != null) _survivalLabel.Text = $"Survive! (0/{_survivalTurns} Turns)";
+
+            _combatLog.Clear();
+            _combatLog.AppendText("Retrying battle...");
+            _selectedEnemyIndex = 0;
+
+            _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
+            _battle = new PartyBattleController(_party, _enemies, (CombatEngine)_combat, _survivalTurns > 0 ? _survivalTurns : null);
+            UpdateTurnOrderUI();
+            SetupWeaponSkills();
+            SetupHotbar();
+            
+            await UpdateSprites();
+            ProcessNextTurn().FireAndForget();
+        }
+        catch (System.Exception ex)
         {
-            member.CurrentHP = member.MaxHP;
-            member.IsBlocking = false;
+            GD.PrintErr($"RetryBattle failed: {ex}");
         }
-
-        if (_survivalBar != null) _survivalBar.Value = 0;
-        if (_survivalLabel != null) _survivalLabel.Text = $"Survive! (0/{_survivalTurns} Turns)";
-
-        _combatLog.Clear();
-        _combatLog.AppendText("Retrying battle...");
-        _selectedEnemyIndex = 0;
-
-        _turnManager.Setup(_party, _enemies, (CombatEngine)_combat);
-        _battle = new PartyBattleController(_party, _enemies, (CombatEngine)_combat, _survivalTurns > 0 ? _survivalTurns : null);
-        UpdateTurnOrderUI();
-        SetupWeaponSkills();
-        SetupHotbar();
-        
-        await UpdateSprites();
-        ProcessNextTurn();
     }
 
     private void OnEnemyTapped(int index)
@@ -661,7 +675,7 @@ public partial class BattleScene : Control, IInitializable
         {
             if (_currentWeaponSkills.Count > 0)
             {
-                ExecuteWeaponSkill(_currentWeaponSkills[0]);
+                ExecuteWeaponSkill(_currentWeaponSkills[0]).FireAndForget();
             }
         }
     }
@@ -821,7 +835,7 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
-    private async void ProcessNextTurn()
+    private async Task ProcessNextTurn()
     {
         if (!IsInsideTree() || _party.Count == 0 || _enemies.Count == 0 || _turnManager.TurnOrder.Count == 0) return;
 
@@ -842,7 +856,7 @@ public partial class BattleScene : Control, IInitializable
 
             if (currentSurvivalTurn >= _survivalTurns)
             {
-                Victory(survived: true);
+                Victory(survived: true).FireAndForget();
                 return;
             }
         }
@@ -955,7 +969,7 @@ public partial class BattleScene : Control, IInitializable
             if (actualIndex < 0)
             {
                 _turnManager.NextTurn();
-                ProcessNextTurn();
+                ProcessNextTurn().FireAndForget();
                 return;
             }
 
@@ -1014,7 +1028,7 @@ public partial class BattleScene : Control, IInitializable
             }
 
             _turnManager.NextTurn();
-            ProcessNextTurn();
+            ProcessNextTurn().FireAndForget();
         }
         finally
         {
@@ -1035,14 +1049,14 @@ public partial class BattleScene : Control, IInitializable
             {
                 _turnManager.RemoveEntity(ally);
                 _turnManager.NextTurn();
-                ProcessNextTurn();
+                ProcessNextTurn().FireAndForget();
                 return;
             }
 
             var target = _battle.ChooseAllyAiTarget();
             if (target == null)
             {
-                Victory();
+                Victory().FireAndForget();
                 return;
             }
             int targetIndex = _enemies.IndexOf(target);
@@ -1105,12 +1119,12 @@ public partial class BattleScene : Control, IInitializable
 
             if (_battle.IsVictory() || _enemies.Count == 0)
             {
-                Victory();
+                Victory().FireAndForget();
                 return;
             }
 
             _turnManager.NextTurn();
-            ProcessNextTurn();
+            ProcessNextTurn().FireAndForget();
         }
         finally
         {
@@ -1118,7 +1132,7 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
-    private async void ExecuteWeaponSkill(Skill skill)
+    private async Task ExecuteWeaponSkill(Skill skill)
     {
         if (_isProcessingTurn || _enemies.Count == 0 || _party.Count == 0 || !IsInsideTree()) return;
         if (_skillCooldowns.TryGetValue(skill.Id, out int cd) && cd > 0) return;
@@ -1288,7 +1302,7 @@ public partial class BattleScene : Control, IInitializable
 
             if (_enemies.Count == 0)
             {
-                Victory();
+                Victory().FireAndForget();
                 return;
             }
             
@@ -1298,7 +1312,7 @@ public partial class BattleScene : Control, IInitializable
             }
             
             _turnManager.NextTurn();
-            ProcessNextTurn();
+            ProcessNextTurn().FireAndForget();
         }
         finally
         {
@@ -1306,7 +1320,7 @@ public partial class BattleScene : Control, IInitializable
         }
     }
 
-    private async void Victory(bool survived = false)
+    private async Task Victory(bool survived = false)
     {
         _combatLog.AppendText("\n[color=yellow]VICTORY![/color]");
         _endBattleTitle.Text = "VICTORY ACHIEVED";

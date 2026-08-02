@@ -36,11 +36,11 @@ public partial class SplashScene : Control
                                 @event is InputEventScreenTouch))
         {
             _isInitialized = true;
-            StartGame();
+            StartGame().FireAndForget();
         }
     }
 
-    private async void StartGame()
+    private async Task StartGame()
     {
         GetNode<Label>("VBoxContainer/Subtitle").Hide();
         var loading = GetNode<Label>("VBoxContainer/LoadingLabel");

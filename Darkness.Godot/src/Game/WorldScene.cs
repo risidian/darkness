@@ -105,7 +105,7 @@ public partial class WorldScene : Node2D, IInitializable
         {
             if (_currentDialogueIndex >= 0)
             {
-                NextDialogue();
+                NextDialogue().FireAndForget();
                 GetViewport().SetInputAsHandled();
             }
             else
@@ -235,7 +235,7 @@ public partial class WorldScene : Node2D, IInitializable
         {
             if (Input.IsActionJustPressed("ui_accept"))
             {
-                NextDialogue();
+                NextDialogue().FireAndForget();
             }
 
             return;
@@ -590,7 +590,7 @@ public partial class WorldScene : Node2D, IInitializable
         UpdateDialogueUI();
     }
 
-    private async void NextDialogue()
+    private async Task NextDialogue()
     {
         if (!_isTextFullyDisplayed)
         {
@@ -704,74 +704,81 @@ public partial class WorldScene : Node2D, IInitializable
 
     private async void OnChoiceSelected(BranchOption choice)
     {
-        GD.Print(
-            $"[WorldScene] Choice selected: '{choice.Text}' (NextStepId: {choice.NextStepId}, MoralityImpact: {choice.MoralityImpact})");
-
-        if (_currentDialogueChain != null && _session.CurrentCharacter != null)
+        try
         {
-            // Advance to the chosen step
-            GD.Print($"[WorldScene] Advancing chain {_currentDialogueChain.Id} to step {choice.NextStepId}");
-            var nextStep = _questService.AdvanceStep(_session.CurrentCharacter, _currentDialogueChain.Id, choice.NextStepId);
+            GD.Print(
+                $"[WorldScene] Choice selected: '{choice.Text}' (NextStepId: {choice.NextStepId}, MoralityImpact: {choice.MoralityImpact})");
 
-            // Update visuals for the new step
-            await UpdateVisuals(nextStep, _currentDialogueChain);
-
-            // Check if main story is complete
-            if (_questService.IsMainStoryComplete(_session.CurrentCharacter))
+            if (_currentDialogueChain != null && _session.CurrentCharacter != null)
             {
-                GD.Print("[WorldScene] Main story is complete!");
+                // Advance to the chosen step
+                GD.Print($"[WorldScene] Advancing chain {_currentDialogueChain.Id} to step {choice.NextStepId}");
+                var nextStep = _questService.AdvanceStep(_session.CurrentCharacter, _currentDialogueChain.Id, choice.NextStepId);
+
+                // Update visuals for the new step
+                await UpdateVisuals(nextStep, _currentDialogueChain);
+
+                // Check if main story is complete
+                if (_questService.IsMainStoryComplete(_session.CurrentCharacter))
+                {
+                    GD.Print("[WorldScene] Main story is complete!");
+                }
+
+                // If the next step has dialogue, show it immediately
+                if (nextStep?.Dialogue != null && nextStep.Dialogue.Lines.Count > 0)
+                {
+                    GD.Print($"[WorldScene] Next step '{nextStep.Id}' has dialogue. Starting immediately.");
+                    _state = WorldState.InDialogue;
+                    _currentDialogueStep = nextStep;
+                    _speakerName = nextStep.Dialogue.Speaker;
+                    _dialogue = new List<string>(nextStep.Dialogue.Lines);
+
+                    if (nextStep.Branch?.Options != null && nextStep.Branch.Options.Count > 0)
+                        _currentChoices = new List<BranchOption>(nextStep.Branch.Options);
+                    else
+                        _currentChoices.Clear();
+
+                    _currentDialogueIndex = 0;
+                    _dialogueBox.Show();
+
+                    var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
+                    prompt.Text = "[TAP TO CONTINUE]";
+
+                    UpdateDialogueUI();
+                    return;
+                }
+
+                // If no immediate dialogue, check if it's an encounter
+                if (nextStep != null && nextStep.AutoTransition && (nextStep.Combat != null || nextStep.Type == QuestStepType.Stealth || (nextStep.Location?.SceneKey == "stealth")))
+                {
+                    // Must reset dialogue index and hide box before triggering
+                    _currentDialogueIndex = -1;
+                    _dialogueBox.Hide();
+
+                    // Fix: Reset state so TriggerEncounter can run
+                    _state = WorldState.Exploring;
+                    _isEncounterTriggered = false;
+
+                    await TriggerEncounter();
+                    return;
+                }
             }
 
-            // If the next step has dialogue, show it immediately
-            if (nextStep?.Dialogue != null && nextStep.Dialogue.Lines.Count > 0)
+            // Hide dialogue box and end conversation
+            _currentDialogueIndex = -1;
+            _dialogueBox.Hide();
+            _isEncounterTriggered = false; // Add this reset!
+            _state = WorldState.Exploring;
+
+            // Clear buttons
+            foreach (Node child in _choicesContainer.GetChildren())
             {
-                GD.Print($"[WorldScene] Next step '{nextStep.Id}' has dialogue. Starting immediately.");
-                _state = WorldState.InDialogue;
-                _currentDialogueStep = nextStep;
-                _speakerName = nextStep.Dialogue.Speaker;
-                _dialogue = new List<string>(nextStep.Dialogue.Lines);
-
-                if (nextStep.Branch?.Options != null && nextStep.Branch.Options.Count > 0)
-                    _currentChoices = new List<BranchOption>(nextStep.Branch.Options);
-                else
-                    _currentChoices.Clear();
-
-                _currentDialogueIndex = 0;
-                _dialogueBox.Show();
-
-                var prompt = GetNode<Label>("CanvasLayer/DialogueBox/VBoxContainer/PromptLabel");
-                prompt.Text = "[TAP TO CONTINUE]";
-
-                UpdateDialogueUI();
-                return;
-            }
-
-            // If no immediate dialogue, check if it's an encounter
-            if (nextStep != null && nextStep.AutoTransition && (nextStep.Combat != null || nextStep.Type == QuestStepType.Stealth || (nextStep.Location?.SceneKey == "stealth")))
-            {
-                // Must reset dialogue index and hide box before triggering
-                _currentDialogueIndex = -1;
-                _dialogueBox.Hide();
-
-                // Fix: Reset state so TriggerEncounter can run
-                _state = WorldState.Exploring;
-                _isEncounterTriggered = false;
-
-                await TriggerEncounter();
-                return;
+                child.QueueFree();
             }
         }
-
-        // Hide dialogue box and end conversation
-        _currentDialogueIndex = -1;
-        _dialogueBox.Hide();
-        _isEncounterTriggered = false; // Add this reset!
-        _state = WorldState.Exploring;
-
-        // Clear buttons
-        foreach (Node child in _choicesContainer.GetChildren())
+        catch (System.Exception ex)
         {
-            child.QueueFree();
+            GD.PrintErr($"OnChoiceSelected failed: {ex}");
         }
     }
 

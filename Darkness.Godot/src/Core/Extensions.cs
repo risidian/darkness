@@ -13,7 +13,7 @@ public static class TaskExtensions
         }
         catch (System.Exception ex)
         {
-            GD.PrintErr($"FireAndForget task failed: {ex.Message}");
+            GD.PrintErr($"FireAndForget task failed: {ex}");
         }
     }
 }

@@ -97,22 +97,22 @@ public partial class CharacterGenScene : Control
         SetupOptions();
 
         _classOption.ItemSelected += (idx) => OnClassChanged((int)idx);
-        _skinOption.ItemSelected += (_) => UpdatePreview();
+        _skinOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
         _headOption.ItemSelected += (_) => {
             UpdateGenderFiltering();
-            UpdatePreview();
+            UpdatePreview().FireAndForget();
         };
-        _hairStyleOption.ItemSelected += (_) => UpdatePreview();
-        _hairColorOption.ItemSelected += (_) => UpdatePreview();
-        _faceOption.ItemSelected += (_) => UpdatePreview();
-        _eyesOption.ItemSelected += (_) => UpdatePreview();
-        _legsOption.ItemSelected += (_) => UpdatePreview();
-        _feetOption.ItemSelected += (_) => UpdatePreview();
-        _armsOption.ItemSelected += (_) => UpdatePreview();
-        _armorOption.ItemSelected += (_) => UpdatePreview();
-        _weaponOption.ItemSelected += (_) => UpdatePreview();
-        _shieldOption.ItemSelected += (_) => UpdatePreview();
-        _offHandOption.ItemSelected += (_) => UpdatePreview();
+        _hairStyleOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _hairColorOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _faceOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _eyesOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _legsOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _feetOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _armsOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _armorOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _weaponOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _shieldOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
+        _offHandOption.ItemSelected += (_) => UpdatePreview().FireAndForget();
 
         _nextButton.Pressed += OnNextPressed;
         _backButton.Pressed += OnBackPressed;
@@ -310,7 +310,7 @@ public partial class CharacterGenScene : Control
         if (offHandLabel != null) offHandLabel.Visible = isMage;
         _offHandOption.Visible = isMage;
 
-        UpdatePreview();
+        UpdatePreview().FireAndForget();
     }
 
     private void SelectByText(OptionButton node, string text)
@@ -325,7 +325,7 @@ public partial class CharacterGenScene : Control
         }
     }
 
-    private async void UpdatePreview()
+    private async Task UpdatePreview()
     {
         var appearance = GetCurrentAppearance();
 
