@@ -205,6 +205,18 @@ public partial class WorldScene : Node2D, IInitializable
         _isEncounterTriggered = false;
         _state = WorldState.Exploring;
         GD.Print("[WorldScene] Ready and triggers enabled.");
+
+        if (_session.CurrentCharacter != null)
+        {
+            if (!_questService.GetWorldFlag(_session.CurrentCharacter.Id, "tutorial_dismissed"))
+            {
+                var tutorial = new TutorialOverlay();
+                tutorial.Setup(() => {
+                    _questService.SetWorldFlag(_session.CurrentCharacter.Id, "tutorial_dismissed", true);
+                });
+                GetNode("CanvasLayer").AddChild(tutorial);
+            }
+        }
     }
 
     private async Task UpdateSprites()
